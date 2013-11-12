@@ -808,10 +808,16 @@ class runner extends atoum\test
 			->then
 				->object($runner->setErrorWriter($errorWriter = new atoum\writers\std\err()))->isIdenticalTo($runner)
 				->object($runner->getErrorWriter())->isIdenticalTo($errorWriter)
-			->given($colorizer = new cli\colorizer('0;31'))
-			->and($colorizer->setPattern('/^([^:]+:)/'))
-			->and($defaultErrorWriter = new atoum\writers\std\err())
-			->and($defaultErrorWriter->addDecorator($colorizer))
+			->given(
+				$colorizer = new cli\colorizer('0;31'),
+				$colorizer->setPattern('/^([^:]+:)/'),
+				$defaultErrorWriter = new atoum\writers\std\err(),
+				$defaultErrorWriter
+					->addDecorator(new writer\decorators\trim())
+					->addDecorator(new writer\decorators\prompt($runner->getLocale()->_('Error: ')))
+					->addDecorator(new writer\decorators\eol())
+					->addDecorator($colorizer)
+			)
 			->then
 				->object($runner->setErrorWriter())->isIdenticalTo($runner)
 				->object($runner->getErrorWriter())->isEqualTo($defaultErrorWriter)

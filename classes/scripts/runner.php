@@ -74,17 +74,15 @@ class runner extends atoum\script\configurable
 
 	public function setErrorWriter(atoum\writer $writer = null)
 	{
+		parent::setErrorWriter($writer);
+
 		if ($writer === null)
 		{
-			$writer = new writers\std\err();
-
 			$colorizer = new cli\colorizer('0;31');
 			$colorizer->setPattern('/^([^:]+:)/');
 
-			$writer->addDecorator($colorizer);
+			$this->errorWriter->addDecorator($colorizer);
 		}
-
-		parent::setErrorWriter($writer);
 
 		return $this;
 	}

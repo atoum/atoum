@@ -43,7 +43,7 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 
 	public function clear()
 	{
-		return $this->write($this->cli->isTerminal() === false ? PHP_EOL : "\033[1K\r");
+		return $this->doWrite($this->cli->isTerminal() === false ? PHP_EOL : "\033[1K\r");
 	}
 
 	public function writeRealtimeReport(reports\realtime $report, $event)

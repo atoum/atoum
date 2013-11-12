@@ -33,6 +33,7 @@ class stub extends atoum\test
 			->and($adapter->ini_get = function($name) { return $name === 'phar.readonly' ? 1 : ini_get($name); })
 			->and($stub->setLocale($locale = new mock\locale()))
 			->and($stub->setOutputWriter($outputWriter = new mock\writers\std\out()))
+			->and($this->calling($outputWriter)->clear->doesNothing())
 			->and($this->calling($outputWriter)->write->doesNothing())
 			->and($stub->setInfoWriter($infoWriter = new mock\writers\std\out()))
 			->and($this->calling($infoWriter)->write->doesNothing())
