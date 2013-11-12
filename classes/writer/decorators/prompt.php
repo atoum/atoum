@@ -8,7 +8,7 @@ use
 
 class prompt implements writer\decorator
 {
-	const defaultPrompt = 'Error: ';
+	const defaultPrompt = '$ ';
 
 	protected $prompt = '';
 
