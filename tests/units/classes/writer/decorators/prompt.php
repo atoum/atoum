@@ -18,7 +18,7 @@ class prompt extends atoum
 
 	public function testClassConstants()
 	{
-		$this->string(testedClass::defaultPrompt)->isEqualTo('Error: ');
+		$this->string(testedClass::defaultPrompt)->isEqualTo('$ ');
 	}
 
 	public function test__construct()
