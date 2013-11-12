@@ -17,7 +17,7 @@ class out extends writers\std
 
 			if ($resource === false)
 			{
-				throw new exceptions\runtime('Unable to open php://stout stream');
+				throw new exceptions\runtime('Unable to open php://stdout stream');
 			}
 
 			$this->resource = $resource;
