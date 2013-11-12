@@ -45,6 +45,13 @@ abstract class writer
 		return $this->decorators;
 	}
 
+	public function removeDecorators()
+	{
+		$this->decorators = array();
+
+		return $this;
+	}
+
 	public function write($string)
 	{
 		foreach ($this->decorators as $decorator)
