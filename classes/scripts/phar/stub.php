@@ -196,7 +196,7 @@ class stub extends scripts\runner
 
 		if (is_array($data) === false || isset($data['version']) === false || isset($data['phar']) === false)
 		{
-			$this->writeInfo($this->locale->_('There is no new version available !'));
+			$this->writeInfo($this->locale->_('There is no new version available!'));
 		}
 		else
 		{
@@ -229,7 +229,7 @@ class stub extends scripts\runner
 
 			$this
 				->clearMessage()
-				->writeMessage(sprintf($this->locale->_('Update to version \'%s\'... Done !' . PHP_EOL), $data['version']))
+				->writeMessage(sprintf($this->locale->_('Update to version \'%s\'... Done!' . PHP_EOL), $data['version']))
 			;
 
 			@$this->adapter->unlink($tmpFile);
@@ -243,10 +243,10 @@ class stub extends scripts\runner
 
 			$this
 				->clearMessage()
-				->writeMessage(sprintf($this->locale->_('Enable version \'%s\'... Done !' . PHP_EOL), $data['version']))
+				->writeMessage(sprintf($this->locale->_('Enable version \'%s\'... Done!' . PHP_EOL), $data['version']))
 			;
 
-			$this->writeInfo(sprintf($this->locale->_('Atoum has been updated from version \'%s\' to \'%s\' successfully !'), atoum\version, $data['version']));
+			$this->writeInfo(sprintf($this->locale->_('Atoum has been updated from version \'%s\' to \'%s\' successfully!'), atoum\version, $data['version']));
 		}
 
 		return $this->stopRun();
