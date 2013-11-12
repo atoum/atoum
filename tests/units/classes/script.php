@@ -513,7 +513,7 @@ class script extends atoum\test
 		$this
 			->if($script = new mock\script(uniqid()))
 			->and($script->setOutputWriter($outputWriter = new mock\writers\std\out()))
-			->and($this->calling($outputWriter)->write->doesNothing())
+			->and($this->calling($outputWriter)->clear->doesNothing())
 			->then
 				->object($script->clearMessage($message = uniqid()))->isIdenticalTo($script)
 				->mock($outputWriter)->call('clear')->once()
