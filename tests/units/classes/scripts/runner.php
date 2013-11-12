@@ -395,7 +395,7 @@ class runner extends atoum\test
 			->and($runner->setErrorWriter($stderr))
 			->then
 				->object($runner->addTestAllDirectory(uniqid()))->isIdenticalTo($runner)
-				->mock($stderr)->call('write')->withArguments('Error: --test-all argument is deprecated, please replace call to mageekguy\atoum\scripts\runner::addTestAllDirectory(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead' . PHP_EOL)->once()
+				->mock($stderr)->call('write')->withArguments('--test-all argument is deprecated, please replace call to mageekguy\atoum\scripts\runner::addTestAllDirectory(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead')->once()
 		;
 	}
 
@@ -862,11 +862,10 @@ class runner extends atoum\test
 				->object($script->run())->isIdenticalTo($script)
 				->mock($locale)
 					->call('_')
-						->withArguments('Error: %s')->once()
 						->withArguments('No test found')->once()
 				->mock($errorWriter)
 					->call('clear')->once()
-					->call('write')->withArguments('Error: No test found' . PHP_EOL)->once()
+					->call('write')->withArguments('No test found')->once()
 		;
 	}
 

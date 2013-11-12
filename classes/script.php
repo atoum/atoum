@@ -339,7 +339,7 @@ abstract class script
 
 	public function writeError($message)
 	{
-		$this->errorWriter->clear()->write(sprintf($this->locale->_('Error: %s'), trim($message)) . PHP_EOL);
+		$this->errorWriter->clear()->write($message);
 
 		return $this;
 	}
