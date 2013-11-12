@@ -308,7 +308,10 @@ abstract class script
 
 	public function writeMessage($message)
 	{
-		$this->outputWriter->write($message);
+		$this->outputWriter
+			->removeDecorators()
+			->write($message)
+		;
 
 		return $this;
 	}
@@ -389,14 +392,14 @@ abstract class script
 
 	public function writeLabel($label, $value, $level = 0)
 	{
-		static::writeLabelWithWriter($label, $value, $level, $this->outputWriter);
+		static::writeLabelWithWriter($label, $value, $level, $this->helpWriter);
 
 		return $this;
 	}
 
 	public function writeLabels(array $labels, $level = 1)
 	{
-		static::writeLabelsWithWriter($labels, $level, $this->outputWriter);
+		static::writeLabelsWithWriter($labels, $level, $this->helpWriter);
 
 		return $this;
 	}
