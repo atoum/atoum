@@ -123,19 +123,6 @@ class pusher extends script\configurable
 				$this->locale->_('<string> will be used as remote')
 			)
 			->addArgumentHandler(
-				function($script, $argument, $branch) {
-					if (sizeof($branch) != 1)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->setBranch(reset($branch));
-				},
-				array('-ib', '--in-branch'),
-				'<string>',
-				$this->locale->_('<string> will be used as remote branch')
-			)
-			->addArgumentHandler(
 				function($script, $argument, $tagFile) {
 					if (sizeof($tagFile) != 1)
 					{
