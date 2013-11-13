@@ -188,8 +188,8 @@ class pusher extends script\configurable
 			{
 				$this->git
 					->addAllAndCommit('Set version to ' . $devTag . '.')
-					->push()
-					->pushTag($tag)
+					->push($this->remote)
+					->pushTag($tag, $this->remote)
 				;
 			}
 			catch (\exception $exception)
