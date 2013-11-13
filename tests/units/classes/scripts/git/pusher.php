@@ -6,8 +6,8 @@ require __DIR__ . '/../../../runner.php';
 
 use
 	atoum,
-	atoum\cli,
 	atoum\scripts,
+	atoum\cli\commands,
 	atoum\scripts\git\pusher as testedClass
 ;
 
@@ -25,6 +25,7 @@ class pusher extends atoum
 			->string(testedClass::defaultBranch)->isEqualTo('master')
 			->string(testedClass::defaultTagFile)->isEqualTo('.tag')
 			->string(testedClass::defaultGitPath)->isEqualTo('git')
+			->string(testedClass::versionPattern)->isEqualTo('$Rev: %s $')
 		;
 	}
 
@@ -34,11 +35,10 @@ class pusher extends atoum
 			->if($pusher = new testedClass(__FILE__))
 			->then
 				->string($pusher->getRemote())->isEqualTo(testedClass::defaultRemote)
-				->string($pusher->getBranch())->isEqualTo(testedClass::defaultBranch)
 				->string($pusher->getTagFile())->isEqualTo(__DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultTagFile)
 				->object($pusher->getTaggerEngine())->isEqualTo(new scripts\tagger\engine())
 				->string($pusher->getWorkingDirectory())->isEqualTo(getcwd())
-				->object($pusher->getCliCommand())->isEqualTo(new cli\command())
+				->object($pusher->getGit())->isEqualTo(new commands\git())
 		;
 	}
 
@@ -51,18 +51,6 @@ class pusher extends atoum
 				->string($pusher->getRemote())->isEqualTo($remote)
 				->object($pusher->setRemote())->isIdenticalTo($pusher)
 				->string($pusher->getRemote())->isEqualTo(testedClass::defaultRemote)
-		;
-	}
-
-	public function testSetBranch()
-	{
-		$this
-			->if($pusher = new testedClass(__FILE__))
-			->then
-				->object($pusher->setBranch($branch = uniqid()))->isIdenticalTo($pusher)
-				->string($pusher->getBranch())->isEqualTo($branch)
-				->object($pusher->setBranch())->isIdenticalTo($pusher)
-				->string($pusher->getBranch())->isEqualTo(testedClass::defaultBranch)
 		;
 	}
 
@@ -104,29 +92,17 @@ class pusher extends atoum
 		;
 	}
 
-	public function testSetCliCommand()
+	public function testSetGit()
 	{
 		$this
 			->if($pusher = new testedClass(__FILE__))
 			->then
-				->object($pusher->setCliCommand($cliCommand = new cli\command()))->isIdenticalTo($pusher)
-				->object($pusher->getCliCommand())->isIdenticalTo($cliCommand)
-				->object($pusher->setCliCommand())->isIdenticalTo($pusher)
-				->object($pusher->getCliCommand())
-					->isNotIdenticalTo($cliCommand)
-					->isEqualTo(new cli\command())
-		;
-	}
-
-	public function testSetGitPath()
-	{
-		$this
-			->if($pusher = new testedClass(__FILE__))
-			->then
-				->object($pusher->setGitPath($gitPath = uniqid()))->isIdenticalTo($pusher)
-				->string($pusher->getGitPath())->isEqualTo($gitPath)
-				->object($pusher->setGitPath())->isIdenticalTo($pusher)
-				->string($pusher->getGitPath())->isEqualTo(testedClass::defaultGitPath)
+				->object($pusher->setGit($git = new commands\git()))->isIdenticalTo($pusher)
+				->object($pusher->getGit())->isIdenticalTo($git)
+				->object($pusher->setGit())->isIdenticalTo($pusher)
+				->object($pusher->getGit())
+					->isNotIdenticalTo($git)
+					->isEqualTo(new commands\git())
 		;
 	}
 
@@ -136,11 +112,11 @@ class pusher extends atoum
 			->given(
 				$pusher = new testedClass(__FILE__),
 				$pusher->setTaggerEngine($taggerEngine = new \mock\mageekguy\atoum\scripts\tagger\engine()),
-				$pusher->setCliCommand($git = new \mock\mageekguy\atoum\cli\command()),
+				$pusher->setGit($git = new \mock\mageekguy\atoum\cli\commands\git()),
 				$pusher->setErrorWriter($errorWriter = new \mock\mageekguy\atoum\writers\std\err())
 			)
 
-			->assert('Should write error on stderr if tag file is not writable')
+			->assert('Pusher should write error if tag file is not writable')
 			->if(
 				$this->calling($errorWriter)->write = $errorWriter,
 				$this->function->file_put_contents = false,
@@ -148,79 +124,125 @@ class pusher extends atoum
 			)
 			->then
 				->object($pusher->run())->isIdenticalTo($pusher)
-				->mock($errorWriter)->call('write')->withArguments('Error: Unable to write in \'' . $pusher->getTagFile() . '\'' . PHP_EOL)->once()
+				->mock($errorWriter)->call('write')->withArguments('Unable to write in \'' . $pusher->getTagFile() . '\'')->once()
 				->mock($git)->call('run')->never()
 
-			->assert('Should tag code and commit if tag file is writable')
+			->assert('Pusher should tag code and commit it if tag file is writable')
 			->if(
 				$this->function->file_put_contents = function($path, $data) { return strlen($data); },
 				$this->calling($taggerEngine)->tagVersion->doesNothing(),
-				$this->calling($git)->getExitCode = 0,
-				$this->calling($git)->run->doesNothing()
+				$this->calling($git)->addAllAndCommit = $git,
+				$this->calling($git)->createTag = $git,
+				$this->calling($git)->push = $git,
+				$this->calling($git)->pushTag = $git,
+				$this->calling($git)->resetHardTo = $git,
+				$this->calling($git)->deleteLocalTag = $git
 			)
 			->then
 				->object($pusher->run())->isIdenticalTo($pusher)
 				->function('file_put_contents')->wasCalledWithArguments($pusher->getTagFile(), 1)->once()
 				->mock($taggerEngine)
 					->call('tagVersion')
-						->after($this->mock($taggerEngine)->call('setSrcDirectory')->withArguments($pusher->getWorkingDirectory())->once())
-						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev: 0.0.1 $')->once())
+						->before($this->mock($git)
+							->call('addAllAndCommit')->withArguments('Set version to 0.0.1.')
+							->before($this->mock($git)
+								->call('createTag')->withArguments('0.0.1')
+								->before($this->mock($git)
+									->call('push')
+									->once()
+								)
+								->before($this->mock($git)
+									->call('pushTag')->withArguments('0.0.1')
+									->once()
+								)
+								->once()
+							)
+							->once())
+						->after($this->mock($taggerEngine)
+							->call('setSrcDirectory')->withArguments($pusher->getWorkingDirectory())
 							->once()
-				->mock($git)
-					->call('run')
-						->after(
-							$this->mock($git)->call('setBinaryPath')->withArguments($pusher->getGitPath())->once(),
-							$this->mock($git)->call('addOption')->withArguments('commit -am \'Set version to 0.0.1.\'')->once()
-						)->once()
+						)
+						->after($this->mock($taggerEngine)
+							->call('setVersion')->withArguments('$Rev: 0.0.1 $')
+							->once()
+						)
+						->once()
+					->call('tagVersion')
+						->before($this->mock($git)
+							->call('addAllAndCommit')->withArguments('Set version to DEVELOPMENT-0.0.1.')->once())
+						->after($this->mock($taggerEngine)->call('setSrcDirectory')->withArguments($pusher->getWorkingDirectory())->once())
+						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev: DEVELOPMENT-0.0.1 $')->once())
+							->once()
 
-			->assert('Should write error on stderr if commit failed')
+			->assert('Pusher should write error if pushing tag failed and should try to reset repository')
 			->if(
-				$this->calling($git)->getExitCode = rand(1, PHP_INT_MAX),
-				$this->calling($git)->getStderr = $errorMessage = uniqid()
+				$this->calling($git)->pushTag->throw = $exception = new \exception(uniqid())
 			)
 			->then
-				->exception(function() use ($pusher) { $pusher->run(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to execute ' . $git . ': ' . $errorMessage)
-				->mock($git)
-					->call('run')
-						->after(
-							$this->mock($git)->call('getExitCode')->once(),
-							$this->mock($git)->call('addOption')->withArguments('reset --hard HEAD~1')->once()
-						)->once()
-
-				/*
-			->assert('Should throw an exception if reset failed')
-			->if(
-				$this->calling($git)->getExitCode = rand(1, PHP_INT_MAX),
-				$this->calling($git)->getStderr = $errorMessage = uniqid()
-			)
-			->then
-				->exception(function() use ($pusher) { $pusher->run(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to execute ' . $git . ': ' . $errorMessage)
-				->mock($git)
-					->call('run')
-						->after(
-							$this->mock($git)->call('getExitCode')->once(),
-							$this->mock($git)->call('addOption')->withArguments('reset --hard HEAD~1')->once()
-						)->once()
-
-
-				$this->calling($git)->getExitCode = 0,
-				$this->calling($git)->run->doesNothing(),
-
 				->object($pusher->run())->isIdenticalTo($pusher)
-				->mock($taggerEngine)
-					->call('tagVersion')
-						->after($this->mock($taggerEngine)->call('setSrcDirectory')->withArguments($pusher->getWorkingDirectory())->once())
-						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev: 0.0.' . ($tag + 1) . ' $')->once())
-						->before($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev: DEVELOPMENT-0.0.' . ($tag + 1) . ' $')->once())
-							->once()
-					->call('tagVersion')
-						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev: DEVELOPMENT-0.0.' . ($tag + 1) . ' $')->once())
-							->once()
-				*/
+				->mock($errorWriter)->call('write')->withArguments($exception->getMessage())->once()
+				->mock($git)
+					->call('resetHardTo')->withArguments('HEAD~2')->once()
+					->call('deleteLocalTag')->withArguments('0.0.1')->once()
+
+			->assert('Pusher should write error if pushing commit failed and should try to reset repository')
+			->if(
+				$this->calling($git)->push->throw = $exception = new \exception(uniqid())
+			)
+			->then
+				->object($pusher->run())->isIdenticalTo($pusher)
+				->mock($errorWriter)->call('write')->withArguments($exception->getMessage())->once()
+				->mock($git)
+					->call('resetHardTo')->withArguments('HEAD~2')->once()
+					->call('deleteLocalTag')->withArguments('0.0.1')->once()
+
+			->assert('Pusher should write error if pushing commit for DEVELOPMENT version failed and should try to reset repository')
+			->if(
+				$this->calling($git)->push = $git,
+				$this->calling($git)->addAllAndCommit[2]->throw = $exception = new \exception(uniqid())
+			)
+			->then
+				->object($pusher->run())->isIdenticalTo($pusher)
+				->mock($errorWriter)->call('write')->withArguments($exception->getMessage())->once()
+				->mock($git)
+					->call('resetHardTo')->withArguments('HEAD~2')->once()
+					->call('deleteLocalTag')->withArguments('0.0.1')->once()
+
+			->assert('Pusher should write error if pushing commit for DEVELOPMENT version failed and should try to reset repository')
+			->if(
+				$this->calling($git)->createTag->throw = $exception = new \exception(uniqid())
+			)
+			->then
+				->object($pusher->run())->isIdenticalTo($pusher)
+				->mock($errorWriter)->call('write')->withArguments($exception->getMessage())->once()
+				->mock($git)
+					->call('resetHardTo')->withArguments('HEAD~1')->once()
+
+			->assert('Pusher should write error if commit failed for STABLE version and should try to reset repository')
+			->if(
+				$this->calling($git)->createTag = $git,
+				$this->calling($git)->addAllAndCommit[1]->throw = $exception = new \exception(uniqid())
+			)
+			->then
+				->object($pusher->run())->isIdenticalTo($pusher)
+				->mock($errorWriter)
+					->call('write')->withArguments($exception->getMessage())
+						->after($this->mock($git)->call('addAllAndCommit'))
+						->once()
+				->mock($git)
+					->call('resetHardTo')->withArguments('HEAD~1')
+					->after($this->mock($git)->call('addAllAndCommit'))
+					->once()
+
+			->assert('Pusher should write error if reset failed')
+			->if(
+				$this->calling($git)->resetHardTo->throw = $exception = new \exception(uniqid())
+			)
+			->then
+				->object($pusher->run())->isIdenticalTo($pusher)
+				->mock($errorWriter)
+					->call('write')->withArguments($exception->getMessage())
+					->once()
 		;
 	}
 }
