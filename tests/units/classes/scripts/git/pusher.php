@@ -161,7 +161,7 @@ class pusher extends atoum
 							->once()
 						)
 						->after($this->mock($taggerEngine)
-							->call('setVersion')->withArguments('$Rev: 0.0.1 $')
+							->call('setVersion')->withArguments('$Rev:' . ' 0.0.1 $') // Don't remove concatenation operator to avoid tagger replace the string.
 							->once()
 						)
 						->once()
@@ -169,7 +169,7 @@ class pusher extends atoum
 						->before($this->mock($git)
 							->call('addAllAndCommit')->withArguments('Set version to DEVELOPMENT-0.0.1.')->once())
 						->after($this->mock($taggerEngine)->call('setSrcDirectory')->withArguments($pusher->getWorkingDirectory())->once())
-						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev: DEVELOPMENT-0.0.1 $')->once())
+						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev:' . ' DEVELOPMENT-0.0.1 $')->once()) // Don't remove concatenation operator to avoid tagger replace the string.
 							->once()
 
 			->assert('Pusher should write error if pushing tag failed and should try to reset repository')
