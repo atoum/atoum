@@ -23,6 +23,7 @@ class runner implements observable
 	protected $testGenerator = null;
 	protected $globIteratorFactory = null;
 	protected $reflectionClassFactory = null;
+	protected $testFactory = null;
 	protected $observers = null;
 	protected $reports = null;
 	protected $reportSet = null;
@@ -53,6 +54,7 @@ class runner implements observable
 			->setTestDirectoryIterator()
 			->setGlobIteratorFactory()
 			->setReflectionClassFactory()
+			->setTestFactory()
 		;
 
 		$this->observers = new \splObjectStorage();
@@ -374,6 +376,20 @@ class runner implements observable
 		return $this;
 	}
 
+	public function getTestFactory()
+	{
+		return $this->testFactory;
+	}
+
+	public function setTestFactory($testFactory = null)
+	{
+		$this->testFactory = $testFactory ?: function($testClass) {
+			return new $testClass();
+		};
+
+		return $this;
+	}
+
 	public function run(array $namespaces = array(), array $tags = array(), array $runTestClasses = array(), array $runTestMethods = array(), $testBaseClass = null)
 	{
 		$this->includeTestPaths();
@@ -415,7 +431,7 @@ class runner implements observable
 
 		foreach ($runTestClasses as $runTestClass)
 		{
-			$test = new $runTestClass();
+			$test = call_user_func($this->testFactory, $runTestClass);
 
 			if (static::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
 			{
