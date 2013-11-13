@@ -22,9 +22,7 @@ class pusher extends atoum
 	{
 		$this
 			->string(testedClass::defaultRemote)->isEqualTo('origin')
-			->string(testedClass::defaultBranch)->isEqualTo('master')
 			->string(testedClass::defaultTagFile)->isEqualTo('.tag')
-			->string(testedClass::defaultGitPath)->isEqualTo('git')
 			->string(testedClass::versionPattern)->isEqualTo('$Rev: %s $')
 		;
 	}
