@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\cli\command;
+namespace mageekguy\atoum\cli\commands;
 
 use
 	mageekguy\atoum\cli
@@ -74,6 +74,16 @@ class git
 		return $this->run();
 	}
 
+	public function deleteLocalTag($tag)
+	{
+		$this->command
+			->reset()
+			->addOption('tag -d ' . $tag)
+		;
+
+		return $this->run();
+	}
+
 	public function push($remote = null, $branch = null)
 	{
 		$this->command
@@ -83,6 +93,7 @@ class git
 
 		return $this->run();
 	}
+
 	public function pushTag($tag, $reponame = null)
 	{
 		$this->command
@@ -97,7 +108,7 @@ class git
 	{
 		if ($this->command->run()->getExitCode() !== 0)
 		{
-			throw new exception('Unable to execute \'' . $this->command . '\': ' . $this->command->getStderr());
+			throw new cli\command\exception('Unable to execute \'' . $this->command . '\': ' . $this->command->getStderr());
 		}
 
 		return $this;
