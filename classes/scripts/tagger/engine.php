@@ -10,7 +10,7 @@ use
 
 class engine
 {
-	const defaultVersionPattern = '/\$Rev: [^ ]+ \$/';
+	const defaultVersionPattern = '/\$Rev: [^ %]+ \$/';
 
 	protected $adapter = null;
 	protected $version = null;
