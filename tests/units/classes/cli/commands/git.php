@@ -280,11 +280,11 @@ class git extends atoum
 					)
 					->once()
 
-				->object($git->pushTag($tag = uniqid(), $reponame = uniqid()))->isIdenticalTo($git)
+				->object($git->pushTag($tag = uniqid(), $remote = uniqid()))->isIdenticalTo($git)
 				->mock($command)
 					->call('reset')
 					->before($this->mock($command)
-						->call('addOption')->withArguments('push ' . $reponame . ' ' . $tag)
+						->call('addOption')->withArguments('push ' . $remote . ' ' . $tag)
 						->before($this->mock($command)
 							->call('run')
 							->twice()

@@ -94,11 +94,11 @@ class git
 		return $this->run();
 	}
 
-	public function pushTag($tag, $reponame = null)
+	public function pushTag($tag, $remote = null)
 	{
 		$this->command
 			->reset()
-			->addOption('push ' . ($reponame ?: 'origin') . ' ' . $tag)
+			->addOption('push ' . ($remote ?: 'origin') . ' ' . $tag)
 		;
 
 		return $this->run();
