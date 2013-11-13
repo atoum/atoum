@@ -144,7 +144,7 @@ class pusher extends script\configurable
 
 					$script->setTagFile(reset($tagFile));
 				},
-				array('-ib', '--in-branch'),
+				array('-tf', '--tag-file'),
 				'<path>',
 				$this->locale->_('File <path> will be used to store last tag')
 			)
