@@ -13,9 +13,7 @@ use
 class pusher extends script\configurable
 {
 	const defaultRemote = 'origin';
-	const defaultBranch = 'master';
 	const defaultTagFile = '.tag';
-	const defaultGitPath = 'git';
 	const versionPattern = '$Rev: %s $';
 
 	protected $remote = '';
