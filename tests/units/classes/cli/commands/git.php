@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\cli\command;
+namespace mageekguy\atoum\tests\units\cli\commands;
 
 require_once __DIR__ . '/../../../runner.php';
 
 use
 	mageekguy\atoum,
 	mageekguy\atoum\cli,
-	mageekguy\atoum\cli\command\git as testedClass
+	mageekguy\atoum\cli\commands\git as testedClass
 ;
 
 class git extends atoum
@@ -47,9 +47,7 @@ class git extends atoum
 			->given(
 				$git = new testedClass(),
 				$git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
-				$this->calling($command)->run = $command,
-				$this->calling($command)->getStdErr = ''
-
+				$this->calling($command)->run = $command
 			)
 
 			->if(
@@ -60,8 +58,12 @@ class git extends atoum
 				->mock($command)
 					->call('reset')
 					->before($this->mock($command)
-							->call('addOption')->withArguments('commit -am \'' . $message . '\'')
-							->before($this->mock($command)->call('run'))
+						->call('addOption')->withArguments('commit -am \'' . $message . '\'')
+						->before($this->mock($command)
+							->call('run')
+							->once()
+						)
+						->once()
 					)
 					->once()
 
@@ -82,9 +84,7 @@ class git extends atoum
 			->given(
 				$git = new testedClass(),
 				$git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
-				$this->calling($command)->run = $command,
-				$this->calling($command)->getStdErr = ''
-
+				$this->calling($command)->run = $command
 			)
 
 			->if(
@@ -95,8 +95,12 @@ class git extends atoum
 				->mock($command)
 					->call('reset')
 					->before($this->mock($command)
-							->call('addOption')->withArguments('reset --hard ' . $commit)
-							->before($this->mock($command)->call('run'))
+						->call('addOption')->withArguments('reset --hard ' . $commit)
+						->before($this->mock($command)
+							->call('run')
+							->once()
+						)
+						->once()
 					)
 					->once()
 
@@ -111,15 +115,13 @@ class git extends atoum
 		;
 	}
 
-	public function testTag()
+	public function testCreateTag()
 	{
 		$this
 			->given(
 				$git = new testedClass(),
 				$git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
-				$this->calling($command)->run = $command,
-				$this->calling($command)->getStdErr = ''
-
+				$this->calling($command)->run = $command
 			)
 
 			->if(
@@ -130,8 +132,12 @@ class git extends atoum
 				->mock($command)
 					->call('reset')
 					->before($this->mock($command)
-							->call('addOption')->withArguments('tag ' . $tag)
-							->before($this->mock($command)->call('run'))
+						->call('addOption')->withArguments('tag ' . $tag)
+						->before($this->mock($command)
+							->call('run')
+							->once()
+						)
+						->once()
 					)
 					->once()
 
@@ -146,14 +152,50 @@ class git extends atoum
 		;
 	}
 
+	public function testDeleteLocalTag()
+	{
+		$this
+			->given(
+				$git = new testedClass(),
+				$git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+				$this->calling($command)->run = $command
+			)
+
+			->if(
+				$this->calling($command)->getExitCode = 0
+			)
+			->then
+				->object($git->deleteLocalTag($tag = uniqid()))->isIdenticalTo($git)
+				->mock($command)
+					->call('reset')
+					->before($this->mock($command)
+						->call('addOption')->withArguments('tag -d ' . $tag)
+						->before($this->mock($command)
+							->call('run')
+							->once()
+						)
+						->once()
+					)
+					->once()
+
+			->if(
+				$this->calling($command)->getExitCode = rand(1, PHP_INT_MAX),
+				$this->calling($command)->getStderr = $errorMessage = uniqid()
+			)
+			->then
+				->exception(function() use ($git) { $git->deleteLocalTag(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\cli\command\exception')
+					->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
+		;
+	}
+
 	public function testPush()
 	{
 		$this
 			->given(
 				$git = new testedClass(),
 				$git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
-				$this->calling($command)->run = $command,
-				$this->calling($command)->getStdErr = ''
+				$this->calling($command)->run = $command
 
 			)
 
@@ -165,8 +207,12 @@ class git extends atoum
 				->mock($command)
 					->call('reset')
 					->before($this->mock($command)
-							->call('addOption')->withArguments('push origin master')
-							->before($this->mock($command)->call('run'))
+						->call('addOption')->withArguments('push origin master')
+						->before($this->mock($command)
+							->call('run')
+							->once()
+						)
+						->once()
 					)
 					->once()
 
@@ -174,8 +220,12 @@ class git extends atoum
 				->mock($command)
 					->call('reset')
 					->before($this->mock($command)
-							->call('addOption')->withArguments('push ' . $remote . ' master')
-							->before($this->mock($command)->call('run'))
+						->call('addOption')->withArguments('push ' . $remote . ' master')
+						->before($this->mock($command)
+							->call('run')
+							->twice()
+						)
+						->once()
 					)
 					->twice()
 
@@ -184,7 +234,11 @@ class git extends atoum
 					->call('reset')
 					->before($this->mock($command)
 							->call('addOption')->withArguments('push ' . $remote . ' ' . $branch)
-							->before($this->mock($command)->call('run'))
+							->before($this->mock($command)
+								->call('run')
+								->thrice()
+							)
+							->once()
 					)
 					->thrice()
 
@@ -205,8 +259,7 @@ class git extends atoum
 			->given(
 				$git = new testedClass(),
 				$git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
-				$this->calling($command)->run = $command,
-				$this->calling($command)->getStdErr = ''
+				$this->calling($command)->run = $command
 
 			)
 
@@ -218,8 +271,12 @@ class git extends atoum
 				->mock($command)
 					->call('reset')
 					->before($this->mock($command)
-							->call('addOption')->withArguments('push origin ' . $tag)
-							->before($this->mock($command)->call('run'))
+						->call('addOption')->withArguments('push origin ' . $tag)
+						->before($this->mock($command)
+							->call('run')
+							->once()
+						)
+						->once()
 					)
 					->once()
 
@@ -227,8 +284,12 @@ class git extends atoum
 				->mock($command)
 					->call('reset')
 					->before($this->mock($command)
-							->call('addOption')->withArguments('push ' . $reponame . ' ' . $tag)
-							->before($this->mock($command)->call('run'))
+						->call('addOption')->withArguments('push ' . $reponame . ' ' . $tag)
+						->before($this->mock($command)
+							->call('run')
+							->twice()
+						)
+						->once()
 					)
 					->twice()
 
