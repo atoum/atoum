@@ -40,6 +40,8 @@ class runner extends atoum\test
 				->object($defaultGlobIteratorFactory($pattern = uniqid()))->isEqualTo(new \globIterator($pattern))
 				->object($defaultReflectionClassFactory = $runner->getReflectionClassFactory())->isInstanceOf('closure')
 				->object($defaultReflectionClassFactory($this))->isEqualTo(new \reflectionClass($this))
+				->object($defaultTestFactory = $runner->getTestFactory())->isInstanceOf('closure')
+				->object($defaultTestFactory(__CLASS__))->isInstanceOf($this)
 				->variable($runner->getRunningDuration())->isNull()
 				->boolean($runner->codeCoverageIsEnabled())->isTrue()
 				->variable($runner->getDefaultReportTitle())->isNull()
