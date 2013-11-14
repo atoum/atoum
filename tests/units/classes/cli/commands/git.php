@@ -196,7 +196,6 @@ class git extends atoum
 				$git = new testedClass(),
 				$git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
 				$this->calling($command)->run = $command
-
 			)
 
 			->if(
@@ -253,6 +252,69 @@ class git extends atoum
 		;
 	}
 
+	public function testForcePush()
+	{
+		$this
+			->given(
+				$git = new testedClass(),
+				$git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+				$this->calling($command)->run = $command
+			)
+
+			->if(
+				$this->calling($command)->getExitCode = 0
+			)
+			->then
+				->object($git->forcePush())->isIdenticalTo($git)
+				->mock($command)
+					->call('reset')
+					->before($this->mock($command)
+						->call('addOption')->withArguments('push --force origin master')
+						->before($this->mock($command)
+							->call('run')
+							->once()
+						)
+						->once()
+					)
+					->once()
+
+				->object($git->forcePush($remote = uniqid()))->isIdenticalTo($git)
+				->mock($command)
+					->call('reset')
+					->before($this->mock($command)
+						->call('addOption')->withArguments('push --force ' . $remote . ' master')
+						->before($this->mock($command)
+							->call('run')
+							->twice()
+						)
+						->once()
+					)
+					->twice()
+
+				->object($git->forcePush($remote = uniqid(), $branch = uniqid()))->isIdenticalTo($git)
+				->mock($command)
+					->call('reset')
+					->before($this->mock($command)
+							->call('addOption')->withArguments('push --force ' . $remote . ' ' . $branch)
+							->before($this->mock($command)
+								->call('run')
+								->thrice()
+							)
+							->once()
+					)
+					->thrice()
+
+			->if(
+				$this->calling($command)->getExitCode = rand(1, PHP_INT_MAX),
+				$this->calling($command)->getStderr = $errorMessage = uniqid()
+			)
+			->then
+				->exception(function() use ($git) { $git->forcePush(); })
+					->isInstanceOf('mageekguy\atoum\cli\command\exception')
+					->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
+		;
+	}
+
 	public function testPushTag()
 	{
 		$this
@@ -260,7 +322,6 @@ class git extends atoum
 				$git = new testedClass(),
 				$git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
 				$this->calling($command)->run = $command
-
 			)
 
 			->if(
@@ -299,6 +360,43 @@ class git extends atoum
 			)
 			->then
 				->exception(function() use ($git) { $git->pushTag(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\cli\command\exception')
+					->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
+		;
+	}
+
+	public function testCheckoutAllFiles()
+	{
+		$this
+			->given(
+				$git = new testedClass(),
+				$git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+				$this->calling($command)->run = $command
+			)
+
+			->if(
+				$this->calling($command)->getExitCode = 0
+			)
+			->then
+				->object($git->checkoutAllFiles())->isIdenticalTo($git)
+				->mock($command)
+					->call('reset')
+					->before($this->mock($command)
+						->call('addOption')->withArguments('checkout .')
+						->before($this->mock($command)
+							->call('run')
+							->once()
+						)
+						->once()
+					)
+					->once()
+
+			->if(
+				$this->calling($command)->getExitCode = rand(1, PHP_INT_MAX),
+				$this->calling($command)->getStderr = $errorMessage = uniqid()
+			)
+			->then
+				->exception(function() use ($git) { $git->checkoutAllFiles(); })
 					->isInstanceOf('mageekguy\atoum\cli\command\exception')
 					->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
 		;
