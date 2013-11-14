@@ -111,7 +111,9 @@ class pusher extends atoum
 				$pusher = new testedClass(__FILE__),
 				$pusher->setTaggerEngine($taggerEngine = new \mock\mageekguy\atoum\scripts\tagger\engine()),
 				$pusher->setGit($git = new \mock\mageekguy\atoum\cli\commands\git()),
-				$pusher->setErrorWriter($errorWriter = new \mock\mageekguy\atoum\writers\std\err())
+				$pusher->setErrorWriter($errorWriter = new \mock\mageekguy\atoum\writers\std\err()),
+				$pusher->setInfoWriter($infoWriter = new \mock\mageekguy\atoum\writers\std\out()),
+				$this->calling($infoWriter)->write = $infoWriter
 			)
 
 			->assert('Pusher should write error if tag file is not writable')
@@ -130,8 +132,10 @@ class pusher extends atoum
 				$this->function->file_put_contents = function($path, $data) { return strlen($data); },
 				$this->calling($taggerEngine)->tagVersion->doesNothing(),
 				$this->calling($git)->addAllAndCommit = $git,
+				$this->calling($git)->checkoutAllFiles = $git,
 				$this->calling($git)->createTag = $git,
 				$this->calling($git)->push = $git,
+				$this->calling($git)->forcePush = $git,
 				$this->calling($git)->pushTag = $git,
 				$this->calling($git)->resetHardTo = $git,
 				$this->calling($git)->deleteLocalTag = $git
@@ -203,8 +207,7 @@ class pusher extends atoum
 				->object($pusher->run())->isIdenticalTo($pusher)
 				->mock($errorWriter)->call('write')->withArguments($exception->getMessage())->once()
 				->mock($git)
-					->call('resetHardTo')->withArguments('HEAD~2')->once()
-					->call('deleteLocalTag')->withArguments('0.0.1')->once()
+					->call('resetHardTo')->withArguments('HEAD~1')->once()
 
 			->assert('Pusher should write error if pushing commit for DEVELOPMENT version failed and should try to reset repository')
 			->if(
@@ -228,18 +231,18 @@ class pusher extends atoum
 						->after($this->mock($git)->call('addAllAndCommit'))
 						->once()
 				->mock($git)
-					->call('resetHardTo')->withArguments('HEAD~1')
+					->call('checkoutAllFiles')
 					->after($this->mock($git)->call('addAllAndCommit'))
 					->once()
 
 			->assert('Pusher should write error if reset failed')
 			->if(
-				$this->calling($git)->resetHardTo->throw = $exception = new \exception(uniqid())
+				$this->calling($git)->checkoutAllFiles->throw = $checkoutAllFilesException = new \exception(uniqid())
 			)
 			->then
 				->object($pusher->run())->isIdenticalTo($pusher)
 				->mock($errorWriter)
-					->call('write')->withArguments($exception->getMessage())
+					->call('write')->withArguments($checkoutAllFilesException->getMessage())
 					->once()
 		;
 	}
