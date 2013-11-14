@@ -94,11 +94,31 @@ class git
 		return $this->run();
 	}
 
+	public function forcePush($remote = null, $branch = null)
+	{
+		$this->command
+			->reset()
+			->addOption('push --force ' . ($remote ?: 'origin') . ' ' . ($branch ?: 'master'))
+		;
+
+		return $this->run();
+	}
+
 	public function pushTag($tag, $remote = null)
 	{
 		$this->command
 			->reset()
 			->addOption('push ' . ($remote ?: 'origin') . ' ' . $tag)
+		;
+
+		return $this->run();
+	}
+
+	public function checkoutAllFiles()
+	{
+		$this->command
+			->reset()
+			->addOption('checkout .')
 		;
 
 		return $this->run();
