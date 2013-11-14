@@ -150,57 +150,25 @@ class pusher extends script\configurable
 				throw new exceptions\runtime('Unable to write in \'' . $this->tagFile . '\'');
 			}
 
-			$tag = '0.0.' . $tag;
+			$this->taggerEngine->setSrcDirectory($this->workingDirectory);
 
-			$this->taggerEngine
-				->setSrcDirectory($this->workingDirectory)
-				->setVersion(sprintf(static::versionPattern, $tag))
-				->tagVersion()
-			;
-
-			try
+			if ($this->tagStableVersion($tag = '0.0.' . $tag) === true)
 			{
-				$this->git
-					->addAllAndCommit('Set version to ' . $tag . '.')
-					->createTag($tag)
-				;
-			}
-			catch (\exception $exception)
-			{
-				$this
-					->writeError($exception->getMessage())
-					->git->resetHardTo('HEAD~1')
-				;
-
-				return $this;
+				if ($this->createGitTag($tag) === true)
+				{
+					if ($this->tagDevelopmentVersion('DEVELOPMENT-' . $tag) === true)
+					{
+						if ($this->pushToRemote($tag) === true)
+						{
+							if ($this->pushTagToRemote($tag) === true)
+							{
+								$this->writeInfo('Tag \'' . $tag . '\' successfully sent to remote \'' . $this->remote . '\'');
+							}
+						}
+					}
+				}
 			}
 
-			$devTag = 'DEVELOPMENT-' . $tag;
-
-			$this->taggerEngine
-				->setVersion(sprintf(static::versionPattern, $devTag))
-				->tagVersion()
-			;
-
-			try
-			{
-				$this->git
-					->addAllAndCommit('Set version to ' . $devTag . '.')
-					->push($this->remote)
-					->pushTag($tag, $this->remote)
-				;
-			}
-			catch (\exception $exception)
-			{
-				$this
-					->writeError($exception->getMessage())
-					->git
-						->resetHardTo('HEAD~2')
-						->deleteLocalTag($tag)
-				;
-
-				return $this;
-			}
 		}
 		catch (\exception $exception)
 		{
@@ -208,5 +176,116 @@ class pusher extends script\configurable
 		}
 
 		return $this;
+	}
+
+	private function tagSrcWith($tag)
+	{
+		$this->taggerEngine
+			->setVersion(sprintf(static::versionPattern, $tag))
+			->tagVersion()
+		;
+
+		return $this;
+	}
+
+	private function tagStableVersion($tag)
+	{
+		$this->tagSrcWith($tag);
+
+		try
+		{
+			$this->git->addAllAndCommit('Set version to ' . $tag . '.');
+		}
+		catch (\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			$this->git->checkoutAllFiles();
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private function createGitTag($tag)
+	{
+		try
+		{
+			$this->git->createTag($tag);
+		}
+		catch (\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			$this->git->resetHardTo('HEAD~1');
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private function tagDevelopmentVersion($tag)
+	{
+		$this->tagSrcWith($tag);
+
+		try
+		{
+			$this->git->addAllAndCommit('Set version to ' . $tag . '.');
+		}
+		catch (\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			$this->git->resetHardTo('HEAD~1');
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private function pushToRemote($tag)
+	{
+		try
+		{
+			$this->git->push($this->remote);
+		}
+		catch (\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			$this->git
+				->deleteLocalTag($tag)
+				->resetHardTo('HEAD~2')
+			;
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private function pushTagToRemote($tag)
+	{
+		try
+		{
+			$this->git->pushTag($tag, $this->remote);
+		}
+		catch (\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			$this->git
+				->deleteLocalTag($tag)
+				->resetHardTo('HEAD~2')
+				->forcePush($this->remote)
+			;
+
+			return false;
+		}
+
+		return true;
 	}
 }
