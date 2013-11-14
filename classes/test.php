@@ -13,7 +13,7 @@ use
 
 abstract class test implements observable, \countable
 {
-	const testMethodPrefix = 'test';
+	const defaultTestMethodPrefix = '#^test#i';
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
@@ -49,6 +49,7 @@ abstract class test implements observable, \countable
 	private $testedClassPath = null;
 	private $currentMethod = null;
 	private $testNamespace = null;
+	private $testMethodPrefix = null;
 	private $classEngine = null;
 	private $bootstrapFile = null;
 	private $maxAsynchronousEngines = null;
@@ -75,6 +76,7 @@ abstract class test implements observable, \countable
 
 	private static $namespace = null;
 	private static $defaultEngine = self::defaultEngine;
+	protected static $methodPrefix = null;
 
 	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null)
 	{
@@ -115,10 +117,11 @@ abstract class test implements observable, \countable
 		}
 
 		$this->setMethodAnnotations($annotationExtractor, $methodName);
+		$testMethodPrefix = $this->getTestMethodPrefix();
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
-			if (stripos($methodName = $publicMethod->getName(), self::testMethodPrefix) === 0)
+			if (preg_match($testMethodPrefix, $methodName = $publicMethod->getName()) > 0)
 			{
 				$this->testMethods[$methodName] = array();
 
@@ -732,6 +735,28 @@ abstract class test implements observable, \countable
 		return $this->path;
 	}
 
+	public static function getMethodPrefix()
+	{
+		return static::$methodPrefix ?: static::defaultTestMethodPrefix;
+	}
+
+	public static function setMethodPrefix($prefix)
+	{
+		static::$methodPrefix = static::checkMethodPrefix($prefix);
+	}
+
+	public function setTestMethodPrefix($testMethodPrefix)
+	{
+		$this->testMethodPrefix = static::checkMethodPrefix($testMethodPrefix);;
+
+		return $this;
+	}
+
+	public function getTestMethodPrefix()
+	{
+		return $this->testMethodPrefix ?: self::getMethodPrefix();
+	}
+
 	public function getTaggedTestMethods(array $methods, array $tags = array())
 	{
 		return array_values(array_uintersect($methods, $this->getTestMethods($tags), 'strcasecmp'));
@@ -1179,6 +1204,7 @@ abstract class test implements observable, \countable
 			->setHandler('ignore', function($value) use ($test) { $test->ignore(annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
 			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
+			->setHandler('prefix', function($value) use ($test) { $test->setTestMethodPrefix($value); })
 			->setHandler('maxChildrenNumber', function($value) use ($test) { $test->setMaxChildrenNumber($value); })
 			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
 			->setHandler('hasVoidMethods', function($value) use ($test) { $test->classHasVoidMethods(); })
@@ -1518,5 +1544,30 @@ abstract class test implements observable, \countable
 	private static function isRegex($namespace)
 	{
 		return preg_match('/^([^\\\[:alnum:][:space:]]).*\1.*$/', $namespace) === 1;
+	}
+
+	private static function isIdentifier($identifier)
+	{
+		return preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]+)*/', $identifier) === 1;
+	}
+
+	private static function checkMethodPrefix($prefix)
+	{
+		if ($prefix === '')
+		{
+			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
+		}
+
+		if (static::isRegex($prefix) === false)
+		{
+			if (static::isIdentifier($prefix) === false)
+			{
+				throw new exceptions\logic\invalidArgument(sprintf('%s is not a valid test method prefix', $prefix));
+			}
+
+			$prefix = '#^' . $prefix . '#i';
+		}
+
+		return $prefix;
 	}
 }

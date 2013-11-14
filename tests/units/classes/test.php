@@ -59,12 +59,38 @@ namespace mageekguy\atoum\tests\units
 		}
 	}
 
+	/**
+	@ignore on
+	@prefix my_
+	 */
+	class prefix extends atoum\test
+	{
+		public function my_testMethod1() {}
+		public function my_testMethod2() {}
+
+		public function not_my_test() {}
+	}
+
+	/**
+	@ignore on
+	@prefix #^(?:test|my_)#i
+	 */
+	class otherPrefix extends atoum\test
+	{
+		public function testMethod1() {}
+		public function testMethod2() {}
+
+		public function my_testMethod1() {}
+		public function my_testMethod2() {}
+	}
+
+	#^(?:test|my_)#i
+
 	class test extends atoum\test
 	{
 		public function testClassConstants()
 		{
 			$this
-				->string(atoum\test::testMethodPrefix)->isEqualTo('test')
 				->string(atoum\test::runStart)->isEqualTo('testRunStart')
 				->string(atoum\test::beforeSetUp)->isEqualTo('beforeTestSetUp')
 				->string(atoum\test::afterSetUp)->isEqualTo('afterTestSetUp')
@@ -80,6 +106,7 @@ namespace mageekguy\atoum\tests\units
 				->string(atoum\test::afterTearDown)->isEqualTo('afterTestTearDown')
 				->string(atoum\test::runStop)->isEqualTo('testRunStop')
 				->string(atoum\test::defaultNamespace)->isEqualTo('#(?:^|\\\\)tests?\\\\units?\\\\#i')
+				->string(atoum\test::defaultTestMethodPrefix)->isEqualTo('#^test#i')
 			;
 		}
 
@@ -107,6 +134,7 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getMandatoryClassExtensions())->isEmpty()
 					->array($test->getMandatoryMethodExtensions())->isEmpty()
 					->variable($test->getXdebugConfig())->isNull()
+					->string($test->getTestMethodPrefix())->isEqualTo('#^test#i')
 			;
 		}
 
@@ -939,6 +967,60 @@ namespace mageekguy\atoum\tests\units
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 						->hasMessage('Test class \'foo\bar\aaa\bbb\testedClass\' is not in a namespace which match pattern \'' . atoum\test::getNamespace() . '\'')
 					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass', '#(?:^|\\\)aaas?\\\bbbs?\\\#i'))->isEqualTo('foo\bar\testedClass')
+			;
+		}
+
+		public function testGetSetMethodPrefix()
+		{
+			$this
+				->assert('Test method prefix should be a valid identifier or a regex')
+					->if($prefix = uniqid())
+					->then
+						->string(atoum\test::getMethodPrefix())->isEqualTo(atoum\test::defaultTestMethodPrefix)
+						->exception(function() use ($prefix) {
+							atoum\test::setMethodPrefix($prefix);
+						})
+							->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+							->hasMessage(sprintf('%s is not a valid test method prefix', $prefix))
+					->if(atoum\test::setMethodPrefix($prefix = 'atoum'))
+					->then
+						->string(atoum\test::getMethodPrefix())->isEqualTo('#^' . $prefix . '#i')
+					->if(atoum\test::setMethodPrefix($prefix = '/^atoum/i'))
+					->then
+						->string(atoum\test::getMethodPrefix())->isEqualTo($prefix)
+				->assert('Empty string should throw an exception')
+					->if($prefix = '')
+					->then
+						->exception(function() use ($prefix) { emptyTest::setMethodPrefix($prefix); })
+							->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+							->hasMessage('Test method prefix must not be empty')
+			;
+		}
+
+		public function testGetSetTestMethodPrefix()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->string($test->getTestMethodPrefix())->isEqualTo(atoum\test::defaultTestMethodPrefix)
+					->object($test->setTestMethodPrefix($prefix = 'atoum'))->isIdenticalTo($test)
+					->string($test->getTestMethodPrefix())->isEqualTo('#^' . $prefix . '#i')
+				->if($test = new prefix())
+				->and($test->ignore(false))
+				->then
+					->array($test->getTestMethods())
+						->hasSize(2)
+						->string[0]->isEqualTo('my_testMethod1')
+						->string[1]->isEqualTo('my_testMethod2')
+				->if($test = new otherPrefix())
+				->and($test->ignore(false))
+				->then
+					->array($test->getTestMethods())
+						->hasSize(4)
+						->string[0]->isEqualTo('testMethod1')
+						->string[1]->isEqualTo('testMethod2')
+						->string[2]->isEqualTo('my_testMethod1')
+						->string[3]->isEqualTo('my_testMethod2')
 			;
 		}
 	}
