@@ -12,7 +12,6 @@ class extractor
 
 		if (substr($comments, 0, 2) == '/*' && substr($comments, -2) == '*/')
 		{
-			$comments = trim($comments);
 			$comments = preg_replace('#^\/\*+([^*])#', '\1', $comments);
 			$comments = preg_replace('#([^*])\*+/$#', '\1', $comments);
 			$comments = trim($comments);
