@@ -146,7 +146,7 @@ abstract class test implements observable, \countable
 		}
 		else
 		{
-			$testMethodFilter = function($methodName) use ($testMethodPrefix) { return (preg_match($this->getTestMethodPrefix(), $methodName) == true); };
+			$testMethodFilter = function($methodName) use ($testMethodPrefix) { return (preg_match($testMethodPrefix, $methodName) == true); };
 		}
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
