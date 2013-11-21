@@ -154,16 +154,11 @@ class controller extends test\adapter
 
 		foreach ($this->mockMethods as $method)
 		{
-			if (isset($this->invokers[$method]) === false)
-			{
-				$this->setInvoker($method);
-			}
-
-			$this->invokers[$method]->setMock($mock);
+			$invoker = $this->{$method}->setMock($mock);
 
 			if ($this->autoBind === true)
 			{
-				$this->invokers[$method]->bindTo($mock);
+				$this->{$method}->bindTo($mock);
 			}
 		}
 
