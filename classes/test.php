@@ -1103,7 +1103,6 @@ abstract class test implements observable, \countable
 		}
 
 		return $doNotCallDefaultErrorHandler;
-
 	}
 
 	public function setUp() {}
