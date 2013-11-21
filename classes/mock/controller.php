@@ -158,6 +158,13 @@ class controller extends test\adapter
 			{
 				$this->setInvoker($method);
 			}
+
+			$this->invokers[$method]->setMock($mock);
+
+			if ($this->autoBind === true)
+			{
+				$this->invokers[$method]->bindTo($mock);
+			}
 		}
 
 		return $this
@@ -189,7 +196,7 @@ class controller extends test\adapter
 
 		foreach ($this->invokers as $invoker)
 		{
-			$invoker->bindTo(self::$linker->getMock($this));
+			$invoker->bindTo($this->getMock());
 		}
 
 		return $this;
@@ -214,6 +221,11 @@ class controller extends test\adapter
 		$this->mockMethods = array();
 
 		return parent::reset();
+	}
+
+	public function getMock()
+	{
+		return self::$linker->getMock($this);
 	}
 
 	public function invoke($method, array $arguments = array())
@@ -283,13 +295,30 @@ class controller extends test\adapter
 		return $this;
 	}
 
-	protected function setInvoker($name, \closure $factory = null)
+	protected function buildInvoker($methodName, \closure $factory = null)
 	{
-		$invoker = parent::setInvoker($name, $factory);
+		if ($factory === null)
+		{
+			$factory = function($methodName, $mock) { return new mock\controller\invoker($methodName, $mock); };
+		}
+
+		return $factory($methodName, $this->getMock());
+	}
+
+	protected function setInvoker($methodName, \closure $factory = null)
+	{
+		$invoker = parent::setInvoker($methodName, $factory);
+
+		$mock = $this->getMock();
+
+		if ($mock !== null)
+		{
+			$invoker->setMock($this->getMock());
+		}
 
 		if ($this->autoBind === true)
 		{
-			$invoker->bindTo(self::$linker->getMock($this));
+			$invoker->bindTo($mock);
 		}
 
 		return $invoker;
