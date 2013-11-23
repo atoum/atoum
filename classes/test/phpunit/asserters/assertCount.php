@@ -4,51 +4,42 @@ namespace mageekguy\atoum\test\phpunit\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test\phpunit\asserter,
+	mageekguy\atoum\test\phpunit\asserter\selector
 ;
 
 class assertCount extends asserter
 {
+	protected $asserterSelector;
+
+	public function __construct(asserter\generator $generator = null)
+	{
+		parent::__construct($generator);
+
+		$this->setAsserterSelector();
+	}
+
+	public function setAsserterSelector(selector $selector = null)
+	{
+		$this->asserterSelector = $selector ?: new selector\size();
+	}
+
+	public function getAsserterSelector()
+	{
+		return $this->asserterSelector;
+	}
+
 	public function setWithArguments(array $arguments)
 	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument #1 of assertCount was not set');
-		}
+		parent::setWithArguments($arguments);
 
-		if (is_int($arguments[0]) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument #1 of assertCount must be an integer');
-		}
-
-		if (array_key_exists(1, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument #2 of assertCount was not set');
-		}
-
-		switch (true)
-		{
-			case $arguments[1] instanceof \countable:
-				$asserter = new asserters\object();
-				break;
-
-			case $arguments[1] instanceof \iterator:
-				$asserter = new asserters\iterator();
-				break;
-
-			case is_array($arguments[1]):
-				$asserter = new asserters\phpArray();
-				break;
-
-			default:
-				throw new exceptions\logic\invalidArgument('Argument #2 of assertCount must be countable');
-		}
+		$asserter = $this->asserterSelector->selectFor($arguments[1]);
 
 		try
 		{
-			$asserter->setWith($arguments[1])->hasSize($arguments[0]);
+			$asserter->hasSize($arguments[0]);
 
 			$this->pass();
 		}
@@ -56,7 +47,6 @@ class assertCount extends asserter
 		{
 			$this->fail(isset($arguments[2]) ? $arguments[2] : $exception->getMessage());
 		}
-
 
 		return $this;
 	}

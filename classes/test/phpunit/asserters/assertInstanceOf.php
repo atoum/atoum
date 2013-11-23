@@ -3,42 +3,35 @@
 namespace mageekguy\atoum\test\phpunit\asserters;
 
 use
-	mageekguy\atoum\asserters\object,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test\phpunit\asserter
 ;
 
-class assertInstanceOf extends object
+class assertInstanceOf extends asserter
 {
 	public function setWithArguments(array $arguments)
 	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument 0 of assertInstanceOf was not set');
-		}
+		parent::setWithArguments($arguments);
 
-		if (array_key_exists(1, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument 1 of assertInstanceOf was not set');
-		}
-
-		$failMessage = isset($arguments[2]) ? $arguments[2] : null;
+		$asserter = new asserters\object();
 
 		try
 		{
-			static::check($arguments[1], 'assertInstanceOf');
+			$asserter->setWith($arguments[1])->isInstanceOf($arguments[0]);
+
+			$this->pass();
 		}
-		catch(exceptions\logic $exception)
+		catch(atoum\asserter\exception $exception)
 		{
-			return $this->pass();
+			$this->fail(isset($arguments[2]) ? $arguments[2] : $exception->getMessage());
+		}
+		catch(atoum\exceptions\logic $exception)
+		{
+			$this->fail(sprintf($this->getLocale()->_('%s is not an instance of %s'), is_string($arguments[1]) === true ? $arguments[1] : $this->getTypeOf($arguments[1]), $arguments[0]));
 		}
 
-		try
-		{
-			return parent::setWithArguments(array($arguments[1]))->isInstanceOf($arguments[0], $failMessage);
-		}
-		catch(exceptions\logic $exception)
-		{
-			return $this->fail($failMessage ?: sprintf('%s is not an instance of %s', $this->getTypeOf($arguments[1]), $arguments[0]));
-		}
+		return $this;
 	}
 } 

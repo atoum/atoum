@@ -4,24 +4,16 @@ namespace mageekguy\atoum\test\phpunit\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test\phpunit\asserter
 ;
 
 class assertEquals extends asserter
 {
 	public function setWithArguments(array $arguments)
 	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument #1 of assertEquals was not set');
-		}
-
-		if (array_key_exists(1, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument #2 of assertEquals was not set');
-		}
+		parent::setWithArguments($arguments);
 
 		$arguments = array_replace(
 			array(
@@ -54,7 +46,7 @@ class assertEquals extends asserter
 				break;
 
 			case (is_float($arguments[1]) && is_float($arguments[0])) || (is_int($arguments[1]) && is_int($arguments[0])):
-				$asserter = new asserters\float();
+				$asserter = new asserters\phpFloat();
 
 				$assertion = function($asserter, $actual, $expected) use ($arguments) {
 					$asserter->setWith((float) $actual)->isNearlyEqualTo((float) $expected, $arguments[3]);
@@ -79,7 +71,7 @@ class assertEquals extends asserter
 					$arguments[1] = strtolower($arguments[1]);
 				}
 
-				$asserter = new asserters\string();
+				$asserter = new asserters\phpString();
 
 				$assertion = function($asserter, $actual, $expected) use ($arguments) {
 					$asserter->setWith((string) $actual)->isEqualTo((string) $expected, $arguments[3]);

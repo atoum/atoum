@@ -13,17 +13,7 @@ class assertContainsOnly extends asserter
 {
 	public function setWithArguments(array $arguments)
 	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument 0 of assertContainsOnly was not set');
-		}
-
-		if (array_key_exists(1, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument 1 of assertContainsOnly was not set');
-		}
-
-		$failMessage = isset($arguments[2]) ? $arguments[2] : null;
+		parent::setWithArguments($arguments);
 
 		foreach ($arguments[1] as $item)
 		{
@@ -31,10 +21,26 @@ class assertContainsOnly extends asserter
 			{
 				switch ($arguments[0])
 				{
+					case 'int':
 					case 'integer':
 						$asserter = new asserters\integer();
+						break;
 
-						$asserter->setWith($item, false);
+					case 'float':
+						$asserter = new asserters\integer();
+						break;
+
+					case 'string':
+						$asserter = new asserters\string();
+						break;
+
+					case 'bool':
+					case 'boolean':
+						$asserter = new asserters\boolean();
+						break;
+
+					case 'array':
+						$asserter = new asserters\phpArray();
 						break;
 
 					default:
@@ -43,10 +49,15 @@ class assertContainsOnly extends asserter
 						$asserter->setWith($item)->isInstanceOf($arguments[0]);
 						break;
 				}
+
+				if ($asserter->getValue() === null)
+				{
+					$asserter->setWith($item);
+				}
 			}
 			catch(atoum\asserter\exception $exception)
 			{
-				$this->fail($failMessage ?: $exception->getMessage());
+				$this->fail(isset($arguments[2]) ? $arguments[2] : $exception->getMessage());
 			}
 		}
 

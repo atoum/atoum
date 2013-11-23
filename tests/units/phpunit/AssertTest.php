@@ -191,15 +191,14 @@ namespace mageekguy\atoum\phpunit {
 }
 
 namespace mageekguy\atoum\tests\phpunit {
+    use mock\mageekguy\atoum\test\phpunit\test as testedClass;
 
 	require_once __DIR__ . '/bootstrap.php';
 
-	/**
-	 * @engine inline
-	 */
 	class Framework_AssertTest extends \PHPUnit_Framework_TestCase
 	{
 		protected $filesDirectory;
+		protected $html;
 
 		public function setUp()
 		{
@@ -210,10 +209,17 @@ namespace mageekguy\atoum\tests\phpunit {
 			);
 		}
 
+        public function beforeTestMethod($testMethod)
+        {
+            parent::beforeTestMethod($testMethod);
+
+            $this->setUp();
+        }
+
 		public function testFail()
 		{
 			$this
-				->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
+				->if($test = new testedClass())
 				->then
 					->exception(function() use ($test) {
 							$test->fail();
@@ -232,7 +238,7 @@ namespace mageekguy\atoum\tests\phpunit {
 					$c = new \SplObjectStorage(),
 					$c->attach($a)
 				)
-				->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
+				->if($test = new testedClass())
 				->then
 					->object($test->assertContains($a, $c))
 					->exception(function() use ($test, $b, $c) {
@@ -250,7 +256,7 @@ namespace mageekguy\atoum\tests\phpunit {
 					$a = new \stdClass,
 					$b = new \stdClass
 				)
-				->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
+				->if($test = new testedClass())
 				->then
 					->object($test->assertContains($a, array($a)))
 					->exception(function() use ($test, $a, $b) {
@@ -264,7 +270,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		public function testAssertArrayContainsString()
 		{
 			$this
-				->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
+				->if($test = new testedClass())
 				->then
 					->object($test->assertContains('foo', array('foo')))
 					->exception(function() use ($test) {
@@ -279,7 +285,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertContainsOnlyInstancesOf()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 			$data = array(
 				new \Book(),
 				new \Book
@@ -304,7 +310,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayHasKeyThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertArrayHasKey(NULL, array());
 		}
@@ -314,7 +320,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayHasIntegerKey()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertArrayHasKey(0, array('foo'));
 
@@ -335,7 +341,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayNotHasKeyThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertArrayNotHasKey(NULL, array());
 		}
@@ -345,7 +351,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayNotHasIntegerKey()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertArrayNotHasKey(1, array('foo'));
 
@@ -365,7 +371,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayHasStringKey()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertArrayHasKey('foo', array('foo' => 'bar'));
 
@@ -385,7 +391,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayNotHasStringKey()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertArrayNotHasKey('bar', array('foo' => 'bar'));
 
@@ -405,7 +411,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayHasKeyAcceptsArrayObjectValue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$array = new \ArrayObject();
 			$array['foo'] = 'bar';
@@ -418,7 +424,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayHasKeyProperlyFailsWithArrayObjectValue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$array = new \ArrayObject();
 			$array['bar'] = 'bar';
@@ -430,7 +436,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayHasKeyAcceptsArrayAccessValue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$array = new \SampleArrayAccess();
 			$array['foo'] = 'bar';
@@ -443,7 +449,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayHasKeyProperlyFailsWithArrayAccessValue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$array = new \SampleArrayAccess();
 			$array['bar'] = 'bar';
@@ -455,7 +461,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayNotHasKeyAcceptsArrayAccessValue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$array = new \ArrayObject();
 			$array['foo'] = 'bar';
@@ -468,7 +474,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayNotHasKeyPropertlyFailsWithArrayAccessValue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$array = new \ArrayObject();
 			$array['bar'] = 'bar';
@@ -481,7 +487,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertContainsThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertContains(NULL, NULL);
 		}
@@ -491,7 +497,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertIteratorContainsObject()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 			$foo = new \stdClass;
 
 			$test->assertContains($foo, new \TestIterator(array($foo)));
@@ -512,7 +518,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertIteratorContainsString()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertContains('foo', new \TestIterator(array('foo')));
 
@@ -532,7 +538,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringContainsString()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertContains('foo', 'foobar');
 
@@ -553,7 +559,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotContainsThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotContains(NULL, NULL);
 		}
@@ -563,7 +569,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSplObjectStorageNotContainsObject()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$a = new \stdClass;
 			$b = new \stdClass;
@@ -588,7 +594,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayNotContainsObject()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$a = new \stdClass;
 			$b = new \stdClass;
@@ -611,7 +617,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayNotContainsString()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotContains('foo', array('bar'));
 
@@ -631,7 +637,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringNotContainsString()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotContains('foo', 'bar');
 
@@ -652,7 +658,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertContainsOnlyThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertContainsOnly(NULL, NULL);
 		}
@@ -663,7 +669,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertContainsOnlyInstancesOfThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertContainsOnlyInstancesOf(NULL, NULL);
 		}
@@ -673,7 +679,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayContainsOnlyIntegers()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertContainsOnly('integer', array(1, 2, 3));
 
@@ -693,7 +699,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayNotContainsOnlyIntegers()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotContainsOnly('integer', array("1", 2, 3));
 
@@ -713,7 +719,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayContainsOnlyStdClass()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertContainsOnly('StdClass', array(new \StdClass));
 
@@ -733,7 +739,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertArrayNotContainsOnlyStdClass()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotContainsOnly('StdClass', array('StdClass'));
 
@@ -982,7 +988,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertEqualsSucceeds($a, $b, $delta = 0, $canonicalize = FALSE, $ignoreCase = FALSE)
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertEquals($a, $b, '', $delta, 10, $canonicalize, $ignoreCase);
 		}
@@ -993,7 +999,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertEqualsFails($a, $b, $delta = 0, $canonicalize = FALSE, $ignoreCase = FALSE)
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertEquals($a, $b, '', $delta, 10, $canonicalize, $ignoreCase);
@@ -1013,7 +1019,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotEqualsSucceeds($a, $b, $delta = 0, $canonicalize = FALSE, $ignoreCase = FALSE)
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotEquals($a, $b, '', $delta, 10, $canonicalize, $ignoreCase);
 		}
@@ -1024,7 +1030,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotEqualsFails($a, $b, $delta = 0, $canonicalize = FALSE, $ignoreCase = FALSE)
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertNotEquals($a, $b, '', $delta, 10, $canonicalize, $ignoreCase);
@@ -1043,7 +1049,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSameSucceeds($a, $b)
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertSame($a, $b);
 		}
@@ -1054,7 +1060,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSameFails($a, $b)
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertSame($a, $b);
@@ -1073,7 +1079,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotSameSucceeds($a, $b)
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotSame($a, $b);
 		}
@@ -1084,7 +1090,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotSameFails($a, $b)
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertNotSame($a, $b);
@@ -1102,7 +1108,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertXmlFileEqualsXmlFile()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertXmlFileEqualsXmlFile(
 			  $this->filesDirectory . 'foo.xml',
@@ -1128,7 +1134,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertXmlFileNotEqualsXmlFile()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertXmlFileNotEqualsXmlFile(
 			  $this->filesDirectory . 'foo.xml',
@@ -1154,7 +1160,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertXmlStringEqualsXmlFile()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertXmlStringEqualsXmlFile(
 			  $this->filesDirectory . 'foo.xml',
@@ -1180,7 +1186,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testXmlStringNotEqualsXmlFile()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertXmlStringNotEqualsXmlFile(
 			  $this->filesDirectory . 'foo.xml',
@@ -1206,7 +1212,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertXmlStringEqualsXmlString()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertXmlStringEqualsXmlString('<root/>', '<root/>');
 
@@ -1226,7 +1232,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertXmlStringNotEqualsXmlString()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertXmlStringNotEqualsXmlString('<foo/>', '<bar/>');
 
@@ -1246,7 +1252,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testXMLStructureIsSame()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$expected = new \DOMDocument;
 			$expected->load($this->filesDirectory . 'structureExpected.xml');
@@ -1265,7 +1271,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testXMLStructureWrongNumberOfAttributes()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$expected = new \DOMDocument;
 			$expected->load($this->filesDirectory . 'structureExpected.xml');
@@ -1284,7 +1290,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testXMLStructureWrongNumberOfNodes()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$expected = new \DOMDocument;
 			$expected->load($this->filesDirectory . 'structureExpected.xml');
@@ -1302,7 +1308,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testXMLStructureIsSameButDataIsNot()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$expected = new \DOMDocument;
 			$expected->load($this->filesDirectory . 'structureExpected.xml');
@@ -1320,7 +1326,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testXMLStructureAttributesAreSameButValuesAreNot()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$expected = new \DOMDocument;
 			$expected->load($this->filesDirectory . 'structureExpected.xml');
@@ -1338,7 +1344,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testXMLStructureIgnoreTextNodes()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$expected = new \DOMDocument;
 			$expected->load($this->filesDirectory . 'structureExpected.xml');
@@ -1356,7 +1362,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringEqualsNumeric()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertEquals('0', 0);
 
@@ -1376,7 +1382,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringEqualsNumeric2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotEquals('A', 0);
 		}
@@ -1387,7 +1393,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertFileExistsThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertFileExists(NULL);
 		}
@@ -1397,7 +1403,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertFileExists()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertFileExists(__FILE__);
 
@@ -1418,7 +1424,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertFileNotExistsThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertFileNotExists(NULL);
 		}
@@ -1428,7 +1434,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertFileNotExists()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertFileNotExists(__DIR__ . DIRECTORY_SEPARATOR . 'NotExisting');
 
@@ -1448,7 +1454,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertObjectHasAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$o = new \Author('Terry Pratchett');
 
@@ -1470,7 +1476,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertObjectNotHasAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$o = new \Author('Terry Pratchett');
 
@@ -1492,7 +1498,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNull()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNull(NULL);
 
@@ -1512,7 +1518,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotNull()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotNull(new \stdClass);
 
@@ -1532,7 +1538,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertTrue(TRUE);
 
@@ -1552,7 +1558,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertFalse(FALSE);
 
@@ -1573,7 +1579,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertRegExpThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertRegExp(NULL, NULL);
 		}
@@ -1584,7 +1590,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertRegExpThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertRegExp('', NULL);
 		}
@@ -1595,7 +1601,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotRegExpThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotRegExp(NULL, NULL);
 		}
@@ -1606,7 +1612,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotRegExpThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotRegExp('', NULL);
 		}
@@ -1616,7 +1622,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertRegExp()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertRegExp('/foo/', 'foobar');
 
@@ -1636,7 +1642,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotRegExp()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotRegExp('/foo/', 'bar');
 
@@ -1656,7 +1662,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSame()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$o = new \stdClass;
 
@@ -1681,7 +1687,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSame2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertSame(TRUE, TRUE);
 			$test->assertSame(FALSE, FALSE);
@@ -1702,7 +1708,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotSame()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotSame(
 			  new \stdClass,
@@ -1737,7 +1743,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotSame2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotSame(TRUE, FALSE);
 			$test->assertNotSame(FALSE, TRUE);
@@ -1758,7 +1764,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotSameFailsNull()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertNotSame(NULL, NULL);
@@ -1776,7 +1782,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testGreaterThan()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertGreaterThan(1, 2);
 
@@ -1796,7 +1802,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAttributeGreaterThan()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertAttributeGreaterThan(
 			  1, 'bar', new \ClassWithNonPublicAttributes
@@ -1820,7 +1826,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testGreaterThanOrEqual()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertGreaterThanOrEqual(1, 2);
 
@@ -1840,7 +1846,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAttributeGreaterThanOrEqual()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertAttributeGreaterThanOrEqual(
 			  1, 'bar', new \ClassWithNonPublicAttributes
@@ -1864,7 +1870,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testLessThan()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertLessThan(2, 1);
 
@@ -1884,7 +1890,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAttributeLessThan()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertAttributeLessThan(
 			  2, 'foo', new \ClassWithNonPublicAttributes
@@ -1908,7 +1914,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testLessThanOrEqual()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertLessThanOrEqual(2, 1);
 
@@ -1928,7 +1934,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAttributeLessThanOrEqual()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertAttributeLessThanOrEqual(
 			  2, 'foo', new \ClassWithNonPublicAttributes
@@ -1952,7 +1958,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testReadAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -1968,7 +1974,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testReadAttribute2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertEquals('foo', $test->readAttribute('ClassWithNonPublicAttributes', 'publicStaticAttribute'));
 			$test->assertEquals('bar', $test->readAttribute('ClassWithNonPublicAttributes', 'protectedStaticAttribute'));
@@ -1983,7 +1989,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testReadAttribute3()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->readAttribute('StdClass', NULL);
 		}
@@ -1994,7 +2000,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testReadAttribute4()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->readAttribute('NotExistingClass', 'foo');
 		}
@@ -2005,7 +2011,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testReadAttribute5()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->readAttribute(NULL, 'foo');
 		}
@@ -2015,7 +2021,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPublicAttributeContains()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2037,7 +2043,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPublicAttributeContainsOnly()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2059,7 +2065,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPublicAttributeNotContains()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2081,7 +2087,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPublicAttributeNotContainsOnly()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2103,7 +2109,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertProtectedAttributeContains()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2125,7 +2131,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertProtectedAttributeNotContains()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2147,7 +2153,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPrivateAttributeContains()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2169,7 +2175,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPrivateAttributeNotContains()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2191,7 +2197,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPublicAttributeEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2213,7 +2219,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPublicAttributeNotEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2235,7 +2241,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPublicAttributeSame()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2257,7 +2263,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPublicAttributeNotSame()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2279,7 +2285,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertProtectedAttributeEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2301,7 +2307,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertProtectedAttributeNotEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2323,7 +2329,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPrivateAttributeEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2345,7 +2351,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPrivateAttributeNotEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2367,7 +2373,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPublicStaticAttributeEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertAttributeEquals('foo', 'publicStaticAttribute', 'ClassWithNonPublicAttributes');
 
@@ -2387,7 +2393,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPublicStaticAttributeNotEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertAttributeNotEquals('bar', 'publicStaticAttribute', 'ClassWithNonPublicAttributes');
 
@@ -2407,7 +2413,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertProtectedStaticAttributeEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertAttributeEquals('bar', 'protectedStaticAttribute', 'ClassWithNonPublicAttributes');
 
@@ -2427,7 +2433,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertProtectedStaticAttributeNotEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertAttributeNotEquals('foo', 'protectedStaticAttribute', 'ClassWithNonPublicAttributes');
 
@@ -2447,7 +2453,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPrivateStaticAttributeEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertAttributeEquals('baz', 'privateStaticAttribute', 'ClassWithNonPublicAttributes');
 
@@ -2467,7 +2473,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertPrivateStaticAttributeNotEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertAttributeNotEquals('foo', 'privateStaticAttribute', 'ClassWithNonPublicAttributes');
 
@@ -2488,7 +2494,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertClassHasAttributeThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassHasAttribute(NULL, NULL);
 		}
@@ -2499,7 +2505,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertClassHasAttributeThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassHasAttribute('foo', NULL);
 		}
@@ -2510,7 +2516,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertClassNotHasAttributeThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassNotHasAttribute(NULL, NULL);
 		}
@@ -2521,7 +2527,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertClassNotHasAttributeThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassNotHasAttribute('foo', NULL);
 		}
@@ -2532,7 +2538,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertClassHasStaticAttributeThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassHasStaticAttribute(NULL, NULL);
 		}
@@ -2543,7 +2549,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertClassHasStaticAttributeThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassHasStaticAttribute('foo', NULL);
 		}
@@ -2554,7 +2560,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertClassNotHasStaticAttributeThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassNotHasStaticAttribute(NULL, NULL);
 		}
@@ -2565,7 +2571,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertClassNotHasStaticAttributeThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassNotHasStaticAttribute('foo', NULL);
 		}
@@ -2576,7 +2582,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertObjectHasAttributeThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertObjectHasAttribute(NULL, NULL);
 		}
@@ -2587,7 +2593,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertObjectHasAttributeThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertObjectHasAttribute('foo', NULL);
 		}
@@ -2598,7 +2604,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertObjectNotHasAttributeThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertObjectNotHasAttribute(NULL, NULL);
 		}
@@ -2609,7 +2615,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertObjectNotHasAttributeThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertObjectNotHasAttribute('foo', NULL);
 		}
@@ -2619,7 +2625,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testClassHasPublicAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassHasAttribute('publicAttribute', 'ClassWithNonPublicAttributes');
 
@@ -2639,7 +2645,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testClassNotHasPublicAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassNotHasAttribute('attribute', 'ClassWithNonPublicAttributes');
 
@@ -2659,7 +2665,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testClassHasPublicStaticAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassHasStaticAttribute('publicStaticAttribute', 'ClassWithNonPublicAttributes');
 
@@ -2679,7 +2685,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testClassNotHasPublicStaticAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertClassNotHasStaticAttribute('attribute', 'ClassWithNonPublicAttributes');
 
@@ -2699,7 +2705,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testObjectHasPublicAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2721,7 +2727,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testObjectNotHasPublicAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2743,7 +2749,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testObjectHasOnTheFlyAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \StdClass;
 			$obj->foo = 'bar';
@@ -2766,7 +2772,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testObjectNotHasOnTheFlyAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \StdClass;
 			$obj->foo = 'bar';
@@ -2789,7 +2795,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testObjectHasProtectedAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2811,7 +2817,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testObjectNotHasProtectedAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2833,7 +2839,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testObjectHasPrivateAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2855,7 +2861,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testObjectNotHasPrivateAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$obj = new \ClassWithNonPublicAttributes;
 
@@ -2879,7 +2885,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatAttributeEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(
 			  new \ClassWithNonPublicAttributes,
@@ -2898,7 +2904,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatAttributeEquals2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(
 			  new \ClassWithNonPublicAttributes,
@@ -2916,7 +2922,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatAttributeEqualTo()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(
 			  new \ClassWithNonPublicAttributes,
@@ -2930,7 +2936,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatAnything()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat('anything', $test->anything());
 		}
@@ -2942,7 +2948,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatAnythingAndAnything()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(
 			  'anything',
@@ -2959,7 +2965,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatAnythingOrAnything()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(
 			  'anything',
@@ -2977,7 +2983,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatAnythingXorNotAnything()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(
 			  'anything',
@@ -2994,7 +3000,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatContains()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(array('foo'), $test->contains('foo'));
 		}
@@ -3005,7 +3011,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatStringContains()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat('barfoobar', $test->stringContains('foo'));
 		}
@@ -3016,7 +3022,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatContainsOnly()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(array('foo'), $test->containsOnly('string'));
 		}
@@ -3026,7 +3032,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatContainsOnlyInstancesOf()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(array(new \Book), $test->containsOnlyInstancesOf('Book'));
 		}
@@ -3037,7 +3043,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatArrayHasKey()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(array('foo' => 'bar'), $test->arrayHasKey('foo'));
 		}
@@ -3048,7 +3054,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatClassHasAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(
 			  new \ClassWithNonPublicAttributes,
@@ -3062,7 +3068,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatClassHasStaticAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(
 			  new \ClassWithNonPublicAttributes,
@@ -3076,7 +3082,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatObjectHasAttribute()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(
 			  new \ClassWithNonPublicAttributes,
@@ -3090,7 +3096,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatEqualTo()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat('foo', $test->equalTo('foo'));
 		}
@@ -3101,7 +3107,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatIdenticalTo()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$value      = new \StdClass;
 			$constraint = $test->identicalTo($value);
@@ -3115,7 +3121,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatIsInstanceOf()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(new \StdClass, $test->isInstanceOf('StdClass'));
 		}
@@ -3126,7 +3132,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatIsType()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat('string', $test->isType('string'));
 		}
@@ -3137,7 +3143,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatFileExists()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(__FILE__, $test->fileExists());
 		}
@@ -3148,7 +3154,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatGreaterThan()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(2, $test->greaterThan(1));
 		}
@@ -3159,7 +3165,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatGreaterThanOrEqual()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(2, $test->greaterThanOrEqual(1));
 		}
@@ -3170,7 +3176,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatLessThan()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(1, $test->lessThan(2));
 		}
@@ -3181,7 +3187,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatLessThanOrEqual()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat(1, $test->lessThanOrEqual(2));
 		}
@@ -3192,7 +3198,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertThatMatchesRegularExpression()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertThat('foobar', $test->matchesRegularExpression('/foo/'));
 		}
@@ -3202,7 +3208,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagTypeTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'html');
 			$test->assertTag($matcher, $this->html);
@@ -3214,7 +3220,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagTypeFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'code');
 			$test->assertTag($matcher, $this->html);
@@ -3225,7 +3231,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagIdTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id' => 'test_text');
 			$test->assertTag($matcher, $this->html);
@@ -3237,7 +3243,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagIdFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id' => 'test_text_doesnt_exist');
 			$test->assertTag($matcher, $this->html);
@@ -3248,7 +3254,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagStringContentTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id' => 'test_text',
 							 'content' => 'My test tag content');
@@ -3261,7 +3267,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagStringContentFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id' => 'test_text',
 							 'content' => 'My non existent tag content');
@@ -3273,7 +3279,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagRegexpContentTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id' => 'test_text',
 							 'content' => 'regexp:/test tag/');
@@ -3285,7 +3291,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagRegexpModifierContentTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id' => 'test_text',
 							 'content' => 'regexp:/TEST TAG/i');
@@ -3298,7 +3304,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagRegexpContentFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id' => 'test_text',
 							 'content' => 'regexp:/asdf/');
@@ -3310,7 +3316,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagCdataContentTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'script',
 							 'content' => 'alert(\'Hello, world!\');');
@@ -3323,7 +3329,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagCdataontentFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'script',
 							 'content' => 'asdf');
@@ -3337,7 +3343,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesTrueA()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'span',
 							 'attributes' => array('class' => 'test_class'));
@@ -3349,7 +3355,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesTrueB()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'attributes' => array('id' => 'test_child_id'));
@@ -3362,7 +3368,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'span',
 							 'attributes' => array('class' => 'test_missing_class'));
@@ -3374,7 +3380,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesRegexpTrueA()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'span',
 							 'attributes' => array('class' => 'regexp:/.+_class/'));
@@ -3386,7 +3392,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesRegexpTrueB()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'attributes' => array('id' => 'regexp:/.+_child_.+/'));
@@ -3398,7 +3404,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesRegexpModifierTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'attributes' => array('id' => 'regexp:/.+_CHILD_.+/i'));
@@ -3411,7 +3417,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesRegexpModifierFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'attributes' => array('id' => 'regexp:/.+_CHILD_.+/'));
@@ -3424,7 +3430,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesRegexpFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'span',
 							 'attributes' => array('class' => 'regexp:/.+_missing_.+/'));
@@ -3436,7 +3442,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesMultiPartClassTrueA()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'id'  => 'test_multi_class',
@@ -3449,7 +3455,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesMultiPartClassTrueB()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'id'  => 'test_multi_class',
@@ -3463,7 +3469,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAttributesMultiPartClassFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'id'  => 'test_multi_class',
@@ -3476,7 +3482,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagParentTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'head',
 							 'parent' => array('tag' => 'html'));
@@ -3489,7 +3495,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagParentFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'head',
 							 'parent' => array('tag' => 'div'));
@@ -3501,7 +3507,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		*/
 		public function testAssertTagMultiplePossibleChildren()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array(
 				'tag' => 'li',
@@ -3518,7 +3524,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagChildTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'html',
 							 'child' => array('tag' => 'head'));
@@ -3531,7 +3537,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagChildFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'html',
 							 'child' => array('tag' => 'div'));
@@ -3543,7 +3549,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAncestorTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'ancestor' => array('tag' => 'html'));
@@ -3556,7 +3562,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagAncestorFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'html',
 							 'ancestor' => array('tag' => 'div'));
@@ -3568,7 +3574,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagDescendantTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'html',
 							 'descendant' => array('tag' => 'div'));
@@ -3581,7 +3587,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagDescendantFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'descendant' => array('tag' => 'html'));
@@ -3593,7 +3599,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagChildrenCountTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'ul',
 							 'children' => array('count' => 3));
@@ -3606,7 +3612,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagChildrenCountFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'ul',
 							 'children' => array('count' => 5));
@@ -3618,7 +3624,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagChildrenLessThanTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'ul',
 							 'children' => array('less_than' => 10));
@@ -3631,7 +3637,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagChildrenLessThanFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'ul',
 							 'children' => array('less_than' => 2));
@@ -3643,7 +3649,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagChildrenGreaterThanTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'ul',
 							 'children' => array('greater_than' => 2));
@@ -3656,7 +3662,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagChildrenGreaterThanFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'ul',
 							 'children' => array('greater_than' => 10));
@@ -3668,7 +3674,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagChildrenOnlyTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'ul',
 							 'children' => array('only' => array('tag' =>'li')));
@@ -3681,7 +3687,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagChildrenOnlyFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'ul',
 							 'children' => array('only' => array('tag' =>'div')));
@@ -3693,7 +3699,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagTypeIdTrueA()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'ul', 'id' => 'my_ul');
 			$test->assertTag($matcher, $this->html);
@@ -3704,7 +3710,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagTypeIdTrueB()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id' => 'my_ul', 'tag' => 'ul');
 			$test->assertTag($matcher, $this->html);
@@ -3715,7 +3721,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagTypeIdTrueC()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'input', 'id'  => 'input_test_id');
 			$test->assertTag($matcher, $this->html);
@@ -3727,7 +3733,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagTypeIdFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div', 'id'  => 'my_ul');
 			$test->assertTag($matcher, $this->html);
@@ -3738,7 +3744,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertTagContentAttributes()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'content'    => 'Test Id Text',
@@ -3752,7 +3758,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertParentContentAttributes()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag'        => 'div',
 							 'content'    => 'Test Id Text',
@@ -3767,7 +3773,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertChildContentAttributes()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag'        => 'div',
 							 'content'    => 'Test Id Text',
@@ -3783,7 +3789,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertChildSubChildren()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id' => 'test_id',
 							 'child' => array('id' => 'test_child_id',
@@ -3796,7 +3802,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertAncestorContentAttributes()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id'         => 'test_subchild_id',
 							 'content'    => 'My Subchild',
@@ -3811,7 +3817,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertDescendantContentAttributes()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id'         => 'test_id',
 							 'content'    => 'Test Id Text',
@@ -3826,7 +3832,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertChildrenContentAttributes()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('id'         => 'test_children',
 							 'content'    => 'My Children',
@@ -3845,7 +3851,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotTagTypeIdFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div', 'id'  => 'my_ul');
 			$test->assertNotTag($matcher, $this->html);
@@ -3857,7 +3863,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotTagContentAttributes()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$matcher = array('tag' => 'div',
 							 'content'    => 'Test Id Text',
@@ -3871,7 +3877,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountPresentTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = 'div#test_id';
 			$count    = TRUE;
@@ -3885,7 +3891,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountPresentFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = 'div#non_existent';
 			$count    = TRUE;
@@ -3898,7 +3904,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountNotPresentTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = 'div#non_existent';
 			$count    = FALSE;
@@ -3912,7 +3918,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectNotPresentFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = 'div#test_id';
 			$count    = FALSE;
@@ -3925,7 +3931,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountChildTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$count    = 3;
@@ -3939,7 +3945,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountChildFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$count    = 4;
@@ -3952,7 +3958,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountDescendantTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul li';
 			$count    = 3;
@@ -3966,7 +3972,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountDescendantFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul li';
 			$count    = 4;
@@ -3979,7 +3985,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountGreaterThanTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$range    = array('>' => 2);
@@ -3993,7 +3999,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountGreaterThanFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$range    = array('>' => 3);
@@ -4006,7 +4012,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountGreaterThanEqualToTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$range    = array('>=' => 3);
@@ -4020,7 +4026,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountGreaterThanEqualToFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$range    = array('>=' => 4);
@@ -4033,7 +4039,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountLessThanTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$range    = array('<' => 4);
@@ -4047,7 +4053,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountLessThanFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$range    = array('<' => 3);
@@ -4060,7 +4066,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountLessThanEqualToTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$range    = array('<=' => 3);
@@ -4074,7 +4080,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountLessThanEqualToFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$range  = array('<=' => 2);
@@ -4087,7 +4093,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountRangeTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$range    = array('>' => 2, '<' => 4);
@@ -4101,7 +4107,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectCountRangeFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = '#my_ul > li';
 			$range    = array('>' => 1, '<' => 3);
@@ -4114,7 +4120,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectEqualsContentPresentTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = 'span.test_class';
 			$content  = 'Test Class Text';
@@ -4128,7 +4134,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectEqualsContentPresentFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = 'span.test_class';
 			$content  = 'Test Nonexistent';
@@ -4141,7 +4147,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectEqualsContentNotPresentTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = 'span.test_class';
 			$content  = 'Test Nonexistent';
@@ -4155,7 +4161,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectEqualsContentNotPresentFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = 'span.test_class';
 			$content  = 'Test Class Text';
@@ -4168,7 +4174,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectRegExpContentPresentTrue()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = 'span.test_class';
 			$regexp   = '/Test.*Text/';
@@ -4181,7 +4187,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSelectRegExpContentPresentFalse()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$selector = 'span.test_class';
 			$regexp   = '/Nonexistant/';
@@ -4194,7 +4200,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertFileEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertFileEquals(
 			  $this->filesDirectory . 'foo.xml',
@@ -4220,7 +4226,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertFileNotEquals()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertFileNotEquals(
 			  $this->filesDirectory . 'foo.xml',
@@ -4246,7 +4252,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringEqualsFile()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringEqualsFile(
 			  $this->filesDirectory . 'foo.xml',
@@ -4272,7 +4278,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringNotEqualsFile()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringNotEqualsFile(
 			  $this->filesDirectory . 'foo.xml',
@@ -4299,7 +4305,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringStartsWithThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringStartsWith(NULL, NULL);
 		}
@@ -4310,7 +4316,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringStartsWithThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringStartsWith('', NULL);
 		}
@@ -4321,7 +4327,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringStartsNotWithThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringStartsNotWith(NULL, NULL);
 		}
@@ -4332,7 +4338,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringStartsNotWithThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringStartsNotWith('', NULL);
 		}
@@ -4343,7 +4349,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringEndsWithThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringEndsWith(NULL, NULL);
 		}
@@ -4354,7 +4360,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringEndsWithThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringEndsWith('', NULL);
 		}
@@ -4365,7 +4371,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringEndsNotWithThrowsException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringEndsNotWith(NULL, NULL);
 		}
@@ -4376,7 +4382,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringEndsNotWithThrowsException2()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringEndsNotWith('', NULL);
 		}
@@ -4386,7 +4392,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringStartsWith()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringStartsWith('prefix', 'prefixfoo');
 
@@ -4406,7 +4412,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringStartsNotWith()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringStartsNotWith('prefix', 'foo');
 
@@ -4426,7 +4432,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringEndsWith()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringEndsWith('suffix', 'foosuffix');
 
@@ -4446,7 +4452,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringEndsNotWith()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringEndsNotWith('suffix', 'foo');
 
@@ -4466,7 +4472,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringMatchesFormat()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringMatchesFormat('*%s*', '***');
 		}
@@ -4477,7 +4483,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringMatchesFormatFailure()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringMatchesFormat('*%s*', '**');
 		}
@@ -4487,7 +4493,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertStringNotMatchesFormat()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertStringNotMatchesFormat('*%s*', '**');
 
@@ -4507,7 +4513,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertEmpty()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertEmpty(array());
 
@@ -4527,7 +4533,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertNotEmpty()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertNotEmpty(array('foo'));
 
@@ -4547,7 +4553,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertAttributeEmpty()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$o    = new \StdClass;
 			$o->a = array();
@@ -4571,7 +4577,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertAttributeNotEmpty()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$o    = new \StdClass;
 			$o->a = array('b');
@@ -4595,7 +4601,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testMarkTestIncomplete()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->markTestIncomplete('incomplete');
@@ -4615,7 +4621,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testMarkTestSkipped()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->markTestSkipped('skipped');
@@ -4635,7 +4641,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertCount()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertCount(2, array(1,2));
 
@@ -4655,7 +4661,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertCountThrowsExceptionIfExpectedCountIsNoInteger()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertCount('a', array());
@@ -4676,7 +4682,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertCountThrowsExceptionIfElementIsNotCountable()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertCount(2, '');
@@ -4696,7 +4702,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSameSize()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$test->assertSameSize(array(1,2), array(3,4));
 
@@ -4716,7 +4722,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSameSizeThrowsExceptionIfExpectedIsNotCoutable()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertSameSize('a', array());
@@ -4737,7 +4743,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertSameSizeThrowsExceptionIfActualIsNotCountable()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertSameSize(array(), '');
@@ -4757,7 +4763,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonStringEqualsJsonString()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$expected = '{"Mascott" : "Tux"}';
 			$actual   = '{"Mascott" : "Tux"}';
@@ -4772,7 +4778,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonStringEqualsJsonStringErrorRaised($expected, $actual)
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertJsonStringEqualsJsonString($expected, $actual);
@@ -4787,7 +4793,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonStringNotEqualsJsonString()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$expected = '{"Mascott" : "Beastie"}';
 			$actual   = '{"Mascott" : "Tux"}';
@@ -4802,7 +4808,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonStringNotEqualsJsonStringErrorRaised($expected, $actual)
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			try {
 				$test->assertJsonStringNotEqualsJsonString($expected, $actual);
@@ -4817,7 +4823,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonStringEqualsJsonFile()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$file = __DIR__ . '/../_files/JsonData/simpleObject.js';
 			$actual = json_encode(array("Mascott" => "Tux"));
@@ -4830,7 +4836,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonStringEqualsJsonFileExpectingExpectationFailedException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$file = __DIR__ . '/../_files/JsonData/simpleObject.js';
 			$actual = json_encode(array("Mascott" => "Beastie"));
@@ -4853,7 +4859,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonStringEqualsJsonFileExpectingException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$file = __DIR__ . '/../_files/JsonData/simpleObject.js';
 			try {
@@ -4869,7 +4875,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonStringNotEqualsJsonFile()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$file = __DIR__ . '/../_files/JsonData/simpleObject.js';
 			$actual = json_encode(array("Mascott" => "Beastie"));
@@ -4882,7 +4888,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonStringNotEqualsJsonFileExpectingException()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$file = __DIR__ . '/../_files/JsonData/simpleObject.js';
 			try {
@@ -4898,7 +4904,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonFileNotEqualsJsonFile()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$fileExpected = __DIR__ . '/../_files/JsonData/simpleObject.js';
 			$fileActual   = __DIR__ . '/../_files/JsonData/arrayObject.js';
@@ -4911,7 +4917,7 @@ namespace mageekguy\atoum\tests\phpunit {
 		 */
 		public function testAssertJsonFileEqualsJsonFile()
 		{
-			$test = new \mock\mageekguy\atoum\test\phpunit\test();
+			$test = new testedClass();
 
 			$file = __DIR__ . '/../_files/JsonData/simpleObject.js';
 			$message = '';

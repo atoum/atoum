@@ -9,33 +9,16 @@ use
 	mageekguy\atoum\test\phpunit\asserter
 ;
 
-class assertNotEmpty extends asserter
+class assertFalse extends asserter
 {
 	public function setWithArguments(array $arguments)
 	{
 		parent::setWithArguments($arguments);
 
-		switch (true)
-		{
-			case is_object($arguments[0]):
-				$asserter = new asserters\object();
-				break;
-
-			case is_array($arguments[0]):
-				$asserter = new asserters\phpArray();
-				break;
-
-			case is_string($arguments[0]):
-				$asserter = new asserters\string();
-				break;
-
-			default:
-				throw new exceptions\logic\invalidArgument(sprintf('Cannot check if %s is not empty', $this->getTypeOf($arguments[0])));
-		}
-
 		try
 		{
-			$asserter->setWith($arguments[0])->isNotEmpty();
+			$asserter = new asserters\boolean();
+			$asserter->setWith($arguments[0])->isFalse();
 
 			$this->pass();
 		}

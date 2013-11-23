@@ -4,8 +4,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\dom as sut
+	mageekguy\atoum\asserter
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,165 +19,183 @@ class dom extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($this->newTestedInstance)
 			->then
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
-				->object($asserter->getGenerator())->isIdenticalTo($generator)
-				->variable($asserter->getValue())->isNull()
-				->boolean($asserter->wasSet())->isFalse()
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
+				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
+				->variable($this->testedInstance->getValue())->isNull()
+				->boolean($this->testedInstance->wasSet())->isFalse()
 		;
 	}
 
 	public function test__get()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($this->newTestedInstance)
 			->then
-				->exception(function() use ($asserter) { $asserter->toString; })
+				->exception(function($test) { $test->testedInstance->toString; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('DOM node is undefined')
-				->exception(function() use ($asserter, & $property) { $asserter->{$property = uniqid()}; })
+				->exception(function($test) use (& $property) { $test->testedInstance->{$property = uniqid()}; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Asserter \'' . $property . '\' does not exist')
-			->if($asserter->setWith(new \DOMDocument()))
+			->if($this->testedInstance->setWith(new \DOMDocument()))
 			->then
-				->object($asserter->toString)->isInstanceOf('mageekguy\atoum\asserters\castToString')
+				->object($this->testedInstance->toString)->isInstanceOf('mageekguy\atoum\asserters\castToString')
 		;
 	}
 
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if(
+				$this->newTestedInstance
+					->setlocale($locale = new atoum\locale())
+			)
 			->then
-				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
+				->exception(function($test) use (& $value) { $test->testedInstance->setWith($value = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not a DOM node'), $asserter->getTypeOf($value)))
-				->string($asserter->getValue())->isEqualTo($value)
-				->object($asserter->setWith($value = new \DOMDocument()))->isIdenticalTo($asserter)
-				->object($asserter->getValue())->isIdenticalTo($value)
-				->object($asserter->setWith($value = uniqid(), false))->isIdenticalTo($asserter)
-				->string($asserter->getValue())->isEqualTo($value)
+					->hasMessage(sprintf($locale->_('%s is not a DOM node'), $this->testedInstance->getAnalyzer()->getTypeOf($value)))
+				->string($this->testedInstance->getValue())->isEqualTo($value)
+				->object($this->testedInstance->setWith($value = new \DOMDocument()))->isTestedInstance
+				->object($this->testedInstance->getValue())->isIdenticalTo($value)
+				->object($this->testedInstance->setWith($value = uniqid(), false))->isTestedInstance
+				->string($this->testedInstance->getValue())->isEqualTo($value)
 		;
 	}
 
 	public function testHasSize()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if(
+				$this->newTestedInstance
+					->setlocale($locale = new atoum\locale())
+			)
 			->then
-				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
+				->exception(function($test) { $test->testedInstance->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('DOM node is undefined')
 			->if($document = new \DOMDocument())
 			->and($document->appendChild($document->createElement('a' . uniqid())))
-			->and($asserter->setWith($document))
+			->and($this->testedInstance->setWith($document))
 			->then
-				->exception(function() use ($asserter) { $asserter->hasSize(0); })
+				->exception(function($test) { $test->testedInstance->hasSize(0); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s has size %d, expected size %d'), $asserter, sizeof($document->childNodes), 0))
-				->object($asserter->hasSize(sizeof($document->childNodes)))->isIdenticalTo($asserter);
+					->hasMessage(sprintf($locale->_('%s has size %d, expected size %d'), $this->testedInstance, sizeof($document->childNodes), 0))
+				->object($this->testedInstance->hasSize(sizeof($document->childNodes)))->isTestedInstance
 		;
 	}
 
 	public function testIsEmpty()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if(
+				$this->newTestedInstance
+					->setlocale($locale = new atoum\locale())
+			)
 			->then
-				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
+				->exception(function($test) { $test->testedInstance->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('DOM node is undefined')
 			->if($document = new \DOMDocument())
 			->and($document->appendChild($document->createElement('a' . uniqid())))
-			->and($asserter->setWith($document))
+			->and($this->testedInstance->setWith($document))
 			->then
-				->exception(function() use ($asserter) { $asserter->isEmpty(); })
+				->exception(function($test) { $test->testedInstance->isEmpty(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not empty'), $asserter, sizeof($document->childNodes)))
+					->hasMessage(sprintf($locale->_('%s is not empty'), $this->testedInstance, sizeof($document->childNodes)))
 			->if($document = new \DOMDocument())
-			->and($asserter->setWith(new \DOMDocument()))
+			->and($this->testedInstance->setWith(new \DOMDocument()))
 			->then
-				->object($asserter->isEmpty())->isIdenticalTo($asserter)
+				->object($this->testedInstance->isEmpty())->isTestedInstance
 		;
 	}
 
 	public function testIsCloneOf()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if(
+				$this->newTestedInstance
+					->setlocale($locale = new atoum\locale())
+			)
 			->then
-				->exception(function() use ($asserter) { $asserter->isCloneOf($asserter); })
+				->exception(function($test) { $test->testedInstance->isCloneOf($test->testedInstance); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('DOM node is undefined')
-			->if($asserter->setWith($document = new \DOMDocument()))
+			->if($this->testedInstance->setWith($document = new \DOMDocument()))
 			->then
-				->exception(function() use ($asserter, $document) { $asserter->isCloneOf($document); })
+				->exception(function($test) use ($document) { $test->testedInstance->isCloneOf($document); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not a clone of %s'), $asserter, $asserter->getTypeOf($document)))
+					->hasMessage(sprintf($locale->_('%s is not a clone of %s'), $this->testedInstance, $this->testedInstance->getAnalyzer()->getTypeOf($document)))
 			->if($clonedDocument = clone $document)
 			->then
-				->object($asserter->isCloneOf($clonedDocument))->isIdenticalTo($asserter)
+				->object($this->testedInstance->isCloneOf($clonedDocument))->isTestedInstance
 		;
 	}
 
 	public function testToString()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($this->newTestedInstance)
 			->then
-				->exception(function() use ($asserter) { $asserter->toString(); })
+				->exception(function($test) { $test->testedInstance->toString(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('DOM node is undefined')
-			->if($asserter->setWith(new \DOMDocument()))
+			->if($this->testedInstance->setWith(new \DOMDocument()))
 			->then
-				->object($asserter->toString())->isInstanceOf('mageekguy\atoum\asserters\castToString')
+				->object($this->testedInstance->toString())->isInstanceOf('mageekguy\atoum\asserters\castToString')
 		;
 	}
 
 	public function testIsInstanceOf()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if(
+				$this->newTestedInstance
+					->setlocale($locale = new atoum\locale())
+			)
 			->then
-				->exception(function() use ($asserter) {
-						$asserter->isInstanceOf($asserter);
+				->exception(function($test) {
+						$test->testedInstance->isInstanceOf($test->testedInstance);
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('DOM node is undefined')
-			->if($asserter->setWith($document = new \DOMDocument()))
+			->if($this->testedInstance->setWith($document = new \DOMDocument()))
 			->then
-				->exception(function() use ($asserter) {
-						$asserter->isInstanceOf($asserter);
+				->exception(function($test) {
+						$test->testedInstance->isInstanceOf($test->testedInstance);
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not an instance of %s'), $asserter->getTypeOf($document), $asserter->getTypeOf($asserter)))
-				->object($asserter->isInstanceOf($document))->isIdenticalTo($asserter)
+					->hasMessage(sprintf($locale->_('%s is not an instance of %s'), $this->testedInstance->getAnalyzer()->getTypeOf($document), $this->testedInstance->getAnalyzer()->getTypeOf($this->testedInstance)))
+				->object($this->testedInstance->isInstanceOf($document))->isTestedInstance
 		;
 	}
 
 	public function testIsNotInstanceOf()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if(
+				$this->newTestedInstance
+					->setlocale($locale = new atoum\locale())
+			)
 			->then
-				->exception(function() use ($asserter) {
-						$asserter->isNotInstanceOf($asserter);
+				->exception(function($test) {
+						$test->testedInstance->isNotInstanceOf($test->testedInstance);
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('DOM node is undefined')
-			->if($asserter->setWith($document = new \DOMDocument()))
+			->if($this->testedInstance->setWith($document = new \DOMDocument()))
 			->then
-				->exception(function() use ($asserter, $document) {
-						$asserter->isNotInstanceOf($document);
+				->exception(function($test) use ($document) {
+						$test->testedInstance->isNotInstanceOf($document);
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is an instance of %1$s'), $asserter->getTypeOf($document)))
-				->object($asserter->isNotInstanceOf($asserter))->isIdenticalTo($asserter)
+					->hasMessage(sprintf($locale->_('%s is an instance of %1$s'), $this->testedInstance->getAnalyzer()->getTypeOf($document)))
+				->object($this->testedInstance->isNotInstanceOf($this->testedInstance))->isTestedInstance
 		;
 	}
 }

@@ -13,15 +13,7 @@ class assertContainsOnlyInstancesOf extends asserter
 {
 	public function setWithArguments(array $arguments)
 	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument 0 of assertContainsOnlyInstancesOf was not set');
-		}
-
-		if (array_key_exists(1, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument 1 of assertContainsOnlyInstancesOf was not set');
-		}
+		parent::setWithArguments($arguments);
 
 		$asserter = new asserters\object();
 		$failMessage = isset($arguments[2]) ? $arguments[2] : null;

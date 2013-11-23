@@ -135,7 +135,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 		return ($value !== null && array_key_exists($key, $value) === true);
 	}
 
-	public function setWith($value)
+	public function setWith($value, $checkType = true)
 	{
 		$innerAsserter = $this->innerAsserter;
 
@@ -149,7 +149,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 		{
 			parent::setWith($value);
 
-			if ($this->analyzer->isArray($this->value) === true)
+			if ($this->analyzer->isArray($this->value) === true || $checkType === false)
 			{
 				$this->pass();
 			}
@@ -613,5 +613,18 @@ class phpArray extends asserters\variable implements \arrayAccess
 		$this->innerValueIsSet = false;
 
 		return $this;
+	}
+
+	protected static function check($value, $method)
+	{
+		if (self::isArray($value) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be an array');
+		}
+	}
+
+	protected static function isArray($value)
+	{
+		return (is_array($value) === true || $value instanceof \arrayAccess);
 	}
 }

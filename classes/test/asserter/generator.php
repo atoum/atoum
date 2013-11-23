@@ -4,7 +4,8 @@ namespace mageekguy\atoum\test\asserter;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\asserter
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\test\assertion
 ;
 
 class generator extends asserter\generator

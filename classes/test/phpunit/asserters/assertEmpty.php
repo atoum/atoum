@@ -4,49 +4,55 @@ namespace mageekguy\atoum\test\phpunit\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test\phpunit\asserter,
+	mageekguy\atoum\test\phpunit\asserter\selector
 ;
 
 class assertEmpty extends asserter
 {
+	protected $asserterSelector;
+
+	public function __construct(atoum\asserter\generator $generator = null)
+	{
+		parent::__construct($generator);
+
+		$this->setAsserterSelector();
+	}
+
+	public function setAsserterSelector(selector $selector = null)
+	{
+		$this->asserterSelector = $selector ?: new selector\emptyness();
+	}
+
+	public function getAsserterSelector()
+	{
+		return $this->asserterSelector;
+	}
+
 	public function setWithArguments(array $arguments)
 	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument 0 of assertEmpty was not set');
-		}
+		parent::setWithArguments($arguments);
 
-		switch (true)
-		{
-			case is_object($arguments[0]):
-				$asserter = new asserters\object();
-				break;
-
-			case is_array($arguments[0]):
-				$asserter = new asserters\phpArray();
-				break;
-
-			case is_string($arguments[0]):
-				$asserter = new asserters\string();
-				break;
-
-			default:
-				throw new exceptions\logic\invalidArgument(sprintf('Cannot check if %s is empty', $this->getTypeOf($arguments[0])));
-		}
+		$asserter = $this->asserterSelector->selectFor($arguments[0]);
 
 		try
 		{
-			$asserter->setWith($arguments[0])->isEmpty();
+			$asserter->isEmpty();
 
 			$this->pass();
 		}
-		catch(asserter\exception $exception)
+		catch(atoum\asserter\exception $exception)
 		{
 			$this->fail(isset($arguments[1]) ? $arguments[1] : $exception->getMessage());
 		}
 
 		return $this;
+	}
+
+	protected function checkArguments(array $arguments, $expectedNumber = null)
+	{
+		return parent::checkArguments($arguments, $expectedNumber ?: 1);
 	}
 } 

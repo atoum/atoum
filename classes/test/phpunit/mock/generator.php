@@ -46,17 +46,7 @@ class generator extends atoum\test\mock\generator
 			'{' . PHP_EOL .
 			static::generateMockControllerMethods() .
 			self::generateDefaultConstructor(true) .
-			"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
-			"\t" . '{' . PHP_EOL .
-			"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
-			"\t\t" . '{' . PHP_EOL .
-			"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
-			"\t\t" . '}' . PHP_EOL .
-			"\t\t" . 'else' . PHP_EOL .
-			"\t\t" . '{' . PHP_EOL .
-			"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
-			"\t\t" . '}' . PHP_EOL .
-			"\t" . '}' . PHP_EOL .
+			self::generate__call() .
 			self::generateGetMockedMethod(array('__call')) .
 			'}' . PHP_EOL .
 			'}'

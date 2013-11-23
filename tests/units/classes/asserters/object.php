@@ -287,15 +287,6 @@ class object extends atoum\test
 				$this->calling($locale)->_ = $isNotAnInstance = uniqid(),
 				$this->calling($analyzer)->getTypeOf = $type = uniqid()
 			)
-			->if($asserter = new sut($generator = new asserter\generator()))
-			->then
-				->exception(function() use ($asserter) {
-						$asserter->isInstanceOf($asserter);
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Object is undefined')
-			->if($asserter->setWith($test = $this))
 			->then
 				->exception(function() use ($asserter, $test) { $asserter->isInstanceOf('stdClass'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -345,15 +336,6 @@ class object extends atoum\test
 				$this->calling($locale)->_ = $isAnInstance = uniqid(),
 				$this->calling($analyzer)->getTypeOf = $type = uniqid()
 			)
-			->if($asserter = new sut($generator = new asserter\generator()))
-			->then
-				->exception(function() use ($asserter) {
-						$asserter->isNotInstanceOf($asserter);
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Object is undefined')
-			->if($asserter->setWith($test = $this))
 			->then
 				->exception(function() use ($asserter, $test) { $asserter->isNotInstanceOf($test); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')

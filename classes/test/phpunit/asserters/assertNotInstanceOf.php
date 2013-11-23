@@ -3,35 +3,40 @@
 namespace mageekguy\atoum\test\phpunit\asserters;
 
 use
-	mageekguy\atoum\asserters\object,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test\phpunit\asserter
 ;
 
-class assertNotInstanceOf extends object
+class assertNotInstanceOf extends asserter
 {
 	public function setWithArguments(array $arguments)
 	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument 0 of assertNotInstanceOf was not set');
-		}
+		parent::setWithArguments($arguments);
 
-		if (array_key_exists(1, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument 1 of assertNotInstanceOf was not set');
-		}
-
-		$failMessage = isset($arguments[2]) ? $arguments[2] : null;
+		$asserter = new atoum\asserters\object();
 
 		try
 		{
-			static::check($arguments[1], 'assertNotInstanceOf');
+			try
+			{
+				$asserter->setWith($arguments[1]);
+			}
+			catch(atoum\asserter\exception $exception) {}
 
-			return parent::setWithArguments(array($arguments[1]))->isNotInstanceOf($arguments[0], $failMessage);
+			$asserter->isNotInstanceOf($arguments[0]);
+
+			$this->pass();
 		}
-		catch(exceptions\logic $exception)
+		catch(atoum\exceptions\logic $exception)
 		{
-			return $this->pass();
+			$this->pass();
 		}
+		catch(atoum\asserter\exception $exception)
+		{
+			$this->fail(isset($arguments[2]) ? $arguments[2] : $exception->getMessage());
+		}
+
+		return $this;
 	}
 } 

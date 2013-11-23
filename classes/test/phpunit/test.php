@@ -4,7 +4,6 @@ namespace mageekguy\atoum\test\phpunit;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\annotations,
 	mageekguy\atoum\test\phpunit,
@@ -84,7 +83,7 @@ abstract class test extends atoum\test
 					$message = '@expectedException is not supported.';
 					$code = 'You should rewrite your test method as follow:' . PHP_EOL
 						. '    // ' . $self->getPath() . ':' . $start . PHP_EOL
-						. $code[$start - 1] . '    {' . PHP_EOL
+						. '    ' . trim($code[$start - 1]) . '    {' . PHP_EOL
 						. '        if(method_exists($this, \'markTestIncomplete\')) {' . PHP_EOL
 						. '            $this->markTestIncomplete(\'This is an atoum test\');' . PHP_EOL
 						. '        }' . PHP_EOL . PHP_EOL
@@ -110,12 +109,6 @@ abstract class test extends atoum\test
 		$self = $this;
 
 		$assertionManager
-			->setHandler('assertFalse', function($value, $failMessage = null) use ($self) {
-				return $self->boolean($value)->isFalse($failMessage);
-			})
-			->setHandler('assertTrue', function($value, $failMessage = null) use ($self) {
-				return $self->boolean($value)->isTrue($failMessage);
-			})
 			->setHandler('assertNull', function($value, $failMessage = null) use ($self) {
 				return $self->variable($value)->isNull($failMessage);
 			})

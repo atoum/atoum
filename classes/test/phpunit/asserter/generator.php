@@ -1,10 +1,13 @@
 <?php
 namespace mageekguy\atoum\test\phpunit\asserter;
 
-use mageekguy\atoum\test\asserter;
-use mageekguy\atoum;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\test\assertion
+;
 
-class generator extends asserter\generator
+class generator extends atoum\test\asserter\generator
 {
 	const defaultAsserterNamespace = 'mageekguy\atoum\test\phpunit\asserters';
 
@@ -82,14 +85,15 @@ class generator extends asserter\generator
 
 	protected $generator;
 
-	public function __construct(atoum\test $test, atoum\locale $locale = null, asserter\generator $generator = null)
+	public function __construct(atoum\test $test, asserter\resolver $resolver = null, assertion\aliaser $aliaser = null)
 	{
-		$this->generator = $generator ?: new asserter\generator($test, $this->locale);
+		$resolver = new asserter\resolver();
+		$resolver->addNamespace(self::defaultAsserterNamespace);
 
-		parent::__construct($test, $locale);
+		parent::__construct($test, $resolver, $aliaser);
 	}
 
-	public function setTest(atoum\test $test)
+	/*public function setTest(atoum\test $test)
 	{
 		$this->generator->setTest($test);
 
@@ -101,11 +105,11 @@ class generator extends asserter\generator
 		$this->generator->setLocale($locale);
 
 		return parent::setLocale($locale);
-	}
+	}*/
 
 	public function getAsserterClass($asserter)
 	{
-		$class = parent::getAsserterClass($asserter) ?: $this->generator->getAsserterClass($asserter);
+		$class = parent::getAsserterClass($asserter);
 
 		if($class === null && (preg_match('/^assert/i', $asserter) === 0 || in_array($asserter, $this->unsupportedAsserters)))
 		{
@@ -115,10 +119,10 @@ class generator extends asserter\generator
 		return $class;
 	}
 
-	public function setAlias($alias, $asserterClass)
+	/*public function setAlias($alias, $asserterClass)
 	{
 		$this->generator->setAlias($alias, $asserterClass);
 
 		return parent::setAlias($alias, $asserterClass);
-	}
+	}*/
 } 

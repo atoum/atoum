@@ -4,96 +4,62 @@ namespace mageekguy\atoum\test\phpunit\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test\phpunit\asserter,
+	mageekguy\atoum\test\phpunit\asserter\selector
 ;
 
 class assertContains extends asserter
 {
+	protected $asserterSelector;
+
+	public function __construct(atoum\asserter\generator $generator = null)
+	{
+		parent::__construct($generator);
+
+		$this->setAsserterSelector();
+	}
+
+	public function setAsserterSelector(selector $selector = null)
+	{
+		$this->asserterSelector = $selector ?: new selector\containment();
+	}
+
+	public function getAsserterSelector()
+	{
+		return $this->asserterSelector;
+	}
+
 	public function setWithArguments(array $arguments)
 	{
-		if (array_key_exists(0, $arguments) === false)
+		parent::setWithArguments($arguments);
+
+		try
 		{
-			throw new exceptions\logic\invalidArgument('Argument 0 of assertCount was not set');
+			$asserter = $this->asserterSelector->selectFor($arguments[1]);
+		}
+		catch(atoum\asserter\exception $exception)
+		{
+			throw new atoum\exceptions\logic\invalidArgument(sprintf('Cannot check containment in object(%s)', get_class($arguments[1])));
 		}
 
-		if (array_key_exists(1, $arguments) === false)
+		try
 		{
-			throw new exceptions\logic\invalidArgument('Argument 1 of assertCount was not set');
-		}
-
-		if (is_object($arguments[1]) === false)
-		{
-			switch (true)
+			if (is_object($arguments[0]))
 			{
-				case is_array($arguments[1]):
-					$asserter = new asserters\phpArray();
-					break;
-
-				case is_string($arguments[1]):
-					$asserter = new asserters\string();
-					break;
-
-				default:
-					throw new exceptions\logic\invalidArgument(sprintf('Cannot check if %s contains %s', $this->getTypeOf($arguments[1]), $arguments[0]));
-			}
-
-			try
-			{
-				if (is_object($arguments[0]))
-				{
-					$asserter->setWith($arguments[1])->strictlyContains($arguments[0]);
-				}
-				else
-				{
-					$asserter->setWith($arguments[1])->contains($arguments[0]);
-				}
-
-				$this->pass();
-			}
-			catch(atoum\asserter\exception $exception)
-			{
-				$this->fail(isset($arguments[2]) ? $arguments[2] : $exception->getMessage());
-			}
-		}
-		else
-		{
-			$pass = false;
-			switch (true)
-			{
-				case $arguments[1] instanceof \splObjectStorage:
-					$pass = $arguments[1]->contains($arguments[0]);
-					break;
-
-				case $arguments[1] instanceof \traversable:
-					foreach ($arguments[1] as $value)
-					{
-						if (
-							$pass === false &&
-							(
-								(is_object($arguments[0]) && $value === $arguments[0]) ||
-								(is_object($arguments[0]) === false && $value == $arguments[0])
-							)
-						)
-						{
-							$pass = true;
-						}
-					}
-					break;
-
-				default:
-					throw new exceptions\logic\invalidArgument(sprintf('Cannot check if %s contains %s', $this->getTypeOf($arguments[1]), $this->getTypeOf($arguments[0])));
-			}
-
-			if ($pass)
-			{
-				$this->pass();
+				$asserter->strictlyContains($arguments[0]);
 			}
 			else
 			{
-				$this->fail(isset($arguments[2]) ? $arguments[2] : sprintf('%s does not contain %s', $this->getTypeOf($arguments[1]), $this->getTypeOf($arguments[0])));
+				$asserter->contains($arguments[0]);
 			}
+
+			$this->pass();
+		}
+		catch(atoum\asserter\exception $exception)
+		{
+			$this->fail(isset($arguments[2]) ? $arguments[2] : sprintf('%s does not contain %s', $this->getTypeOf($arguments[1]), $this->getTypeOf($arguments[0])));
 		}
 
 		return $this;

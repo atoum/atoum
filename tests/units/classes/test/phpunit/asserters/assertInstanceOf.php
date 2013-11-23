@@ -30,7 +30,7 @@ class assertInstanceOf extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Argument 0 of assertInstanceOf was not set')
+					->hasMessage('Argument #1 of assertInstanceOf was not set')
 			->if($expected = uniqid())
 			->then
 				->exception(function() use ($asserter, $expected) {
@@ -38,7 +38,7 @@ class assertInstanceOf extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Argument 1 of assertInstanceOf was not set')
+					->hasMessage('Argument #2 of assertInstanceOf was not set')
 			->if($actual = new \stdClass())
 			->then
 				->exception(function() use ($asserter, $actual, $expected) {
@@ -46,7 +46,7 @@ class assertInstanceOf extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf('%s is not an instance of %s', $asserter->getTypeOf($actual), $expected))
+					->hasMessage(sprintf('%s is not an instance of %s', $asserter->getAnalyzer()->getTypeOf($actual), $expected))
 			->if($expected = new \mock\stdClass())
 			->then
 				->exception(function() use ($asserter, $actual, $expected) {
@@ -54,7 +54,7 @@ class assertInstanceOf extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf('%s is not an instance of %s', $asserter->getTypeOf($actual), $asserter->getTypeOf($expected)))
+					->hasMessage(sprintf('%s is not an instance of %s', $asserter->getAnalyzer()->getTypeOf($actual), $asserter->getAnalyzer()->getTypeOf($expected)))
 			->if($actual = new \stdClass())
 			->and($expected = 'stdClass')
 			->then

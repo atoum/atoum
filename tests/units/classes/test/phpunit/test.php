@@ -84,10 +84,10 @@ class test extends atoum\test
 		$this
 			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
 			->then
-				->object($test->assertFalse(false))->isInstanceOf('\\mageekguy\\atoum\\asserters\\boolean')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(2)
+				->object($test->assertFalse(false))->isInstanceOf('mageekguy\atoum\test\phpunit\asserters\assertFalse')
+				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
 				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test->getScore()->reset())
 			->then
 				->exception(function() use ($test) {
@@ -95,15 +95,15 @@ class test extends atoum\test
 					}
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
+				->integer($test->getScore()->getPassNumber())->isEqualTo(0)
 				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test->getScore()->reset())
 			->then
-				->object($test->assertTrue(true))->isInstanceOf('\\mageekguy\\atoum\\asserters\\boolean')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(2)
+				->object($test->assertTrue(true))->isInstanceOf('mageekguy\atoum\test\phpunit\asserters\assertTrue')
+				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
 				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test->getScore()->reset())
 			->then
 				->exception(function() use ($test) {
@@ -111,9 +111,9 @@ class test extends atoum\test
 					}
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
+				->integer($test->getScore()->getPassNumber())->isEqualTo(0)
 				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 		;
 	}
 
@@ -133,7 +133,7 @@ class test extends atoum\test
 					}
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(0)
+				->integer($test->getScore()->getPassNumber())->isZero()
 				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
 				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test->getScore()->reset())
@@ -149,7 +149,7 @@ class test extends atoum\test
 					}
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(0)
+				->integer($test->getScore()->getPassNumber())->isZero()
 				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
 				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 		;
@@ -158,15 +158,15 @@ class test extends atoum\test
 	/**
 	 * @dataProvider testAssertEqualsNotEqualsDataProvider
 	 */
-	public function testAssertEqualsNotEquals($value, $otherValue, $asserter, $passNumber)
+	public function testAssertEqualsNotEquals($value, $otherValue)
 	{
 		$this
 			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
 			->then
-				->object($test->assertEquals($value, $value))->isInstanceOf($asserter)
-				->integer($test->getScore()->getPassNumber())->isEqualTo($passNumber)
+				->object($test->assertEquals($value, $value))->isInstanceOf('mageekguy\atoum\test\phpunit\asserters\assertEquals')
+				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
 				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo($passNumber)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test->getScore()->reset())
 			->then
 				->exception(function() use ($test, $value, $otherValue) {
@@ -174,15 +174,15 @@ class test extends atoum\test
 					}
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo($passNumber - 1)
+				->integer($test->getScore()->getPassNumber())->isZero()
 				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo($passNumber)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
 			->then
-				->object($test->assertNotEquals($otherValue, $value))->isInstanceOf($asserter)
-				->integer($test->getScore()->getPassNumber())->isEqualTo($passNumber)
+				->object($test->assertNotEquals($otherValue, $value))->isInstanceOf('mageekguy\atoum\test\phpunit\asserters\assertNotEquals')
+				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
 				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo($passNumber)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test->getScore()->reset())
 			->then
 				->exception(function() use ($test, $value) {
@@ -190,9 +190,9 @@ class test extends atoum\test
 					}
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo($passNumber - 1)
+				->integer($test->getScore()->getPassNumber())->isZero()
 				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo($passNumber)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 		;
 	}
 
@@ -201,52 +201,31 @@ class test extends atoum\test
 		return array(
 			array(
 				null,
-				uniqid(),
-				'\\mageekguy\\atoum\\asserters\\variable',
-				1,
-				1
+				uniqid()
 			),
 			array(
 				uniqid('_'),
-				uniqid('_'),
-				'\\mageekguy\\atoum\\asserters\\string',
-				2,
-				2
+				uniqid('_')
 			),
 			array(
 				rand(0, PHP_INT_MAX),
-				rand(0, PHP_INT_MAX),
-				'\\mageekguy\\atoum\\asserters\\integer',
-				2,
-				2
+				rand(0, PHP_INT_MAX)
 			),
 			array(
 				microtime(true),
-				microtime(true),
-				'\\mageekguy\\atoum\\asserters\\float',
-				2,
-				2
+				microtime(true) * microtime(true)
 			),
 			array(
 				array(uniqid() => uniqid()),
-				array(uniqid() => uniqid()),
-				'\\mageekguy\\atoum\\asserters\\phpArray',
-				2,
-				2
+				array(uniqid() => uniqid())
 			),
 			array(
 				new \StdClass(),
-				new self(),
-				'\\mageekguy\\atoum\\asserters\\object',
-				2,
-				2
+				new self()
 			),
 			array(
 				true,
-				false,
-				'\\mageekguy\\atoum\\asserters\\boolean',
-				2,
-				2
+				false
 			)
 		);
 	}
@@ -260,16 +239,6 @@ class test extends atoum\test
 				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
 				->integer($test->getScore()->getFailNumber())->isZero()
 				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
-			->if($test->getScore()->reset())
-			->then
-				->exception(function() use ($test) {
-						$test->assertContains(new \StdClass, new \StdClass);
-					}
-				)
-					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(0)
-				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 		;
 	}
 
@@ -278,10 +247,21 @@ class test extends atoum\test
 		$this
 			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
 			->then
-				->object($test->assertContains($needle = uniqid(), uniqid($needle)))->isInstanceOf('\\mageekguy\\atoum\\asserters\\string')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(2)
+				->object($test->assertContains($needle = uniqid(), uniqid($needle)))->isInstanceOf('mageekguy\atoum\test\phpunit\asserters\assertContains')
+				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
 				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
+			->if($test->getScore()->reset())
+			->then
+				->exception(function() use ($test) {
+						$test->assertContains(new \StdClass, new \StdClass);
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Cannot check containment in object(stdClass)')
+				->integer($test->getScore()->getPassNumber())->isZero()
+				->integer($test->getScore()->getFailNumber())->isZero()
+				->integer($test->getScore()->getAssertionNumber())->isZero()
 			->if($test->getScore()->reset())
 			->then
 				->exception(function() use ($test) {
@@ -289,15 +269,15 @@ class test extends atoum\test
 					}
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
+				->integer($test->getScore()->getPassNumber())->isZero()
 				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test->getScore()->reset())
 			->then
-				->object($test->assertNotContains(uniqid(), uniqid()))->isInstanceOf('\\mageekguy\\atoum\\asserters\\string')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(2)
+				->object($test->assertNotContains(uniqid(), uniqid()))->isInstanceOf('mageekguy\atoum\test\phpunit\asserters\assertNotContains')
+				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
 				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test->getScore()->reset())
 			->then
 				->exception(function() use ($test) {
@@ -305,9 +285,9 @@ class test extends atoum\test
 					}
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
+				->integer($test->getScore()->getPassNumber())->isZero()
 				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 		;
 	}
 
@@ -317,10 +297,10 @@ class test extends atoum\test
 			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
 			->and($actual = array($key = uniqid() => uniqid()))
 			->then
-				->object($test->assertArrayHasKey($key, $actual))->isInstanceOf('\\mageekguy\\atoum\\asserters\\phpArray')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(2)
+				->object($test->assertArrayHasKey($key, $actual))->isInstanceOf('mageekguy\atoum\test\phpunit\asserters\assertArrayHasKey')
+				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
 				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test->getScore()->reset())
 			->then
 				->exception(function() use ($test, $actual) {
@@ -328,9 +308,9 @@ class test extends atoum\test
 					}
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
+				->integer($test->getScore()->getPassNumber())->isZero()
 				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
+				->integer($test->getScore()->getAssertionNumber())->isEqualTo(1)
 			->if($test->getScore()->reset())
 			->then
 				->exception(function() use ($test, & $actual) {
@@ -375,26 +355,26 @@ class test extends atoum\test
 			->then
 				->exception(function() use ($test) { $test->setExpectedException(uniqid()); })
 					->isInstanceOf('\\mageekguy\\atoum\\test\\exceptions\\skip')
-					->hasMessage('Testing exception is not available')
-				->mock($test)->call('markTestSkipped')->once()
+					->hasMessage('setExpectedException is not supported')
+				->mock($test)->call('skip')->once()
 			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
 			->then
 				->exception(function() use ($test) { $test->isInstanceOf(uniqid()); })
 					->isInstanceOf('\\mageekguy\\atoum\\test\\exceptions\\skip')
 					->hasMessage('isInstanceOf is not supported')
-				->mock($test)->call('markTestSkipped')->once()
+				->mock($test)->call('skip')->once()
 			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
 			->then
 				->exception(function() use ($test) { $test->matchesRegularExpression(uniqid()); })
 					->isInstanceOf('\\mageekguy\\atoum\\test\\exceptions\\skip')
 					->hasMessage('matchesRegularExpression is not supported')
-				->mock($test)->call('markTestSkipped')->once()
+				->mock($test)->call('skip')->once()
 			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
 			->then
 				->exception(function() use ($test) { $test->stringContains(uniqid()); })
 					->isInstanceOf('\\mageekguy\\atoum\\test\\exceptions\\skip')
 					->hasMessage('stringContains is not supported')
-				->mock($test)->call('markTestSkipped')->once()
+				->mock($test)->call('skip')->once()
 		;
 	}
 

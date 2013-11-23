@@ -20,12 +20,12 @@ class iterator extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($this->newTestedInstance)
 			->then
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
-				->object($asserter->getGenerator())->isIdenticalTo($generator)
-				->variable($asserter->getValue())->isNull()
-				->boolean($asserter->wasSet())->isFalse()
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
+				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
+				->variable($this->testedInstance->getValue())->isNull()
+				->boolean($this->testedInstance->wasSet())->isFalse()
 		;
 	}
 
@@ -44,7 +44,7 @@ class iterator extends atoum\test
 			->then
 				->exception(function() use ($asserter) { $asserter->toString; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf('%s could not be converted to string', $asserter->getTypeOf($iterator)))
+					->hasMessage(sprintf('%s could not be converted to string', $asserter->getAnalyzer()->getTypeOf($iterator)))
 		;
 	}
 
@@ -55,11 +55,11 @@ class iterator extends atoum\test
 			->then
 				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not an object'), $asserter->getAnalyzer()->getTypeOf($value)))
 				->string($asserter->getValue())->isEqualTo($value)
 				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = $this); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not an iterator'), $asserter->getTypeOf($value)))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not an iterator'), $asserter->getAnalyzer()->getTypeOf($value)))
 				->object($asserter->getValue())->isIdenticalTo($value)
 				->object($asserter->setWith($value = new \mock\iterator()))->isIdenticalTo($asserter)
 				->iterator($asserter->getValue())->isIdenticalTo($value)
@@ -132,7 +132,7 @@ class iterator extends atoum\test
 			->then
 				->exception(function() use ($asserter, $iterator) { $asserter->isCloneOf($iterator); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not a clone of %s'), $asserter, $asserter->getTypeOf($iterator)))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not a clone of %s'), $asserter, $asserter->getAnalyzer()->getTypeOf($iterator)))
 			->if($clonedIterator = clone $iterator)
 			->then
 				->object($asserter->isCloneOf($clonedIterator))->isIdenticalTo($asserter)
@@ -151,7 +151,7 @@ class iterator extends atoum\test
 			->then
 				->exception(function() use ($asserter) { $asserter->toString; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf('%s could not be converted to string', $asserter->getTypeOf($iterator)))
+					->hasMessage(sprintf('%s could not be converted to string', $asserter->getAnalyzer()->getTypeOf($iterator)))
 		;
 	}
 
@@ -173,7 +173,7 @@ class iterator extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not an instance of %s'), $asserter->getTypeOf($iterator), $asserter->getTypeOf($asserter)))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not an instance of %s'), $asserter->getAnalyzer()->getTypeOf($iterator), $asserter->getAnalyzer()->getTypeOf($asserter)))
 				->object($asserter->isInstanceOf($iterator))->isIdenticalTo($asserter)
 		;
 	}
@@ -196,7 +196,7 @@ class iterator extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is an instance of %1$s'), $asserter->getTypeOf($iterator)))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is an instance of %1$s'), $asserter->getAnalyzer()->getTypeOf($iterator)))
 				->object($asserter->isNotInstanceOf($asserter))->isIdenticalTo($asserter)
 		;
 	}
