@@ -25,14 +25,12 @@ class string extends atoum\test
 			->then
 				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
 				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
-				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
-			->if($asserter = new sut($generator = new asserter\generator(), $adapter = new atoum\adapter()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
-				->object($asserter->getAdapter())->isIdenticalTo($adapter)
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
 		;
@@ -48,20 +46,6 @@ class string extends atoum\test
 			->if($asserter->setWith($value = "\010" . uniqid() . "\010", null, $charlist = "\010"))
 			->then
 				->castToString($asserter)->isEqualTo('string(' . strlen($value) . ') \'' . addcslashes($value, "\010") . '\'')
-		;
-	}
-
-	public function testSetAdapter()
-	{
-		$this
-			->if($asserter = new sut())
-			->then
-				->object($asserter->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($asserter)
-				->object($asserter->getAdapter())->isIdenticalTo($adapter)
-				->object($asserter->setAdapter())->isIdenticalTo($asserter)
-				->object($asserter->getAdapter())
-					->isNotIdenticalTo($adapter)
-					->isEqualTo(new atoum\adapter())
 		;
 	}
 
@@ -106,25 +90,25 @@ class string extends atoum\test
 	public function testIsEqualToFileContents()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator(), $adapter = new atoum\test\adapter()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isEqualToContentsOfFile(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
 			->if($asserter->setWith($firstString = uniqid()))
-			->and($adapter->file_get_contents = false)
+			->and($this->function->file_get_contents = false)
 			->then
 				->exception(function() use ($asserter, & $path) { $asserter->isEqualToContentsOfFile($path = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('Unable to get contents of file %s'), $path))
-			->if($adapter->file_get_contents = $fileContents = uniqid())
+			->if($this->function->file_get_contents = $fileContents = uniqid())
 			->and($diff = new diffs\variable())
 			->then
 				->exception(function() use ($asserter, & $path) { $asserter->isEqualToContentsOfFile($path); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('string is not equals to contents of file %s'), $path) . PHP_EOL . $diff->setExpected($fileContents)->setActual($firstString))
-			->if($adapter->file_get_contents = $firstString)
+			->if($this->function->file_get_contents = $firstString)
 			->then
 				->object($asserter->isEqualToContentsOfFile(uniqid()))->isIdenticalTo($asserter)
 		;
