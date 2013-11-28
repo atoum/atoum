@@ -144,6 +144,13 @@ abstract class test implements observable, \countable
 		return $this->assertionManager->__get($property);
 	}
 
+	public function __set($property, $handler)
+	{
+		$this->assertionManager->{$property} = $handler;
+
+		return $this;
+	}
+
 	public function __call($method, array $arguments)
 	{
 		return $this->assertionManager->__call($method, $arguments);

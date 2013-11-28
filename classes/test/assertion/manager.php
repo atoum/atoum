@@ -20,6 +20,11 @@ class manager
 		return $this->invoke($event, array(), self::propertyHandler);
 	}
 
+	public function __set($event, $handler)
+	{
+		return $this->setHandler($event, $handler);
+	}
+
 	public function __call($event, array $arguments)
 	{
 		return $this->invoke($event, $arguments, self::methodHandler);

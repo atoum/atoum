@@ -139,6 +139,20 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function test__set()
+		{
+			$this
+				->given(
+					$test = new emptyTest(),
+					$test->setAssertionManager($assertionManager = new \mock\mageekguy\atoum\test\assertion\manager())
+				)
+
+				->if($test->{$event = uniqid()} = $handler = function() {})
+				->then
+					->mock($assertionManager)->call('setHandler')->withArguments($event, $handler)->once()
+			;
+		}
+
 		public function testEnableDebugMode()
 		{
 			$this
