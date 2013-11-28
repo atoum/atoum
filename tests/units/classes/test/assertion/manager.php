@@ -54,6 +54,25 @@ class manager extends atoum\test
 		;
 	}
 
+	public function test__set()
+	{
+		$this
+			->given($assertionManager = new testedClass())
+
+			->if($assertionManager->{$event = uniqid()} = $handler = function() {})
+			->then
+				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($handler, testedClass::propertyAndMethodHandler)))
+
+			->if($assertionManager->{$event} = $otherHandler = function() {})
+			->then
+				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($otherHandler, testedClass::propertyAndMethodHandler)))
+
+			->if($assertionManager->{$otherEvent = uniqid()} = $handler)
+			->then
+				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($otherHandler, testedClass::propertyAndMethodHandler), $otherEvent => array($handler, testedClass::propertyAndMethodHandler)))
+		;
+	}
+
 	public function test__call()
 	{
 		$this
