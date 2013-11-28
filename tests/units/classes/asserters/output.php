@@ -23,12 +23,14 @@ class output extends atoum\test
 			->if($asserter = new sut())
 			->then
 				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
+				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
 				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
 				->string($asserter->getValue())->isEmpty()
 				->boolean($asserter->wasSet())->isTrue()
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator(), $adapter = new atoum\adapter()))
 			->then
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getAdapter())->isIdenticalTo($adapter)
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->string($asserter->getValue())->isEmpty()
 				->boolean($asserter->wasSet())->isTrue()

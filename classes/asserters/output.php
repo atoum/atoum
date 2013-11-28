@@ -9,9 +9,9 @@ use
 
 class output extends asserters\string
 {
-	public function __construct(atoum\asserter\generator $generator = null)
+	public function __construct(atoum\asserter\generator $generator = null, atoum\adapter $adapter = null)
 	{
-		parent::__construct($generator);
+		parent::__construct($generator, $adapter);
 
 		$this->setWith(null);
 	}
