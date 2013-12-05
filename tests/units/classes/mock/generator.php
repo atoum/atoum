@@ -246,6 +246,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->getName = function() use (& $realClass) { return $realClass; })
 			->and($reflectionClassController->isFinal = false)
 			->and($reflectionClassController->isInterface = false)
+			->and($reflectionClassController->isAbstract = false)
 			->and($reflectionClassController->getMethods = array($reflectionMethod))
 			->and($reflectionClassController->getConstructor = $reflectionMethod)
 			->and($reflectionClass = new \mock\reflectionClass(null))
@@ -312,6 +313,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->getName = $realClass)
 			->and($reflectionClassController->isFinal = false)
 			->and($reflectionClassController->isInterface = false)
+			->and($reflectionClassController->isAbstract = false)
 			->and($reflectionClassController->getMethods = array($reflectionMethod))
 			->and($reflectionClassController->getConstructor = $reflectionMethod)
 			->and($reflectionClass = new \mock\reflectionClass(null))
@@ -391,6 +393,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->getName = function() use (& $realClass) { return $realClass; })
 			->and($reflectionClassController->isFinal = false)
 			->and($reflectionClassController->isInterface = false)
+			->and($reflectionClassController->isAbstract = false)
 			->and($reflectionClassController->getMethods = array($reflectionMethod, $otherReflectionMethod))
 			->and($reflectionClassController->getConstructor = $reflectionMethod)
 			->and($reflectionClass = new \mock\reflectionClass(null))
@@ -471,6 +474,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->isInterface = false)
 			->and($reflectionClassController->getMethods = array($reflectionMethod))
 			->and($reflectionClassController->getConstructor = $reflectionMethod)
+			->and($reflectionClassController->isAbstract = false)
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($generator->setReflectionClassFactory(function() use ($reflectionClass) { return $reflectionClass; }))
 			->and($adapter = new atoum\test\adapter())
@@ -541,6 +545,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->isInterface = false)
 			->and($reflectionClassController->getMethods = array($reflectionMethod))
 			->and($reflectionClassController->getConstructor = $reflectionMethod)
+			->and($reflectionClassController->isAbstract = false)
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($generator->setReflectionClassFactory(function() use ($reflectionClass) { return $reflectionClass; }))
 			->and($adapter = new atoum\test\adapter())
@@ -604,6 +609,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->isInterface = false)
 			->and($reflectionClassController->getMethods = array($reflectionMethod))
 			->and($reflectionClassController->getConstructor = $reflectionMethod)
+			->and($reflectionClassController->isAbstract = false)
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($generator->setReflectionClassFactory(function() use ($reflectionClass) { return $reflectionClass; }))
 			->and($adapter = new atoum\test\adapter())
@@ -668,6 +674,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->isInterface = false)
 			->and($reflectionClassController->getMethods = array($reflectionMethod))
 			->and($reflectionClassController->getConstructor = null)
+			->and($reflectionClassController->isAbstract = false)
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($generator->setReflectionClassFactory(function() use ($reflectionClass) { return $reflectionClass; }))
 			->and($adapter = new atoum\test\adapter())
@@ -728,6 +735,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->isInterface = false)
 			->and($reflectionClassController->getMethods = array($reflectionMethod))
 			->and($reflectionClassController->getConstructor = $reflectionMethod)
+			->and($reflectionClassController->isAbstract = false)
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($generator->setReflectionClassFactory(function() use ($reflectionClass) { return $reflectionClass; }))
 			->and($adapter = new atoum\test\adapter())
@@ -1041,6 +1049,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->isInterface = false)
 			->and($reflectionClassController->getMethods = array($reflectionMethod))
 			->and($reflectionClassController->getConstructor = null)
+			->and($reflectionClassController->isAbstract = false)
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($generator->setReflectionClassFactory(function() use ($reflectionClass) { return $reflectionClass; }))
 			->and($adapter = new atoum\test\adapter())
@@ -1143,9 +1152,20 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . '$this->getMockController()->invoke(\'__construct\', $arguments);' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'else' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct', '__call'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
@@ -1443,6 +1463,7 @@ class generator extends atoum\test
 			->and($classController->isInterface = false)
 			->and($classController->getMethods = array($publicMethod, $protectedMethod))
 			->and($classController->getConstructor = null)
+			->and($classController->isAbstract = false)
 			->and($class = new \mock\reflectionClass(null))
 			->and($generator->setReflectionClassFactory(function() use ($class) { return $class; }))
 			->and($adapter = new atoum\test\adapter())
@@ -1531,6 +1552,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->isInterface = false)
 			->and($reflectionClassController->getMethods = array($reflectionMethod))
 			->and($reflectionClassController->getConstructor = $reflectionMethod)
+			->and($reflectionClassController->isAbstract = false)
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($generator->setReflectionClassFactory(function() use ($reflectionClass) { return $reflectionClass; }))
 			->and($adapter = new atoum\test\adapter())
