@@ -360,6 +360,12 @@ class generator
 			}
 		}
 
+		if ($class->isAbstract() === true && in_array('__call', $mockedMethodNames) === false)
+		{
+			$mockedMethods .= self::generate__call();
+			$mockedMethodNames[] = '__call';
+		}
+
 		return $mockedMethods . self::generateGetMockedMethod($mockedMethodNames);
 	}
 
