@@ -212,6 +212,7 @@ class controller extends test\adapter
 	public function reset()
 	{
 		self::$linker->unlink($this);
+
 		$this->mockClass = null;
 		$this->mockMethods = array();
 
