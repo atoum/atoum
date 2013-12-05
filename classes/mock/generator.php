@@ -453,6 +453,9 @@ class generator
 			$mockedMethodNames[] = '__construct';
 		}
 
+		$mockedMethods .= self::generate__call();
+		$mockedMethodNames[] = '__call';
+
 		$mockedMethods .= self::generateGetMockedMethod($mockedMethodNames);
 
 		return $mockedMethods;
@@ -624,6 +627,23 @@ class generator
 		return $defaultConstructor;
 	}
 
+	protected static function generate__call()
+	{
+		return
+			"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
+			"\t" . '{' . PHP_EOL .
+			"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
+			"\t\t" . '{' . PHP_EOL .
+			"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+			"\t\t" . '}' . PHP_EOL .
+			"\t\t" . 'else' . PHP_EOL .
+			"\t\t" . '{' . PHP_EOL .
+			"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
+			"\t\t" . '}' . PHP_EOL .
+			"\t" . '}' . PHP_EOL
+		;
+	}
+
 	protected static function generateGetMockedMethod(array $mockedMethodNames)
 	{
 		return
@@ -641,17 +661,7 @@ class generator
 			'{' . PHP_EOL .
 			self::generateMockControllerMethods() .
 			self::generateDefaultConstructor(true) .
-			"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
-			"\t" . '{' . PHP_EOL .
-			"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
-			"\t\t" . '{' . PHP_EOL .
-			"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
-			"\t\t" . '}' . PHP_EOL .
-			"\t\t" . 'else' . PHP_EOL .
-			"\t\t" . '{' . PHP_EOL .
-			"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
-			"\t\t" . '}' . PHP_EOL .
-			"\t" . '}' . PHP_EOL .
+			self::generate__call() .
 			self::generateGetMockedMethod(array('__call')) .
 			'}' . PHP_EOL .
 			'}'

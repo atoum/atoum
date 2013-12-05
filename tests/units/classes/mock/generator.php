@@ -816,9 +816,20 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . '$this->getMockController()->invoke(\'__construct\', $arguments);' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'else' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct', '__call'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
@@ -857,9 +868,20 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->getMockController()->invoke(\'getIterator\', $arguments);' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'else' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'return ' . var_export(array('__construct', 'getiterator'), true) . ';' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct', 'getiterator', '__call'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
@@ -919,9 +941,20 @@ class generator extends atoum\test
 					"\t\t\t" . '$this->getMockController()->invoke(\'__construct\', func_get_args());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'else' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'return ' . var_export(array($methodName, '__construct'), true) . ';' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array($methodName, '__construct', '__call'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
@@ -963,9 +996,20 @@ class generator extends atoum\test
 					"\t\t\t" . '$this->getMockController()->invoke(\'__construct\', func_get_args());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'else' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'return ' . var_export(array($methodName, 'getiterator', '__construct'), true) . ';' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array($methodName, 'getiterator', '__construct', '__call'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
