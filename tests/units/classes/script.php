@@ -617,11 +617,17 @@ class script extends atoum\test
 			->and($adapter->is_dir = true)
 			->and($adapter->dirname = $directory = uniqid())
 			->then
-				->string($script->getDirectory())->isEqualTo($directory)
+				->string($script->getDirectory())->isEqualTo($directory . DIRECTORY_SEPARATOR)
+			->if($adapter->dirname = $directory . DIRECTORY_SEPARATOR)
+			->then
+				->string($script->getDirectory())->isEqualTo($directory . DIRECTORY_SEPARATOR)
 			->if($adapter->is_dir = false)
 			->and($adapter->getcwd = $currentDirectory = uniqid())
 			->then
-				->string($script->getDirectory())->isEqualTo($currentDirectory)
+				->string($script->getDirectory())->isEqualTo($currentDirectory . DIRECTORY_SEPARATOR)
+			->and($adapter->getcwd = $currentDirectory . DIRECTORY_SEPARATOR)
+			->then
+				->string($script->getDirectory())->isEqualTo($currentDirectory . DIRECTORY_SEPARATOR)
 		;
 	}
 }

@@ -458,7 +458,7 @@ class runner extends atoum\script\configurable
 	public function init()
 	{
 		$resourceDirectory = static::getResourcesDirectory();
-		$currentDirectory = rtrim($this->adapter->getcwd(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+		$currentDirectory = $this->getDirectory();
 
 		$defaultConfigFile = $currentDirectory . static::defaultConfigFile;
 
