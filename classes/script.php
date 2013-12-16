@@ -62,7 +62,7 @@ abstract class script
 			$directory = $this->adapter->getcwd();
 		}
 
-		return $directory;
+		return rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 	}
 
 	public function setAdapter(atoum\adapter $adapter = null)

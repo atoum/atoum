@@ -55,7 +55,7 @@ class pusher extends script\configurable
 		}
 		else
 		{
-			$tagFile = $this->getDirectory() . DIRECTORY_SEPARATOR . self::defaultTagFile;
+			$tagFile = $this->getDirectory() . self::defaultTagFile;
 		}
 
 		$this->tagFile = $tagFile;
