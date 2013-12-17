@@ -13,13 +13,10 @@ class string extends asserters\variable
 {
 	protected $charlist = null;
 	protected $streamController = null;
-	protected $adapter = null;
 
-	public function __construct(asserter\generator $generator = null, atoum\adapter $adapter = null)
+	public function __construct(asserter\generator $generator = null)
 	{
 		parent::__construct($generator);
-
-		$this->setAdapter($adapter);
 	}
 
 	public function __get($asserter)
@@ -37,18 +34,6 @@ class string extends asserters\variable
 	public function __toString()
 	{
 		return (is_string($this->value) === false ? parent::__toString() : sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($this->value), addcslashes($this->value, $this->charlist)));
-	}
-
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
 	}
 
 	public function getCharlist()
@@ -108,7 +93,8 @@ class string extends asserters\variable
 
 	public function isEqualToContentsOfFile($path, $failMessage = null)
 	{
-		$fileContents = @$this->valueIsSet()->adapter->file_get_contents($path);
+		$this->valueIsSet();
+		$fileContents = @file_get_contents($path);
 
 		if ($fileContents === false)
 		{
