@@ -15,6 +15,7 @@ abstract class test implements observable, \countable
 {
 	const testMethodPrefix = 'test';
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
+	const defaultMethodPrefix = '#^(?:test|_*[^_]+_should_)#i';
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
 	const afterSetUp = 'afterTestSetUp';
@@ -49,6 +50,7 @@ abstract class test implements observable, \countable
 	private $testedClassPath = null;
 	private $currentMethod = null;
 	private $testNamespace = null;
+	private $testMethodPrefix = null;
 	private $classEngine = null;
 	private $bootstrapFile = null;
 	private $maxAsynchronousEngines = null;
@@ -74,6 +76,7 @@ abstract class test implements observable, \countable
 	private $classHasNotVoidMethods = false;
 
 	private static $namespace = null;
+	private static $methodPrefix = null;
 	private static $defaultEngine = self::defaultEngine;
 
 	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null)
@@ -98,27 +101,59 @@ abstract class test implements observable, \countable
 		$this->class = $class->getName();
 		$this->classNamespace = $class->getNamespaceName();
 
-		$this->setClassAnnotations($annotationExtractor = $annotationExtractor ?: new annotations\extractor());
+		if ($annotationExtractor === null)
+		{
+			$annotationExtractor = new annotations\extractor();
+		}
+
+		$this->setClassAnnotations($annotationExtractor);
 
 		$annotationExtractor->extract($class->getDocComment());
 
-		if ($this->testNamespace === null)
+		if ($this->testNamespace === null || $this->testMethodPrefix === null)
 		{
-			$this->setParentClassAnnotations($annotationExtractor);
+			$annotationExtractor
+				->unsetHandler('ignore')
+				->unsetHandler('tags')
+				->unsetHandler('maxChildrenNumber')
+			;
 
 			$parentClass = $class;
 
-			while ($this->testNamespace === null && ($parentClass = $parentClass->getParentClass()) !== false)
+			while (($this->testNamespace === null || $this->testMethodPrefix === null) && ($parentClass = $parentClass->getParentClass()) !== false)
 			{
 				$annotationExtractor->extract($parentClass->getDocComment());
+
+				if ($this->testNamespace !== null)
+				{
+					$annotationExtractor->unsetHandler('namespace');
+				}
+
+				if ($this->testMethodPrefix !== null)
+				{
+					$annotationExtractor->unsetHandler('methodPrefix');
+				}
 			}
 		}
 
 		$this->setMethodAnnotations($annotationExtractor, $methodName);
 
+		$testMethodPrefix = $this->getTestMethodPrefix();
+
+		if (static::isRegex($testMethodPrefix) === false)
+		{
+			$testMethodFilter = function($methodName) use ($testMethodPrefix) { return (stripos($methodName, $testMethodPrefix) === 0); };
+		}
+		else
+		{
+			$testMethodFilter = function($methodName) use ($testMethodPrefix) { return (preg_match($testMethodPrefix, $methodName) == true); };
+		}
+
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
-			if (stripos($methodName = $publicMethod->getName(), self::testMethodPrefix) === 0)
+			$methodName = $publicMethod->getName();
+
+			if ($testMethodFilter($methodName) == true)
 			{
 				$this->testMethods[$methodName] = array();
 
@@ -609,6 +644,25 @@ abstract class test implements observable, \countable
 	public function getTestNamespace()
 	{
 		return $this->testNamespace ?: self::getNamespace();
+	}
+
+	public function setTestMethodPrefix($methodPrefix)
+	{
+		$methodPrefix = (string) $methodPrefix;
+
+		if ($methodPrefix == '')
+		{
+			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
+		}
+
+		$this->testMethodPrefix = $methodPrefix;
+
+		return $this;
+	}
+
+	public function getTestMethodPrefix()
+	{
+		return $this->testMethodPrefix ?: self::getMethodPrefix();
 	}
 
 	public function setPhpPath($path)
@@ -1122,17 +1176,34 @@ abstract class test implements observable, \countable
 
 	public static function setNamespace($namespace)
 	{
-		self::$namespace = self::cleanNamespace($namespace);
+		$namespace = self::cleanNamespace($namespace);
 
-		if (self::$namespace === '')
+		if ($namespace === '')
 		{
 			throw new exceptions\logic\invalidArgument('Namespace must not be empty');
 		}
+
+		self::$namespace = $namespace;
 	}
 
 	public static function getNamespace()
 	{
 		return self::$namespace ?: self::defaultNamespace;
+	}
+
+	public static function setMethodPrefix($methodPrefix)
+	{
+		if ($methodPrefix == '')
+		{
+			throw new exceptions\logic\invalidArgument('Method prefix must not be empty');
+		}
+
+		self::$methodPrefix = $methodPrefix;
+	}
+
+	public static function getMethodPrefix()
+	{
+		return self::$methodPrefix ?: self::defaultMethodPrefix;
 	}
 
 	public static function setDefaultEngine($defaultEngine)
@@ -1184,7 +1255,8 @@ abstract class test implements observable, \countable
 			->resetHandlers()
 			->setHandler('ignore', function($value) use ($test) { $test->ignore(annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
-			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
+			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value === true ? static::defaultNamespace : $value); })
+			->setHandler('methodPrefix', function($value) use ($test) { $test->setTestMethodPrefix($value === true ? static::defaultMethodPrefix : $value); })
 			->setHandler('maxChildrenNumber', function($value) use ($test) { $test->setMaxChildrenNumber($value); })
 			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
 			->setHandler('hasVoidMethods', function($value) use ($test) { $test->classHasVoidMethods(); })
@@ -1227,17 +1299,6 @@ abstract class test implements observable, \countable
 					}
 				}
 			)
-		;
-
-		return $this;
-	}
-
-	protected function setParentClassAnnotations(annotations\extractor $extractor)
-	{
-		$extractor
-			->unsetHandler('ignore')
-			->unsetHandler('tags')
-			->unsetHandler('maxChildrenNumber')
 		;
 
 		return $this;

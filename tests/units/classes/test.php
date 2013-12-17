@@ -80,6 +80,7 @@ namespace mageekguy\atoum\tests\units
 				->string(atoum\test::afterTearDown)->isEqualTo('afterTestTearDown')
 				->string(atoum\test::runStop)->isEqualTo('testRunStop')
 				->string(atoum\test::defaultNamespace)->isEqualTo('#(?:^|\\\\)tests?\\\\units?\\\\#i')
+				->string(atoum\test::defaultMethodPrefix)->isEqualTo('#^(?:test|_*[^_]+_should_)#i')
 			;
 		}
 
@@ -288,15 +289,69 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testGetTestsSubNamespace()
+		public function testSetTestNamespace()
+		{
+			$this
+				->if($test = new self())
+				->then
+					->object($test->setTestNamespace($testNamespace = uniqid()))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+					->object($test->setTestNamespace('\\' . ($testNamespace = uniqid())))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+					->object($test->setTestNamespace('\\' . ($testNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+					->object($test->setTestNamespace(($testNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+					->object($test->setTestNamespace($testNamespace = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo((string) $testNamespace)
+					->exception(function() use ($test) {
+								$test->setTestNamespace('');
+							}
+						)
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test namespace must not be empty')
+			;
+		}
+
+		public function testGetTestNamespace()
 		{
 			$this
 				->if($test = new self())
 				->then
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-				->if($test->setTestNamespace($testsSubNamespace = uniqid()))
+				->if($test->setTestNamespace($testNamespace = uniqid()))
 				->then
-					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+			;
+		}
+
+		public function testSetTestMethodPrefix()
+		{
+			$this
+				->if($test = new self())
+				->then
+					->object($test->setTestMethodPrefix($testMethodPrefix = uniqid()))->isIdenticalTo($test)
+					->string($test->getTestMethodPrefix())->isEqualTo($testMethodPrefix)
+					->object($test->setTestMethodPrefix($testMethodPrefix = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($test)
+					->string($test->getTestMethodPrefix())->isEqualTo((string) $testMethodPrefix)
+					->exception(function() use ($test) {
+								$test->setTestMethodPrefix('');
+							}
+						)
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test method prefix must not be empty')
+			;
+		}
+
+		public function testGetTestMethodPrefix()
+		{
+			$this
+				->if($test = new self())
+				->then
+					->string($test->getTestMethodPrefix())->isEqualTo(atoum\test::defaultMethodPrefix)
+				->if($test->setTestMethodPrefix($testMethodPrefix = uniqid()))
+				->then
+					->string($test->getTestMethodPrefix())->isEqualTo($testMethodPrefix)
 			;
 		}
 
@@ -323,31 +378,6 @@ namespace mageekguy\atoum\tests\units
 				->if($testedClass = new \reflectionClass($this->getTestedClassName()))
 				->then
 					->string($this->getTestedClassPath())->isEqualTo($testedClass->getFilename())
-			;
-		}
-
-		public function testSetTestsSubNamespace()
-		{
-			$this
-				->if($test = new self())
-				->then
-					->object($test->setTestNamespace($testsSubNamespace = uniqid()))->isIdenticalTo($test)
-					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
-					->object($test->setTestNamespace('\\' . ($testsSubNamespace = uniqid())))->isIdenticalTo($test)
-					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
-					->object($test->setTestNamespace('\\' . ($testsSubNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
-					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
-					->object($test->setTestNamespace(($testsSubNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
-					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
-					->object($test->setTestNamespace($testsSubNamespace = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($test)
-					->string($test->getTestNamespace())->isEqualTo((string) $testsSubNamespace)
-					->exception(function() use ($test) {
-								$test->setTestNamespace('');
-							}
-						)
-						->isInstanceOf('invalidArgumentException')
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Test namespace must not be empty')
 			;
 		}
 
