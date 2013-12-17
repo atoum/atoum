@@ -4,7 +4,7 @@
 The official name is "atoum".
 
 ## How to contribute to atoum?
-Just send an email to lead@atoum.org to say that you want to contribute to atoum.
+Just send an email to lead@atoum.org to say that you want to contribute to atoum.  
 Moreover, you should read the `CC.md` file about coding convention. 
 
 ## Why some classes has name `*\phpClass` instead of `*\class`?  
@@ -13,7 +13,7 @@ In this case, the atoum convention is to prefix name with word `php`.
 
 ## Where is the documentation?
 There is an [english and a french documentation](http://docs.atoum.org/) available.  
-It's a work in progress and you're welcome to improve it.  
+It's a work in progress and you're welcome to improve it.   
 Moreover, atoum's unit test is the documentation.  
 You find them in the directory `path/to/atoum/tests/units`.
 
