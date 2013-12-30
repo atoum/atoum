@@ -8,52 +8,45 @@ use
 
 class manager
 {
-	const propertyHandler = 1;
-	const methodHandler = 2;
-	const propertyAndMethodHandler = null;
-
-	protected $handlers = array();
+	protected $propertyHandlers = array();
+	protected $methodHandlers = array();
 	protected $defaultHandler = null;
-
-	public function __get($event)
-	{
-		return $this->invoke($event, array(), self::propertyHandler);
-	}
 
 	public function __set($event, $handler)
 	{
 		return $this->setHandler($event, $handler);
 	}
 
+	public function __get($event)
+	{
+		return $this->invokePropertyHandler($event);
+	}
+
 	public function __call($event, array $arguments)
 	{
-		return $this->invoke($event, $arguments, self::methodHandler);
-	}
-
-	public function getHandlers()
-	{
-		return $this->handlers;
-	}
-
-	public function setHandler($event, \closure $handler)
-	{
-		$this->handlers[$event] = array($handler, self::propertyAndMethodHandler);
-
-		return $this;
+		return $this->invokeMethodHandler($event, $arguments);
 	}
 
 	public function setMethodHandler($event, \closure $handler)
 	{
-		$this->handlers[$event] = array($handler, self::methodHandler);
+		$this->methodHandlers[$event] = $handler;
 
 		return $this;
 	}
 
 	public function setPropertyHandler($event, \closure $handler)
 	{
-		$this->handlers[$event] = array($handler, self::propertyHandler);
+		$this->propertyHandlers[$event] = $handler;
 
 		return $this;
+	}
+
+	public function setHandler($event, \closure $handler)
+	{
+		return $this
+			->setPropertyHandler($event, $handler)
+			->setMethodHandler($event, $handler)
+		;
 	}
 
 	public function setDefaultHandler(\closure $handler)
@@ -63,22 +56,44 @@ class manager
 		return $this;
 	}
 
-	public function getDefaultHandler()
+	public function invokePropertyHandler($event)
 	{
-		return $this->defaultHandler;
-	}
+		$handler = null;
 
-	public function invoke($event, array $arguments = array(), $type = null)
-	{
-		$handlerExists = (isset($this->handlers[$event]) && ($this->handlers[$event][1] === $type || $this->handlers[$event][1] === self::propertyAndMethodHandler));
+		if (isset($this->propertyHandlers[$event]) === true)
+		{
+			$handler = $this->propertyHandlers[$event];
+		}
 
 		switch (true)
 		{
-			case $handlerExists === false && $this->defaultHandler === null:
+			case $handler === null && $this->defaultHandler === null:
 				throw new assertion\manager\exception('There is no handler defined for event \'' . $event . '\'');
 
-			case $handlerExists:
-				return call_user_func_array($this->handlers[$event][0], $arguments);
+			case $handler !== null:
+				return call_user_func($handler);
+
+			default:
+				return call_user_func_array($this->defaultHandler, array($event, array()));
+		}
+	}
+
+	public function invokeMethodHandler($event, array $arguments = array())
+	{
+		$handler = null;
+
+		if (isset($this->methodHandlers[$event]) === true)
+		{
+			$handler = $this->methodHandlers[$event];
+		}
+
+		switch (true)
+		{
+			case $handler === null && $this->defaultHandler === null:
+				throw new assertion\manager\exception('There is no handler defined for event \'' . $event . '\'');
+
+			case $handler !== null:
+				return call_user_func_array($handler, $arguments);
 
 			default:
 				return call_user_func_array($this->defaultHandler, array($event, $arguments));

@@ -940,10 +940,50 @@ abstract class test implements observable, \countable
 				{
 					ob_start();
 
-					if ($this->adapter->class_exists($testedClassName = $this->getTestedClassName()) === false)
+					try
+					{
+						$testedClass = new \reflectionClass($testedClassName = $this->getTestedClassName());
+					}
+					catch (\exception $exception)
 					{
 						throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 					}
+
+					$testedClassConstructor = $testedClass->getConstructor();
+
+					if ($testedClassConstructor === null)
+					{
+						$newTestedInstanceHandler = function() use ($testedClassName, & $instance) { return ($instance = new $testedClassName()); };
+					}
+					else
+					{
+						$newTestedInstanceHandlerParameters = $constructorParameters = array();
+
+						foreach ($testedClassConstructor->getParameters() as $position => $parameter)
+						{
+							$newTestedInstanceHandlerParameters[$position] = $constructorParameters[$position] = '$' . $parameter->getName();
+
+							switch (true)
+							{
+								case $parameter->isPassedByReference():
+									$newTestedInstanceHandlerParameters[$position] = '& ' . $newTestedInstanceHandlerParameters[$position];
+
+								case $parameter->isDefaultValueAvailable():
+									$newTestedInstanceHandlerParameters[$position] .= ' = ' . var_export($parameter->getDefaultValue(), true);
+									break;
+
+								case $parameter->isOptional():
+									$newTestedInstanceHandlerParameters[$position] .= ' = null';
+							}
+						}
+
+						$newTestedInstanceHandler = eval('return function(' . join(', ', $newTestedInstanceHandlerParameters) . ') use (& $instance) { return ($instance = new ' . $testedClassName . '(' . join(', ', $constructorParameters) . ')); };');
+					}
+
+					$this->assertionManager
+						->setPropertyHandler('testedInstance', function() use (& $instance) { return $instance; })
+						->setMethodHandler('newTestedInstance', $newTestedInstanceHandler)
+					;
 
 					test\adapter::setStorage($this->testAdapterStorage);
 					mock\controller::setLinker($this->mockControllerLinker);

@@ -12,16 +12,6 @@ require_once __DIR__ . '/../../../runner.php';
 
 class manager extends atoum\test
 {
-	public function test__construct()
-	{
-		$this
-			->if($assertionManager = new testedClass())
-			->then
-				->variable($assertionManager->getDefaultHandler())->isNull()
-				->array($assertionManager->getHandlers())->isEmpty()
-		;
-	}
-
 	public function test__get()
 	{
 		$this
@@ -59,17 +49,10 @@ class manager extends atoum\test
 		$this
 			->given($assertionManager = new testedClass())
 
-			->if($assertionManager->{$event = uniqid()} = $handler = function() {})
+			->if($assertionManager->{$event = uniqid()} = function() use (& $return) { return ($return = uniqid()); })
 			->then
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($handler, testedClass::propertyAndMethodHandler)))
-
-			->if($assertionManager->{$event} = $otherHandler = function() {})
-			->then
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($otherHandler, testedClass::propertyAndMethodHandler)))
-
-			->if($assertionManager->{$otherEvent = uniqid()} = $handler)
-			->then
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($otherHandler, testedClass::propertyAndMethodHandler), $otherEvent => array($handler, testedClass::propertyAndMethodHandler)))
+				->string($assertionManager->invokeMethodHandler($event))->isEqualTo($return)
+				->string($assertionManager->invokePropertyHandler($event))->isEqualTo($return)
 		;
 	}
 
@@ -110,12 +93,14 @@ class manager extends atoum\test
 		$this
 			->if($assertionManager = new testedClass())
 			->then
-				->object($assertionManager->setHandler($event = uniqid(), $handler = function() {}))->isIdenticalTo($assertionManager)
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($handler, testedClass::propertyAndMethodHandler)))
-				->object($assertionManager->setHandler($event, $otherHandler = function() {}))->isIdenticalTo($assertionManager)
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($otherHandler, testedClass::propertyAndMethodHandler)))
-				->object($assertionManager->setHandler($otherEvent = uniqid(), $handler))->isIdenticalTo($assertionManager)
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($otherHandler, testedClass::propertyAndMethodHandler), $otherEvent => array($handler, testedClass::propertyAndMethodHandler)))
+				->object($assertionManager->setHandler($event = uniqid(), function() use (& $return) { return ($return = uniqid()); }))->isIdenticalTo($assertionManager)
+				->string($assertionManager->invokeMethodHandler($event))->isEqualTo($return)
+				->string($assertionManager->invokePropertyHandler($event))->isEqualTo($return)
+				->object($assertionManager->setHandler($otherEvent = uniqid(), function() use (& $otherReturn) { return ($otherReturn = uniqid()); }))->isIdenticalTo($assertionManager)
+				->string($assertionManager->invokeMethodHandler($event))->isEqualTo($return)
+				->string($assertionManager->invokePropertyHandler($event))->isEqualTo($return)
+				->string($assertionManager->invokeMethodHandler($otherEvent))->isEqualTo($otherReturn)
+				->string($assertionManager->invokePropertyHandler($otherEvent))->isEqualTo($otherReturn)
 		;
 	}
 
@@ -124,12 +109,17 @@ class manager extends atoum\test
 		$this
 			->if($assertionManager = new testedClass())
 			->then
-				->object($assertionManager->setPropertyHandler($event = uniqid(), $handler = function() {}))->isIdenticalTo($assertionManager)
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($handler, testedClass::propertyHandler)))
-				->object($assertionManager->setPropertyHandler($event, $otherHandler = function() {}))->isIdenticalTo($assertionManager)
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($otherHandler, testedClass::propertyHandler)))
-				->object($assertionManager->setPropertyHandler($otherEvent = uniqid(), $handler))->isIdenticalTo($assertionManager)
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($otherHandler, testedClass::propertyHandler), $otherEvent => array($handler, testedClass::propertyHandler)))
+				->object($assertionManager->setPropertyHandler($event = uniqid(), function() use (& $return) { return ($return = uniqid()); }))->isIdenticalTo($assertionManager)
+				->string($assertionManager->invokePropertyHandler($event))->isEqualTo($return)
+				->exception(function() use ($assertionManager, $event) {
+						$assertionManager->invokeMethodHandler($event);
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\test\assertion\manager\exception')
+					->hasMessage('There is no handler defined for event \'' . $event . '\'')
+				->object($assertionManager->setPropertyHandler($otherEvent = uniqid(), function() use (& $otherReturn) { return ($otherReturn = uniqid()); }))->isIdenticalTo($assertionManager)
+				->string($assertionManager->invokePropertyHandler($event))->isEqualTo($return)
+				->string($assertionManager->invokePropertyHandler($otherEvent))->isEqualTo($otherReturn)
 		;
 	}
 
@@ -138,12 +128,17 @@ class manager extends atoum\test
 		$this
 			->if($assertionManager = new testedClass())
 			->then
-				->object($assertionManager->setMethodHandler($event = uniqid(), $handler = function() {}))->isIdenticalTo($assertionManager)
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($handler, testedClass::methodHandler)))
-				->object($assertionManager->setMethodHandler($event, $otherHandler = function() {}))->isIdenticalTo($assertionManager)
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($otherHandler, testedClass::methodHandler)))
-				->object($assertionManager->setMethodHandler($otherEvent = uniqid(), $handler))->isIdenticalTo($assertionManager)
-				->array($assertionManager->getHandlers())->isEqualTo(array($event => array($otherHandler, testedClass::methodHandler), $otherEvent => array($handler, testedClass::methodHandler)))
+				->object($assertionManager->setMethodHandler($event = uniqid(), function() use (& $return) { return ($return = uniqid()); }))->isIdenticalTo($assertionManager)
+				->exception(function() use ($assertionManager, $event) {
+						$assertionManager->invokePropertyHandler($event);
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\test\assertion\manager\exception')
+					->hasMessage('There is no handler defined for event \'' . $event . '\'')
+				->string($assertionManager->invokeMethodHandler($event))->isEqualTo($return)
+				->object($assertionManager->setMethodHandler($otherEvent = uniqid(), function() use (& $otherReturn) { return ($otherReturn = uniqid()); }))->isIdenticalTo($assertionManager)
+				->string($assertionManager->invokeMethodHandler($event))->isEqualTo($return)
+				->string($assertionManager->invokeMethodHandler($otherEvent))->isEqualTo($otherReturn)
 		;
 	}
 
@@ -153,27 +148,26 @@ class manager extends atoum\test
 			->if($assertionManager = new testedClass())
 			->then
 				->object($assertionManager->setDefaultHandler($handler = function() {}))->isIdenticalTo($assertionManager)
-				->object($assertionManager->getDefaultHandler())->isIdenticalTo($handler)
 		;
 	}
 
-	public function testInvoke()
+	public function testInvokeMethodHandler()
 	{
 		$this
 			->if($assertionManager = new testedClass())
 			->then
 				->exception(function() use ($assertionManager, & $event) {
-						$assertionManager->invoke($event = uniqid());
+						$assertionManager->invokeMethodHandler($event = uniqid());
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\test\assertion\manager\exception')
 					->hasMessage('There is no handler defined for event \'' . $event . '\'')
 			->if($assertionManager->setDefaultHandler(function($event, $arg) { return $arg; }))
 			->then
-				->array($assertionManager->invoke(uniqid(), array($defaultArg = uniqid())))->isEqualTo(array($defaultArg))
-			->if($assertionManager->setHandler($event = uniqid(), function($eventArg) { return $eventArg; }))
+				->array($assertionManager->invokeMethodHandler(uniqid(), array($defaultArg = uniqid())))->isEqualTo(array($defaultArg))
+			->if($assertionManager->setMethodHandler($event = uniqid(), function($eventArg) { return $eventArg; }))
 			->then
-				->string($assertionManager->invoke($event, array($eventArg = uniqid())))->isEqualTo($eventArg)
+				->string($assertionManager->invokeMethodHandler($event, array($eventArg = uniqid())))->isEqualTo($eventArg)
 		;
 	}
 }
