@@ -60,7 +60,7 @@ class factory implements \iteratorAggregate
 		return $this->extensionFilterFactory;
 	}
 
-	public function getIterator($path)
+	public function getIterator($path = null)
 	{
 		$iterator = call_user_func($this->iteratorFactory, $path);
 
