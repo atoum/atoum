@@ -508,6 +508,8 @@ class runner extends atoum\test
 	{
 		$this
 			->if($runner = new testedClass())
+			->and($runner->setAdapter($adapter = new test\adapter()))
+			->and($adapter->is_file = true)
 			->then
 				->object($runner->addTest($testPath1 = uniqid()))->isIdenticalTo($runner)
 				->array($runner->getTestPaths())->isEqualTo(array($testPath1))
@@ -525,6 +527,10 @@ class runner extends atoum\test
 			->then
 				->object($runner->addTest($testPath4 = uniqid()))->isIdenticalTo($runner)
 				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2, (string) $testPath3, $testPath4))
+			->if($adapter->is_file = false)
+			->then
+				->object($runner->addTest(uniqid()))->isIdenticalTo($runner)
+				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2, (string) $testPath3, $testPath4))
 		;
 	}
 
@@ -537,7 +543,9 @@ class runner extends atoum\test
 			->if($runner->canNotAddTest())
 			->then
 				->object($runner->canAddTest())->isIdenticalTo($runner)
-			->if($runner->addTest(uniqid()))
+            ->if($runner->setAdapter($adapter = new test\adapter()))
+            ->and($adapter->is_file = true)
+			->and($runner->addTest(uniqid()))
 			->then
 				->array($runner->getTestPaths())->isNotEmpty()
 		;

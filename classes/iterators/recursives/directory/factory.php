@@ -10,6 +10,7 @@ use
 
 class factory implements \iteratorAggregate
 {
+	protected $iteratorFactory = null;
 	protected $dotFilterFactory = null;
 	protected $acceptDots = false;
 	protected $extensionFilterFactory = null;
