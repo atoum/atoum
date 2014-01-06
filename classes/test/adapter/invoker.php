@@ -218,7 +218,7 @@ class invoker implements \arrayAccess, \countable
 
 	protected static function isBindable(\closure $closure)
 	{
-		$isBindable = (version_compare(PHP_VERSION, '5.4.0') >= 0);
+		$isBindable = (defined('HHVM_VERSION') === false && version_compare(PHP_VERSION, '5.4.0') >= 0);
 
 		if ($isBindable === true)
 		{
