@@ -543,8 +543,8 @@ class runner extends atoum\test
 			->if($runner->canNotAddTest())
 			->then
 				->object($runner->canAddTest())->isIdenticalTo($runner)
-            ->if($runner->setAdapter($adapter = new test\adapter()))
-            ->and($adapter->is_file = true)
+			->if($runner->setAdapter($adapter = new test\adapter()))
+			->and($adapter->is_file = true)
 			->and($runner->addTest(uniqid()))
 			->then
 				->array($runner->getTestPaths())->isNotEmpty()

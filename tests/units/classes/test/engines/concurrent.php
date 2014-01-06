@@ -70,10 +70,17 @@ class concurrent extends atoum\test
 				->exception(function() use ($engine, $test) { $engine->run($test); })
 					->isIdenticalTo($exception)
 			->if($this->calling($php)->run = $php)
+			->and($testWriterFactory = function() use (& $writer) {
+					$writer = new \mock\mageekguy\atoum\writers\file(uniqid());
+					$writer->getMockController()->write = $writer;
+
+					return $writer;
+				}
+			)
 			->then
-				->object($engine->run($test))->isIdenticalTo($engine)
-				->mock($php)
-					->call('run')->withArguments(
+				->object($engine->run($test, $testWriterFactory))->isIdenticalTo($engine)
+				->mock($writer)
+					->call('write')->withArguments(
 						'<?php ' .
 						'ob_start();' .
 						'require \'' . atoum\directory . '/classes/autoloader.php\';' .
@@ -85,7 +92,10 @@ class concurrent extends atoum\test
 						'ob_end_clean();' .
 						'mageekguy\atoum\scripts\runner::disableAutorun();' .
 						'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
-					)->twice()
+					)->once()
+				->mock($php)
+					->call('addOption')->withArguments($writer->getFilename())->once()
+					->call('run')->withArguments('')->twice()
 					->call('__set')->withArguments('XDEBUG_CONFIG', $xdebugConfig)->twice()
 		;
 	}
