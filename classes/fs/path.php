@@ -9,18 +9,15 @@ use
 
 class path
 {
-	protected $adapter = null;
 	protected $drive = '';
 	protected $components = '';
 	protected $directorySeparator = DIRECTORY_SEPARATOR;
 
-	public function __construct($value, $directorySeparator = null, atoum\adapter $adapter = null)
+	public function __construct($value, $directorySeparator = null)
 	{
-		$this->directorySeparator = (string) $directorySeparator ?: DIRECTORY_SEPARATOR;
-
 		$this
 			->setDriveAndComponents($value)
-			->setAdapter($adapter)
+			->directorySeparator = (string) $directorySeparator ?: DIRECTORY_SEPARATOR
 		;
 	}
 
@@ -34,18 +31,6 @@ class path
 		}
 
 		return $this->drive . $components;
-	}
-
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
 	}
 
 	public function getDirectorySeparator()
@@ -91,7 +76,7 @@ class path
 
 	public function exists()
 	{
-		return ($this->adapter->file_exists((string) $this) === true);
+		return (file_exists((string) $this) === true);
 	}
 
 	public function resolve()
@@ -157,7 +142,7 @@ class path
 	{
 		if ($this->isAbsolute() === false)
 		{
-			$this->setDriveAndComponents($this->adapter->getcwd() . DIRECTORY_SEPARATOR . $this->components);
+			$this->setDriveAndComponents(getcwd() . DIRECTORY_SEPARATOR . $this->components);
 		}
 
 		return $this;
@@ -168,15 +153,15 @@ class path
 		$absolutePath = $this->getAbsolutePath();
 
 		$files = '';
-		$realPath = $this->adapter->realpath((string) $absolutePath);
+		$realPath = realpath((string) $absolutePath);
 
 		if ($realPath === false)
 		{
 			while ($realPath === false && $absolutePath->isRoot() === false)
 			{
-				$files = '/' . $this->adapter->basename((string) $absolutePath) . $files;
+				$files = '/' . basename((string) $absolutePath) . $files;
 				$absolutePath = $absolutePath->getParentDirectoryPath();
-				$realPath = $this->adapter->realpath((string) $absolutePath);
+				$realPath = realpath((string) $absolutePath);
 			}
 		}
 
@@ -191,7 +176,7 @@ class path
 	public function getParentDirectoryPath()
 	{
 		$parentDirectory = clone $this;
-		$parentDirectory->components = self::getComponents($this->adapter->dirname($parentDirectory->components));
+		$parentDirectory->components = self::getComponents(dirname($parentDirectory->components));
 
 		return $parentDirectory;
 	}
@@ -238,7 +223,7 @@ class path
 	{
 		$parentDirectory = $this->getParentDirectoryPath();
 
-		if ($this->adapter->file_exists($parentDirectory) === false && @$this->adapter->mkdir($parentDirectory, 0777, true) === false)
+		if (file_exists((string) $parentDirectory) === false && @mkdir($parentDirectory, 0777, true) === false)
 		{
 			throw new exception('Unable to create directory \'' . $parentDirectory . '\'');
 		}
@@ -248,7 +233,7 @@ class path
 
 	public function putContents($data)
 	{
-		if (@$this->adapter->file_put_contents($this->createParentDirectory(), $data) === false)
+		if (@file_put_contents($this->createParentDirectory(), $data) === false)
 		{
 			throw new exception('Unable to put data \'' . $data . '\' in file \'' . $this . '\'');
 		}
