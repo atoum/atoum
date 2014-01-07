@@ -63,6 +63,7 @@ abstract class test implements observable, \countable
 	private $observers = array();
 	private $tags = array();
 	private $phpVersions = array();
+	private $hhvmVersions = array();
 	private $mandatoryExtensions = array();
 	private $dataProviders = array();
 	private $testMethods = array();
@@ -446,6 +447,17 @@ abstract class test implements observable, \countable
 		return $this->phpVersions;
 	}
 
+	public function addClassHhvmVersion($version, $operator = null)
+	{
+		$this->hhvmVersions[$version] = $operator ?: '>=';
+
+		return $this;
+	}
+
+	public function getClassHhvmVersions()
+	{
+		return $this->hhvmVersions;
+	}
 	public function addMandatoryClassExtension($extension)
 	{
 		$this->mandatoryExtensions[] = $extension;
@@ -489,6 +501,48 @@ abstract class test implements observable, \countable
 			else
 			{
 				$versions = array_merge($classVersions, $this->testMethods[$testMethodName]['php']);
+			}
+		}
+
+		return $versions;
+	}
+
+	public function addMethodHhvmVersion($testMethodName, $version, $operator = null)
+	{
+		$this->checkMethod($testMethodName)->testMethods[$testMethodName]['hhvm'][$version] = $operator ?: '>=';
+
+		return $this;
+	}
+
+	public function getMethodHhvmVersions($testMethodName = null)
+	{
+		$versions = array();
+
+		$classVersions = $this->getClassHhvmVersions();
+
+		if ($testMethodName === null)
+		{
+			foreach ($this->testMethods as $testMethodName => $annotations)
+			{
+				if (isset($annotations['hhvm']) === false)
+				{
+					$versions[$testMethodName] = $classVersions;
+				}
+				else
+				{
+					$versions[$testMethodName] = array_merge($classVersions, $annotations['hhvm']);
+				}
+			}
+		}
+		else
+		{
+			if (isset($this->checkMethod($testMethodName)->testMethods[$testMethodName]['hhvm']) === false)
+			{
+				$versions = $classVersions;
+			}
+			else
+			{
+				$versions = array_merge($classVersions, $this->testMethods[$testMethodName]['hhvm']);
 			}
 		}
 
@@ -1066,6 +1120,17 @@ abstract class test implements observable, \countable
 					}
 				}
 
+				if (defined('HHVM_VERSION'))
+				{
+					foreach ($this->getMethodHhvmVersions($testMethod) as $hhvmVersion => $operator)
+					{
+						if (version_compare(HHVM_VERSION, $hhvmVersion, $operator) === false)
+						{
+							throw new test\exceptions\skip('HHVM version ' . HHVM_VERSION . ' is not ' . $operator . ' to ' . $hhvmVersion);
+						}
+					}
+				}
+
 				foreach ($this->getMandatoryMethodExtensions($testMethod) as $mandatoryExtension)
 				{
 					$this->extension($mandatoryExtension)->isLoaded();
@@ -1460,6 +1525,37 @@ abstract class test implements observable, \countable
 					}
 				}
 			)
+			->setHandler('hhvm', function($value) use ($test) {
+					$value = annotations\extractor::toArray($value);
+
+					if (isset($value[0]) === true)
+					{
+						$operator = null;
+
+						if (isset($value[1]) === false)
+						{
+							$version = $value[0];
+						}
+						else
+						{
+							$version = $value[1];
+
+							switch ($value[0])
+							{
+								case '<':
+								case '<=':
+								case '=':
+								case '==':
+								case '>=':
+								case '>':
+									$operator = $value[0];
+							}
+						}
+
+						$test->addClassHhvmVersion($version, $operator);
+					}
+				}
+			)
 			->setHandler('extensions', function($value) use ($test) {
 					foreach (annotations\extractor::toArray($value) as $mandatoryExtension)
 					{
@@ -1512,6 +1608,37 @@ abstract class test implements observable, \countable
 						}
 
 						$test->addMethodPhpVersion($methodName, $version, $operator);
+					}
+				}
+			)
+			->setHandler('hhvm', function($value) use ($test, & $methodName) {
+					$value = annotations\extractor::toArray($value);
+
+					if (isset($value[0]) === true)
+					{
+						$operator = null;
+
+						if (isset($value[1]) === false)
+						{
+							$version = $value[0];
+						}
+						else
+						{
+							$version = $value[1];
+
+							switch ($value[0])
+							{
+								case '<':
+								case '<=':
+								case '=':
+								case '==':
+								case '>=':
+								case '>':
+									$operator = $value[0];
+							}
+						}
+
+						$test->addMethodHhvmVersion($methodName, $version, $operator);
 					}
 				}
 			)
