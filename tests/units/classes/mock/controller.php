@@ -6,7 +6,6 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\test\adapter,
-	mageekguy\atoum\test\adapter\invoker,
 	mageekguy\atoum\mock\controller as testedClass
 ;
 
@@ -81,7 +80,10 @@ class controller extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
+	/**
+	 * @php 5.4
+	 * @hhvm 2.4.0
+	 */
 	public function test__setAndBindToMock()
 	{
 		$this
@@ -118,7 +120,10 @@ class controller extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
+	/**
+	 * @php 5.4
+	 * @hhvm 2.4.0
+	 */
 	public function testEnableAutoBind()
 	{
 		$this
@@ -140,7 +145,10 @@ class controller extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
+	/**
+	 * @php 5.4
+	 * @hhvm 2.4.0
+	 */
 	public function testDisableAutoBind()
 	{
 		$this
