@@ -11,10 +11,14 @@ class object extends asserters\variable
 {
 	public function __get($property)
 	{
-		switch ($property)
+		switch (strtolower($property))
 		{
-			case 'toString':
-				return $this->toString();
+			case 'tostring':
+			case 'isempty':
+			case 'istestedinstance':
+			case 'isnottestedinstance':
+			case 'isinstanceoftestedclass':
+				return $this->{$property}();
 
 			default:
 				return parent::__get($property);
@@ -118,17 +122,17 @@ class object extends asserters\variable
 
 	public function isTestedInstance()
 	{
-		return $this->isIdenticalTo($this->test->testedInstance);
+		return $this->valueIsSet()->testedInstanceIsSet()->isIdenticalTo($this->test->testedInstance);
 	}
 
 	public function isNotTestedInstance()
 	{
-		return $this->isNotIdenticalTo($this->test->testedInstance);
+		return $this->valueIsSet()->testedInstanceIsSet()->isNotIdenticalTo($this->test->testedInstance);
 	}
 
 	public function isInstanceOfTestedClass()
 	{
-		return $this->isInstanceOf($this->test->getTestedClassName());
+		return $this->valueIsSet()->testedInstanceIsSet()->isInstanceOf($this->test->getTestedClassName());
 	}
 
 	public function toString()
@@ -141,6 +145,16 @@ class object extends asserters\variable
 		if (self::isObject(parent::valueIsSet($message)->value) === false)
 		{
 			throw new exceptions\logic($message);
+		}
+
+		return $this;
+	}
+
+	protected function testedInstanceIsSet()
+	{
+		if ($this->test === null || $this->test->testedInstance === null)
+		{
+			throw new exceptions\logic('Tested instance is undefined in the test');
 		}
 
 		return $this;
