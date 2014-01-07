@@ -116,6 +116,21 @@ class object extends asserters\variable
 		return $this;
 	}
 
+	public function isTestedInstance()
+	{
+		return $this->isIdenticalTo($this->test->testedInstance);
+	}
+
+	public function isNotTestedInstance()
+	{
+		return $this->isNotIdenticalTo($this->test->testedInstance);
+	}
+
+	public function isInstanceOfTestedClass()
+	{
+		return $this->isInstanceOf($this->test->getTestedClassName());
+	}
+
 	public function toString()
 	{
 		return $this->generator->castToString($this->valueIsSet()->value);

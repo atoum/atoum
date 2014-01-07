@@ -12,6 +12,7 @@ abstract class asserter
 {
 	protected $locale = null;
 	protected $generator = null;
+	protected $test = null;
 
 	public function __construct(asserter\generator $generator = null)
 	{
@@ -111,6 +112,8 @@ abstract class asserter
 
 	public function setWithTest(test $test)
 	{
+		$this->test = $test;
+
 		return $this;
 	}
 
