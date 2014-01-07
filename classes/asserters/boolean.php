@@ -11,13 +11,11 @@ class boolean extends asserters\variable
 {
 	public function __get($property)
 	{
-		switch (true)
+		switch (strtolower($property))
 		{
-			case strtolower($property) == 'isfalse':
-				return $this->isFalse();
-
-			case strtolower($property) == 'istrue':
-				return $this->isTrue();
+			case 'isfalse':
+			case 'istrue':
+				return $this->{$property}();
 
 			default:
 				return parent::__get($property);
