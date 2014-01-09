@@ -171,6 +171,23 @@ class phpClass extends atoum\asserter
 		return $this;
 	}
 
+	public function hasConstant($constant, $failMessage = null)
+	{
+		if ($this->classIsSet()->class->hasConstant($constant) === false)
+		{
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s has no constant %s'), $this, $constant));
+
+			return $this;
+		}
+		else
+		{
+			$this->pass();
+
+			return $this->generator->constant($this->class->getConstant($constant));
+		}
+
+	}
+
 	protected function classIsSet()
 	{
 		if ($this->class === null)
