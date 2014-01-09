@@ -949,44 +949,42 @@ abstract class test implements observable, \countable
 						throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 					}
 
+					$newTestedInstanceHandlerParameters = $constructorParameters = array();
+					$defaultArguments = 0;
+
 					$testedClassConstructor = $testedClass->getConstructor();
-					$newTestedInstanceHandlerParameters = array();
 
-					if ($testedClassConstructor === null)
+					if ($testedClassConstructor !== null)
 					{
-						$newTestedInstanceHandler = function() use ($testedClassName, & $instance) { return ($instance = new $testedClassName()); };
-					}
-					else
-					{
-						$constructorParameters = $newTestedInstanceHandlerParameters;
-
 						foreach ($testedClassConstructor->getParameters() as $position => $parameter)
 						{
 							$newTestedInstanceHandlerParameters[$position] = $constructorParameters[$position] = '$' . $parameter->getName();
 
-							switch (true)
+							if ($parameter->isPassedByReference() === true)
 							{
-								case $parameter->isPassedByReference():
-									$newTestedInstanceHandlerParameters[$position] = '& ' . $newTestedInstanceHandlerParameters[$position];
+								$newTestedInstanceHandlerParameters[$position] = '& ' . $newTestedInstanceHandlerParameters[$position];
+							}
 
-								case $parameter->isDefaultValueAvailable():
-									$newTestedInstanceHandlerParameters[$position] .= ' = ' . var_export($parameter->getDefaultValue(), true);
-									break;
-
-								case $parameter->isOptional():
-									$newTestedInstanceHandlerParameters[$position] .= ' = null';
+							if ($parameter->isDefaultValueAvailable() === true)
+							{
+								$newTestedInstanceHandlerParameters[$position] .= ' = ' . var_export($parameter->getDefaultValue(), true);
+								$defaultArguments++;
+							}
+							else if ($parameter->isOptional() === true)
+							{
+								$newTestedInstanceHandlerParameters[$position] .= ' = null';
+								$defaultArguments++;
 							}
 						}
-
-						$newTestedInstanceHandler = eval('return function(' . join(', ', $newTestedInstanceHandlerParameters) . ') use (& $instance) { return ($instance = new ' . $testedClassName . '(' . join(', ', $constructorParameters) . ')); };');
 					}
 
-					$this->assertionManager
-						->setPropertyHandler('testedInstance', function() use (& $instance) { return $instance; })
-						->setMethodHandler('newTestedInstance', $newTestedInstanceHandler)
-					;
+					$this->assertionManager->setPropertyHandler('testedInstance', function() use (& $instance) { return $instance; });
 
-					if (sizeof($newTestedInstanceHandlerParameters) <= 0)
+					$newTestedInstanceHandler = eval('return function(' . join(', ', $newTestedInstanceHandlerParameters) . ') use (& $instance) { return ($instance = new ' . $testedClassName . '(' . join(', ', $constructorParameters) . ')); };');
+
+					$this->assertionManager->setMethodHandler('newTestedInstance', $newTestedInstanceHandler);
+
+					if (sizeof($newTestedInstanceHandlerParameters) <= $defaultArguments)
 					{
 						$this->assertionManager->setPropertyHandler('newTestedInstance', $newTestedInstanceHandler);
 					}
