@@ -950,6 +950,7 @@ abstract class test implements observable, \countable
 					}
 
 					$testedClassConstructor = $testedClass->getConstructor();
+					$newTestedInstanceHandlerParameters = array();
 
 					if ($testedClassConstructor === null)
 					{
@@ -957,7 +958,7 @@ abstract class test implements observable, \countable
 					}
 					else
 					{
-						$newTestedInstanceHandlerParameters = $constructorParameters = array();
+						$constructorParameters = $newTestedInstanceHandlerParameters;
 
 						foreach ($testedClassConstructor->getParameters() as $position => $parameter)
 						{
@@ -984,6 +985,11 @@ abstract class test implements observable, \countable
 						->setPropertyHandler('testedInstance', function() use (& $instance) { return $instance; })
 						->setMethodHandler('newTestedInstance', $newTestedInstanceHandler)
 					;
+
+					if (sizeof($newTestedInstanceHandlerParameters) <= 0)
+					{
+						$this->assertionManager->setPropertyHandler('newTestedInstance', $newTestedInstanceHandler);
+					}
 
 					test\adapter::setStorage($this->testAdapterStorage);
 					mock\controller::setLinker($this->mockControllerLinker);
