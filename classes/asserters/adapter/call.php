@@ -37,6 +37,22 @@ abstract class call extends atoum\asserter
 		self::$instances->attach($this);
 	}
 
+	public function __get($property)
+	{
+		switch (strtolower($property))
+		{
+			case 'once':
+			case 'twice':
+			case 'thrice':
+			case 'never':
+			case 'atleastonce':
+				return $this->{$property}();
+
+			default:
+				return parent::__get($property);
+		}
+	}
+
 	public function isEvaluated()
 	{
 		if ($this->call->getFunction() !== null && $this->isEvaluated === false)
