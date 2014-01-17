@@ -128,6 +128,27 @@ class float extends atoum\test
 		;
 	}
 
+	public function testIsZero()
+	{
+		$this
+			->given($asserter = new sut($generator = new asserter\generator()))
+
+			->if($asserter->setWith(0.0))
+			->then
+				->object($asserter->isZero())->isIdenticalTo($asserter)
+
+			->if(
+				$asserter->setWith($value = (float) rand(1, PHP_INT_MAX)),
+				$diff = new diffs\variable(),
+				$diff->setExpected(0.0)->setActual($value)
+			)
+			->then
+				->exception(function() use ($asserter) { $asserter->isZero(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf(0.0)) . PHP_EOL . $diff)
+		;
+	}
+
 	/**
 	 * @dataProvider dataProviderNearlyEqualTo
 	 */
