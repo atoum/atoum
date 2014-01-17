@@ -137,4 +137,25 @@ class integer extends atoum\test
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not less than or equal to %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
 		;
 	}
+
+	public function testIsZero()
+	{
+		$this
+			->given($asserter = new sut($generator = new asserter\generator()))
+
+			->if($asserter->setWith(0))
+			->then
+				->object($asserter->isZero())->isIdenticalTo($asserter)
+
+			->if(
+				$asserter->setWith($value = rand(1, PHP_INT_MAX)),
+				$diff = new diffs\variable(),
+				$diff->setExpected(0)->setActual($value)
+			)
+			->then
+				->exception(function() use ($asserter) { $asserter->isZero(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf(0)) . PHP_EOL . $diff)
+		;
+	}
 }

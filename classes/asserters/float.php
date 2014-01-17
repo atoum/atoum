@@ -61,6 +61,11 @@ class float extends asserters\integer
 		return $this;
 	}
 
+	public function isZero($failMessage = null)
+	{
+		return $this->isEqualTo(0.0, $failMessage);
+	}
+
 	protected static function check($value, $method)
 	{
 		if (self::isFloat($value) === false)
