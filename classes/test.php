@@ -907,8 +907,6 @@ abstract class test implements observable, \countable
 	{
 		$this->runTestMethods = $runTestMethods = array();
 
-		$runTestMethods = array();
-
 		if (isset($methods['*']) === true)
 		{
 			$runTestMethods = $methods['*'];
