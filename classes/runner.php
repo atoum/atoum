@@ -294,9 +294,9 @@ class runner implements observable
 		{
 			$test = new $testClass();
 
-			if (static::isIgnored($test, $namespaces, $tags) === false)
+			if ($test->isIgnored($namespaces, $tags) === false)
 			{
-				$methods =  self::getMethods($test, $testMethods, $tags);
+				$methods =  $test->runTestMethods($testMethods, $tags);
 
 				if ($methods)
 				{
@@ -425,54 +425,66 @@ class runner implements observable
 
 		natsort($runTestClasses);
 
-		$this->start = $this->adapter->microtime(true);
-
-		$this->callObservers(self::runStart);
+		$tests = array();
 
 		foreach ($runTestClasses as $runTestClass)
 		{
 			$test = call_user_func($this->testFactory, $runTestClass);
 
-			if (static::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
+			if ($test->isIgnored($namespaces, $tags) === false)
 			{
-				$this->testNumber++;
-				$this->testMethodNumber += sizeof($methods);
+				$testMethodNumber = sizeof($test->runTestMethods($runTestMethods, $tags));
 
-				$test
-					->setPhpPath($this->php->getBinaryPath())
-					->setAdapter($this->adapter)
-					->setLocale($this->locale)
-					->setBootstrapFile($this->bootstrapFile)
-				;
-
-				if ($this->debugMode === true)
+				if ($testMethodNumber > 0)
 				{
-					$test->enableDebugMode();
-				}
+					$tests[] = $test;
 
-				$test->setXdebugConfig($this->xdebugConfig);
+					$this->testNumber++;
+					$this->testMethodNumber += $testMethodNumber;
 
-				if ($this->maxChildrenNumber !== null)
-				{
-					$test->setMaxChildrenNumber($this->maxChildrenNumber);
-				}
+					$test
+						->setPhpPath($this->php->getBinaryPath())
+						->setAdapter($this->adapter)
+						->setLocale($this->locale)
+						->setBootstrapFile($this->bootstrapFile)
+					;
 
-				if ($this->codeCoverageIsEnabled() === false)
-				{
-					$test->disableCodeCoverage();
-				}
-				else
-				{
-					$test->getScore()->setCoverage($this->getCoverage());
-				}
+					if ($this->debugMode === true)
+					{
+						$test->enableDebugMode();
+					}
 
-				foreach ($this->observers as $observer)
-				{
-					$test->addObserver($observer);
-				}
+					$test->setXdebugConfig($this->xdebugConfig);
 
-				$this->score->merge($test->run($methods)->getScore());
+					if ($this->maxChildrenNumber !== null)
+					{
+						$test->setMaxChildrenNumber($this->maxChildrenNumber);
+					}
+
+					if ($this->codeCoverageIsEnabled() === false)
+					{
+						$test->disableCodeCoverage();
+					}
+					else
+					{
+						$test->getScore()->setCoverage($this->getCoverage());
+					}
+
+					foreach ($this->observers as $observer)
+					{
+						$test->addObserver($observer);
+					}
+				}
 			}
+		}
+
+		$this->start = $this->adapter->microtime(true);
+
+		$this->callObservers(self::runStart);
+
+		foreach ($tests as $test)
+		{
+			$this->score->merge($test->run()->getScore());
 		}
 
 		$this->stop = $this->adapter->microtime(true);
