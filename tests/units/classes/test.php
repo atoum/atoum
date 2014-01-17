@@ -461,7 +461,7 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testIgnore()
+		public function testIsIgnored()
 		{
 			$this
 				->if($test = new emptyTest())
