@@ -850,9 +850,23 @@ abstract class test implements observable, \countable
 		return $this->runTestMethods($this->getTestMethods());
 	}
 
-	public function isIgnored()
+	public function isIgnored(array $namespaces = array(), array $tags = array())
 	{
-		return (sizeof($this) <= 0 || $this->ignore === true);
+		$isIgnored = (sizeof($this) <= 0 || $this->ignore === true);
+
+		if ($isIgnored === false && sizeof($namespaces) > 0)
+		{
+			$classNamespace = strtolower($this->getClassNamespace());
+
+			$isIgnored = sizeof(array_filter($namespaces, function($value) use ($classNamespace) { return strpos($classNamespace, strtolower($value)) === 0; })) <= 0;
+		}
+
+		if ($isIgnored === false && sizeof($tags) > 0)
+		{
+			$isIgnored = sizeof($testTags = $this->getAllTags()) <= 0 || sizeof(array_intersect($tags, $testTags)) == 0;
+		}
+
+		return $isIgnored;
 	}
 
 	public function ignoreMethod($methodName, $boolean)
@@ -880,6 +894,70 @@ abstract class test implements observable, \countable
 		}
 
 		return $isIgnored;
+	}
+
+	public function runTestMethods(array $methods, array $tags = array())
+	{
+		$this->runTestMethods = $runTestMethods = array();
+
+		if (isset($methods['*']) === true)
+		{
+			$runTestMethods = $methods['*'];
+		}
+
+		$testClass = $this->getClass();
+
+		if (isset($methods[$testClass]) === true)
+		{
+			$runTestMethods = $methods[$testClass];
+		}
+
+		if (in_array('*', $runTestMethods) === true)
+		{
+			$runTestMethods = array();
+		}
+
+		if (sizeof($runTestMethods) <= 0)
+		{
+			$runTestMethods = $this->getTestMethods($tags);
+		}
+		else
+		{
+			$runTestMethods = $this->getTaggedTestMethods($runTestMethods, $tags);
+		}
+
+		foreach ($runTestMethods as $method)
+		{
+			if ($this->xdebugConfig != null)
+			{
+				$engineClass = 'mageekguy\atoum\test\engines\concurrent';
+			}
+			else
+			{
+				$engineName = $engineClass = ($this->getMethodEngine($method) ?: $this->getClassEngine() ?: self::getDefaultEngine());
+
+				if (substr($engineClass, 0, 1) !== '\\')
+				{
+					$engineClass = self::enginesNamespace . '\\' . $engineClass;
+				}
+
+				if (class_exists($engineClass) === false)
+				{
+					throw new exceptions\runtime('Test engine \'' . $engineName . '\' does not exist for method \'' . $this->class . '::' . $method . '()\'');
+				}
+			}
+
+			$engine = new $engineClass();
+
+			if ($engine instanceof test\engine === false)
+			{
+				throw new exceptions\runtime('Test engine \'' . $engineName . '\' is invalid for method \'' . $this->class . '::' . $method . '()\'');
+			}
+
+			$this->runTestMethods[$method] = $engine;
+		}
+
+		return $this;
 	}
 
 	public function runTestMethod($testMethod, array $tags = array())
@@ -1381,44 +1459,6 @@ abstract class test implements observable, \countable
 		if (isset($this->testMethods[$methodName]) === false)
 		{
 			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() does not exist');
-		}
-
-		return $this;
-	}
-
-	private function runTestMethods(array $methods)
-	{
-		$this->runTestMethods = array();
-
-		foreach ($methods as $method)
-		{
-			if ($this->xdebugConfig != null)
-			{
-				$engineClass = 'mageekguy\atoum\test\engines\concurrent';
-			}
-			else
-			{
-				$engineName = $engineClass = ($this->getMethodEngine($method) ?: $this->getClassEngine() ?: self::getDefaultEngine());
-
-				if (substr($engineClass, 0, 1) !== '\\')
-				{
-					$engineClass = self::enginesNamespace . '\\' . $engineClass;
-				}
-
-				if (class_exists($engineClass) === false)
-				{
-					throw new exceptions\runtime('Test engine \'' . $engineName . '\' does not exist for method \'' . $this->class . '::' . $method . '()\'');
-				}
-			}
-
-			$engine = new $engineClass();
-
-			if ($engine instanceof test\engine === false)
-			{
-				throw new exceptions\runtime('Test engine \'' . $engineName . '\' is invalid for method \'' . $this->class . '::' . $method . '()\'');
-			}
-
-			$this->runTestMethods[$method] = $engine;
 		}
 
 		return $this;
