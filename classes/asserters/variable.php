@@ -19,6 +19,23 @@ class variable extends atoum\asserter
 		return $this->getTypeOf($this->value);
 	}
 
+	public function __get($property)
+	{
+		switch (strtolower($property))
+		{
+			case 'isnull':
+			case 'isnotnull':
+			case 'isnotfalse':
+			case 'isnottrue':
+			case 'iscallable':
+			case 'isnotcallable':
+				return $this->{$property}();
+
+			default:
+				return parent::__get($property);
+		}
+	}
+
 	public function wasSet()
 	{
 		return ($this->isSet === true);
