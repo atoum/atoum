@@ -211,15 +211,22 @@ class variable extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
-				->exception(function() use ($asserter) { $asserter->isNull(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
+				->exception(function() use ($asserter) { $asserter->isNull(); })
+					->isInstanceOf('logicException')
+					->hasMessage('Value is undefined')
+				->exception(function() use ($asserter) { $asserter->isNull; })
 					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
 			->if($asserter->setWith(null))
 			->then
 				->object($asserter->isNull())->isIdenticalTo($asserter)
+				->object($asserter->isNull)->isIdenticalTo($asserter)
 			->if($asserter->setWith(''))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNull(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not null'), $asserter))
+				->exception(function() use ($asserter) { $asserter->isNull; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not null'), $asserter))
 			->if($asserter->setWith(uniqid()))
@@ -227,9 +234,15 @@ class variable extends atoum\test
 				->exception(function() use ($asserter) { $asserter->isNull(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not null'), $asserter))
+				->exception(function() use ($asserter) { $asserter->isNull; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not null'), $asserter))
 			->if($asserter->setWith(0))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNull(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not null'), $asserter))
+				->exception(function() use ($asserter) { $asserter->isNull; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not null'), $asserter))
 			->if($asserter->setWith(false))
@@ -237,6 +250,12 @@ class variable extends atoum\test
 				->exception(function() use ($asserter) { $asserter->isNull(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not null'), $asserter))
+				->exception(function() use ($asserter) { $asserter->isNull; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not null'), $asserter))
+				->exception(function() use ($asserter, & $message) { $asserter->isNull($message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 		;
 	}
 
@@ -246,17 +265,27 @@ class variable extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
-				->exception(function() use ($asserter) { $asserter->isNotNull(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
+				->exception(function() use ($asserter) { $asserter->isNotNull(); })
+					->isInstanceOf('logicException')
+					->hasMessage('Value is undefined')
+				->exception(function() use ($asserter) { $asserter->isNotNull; })
 					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
 			->if($asserter->setWith(uniqid()))
 			->then
 				->object($asserter->isNotNull())->isIdenticalTo($asserter)
+				->object($asserter->isNotNull)->isIdenticalTo($asserter)
 			->if($asserter->setWith(null))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotNull(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is null'), $asserter))
+				->exception(function() use ($asserter) { $asserter->isNotNull; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is null'), $asserter))
+				->exception(function() use ($asserter, & $message) { $asserter->isNotNull($message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 		;
 	}
 
@@ -308,17 +337,27 @@ class variable extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
-				->exception(function() use ($asserter) { $asserter->isNotNull(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
+				->exception(function() use ($asserter) { $asserter->isNotFalse(); })
+					->isInstanceOf('logicException')
+					->hasMessage('Value is undefined')
+				->exception(function() use ($asserter) { $asserter->isNotFalse; })
 					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
 			->if($asserter->setWith(uniqid()))
 			->then
 				->object($asserter->isNotFalse())->isIdenticalTo($asserter)
+				->object($asserter->isNotFalse)->isIdenticalTo($asserter)
 			->if($asserter->setWith(false))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotFalse(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is false'), $asserter))
+				->exception(function() use ($asserter) { $asserter->isNotFalse; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is false'), $asserter))
+				->exception(function() use ($asserter, & $message) { $asserter->isNotFalse($message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 		;
 	}
 
@@ -328,17 +367,78 @@ class variable extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
-				->exception(function() use ($asserter) { $asserter->isNotNull(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
+				->exception(function() use ($asserter) { $asserter->isNotTrue(); })
+					->isInstanceOf('logicException')
+					->hasMessage('Value is undefined')
+				->exception(function() use ($asserter) { $asserter->isNotTrue; })
 					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
 			->if($asserter->setWith(uniqid()))
 			->then
 				->object($asserter->isNotTrue())->isIdenticalTo($asserter)
+				->object($asserter->isNotTrue)->isIdenticalTo($asserter)
 			->if($asserter->setWith(true))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotTrue(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is true'), $asserter))
+				->exception(function() use ($asserter, & $message) { $asserter->isNotTrue($message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
+		;
+	}
+
+	public function testIsCallable()
+	{
+		$this
+			->if($asserter = new sut($generator = new asserter\generator()))
+			->then
+				->boolean($asserter->wasSet())->isFalse()
+				->exception(function() use ($asserter) { $asserter->isCallable(); })
+					->isInstanceOf('logicException')
+					->hasMessage('Value is undefined')
+				->exception(function() use ($asserter) { $asserter->isCallable; })
+					->isInstanceOf('logicException')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith(function() {}))
+			->then
+				->object($asserter->isCallable())->isIdenticalTo($asserter)
+				->object($asserter->isCallable)->isIdenticalTo($asserter)
+			->if($asserter->setWith(uniqid()))
+			->then
+				->exception(function() use ($asserter) { $asserter->isCallable(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not callable'), $asserter))
+				->exception(function() use ($asserter, & $message) { $asserter->isCallable($message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
+		;
+	}
+
+	public function testIsNotCallable()
+	{
+		$this
+			->if($asserter = new sut($generator = new asserter\generator()))
+			->then
+				->boolean($asserter->wasSet())->isFalse()
+				->exception(function() use ($asserter) { $asserter->isNotCallable(); })
+					->isInstanceOf('logicException')
+					->hasMessage('Value is undefined')
+				->exception(function() use ($asserter) { $asserter->isNotCallable; })
+					->isInstanceOf('logicException')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith(uniqid()))
+			->then
+				->object($asserter->isNotCallable())->isIdenticalTo($asserter)
+				->object($asserter->isNotCallable)->isIdenticalTo($asserter)
+			->if($asserter->setWith(function() {}))
+			->then
+				->exception(function() use ($asserter) { $asserter->isNotCallable(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is callable'), $asserter))
+				->exception(function() use ($asserter, & $message) { $asserter->isNotCallable($message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 		;
 	}
 }
