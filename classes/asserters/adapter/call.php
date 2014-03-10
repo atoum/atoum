@@ -7,6 +7,7 @@ use
 	mageekguy\atoum\php,
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserter,
+	mageekguy\atoum\tools\variable,
 	mageekguy\atoum\tools\arguments,
 	mageekguy\atoum\asserters\adapter\call\exceptions
 ;
@@ -18,23 +19,16 @@ abstract class call extends atoum\asserter
 	protected $identicalCall = false;
 	protected $beforeCalls = array();
 	protected $afterCalls = array();
-	protected $isEvaluated = false;
-	protected $lastAssertion = array('file' => null, 'line' => null);
+	protected $trace = array('file' => null, 'line' => null);
+	protected $manager = null;
 
 	private static $instances = null;
 
-	public function __construct(asserter\generator $generator = null)
+	public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null)
 	{
-		parent::__construct($generator);
+		parent::__construct($generator, $analyzer);
 
-		$this->call = new test\adapter\call();
-
-		if (self::$instances === null)
-		{
-			self::$instances = new \splObjectStorage();
-		}
-
-		self::$instances->attach($this);
+		$this->setCall();
 	}
 
 	public function __get($property)
@@ -46,6 +40,8 @@ abstract class call extends atoum\asserter
 			case 'thrice':
 			case 'never':
 			case 'atleastonce':
+			case 'wascalled':
+			case 'wasnotcalled':
 				return $this->{$property}();
 
 			default:
@@ -53,31 +49,48 @@ abstract class call extends atoum\asserter
 		}
 	}
 
-	public function isEvaluated()
+	public function setManager(call\manager $manager)
 	{
-		if ($this->call->getFunction() !== null && $this->isEvaluated === false)
-		{
-			throw new test\exceptions\runtime('Assertion is not evaluated in file \'' . $this->getLastAssertionFile() . '\' on line ' . $this->getLastAssertionLine());
-		}
+		$this->manager = $manager;
 
 		return $this;
+	}
+
+	public function setCall(test\adapter\call $call = null)
+	{
+		if ($call === null)
+		{
+			$call = new test\adapter\call();
+		}
+
+		if ($this->call !== null)
+		{
+			$call->copy($this->call);
+		}
+
+		$this->call = $call;
+
+		return $this;
+	}
+
+	public function getCall()
+	{
+		return clone $this->call;
 	}
 
 	public function disableEvaluationChecking()
 	{
-		self::$instances->detach($this);
-
-		return $this;
+		return $this->removeFromManager();
 	}
 
 	public function getLastAssertionFile()
 	{
-		return $this->lastAssertion['file'];
+		return $this->trace['file'];
 	}
 
 	public function getLastAssertionLine()
 	{
-		return $this->lastAssertion['line'];
+		return $this->trace['line'];
 	}
 
 	public function reset()
@@ -100,7 +113,7 @@ abstract class call extends atoum\asserter
 		}
 		else
 		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not a test adapter'), $this->getTypeOf($this->adapter)));
+			$this->fail($this->_('%s is not a test adapter', $this->getTypeOf($this->adapter)));
 		}
 
 		return $this;
@@ -113,7 +126,7 @@ abstract class call extends atoum\asserter
 
 	public function before(call $call)
 	{
-		$this->setLastAssertion(__METHOD__);
+		$this->setTrace();
 
 		foreach (func_get_args() as $call)
 		{
@@ -130,7 +143,7 @@ abstract class call extends atoum\asserter
 
 	public function after(call $call)
 	{
-		$this->setLastAssertion(__METHOD__);
+		$this->setTrace();
 
 		foreach (func_get_args() as $call)
 		{
@@ -143,11 +156,6 @@ abstract class call extends atoum\asserter
 	public function getAfter()
 	{
 		return $this->afterCalls;
-	}
-
-	public function getCall()
-	{
-		return clone $this->call;
 	}
 
 	public function once($failMessage = null)
@@ -167,15 +175,15 @@ abstract class call extends atoum\asserter
 
 	public function atLeastOnce($failMessage = null)
 	{
-		$this->isEvaluated = true;
+		$this->removeFromManager();
 
-		if (($callsNumber = sizeof($this->checkBeforeAndAfterCalls())) >= 1)
+		if ($this->countBeforeAndAfterCalls() >= 1)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is called 0 time'), $this->call) . $this->getCallsAsString());
+			$this->fail($failMessage ?: $this->_('%s is called 0 time', $this->call) . $this->getCallsAsString());
 		}
 
 		return $this;
@@ -183,9 +191,9 @@ abstract class call extends atoum\asserter
 
 	public function exactly($number, $failMessage = null)
 	{
-		$this->isEvaluated = true;
+		$callsNumber = $this->removeFromManager()->countBeforeAndAfterCalls();
 
-		if (($callsNumber = sizeof($this->checkBeforeAndAfterCalls())) === $number)
+		if ($callsNumber === $number)
 		{
 			$this->pass();
 		}
@@ -193,16 +201,7 @@ abstract class call extends atoum\asserter
 		{
 			if ($failMessage === null)
 			{
-				$failMessage = sprintf(
-					$this->getLocale()->__(
-						'%s is called %d time instead of %d',
-						'%s is called %d times instead of %d',
-						$callsNumber
-					),
-					$this->call,
-					$callsNumber,
-					$number
-				);
+				$failMessage = $this->__('%s is called %d time instead of %d', '%s is called %d times instead of %d', $callsNumber, $this->call, $callsNumber, $number);
 
 				if (sizeof($this->beforeCalls) > 0)
 				{
@@ -213,7 +212,7 @@ abstract class call extends atoum\asserter
 						$beforeCalls[] = (string) $asserter->getCall();
 					}
 
-					$failMessage = sprintf('%s before %s', $failMessage, join(', ', $beforeCalls));
+					$failMessage = $this->_('%s before %s', $failMessage, join(', ', $beforeCalls));
 				}
 
 				if (sizeof($this->afterCalls) > 0)
@@ -225,7 +224,7 @@ abstract class call extends atoum\asserter
 						$afterCalls[] = (string) $asserter->getCall();
 					}
 
-					$failMessage = sprintf('%s after %s', $failMessage, join(', ', $afterCalls));
+					$failMessage = $this->_('%s after %s', $failMessage, join(', ', $afterCalls));
 				}
 
 				$failMessage .= $this->getCallsAsString();
@@ -242,17 +241,9 @@ abstract class call extends atoum\asserter
 		return $this->exactly(0, $failMessage);
 	}
 
-	public static function areEvaluated()
+	public function setWithTest(test $test)
 	{
-		if (self::$instances !== null)
-		{
-			foreach (self::$instances as $asserter)
-			{
-				$asserter->isEvaluated();
-			}
-
-			self::$instances = null;
-		}
+		return $this->setManager($test->getAsserterCallManager());
 	}
 
 	protected function adapterIsSet()
@@ -275,76 +266,70 @@ abstract class call extends atoum\asserter
 		return $this;
 	}
 
-	protected function checkBeforeAndAfterCalls()
+	protected function countBeforeAndAfterCalls()
 	{
-		if ($this->callIsSet()->identicalCall === false)
-		{
-			$calls = $this->adapter->getCallsEqualTo($this->call);
-		}
-		else
-		{
-			$calls = $this->adapter->getCallsIdenticalTo($this->call);
-		}
+		$calls = $this->callIsSet()->adapter->getCalls($this->call, $this->identicalCall);
 
 		if (sizeof($calls) > 0 && (sizeof($this->beforeCalls) > 0 || sizeof($this->afterCalls) > 0))
 		{
-			$arrayOfCalls = $calls->toArray();
-
 			foreach ($this->beforeCalls as $asserter)
 			{
-				$pass = 0;
+				$pass = false;
 
-				foreach ($arrayOfCalls as $position => $call)
+				foreach ($calls->getTimeline() as $position => $call)
 				{
-					if ($asserter->hasAfterCalls($position) === true)
-					{
-						$pass++;
-					}
-					else
+					$hasAfterCalls = $asserter->hasAfterCalls($position);
+
+					if ($hasAfterCalls === false)
 					{
 						$calls->removeCall($call, $position);
-						unset($arrayOfCalls[$position]);
+					}
+					else if ($pass === false)
+					{
+						$pass = $hasAfterCalls;
 					}
 				}
 
-				if ($pass == 0)
+				if ($pass === false)
 				{
-					$this->fail(sprintf($this->getLocale()->_('%s is not called before %s'), $this->call, $asserter->getCall()));
+					$this->fail($this->_('%s is not called before %s', $this->call, $asserter->getCall()));
 				}
 			}
 
 			foreach ($this->afterCalls as $asserter)
 			{
-				$pass = 0;
+				$pass = false;
 
-				foreach ($arrayOfCalls as $position => $call)
+				foreach ($calls->getTimeline() as $position => $call)
 				{
-					if ($asserter->hasPreviousCalls($position) === true)
-					{
-						$pass++;
-					}
-					else
+					$hasPreviousCalls = $asserter->hasPreviousCalls($position);
+
+					if ($hasPreviousCalls === false)
 					{
 						$calls->removeCall($call, $position);
-						unset($arrayOfCalls[$position]);
+					}
+					else if ($pass === false)
+					{
+						$pass = $hasPreviousCalls;
 					}
 				}
 
-				if ($pass == 0)
+				if ($pass === false)
 				{
-					$this->fail(sprintf($this->getLocale()->_('%s is not called after %s'), $this->call, $asserter->getCall()));
+					$this->fail($this->_('%s is not called after %s', $this->call, $asserter->getCall()));
 				}
 			}
 		}
 
-		return $calls;
+		return sizeof($calls);
 	}
 
 	protected function setFunction($function)
 	{
-		$this->setLastAssertion(__METHOD__)->isEvaluated = false;
-
-		$this->adapterIsSet()
+		$this
+			->adapterIsSet()
+			->setTrace()
+			->addToManager()
 			->call
 				->setFunction($function)
 				->unsetArguments()
@@ -363,9 +348,14 @@ abstract class call extends atoum\asserter
 
 	protected function setArguments(array $arguments)
 	{
-		$this->setLastAssertion(__METHOD__)->isEvaluated = false;
+		$this
+			->adapterIsSet()
+			->callIsSet()
+			->setTrace()
+			->call
+				->setArguments($arguments)
+		;
 
-		$this->callIsSet()->call->setArguments($arguments);
 		$this->identicalCall = false;
 
 		return $this;
@@ -373,7 +363,14 @@ abstract class call extends atoum\asserter
 
 	protected function unsetArguments()
 	{
-		$this->callIsSet()->call->unsetArguments();
+		$this
+			->adapterIsSet()
+			->callIsSet()
+			->setTrace()
+			->call
+				->unsetArguments()
+		;
+
 		$this->identicalCall = false;
 
 		return $this;
@@ -416,24 +413,24 @@ abstract class call extends atoum\asserter
 		return $string;
 	}
 
-	protected function setLastAssertion($method)
+	protected function setTrace()
 	{
-		foreach (debug_backtrace() as $backtrace)
+		foreach (debug_backtrace() as $trace)
 		{
-			if (isset($backtrace['function']) === true && isset($backtrace['file']) === true && isset($backtrace['line']) === true)
+			if (isset($trace['function']) === true && isset($trace['file']) === true && isset($trace['line']) === true)
 			{
-				if (isset($backtrace['object']) === false || $backtrace['object'] !== $this)
+				if (isset($trace['object']) === false || $trace['object'] !== $this)
 				{
 					return $this;
 				}
 
-				$this->lastAssertion['file'] = $backtrace['file'];
-				$this->lastAssertion['line'] = $backtrace['line'];
+				$this->trace['file'] = $trace['file'];
+				$this->trace['line'] = $trace['line'];
 			}
 		}
 
-		$this->lastAssertion['file'] = null;
-		$this->lastAssertion['line'] = null;
+		$this->trace['file'] = null;
+		$this->trace['line'] = null;
 
 		return $this;
 	}
@@ -448,6 +445,26 @@ abstract class call extends atoum\asserter
 	private function addAfterCall(call $call)
 	{
 		$this->afterCalls[] = $call->disableEvaluationChecking();
+
+		return $this;
+	}
+
+	private function addToManager()
+	{
+		if ($this->manager !== null)
+		{
+			$this->manager->add($this);
+		}
+
+		return $this;
+	}
+
+	private function removeFromManager()
+	{
+		if ($this->manager !== null)
+		{
+			$this->manager->remove($this);
+		}
 
 		return $this;
 	}

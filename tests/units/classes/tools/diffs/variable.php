@@ -13,11 +13,41 @@ class variable extends atoum\test
 {
 	public function test__construct()
 	{
-		$diff = new tools\diffs\variable();
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->variable($this->testedInstance->getExpected())->isNull()
+				->variable($this->testedInstance->getActual())->isNull()
+				->object($this->testedInstance->getDecorator())->isEqualTo(new tools\diff\decorator())
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new tools\variable\analyzer())
 
-		$this->assert
-			->variable($diff->getExpected())->isNull()
-			->variable($diff->getActual())->isNull()
+			->if($this->newTestedInstance($reference = uniqid()))
+			->then
+				->string($this->testedInstance->getExpected())->isEqualTo($this->testedInstance->getAnalyzer()->dump($reference))
+				->variable($this->testedInstance->getActual())->isNull()
+				->object($this->testedInstance->getDecorator())->isEqualTo(new tools\diff\decorator())
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new tools\variable\analyzer())
+
+			->if($this->newTestedInstance($reference, $actual = uniqid()))
+			->then
+				->string($this->testedInstance->getExpected())->isEqualTo($this->testedInstance->getAnalyzer()->dump($reference))
+				->string($this->testedInstance->getActual())->isEqualTo($this->testedInstance->getAnalyzer()->dump($actual))
+				->object($this->testedInstance->getDecorator())->isEqualTo(new tools\diff\decorator())
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new tools\variable\analyzer())
+		;
+	}
+
+	public function testSetAnalyzer()
+	{
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setAnalyzer($analyzer = new tools\variable\analyzer()))->isTestedInstance
+				->object($this->testedInstance->getAnalyzer())->isIdenticalTo($analyzer)
+				->object($this->testedInstance->setAnalyzer())->isTestedInstance
+				->object($this->testedInstance->getAnalyzer())
+					->isNotIdenticalTo($analyzer)
+					->isEqualTo(new tools\variable\analyzer())
 		;
 	}
 
@@ -25,7 +55,7 @@ class variable extends atoum\test
 	{
 		$diff = new tools\diffs\variable();
 
-		$this->assert
+		$this
 			->object($diff->setExpected($variable = uniqid()))->isIdenticalTo($diff)
 			->string($diff->getExpected())->isEqualTo(self::dumpAsString($variable))
 		;
@@ -35,7 +65,7 @@ class variable extends atoum\test
 	{
 		$diff = new tools\diffs\variable();
 
-		$this->assert
+		$this
 			->object($diff->setActual($variable = uniqid()))->isIdenticalTo($diff)
 			->string($diff->getActual())->isEqualTo(self::dumpAsString($variable))
 		;
@@ -53,7 +83,7 @@ class variable extends atoum\test
 		}
 		catch (\exception $exception) {}
 
-		$this->assert
+		$this
 			->exception($exception)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Expected is undefined')
@@ -67,7 +97,7 @@ class variable extends atoum\test
 		}
 		catch (\exception $exception) {}
 
-		$this->assert
+		$this
 			->exception($exception)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Actual is undefined')
@@ -75,7 +105,7 @@ class variable extends atoum\test
 
 		$diff->setActual($reference);
 
-		$this->assert
+		$this
 			->array($diff->make())->isEqualTo(array(self::dumpAsString($reference)))
 		;
 	}

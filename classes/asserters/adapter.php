@@ -14,6 +14,19 @@ use
 
 class adapter extends adapter\call
 {
+	public function __get($property)
+	{
+		switch (strtolower($property))
+		{
+			case 'withanyarguments':
+			case 'withoutanyargument':
+				return $this->{$property}();
+
+			default:
+				return parent::__get($property);
+		}
+	}
+
 	public function call($function)
 	{
 		return $this->setFunction($function);

@@ -125,7 +125,6 @@ class pusher extends atoum
 			->then
 				->object($pusher->run())->isIdenticalTo($pusher)
 				->mock($errorWriter)->call('write')->withArguments('Unable to write in \'' . $pusher->getTagFile() . '\'')->once()
-				->mock($git)->call('run')->never()
 
 			->assert('Pusher should tag code and commit it if tag file is writable')
 			->if(

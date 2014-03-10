@@ -15,11 +15,13 @@ class mock extends adapter
 	{
 		if ($mock instanceof \mageekguy\atoum\mock\aggregator === false)
 		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not a mock'), $this->getTypeOf($mock)));
+			$this->fail($this->_('%s is not a mock', $this->getTypeOf($mock)));
 		}
 		else
 		{
-			parent::setWith($mock->getMockController())->call->setDecorator(new decorators\addClass($mock->getMockController()->getMockClass()));
+			parent::setWith($mock->getMockController());
+
+			$this->call->setDecorator(new decorators\addClass($this->adapter->getMockClass()));
 		}
 
 		return $this;
@@ -27,13 +29,13 @@ class mock extends adapter
 
 	public function wasCalled($failMessage = null)
 	{
-		if (sizeof($this->adapterIsSet()->adapter->getCalls()) > 0)
+		if ($this->adapterIsSet()->adapter->getCallsNumber() > 0)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is not called'), $this->adapter->getMockClass()));
+			$this->fail($failMessage ?: $this->_('%s is not called', $this->adapter->getMockClass()));
 		}
 
 		return $this;
@@ -41,13 +43,13 @@ class mock extends adapter
 
 	public function wasNotCalled($failMessage = null)
 	{
-		if (sizeof($this->adapterIsSet()->adapter->getCalls()) <= 0)
+		if ($this->adapterIsSet()->adapter->getCallsNumber() <= 0)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is called'), $this->adapter->getMockClass()));
+			$this->fail($failMessage ?: $this->_('%s is called', $this->adapter->getMockClass()));
 		}
 
 		return $this;

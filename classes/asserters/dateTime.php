@@ -15,13 +15,13 @@ class dateTime extends asserters\object
 
 		if ($checkType === true)
 		{
-			if (self::isDateTime($this->value) === false)
+			if ($this->value instanceof \dateTime)
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not an instance of \\dateTime'), $this));
+				$this->pass();
 			}
 			else
 			{
-				$this->pass();
+				$this->fail($this->_('%s is not an instance of \\dateTime', $this));
 			}
 		}
 
@@ -36,7 +36,7 @@ class dateTime extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Timezone is %s instead of %s'), $this->value->getTimezone()->getName(), $timezone->getName()));
+			$this->fail($failMessage ?: $this->_('Timezone is %s instead of %s', $this->value->getTimezone()->getName(), $timezone->getName()));
 		}
 
 		return $this;
@@ -50,7 +50,7 @@ class dateTime extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Year is %s instead of %s'), $this->value->format('Y'), $year));
+			$this->fail($failMessage ?: $this->_('Year is %s instead of %s', $this->value->format('Y'), $year));
 		}
 
 		return $this;
@@ -69,7 +69,7 @@ class dateTime extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Month is %s instead of %02d'), $this->value->format('m'), $month));
+			$this->fail($failMessage ?: $this->_('Month is %s instead of %02d', $this->value->format('m'), $month));
 		}
 
 		return $this;
@@ -88,7 +88,7 @@ class dateTime extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Day is %s instead of %02d'), $this->value->format('d'), $day));
+			$this->fail($failMessage ?: $this->_('Day is %s instead of %02d', $this->value->format('d'), $day));
 		}
 
 		return $this;
@@ -107,7 +107,7 @@ class dateTime extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Date is %s instead of %s'), $this->value->format('Y-m-d'), sprintf('%04d-%02d-%02d', $year, $month, $day)));
+			$this->fail($failMessage ?: $this->_('Date is %s instead of %s', $this->value->format('Y-m-d'), sprintf('%04d-%02d-%02d', $year, $month, $day)));
 		}
 
 		return $this;
@@ -121,7 +121,7 @@ class dateTime extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Hours are %s instead of %02d'), $this->value->format('H'), $hours));
+			$this->fail($failMessage ?: $this->_('Hours are %s instead of %02d', $this->value->format('H'), $hours));
 		}
 
 		return $this;
@@ -135,7 +135,7 @@ class dateTime extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Minutes are %s instead of %02d'), $this->value->format('i'), $minutes));
+			$this->fail($failMessage ?: $this->_('Minutes are %s instead of %02d', $this->value->format('i'), $minutes));
 		}
 
 		return $this;
@@ -149,7 +149,7 @@ class dateTime extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Seconds are %s instead of %02d'), $this->value->format('s'), $seconds));
+			$this->fail($failMessage ?: $this->_('Seconds are %s instead of %02d', $this->value->format('s'), $seconds));
 		}
 
 		return $this;
@@ -163,7 +163,7 @@ class dateTime extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Time is %s instead of %s'), $this->value->format('H:i:s'), sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds)));
+			$this->fail($failMessage ?: $this->_('Time is %s instead of %s', $this->value->format('H:i:s'), sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds)));
 		}
 
 		return $this;
@@ -177,7 +177,7 @@ class dateTime extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Datetime is %s instead of %s'), $this->value->format('Y-m-d H:i:s'), sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hours, $minutes, $seconds)));
+			$this->fail($failMessage ?: $this->_('Datetime is %s instead of %s', $this->value->format('Y-m-d H:i:s'), sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hours, $minutes, $seconds)));
 		}
 
 		return $this;
@@ -185,24 +185,11 @@ class dateTime extends asserters\object
 
 	protected function valueIsSet($message = 'Instance of \dateTime is undefined')
 	{
-		if (self::isDateTime(parent::valueIsSet($message)->value) === false)
+		if (parent::valueIsSet($message)->value instanceof \dateTime === false)
 		{
 			throw new exceptions\logic($message);
 		}
 
 		return $this;
-	}
-
-	protected static function check($value, $method)
-	{
-		if (self::isDateTime($value) === false)
-		{
-			throw new exceptions\logic('Argument of ' . $method . '() must be an instance of \\dateTime');
-		}
-	}
-
-	protected static function isDateTime($value)
-	{
-		return ($value instanceof \dateTime);
 	}
 }

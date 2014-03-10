@@ -15,18 +15,41 @@ class constant extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserter');
+		$this->testedClass->extends('mageekguy\atoum\asserter');
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($this->newTestedInstance($generator = new asserter\generator()))
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->getLocale())->isIdenticalTo($this->testedInstance->getGenerator()->getLocale())
+				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
+				->object($this->testedInstance->getDiff())->isEqualTo(new diffs\variable())
+				->variable($this->testedInstance->getValue())->isNull()
+				->boolean($this->testedInstance->wasSet())->isFalse()
+
+			->given($this->newTestedInstance($generator = new asserter\generator()))
 			->then
 				->object($this->testedInstance->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
+				->object($this->testedInstance->getDiff())->isEqualTo(new diffs\variable())
 				->variable($this->testedInstance->getValue())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()
+		;
+	}
+
+	public function testSetDiff()
+	{
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setDiff($diff = new diffs\variable()))->isTestedInstance
+				->object($this->testedInstance->getDiff())->isIdenticalTo($diff)
+				->object($this->testedInstance->setDiff())->isTestedInstance
+				->object($this->testedInstance->getDiff())
+					->isNotIdenticalTo($diff)
+					->isEqualTo(new diffs\variable())
 		;
 	}
 
@@ -39,6 +62,7 @@ class constant extends atoum\test
 					->isInstanceOf('logicException')
 					->hasMessage('Asserter \'' . $property . '\' does not exist')
 				->variable($asserter->getValue())->isNull()
+
 			->if($asserter->setWith($value = uniqid()))
 			->then
 				->string($asserter->getValue())->isEqualTo($value)
@@ -74,52 +98,68 @@ class constant extends atoum\test
 	public function testIsEqualTo()
 	{
 		$this
-			->if($asserter = $this->newTestedInstance($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance
+				->setLocale($locale = new \mock\atoum\locale())
+				->setDiff($diff = new \mock\atoum\tools\diffs\variable())
+				->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+			)
 			->then
 				->exception(function() use ($asserter) { $asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
 					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
+
 			->if($asserter->setWith($value = uniqid()))
 			->then
 				->object($asserter->isEqualTo($value))->isIdenticalTo($asserter)
-			->if($diff = new diffs\variable())
+
+			->if(
+				$this->calling($locale)->_ = $isNotEqual = uniqid(),
+				$this->calling($diff)->__toString = $diffValue = uniqid(),
+				$this->calling($analyzer)->getTypeOf = $type = uniqid()
+			)
 			->then
-				->exception(function() use (& $line, $asserter, & $notEqualValue) { $line = __LINE__; $asserter->isEqualTo($notEqualValue = uniqid()); })
+				->exception(function() use ($asserter, & $notEqualValue) { $asserter->isEqualTo($notEqualValue = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf($notEqualValue)) . PHP_EOL . $diff->setExpected($notEqualValue)->setActual($asserter->getValue()))
-			->if($asserter->setWith(1))
-			->and($otherDiff = new diffs\variable())
-			->then
-				->object($asserter->isEqualTo(1))->isIdenticalTo($asserter)
-				->exception(function() use (& $otherLine, $asserter, & $otherNotEqualValue, & $otherFailMessage) { $otherLine = __LINE__; $asserter->isEqualTo('1', $otherFailMessage = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($otherFailMessage . PHP_EOL . $otherDiff->setExpected('1')->setActual($asserter->getValue()))
+					->hasMessage($isNotEqual . PHP_EOL . $diffValue)
+				->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
+				->mock($analyzer)->call('getTypeOf')->withArguments($notEqualValue)->once
+				->mock($diff)
+					->call('setExpected')->withArguments($value)->once
+					->call('setActual')->withArguments($notEqualValue)->once
 		;
 	}
 
 	public function testEqualTo()
 	{
 		$this
-			->if($asserter = $this->newTestedInstance($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance
+				->setLocale($locale = new \mock\atoum\locale())
+				->setDiff($diff = new \mock\atoum\tools\diffs\variable())
+				->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+			)
 			->then
 				->exception(function() use ($asserter) { $asserter->equalTo(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
 					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
+
 			->if($asserter->setWith($value = uniqid()))
 			->then
 				->object($asserter->equalTo($value))->isIdenticalTo($asserter)
-			->if($diff = new diffs\variable())
+
+			->if(
+				$this->calling($locale)->_ = $isNotEqual = uniqid(),
+				$this->calling($diff)->__toString = $diffValue = uniqid(),
+				$this->calling($analyzer)->getTypeOf = $type = uniqid()
+			)
 			->then
-				->exception(function() use (& $line, $asserter, & $notEqualValue) { $line = __LINE__; $asserter->equalTo($notEqualValue = uniqid()); })
+				->exception(function() use ($asserter, & $notEqualValue) { $asserter->isEqualTo($notEqualValue = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf($notEqualValue)) . PHP_EOL . $diff->setExpected($notEqualValue)->setActual($asserter->getValue()))
-			->if($asserter->setWith(1))
-			->and($otherDiff = new diffs\variable())
-			->then
-				->object($asserter->equalTo(1))->isIdenticalTo($asserter)
-				->exception(function() use (& $otherLine, $asserter, & $otherNotEqualValue, & $otherFailMessage) { $otherLine = __LINE__; $asserter->equalTo('1', $otherFailMessage = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($otherFailMessage . PHP_EOL . $otherDiff->setExpected('1')->setActual($asserter->getValue()))
+					->hasMessage($isNotEqual . PHP_EOL . $diffValue)
+				->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
+				->mock($analyzer)->call('getTypeOf')->withArguments($notEqualValue)->once
+				->mock($diff)
+					->call('setExpected')->withArguments($value)->once
+					->call('setActual')->withArguments($notEqualValue)->once
 		;
 	}
 }

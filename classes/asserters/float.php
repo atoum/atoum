@@ -10,17 +10,17 @@ use
 
 class float extends asserters\integer
 {
-	public function setWith($value, $label = null)
+	public function setWith($value)
 	{
-		variable::setWith($value, $label);
+		variable::setWith($value);
 
-		if (self::isFloat($this->value) === false)
+		if ($this->analyzer->isFloat($this->value) === true)
 		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not a float'), $this));
+			$this->pass();
 		}
 		else
 		{
-			$this->pass();
+			$this->fail($this->_('%s is not a float', $this));
 		}
 
 		return $this;
@@ -28,8 +28,6 @@ class float extends asserters\integer
 
 	public function isNearlyEqualTo($value, $epsilon = null, $failMessage = null)
 	{
-		static::check($value, __FUNCTION__);
-
 		if ($this->valueIsSet()->value !== $value)
 		{
 			// see http://www.floating-point-gui.de/errors/comparison/ for more informations
@@ -48,14 +46,8 @@ class float extends asserters\integer
 				case $offsetIsNaN === true:
 				case $offset / ($absCurrentValue + $absValue) >= $epsilon:
 				case $absCurrentValue * $absValue == 0 && $offset >= pow($epsilon, 2):
-					$diff = new diffs\variable();
-
-					$this->fail(
-						($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $this, $this->getTypeOf($value), $epsilon)) .
-						PHP_EOL .
-						$diff->setExpected($value)->setActual($this->value)
-					);
-				}
+					$this->fail(($failMessage ?: $this->_('%s is not nearly equal to %s with epsilon %s', $this, $this->getTypeOf($value), $epsilon)) .  PHP_EOL .  $this->diff($value));
+			}
 		}
 
 		return $this;
@@ -64,18 +56,5 @@ class float extends asserters\integer
 	public function isZero($failMessage = null)
 	{
 		return $this->isEqualTo(0.0, $failMessage);
-	}
-
-	protected static function check($value, $method)
-	{
-		if (self::isFloat($value) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument of ' . __CLASS__ . '::' . $method . '() must be a float');
-		}
-	}
-
-	protected static function isFloat($value)
-	{
-		return (is_float($value) === true);
 	}
 }

@@ -162,7 +162,7 @@ class mocker
 	{
 		$parameters = array();
 
-		foreach ($function->getParameters() as $parameter)
+		foreach (static::filterParameters($function) as $parameter)
 		{
 			$parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
 
@@ -186,7 +186,7 @@ class mocker
 	{
 		$parameters = array();
 
-		foreach ($function->getParameters() as $parameter)
+		foreach (static::filterParameters($function) as $parameter)
 		{
 			$parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
 		}
@@ -222,6 +222,11 @@ class mocker
 			$class,
 			$reflectedFunction ? static::getParameters($reflectedFunction) : 'func_get_args()'
 		));
+	}
+
+	private static function filterParameters(\reflectionFunction $function)
+	{
+		return array_filter($function->getParameters(), function($parameter) { return ($parameter->getName() != '...'); });
 	}
 }
 

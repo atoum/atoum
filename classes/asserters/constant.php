@@ -4,14 +4,24 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\variable,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\tools\diffs
 ;
 
 class constant extends atoum\asserter
 {
+	protected $diff = null;
 	protected $isSet = false;
 	protected $value = null;
+
+	public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null)
+	{
+		parent::__construct($generator, $analyzer);
+
+		$this->setDiff();
+	}
 
 	public function __toString()
 	{
@@ -28,6 +38,18 @@ class constant extends atoum\asserter
 			default:
 				return parent::__call($method, $arguments);
 		}
+	}
+
+	public function setDiff(diffs\variable $diff = null)
+	{
+		$this->diff = $diff ?: new diffs\variable();
+
+		return $this;
+	}
+
+	public function getDiff()
+	{
+		return $this->diff;
 	}
 
 	public function wasSet()
@@ -50,7 +72,7 @@ class constant extends atoum\asserter
 		$this->value = null;
 		$this->isSet = false;
 
-		return $this;
+		return parent::reset();
 	}
 
 	public function getValue()
@@ -66,9 +88,7 @@ class constant extends atoum\asserter
 		}
 		else
 		{
-			$diff = new diffs\variable();
-
-			$this->fail(($failMessage ?: sprintf($this->getLocale()->_('%s is not equal to %s'), $this, $this->getTypeOf($value))) .  PHP_EOL .  $diff->setExpected($value)->setActual($this->value));
+			$this->fail($failMessage ?: $this->_('%s is not equal to %s', $this, $this->getTypeOf($value)) .  PHP_EOL .  $this->diff->setExpected($this->value)->setActual($value));
 		}
 
 		return $this;

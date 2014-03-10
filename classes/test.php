@@ -44,6 +44,7 @@ abstract class test implements observable, \countable
 	private $assertionManager = null;
 	private $phpMocker = null;
 	private $testAdapterStorage = null;
+	private $asserterCallManager = null;
 	private $mockControllerLinker = null;
 	private $phpPath = null;
 	private $testedClassName = null;
@@ -92,6 +93,7 @@ abstract class test implements observable, \countable
 			->setScore()
 			->setLocale()
 			->setReflectionMethodFactory()
+			->setAsserterCallManager()
 			->enableCodeCoverage()
 		;
 
@@ -373,6 +375,18 @@ abstract class test implements observable, \countable
 			->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; })
 			->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); })
 		;
+
+		return $this;
+	}
+
+	public function getAsserterCallManager()
+	{
+		return $this->asserterCallManager;
+	}
+
+	public function setAsserterCallManager(asserters\adapter\call\manager $asserterCallManager = null)
+	{
+		$this->asserterCallManager = $asserterCallManager ?: new asserters\adapter\call\manager();
 
 		return $this;
 	}
@@ -1027,6 +1041,11 @@ abstract class test implements observable, \countable
 						throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 					}
 
+					if (($testedClass->isAbstract() === true || $testedClass->isInterface() === true) && $testedClass->isFinal() === false)
+					{
+						$testedClass = new \reflectionClass($testedClassName = $mockGenerator->getDefaultNamespace() . '\\' . $testedClassName);
+					}
+
 					$newTestedInstanceHandlerParameters = $constructorParameters = array();
 					$defaultArguments = 0;
 
@@ -1058,7 +1077,16 @@ abstract class test implements observable, \countable
 
 					$this->assertionManager->setPropertyHandler('testedInstance', function() use (& $instance) { return $instance; });
 
-					$newTestedInstanceHandler = eval('return function(' . join(', ', $newTestedInstanceHandlerParameters) . ') use (& $instance) { return ($instance = new ' . $testedClassName . '(' . join(', ', $constructorParameters) . ')); };');
+					if (sizeof($newTestedInstanceHandlerParameters) <= 0)
+					{
+						$constructor = 'return function() use (& $instance, $testedClass) { return ($instance = $testedClass->newInstanceArgs(func_get_args())); };';
+					}
+					else
+					{
+						$constructor = 'return function(' . join(', ', $newTestedInstanceHandlerParameters) . ') use (& $instance) { return ($instance = new ' . $testedClassName . '(' . join(', ', $constructorParameters) . ')); };';
+					}
+
+					$newTestedInstanceHandler = eval($constructor);
 
 					$this->assertionManager->setMethodHandler('newTestedInstance', $newTestedInstanceHandler);
 
@@ -1087,7 +1115,7 @@ abstract class test implements observable, \countable
 					{
 						$this->{$testMethod}();
 
-						asserters\adapter\call::areEvaluated();
+						$this->asserterCallManager->check();
 					}
 					else
 					{
@@ -1117,7 +1145,7 @@ abstract class test implements observable, \countable
 
 							$reflectedTestMethod->invokeArgs($this, $arguments);
 
-							asserters\adapter\call::areEvaluated();
+							$this->asserterCallManager->check();
 
 							$this->score->unsetDataSet();
 						}

@@ -14,6 +14,11 @@ class locale
 		}
 	}
 
+	public function __toString()
+	{
+		return ($this->value === null ? 'unknown' : $this->value);
+	}
+
 	public function set($value)
 	{
 		$this->value = (string) $value;
@@ -28,11 +33,21 @@ class locale
 
 	public function _($string)
 	{
-		return $string;
+		return static::format($string, array_slice(func_get_args(), 1));
 	}
 
 	public function __($singular, $plural, $quantity)
 	{
-		return ($quantity <= 1 ? $singular : $plural);
+		return static::format($quantity <= 1 ? $singular : $plural, array_slice(func_get_args(), 3));
+	}
+
+	private static function format($string, $arguments)
+	{
+		if (sizeof($arguments) > 0)
+		{
+			$string = vsprintf($string, $arguments);
+		}
+
+		return $string;
 	}
 }

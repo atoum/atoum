@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
+	mageekguy\atoum\tools\variable,
 	mageekguy\atoum\asserters\output as sut
 ;
 
@@ -20,17 +21,18 @@ class output extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new sut())
+			->given($asserter = $this->newTestedInstance)
 			->then
 				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
-				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
+				->object($asserter->getAnalyzer())->isEqualTo(new variable\analyzer())
 				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
 				->string($asserter->getValue())->isEmpty()
 				->boolean($asserter->wasSet())->isTrue()
-			->if($asserter = new sut($generator = new asserter\generator(), $adapter = new atoum\adapter()))
+
+			->if($asserter = $this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer()))
 			->then
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
-				->object($asserter->getAdapter())->isIdenticalTo($adapter)
+				->object($asserter->getAnalyzer())->isIdenticalTo($analyzer)
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->string($asserter->getValue())->isEmpty()
 				->boolean($asserter->wasSet())->isTrue()
@@ -40,12 +42,12 @@ class output extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new sut(new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
 				->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }))->isIdenticalTo($asserter)
 				->string($asserter->getValue())->isEqualTo($output)
 				->variable($asserter->getCharlist())->isNull()
-				->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }, null, "\010"))->isIdenticalTo($asserter)
+				->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }, "\010"))->isIdenticalTo($asserter)
 				->string($asserter->getValue())->isEqualTo($output)
 				->string($asserter->getCharlist())->isEqualTo("\010")
 		;

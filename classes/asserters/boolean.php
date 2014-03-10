@@ -22,17 +22,17 @@ class boolean extends asserters\variable
 		}
 	}
 
-	public function setWith($value, $label = null)
+	public function setWith($value)
 	{
-		parent::setWith($value, $label);
+		parent::setWith($value);
 
-		if (self::isBoolean($this->value) === false)
+		if ($this->analyzer->isBoolean($this->value) === true)
 		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not a boolean'), $this));
+			$this->pass();
 		}
 		else
 		{
-			$this->pass();
+			$this->fail($this->_('%s is not a boolean', $this));
 		}
 
 		return $this;
@@ -40,24 +40,11 @@ class boolean extends asserters\variable
 
 	public function isTrue($failMessage = null)
 	{
-		return $this->isEqualTo(true, $failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not true'), $this));
+		return $this->isEqualTo(true, $failMessage ?: $this->_('%s is not true', $this));
 	}
 
 	public function isFalse($failMessage = null)
 	{
-		return $this->isEqualTo(false, $failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not false'), $this));
-	}
-
-	protected static function check($value, $method)
-	{
-		if (self::isBoolean($value) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be a boolean');
-		}
-	}
-
-	protected static function isBoolean($value)
-	{
-		return (is_bool($value) === true);
+		return $this->isEqualTo(false, $failMessage ?: $this->_('%s is not false', $this));
 	}
 }

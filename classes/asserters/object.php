@@ -31,20 +31,20 @@ class object extends asserters\variable
 
 		if ($checkType === true)
 		{
-			if (self::isObject($this->value) === false)
-			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not an object'), $this));
-			}
-			else
+			if ($this->analyzer->isObject($this->value) === true)
 			{
 				$this->pass();
 			}
+			else
+			{
+				$this->fail($this->_('%s is not an object', $this));
+			}
 		}
 
 		return $this;
 	}
 
-	public function isInstanceOf($value)
+	public function isInstanceOf($value, $failMessage = null)
 	{
 		try
 		{
@@ -58,12 +58,12 @@ class object extends asserters\variable
 			}
 		}
 
-		$this->valueIsSet()->value instanceof $value ? $this->pass() : $this->fail(sprintf($this->getLocale()->_('%s is not an instance of %s'), $this, is_string($value) === true ? $value : $this->getTypeOf($value)));
+		$this->valueIsSet()->value instanceof $value ? $this->pass() : $this->fail($failMessage ?: $this->_('%s is not an instance of %s', $this, is_string($value) === true ? $value : $this->getTypeOf($value)));
 
 		return $this;
 	}
 
-	public function isNotInstanceOf($value)
+	public function isNotInstanceOf($value, $failMessage = null)
 	{
 		try
 		{
@@ -77,7 +77,7 @@ class object extends asserters\variable
 			}
 		}
 
-		($this->valueIsSet()->value instanceof $value === false) ? $this->pass() : $this->fail(sprintf($this->getLocale()->_('%s is an instance of %s'), $this, is_string($value) === true ? $value : $this->getTypeOf($value)));
+		$this->valueIsSet()->value instanceof $value === false ? $this->pass() : $this->fail($failMessage ?: $this->_('%s is an instance of %s', $this, is_string($value) === true ? $value : $this->getTypeOf($value)));
 
 		return $this;
 	}
@@ -90,7 +90,7 @@ class object extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has size %d, expected size %d'), $this, sizeof($this->valueIsSet()->value), $size));
+			$this->fail($failMessage ?: $this->_('%s has size %d, expected size %d', $this, sizeof($this->valueIsSet()->value), $size));
 		}
 
 		return $this;
@@ -100,7 +100,7 @@ class object extends asserters\variable
 	{
 		if ($failMessage === null)
 		{
-			$failMessage = sprintf($this->getLocale()->_('%s is not a clone of %s'), $this, $this->getTypeOf($object));
+			$failMessage = $this->_('%s is not a clone of %s', $this, $this->getTypeOf($object));
 		}
 
 		return $this->isEqualTo($object, $failMessage)->isNotIdenticalTo($object, $failMessage);
@@ -114,25 +114,25 @@ class object extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has size %d'), $this, sizeof($this->value)));
+			$this->fail($failMessage ?: $this->_('%s has size %d', $this, sizeof($this->value)));
 		}
 
 		return $this;
 	}
 
-	public function isTestedInstance()
+	public function isTestedInstance($failMessage = null)
 	{
-		return $this->valueIsSet()->testedInstanceIsSet()->isIdenticalTo($this->test->testedInstance);
+		return $this->valueIsSet()->testedInstanceIsSet()->isIdenticalTo($this->test->testedInstance, $failMessage);
 	}
 
-	public function isNotTestedInstance()
+	public function isNotTestedInstance($failMessage = null)
 	{
-		return $this->valueIsSet()->testedInstanceIsSet()->isNotIdenticalTo($this->test->testedInstance);
+		return $this->valueIsSet()->testedInstanceIsSet()->isNotIdenticalTo($this->test->testedInstance, $failMessage);
 	}
 
-	public function isInstanceOfTestedClass()
+	public function isInstanceOfTestedClass($failMessage = null)
 	{
-		return $this->valueIsSet()->testedInstanceIsSet()->isInstanceOf($this->test->getTestedClassName());
+		return $this->valueIsSet()->testedInstanceIsSet()->isInstanceOf($this->test->getTestedClassName(), $failMessage);
 	}
 
 	public function toString()
@@ -142,7 +142,7 @@ class object extends asserters\variable
 
 	protected function valueIsSet($message = 'Object is undefined')
 	{
-		if (self::isObject(parent::valueIsSet($message)->value) === false)
+		if ($this->analyzer->isObject(parent::valueIsSet($message)->value) === false)
 		{
 			throw new exceptions\logic($message);
 		}
@@ -160,17 +160,14 @@ class object extends asserters\variable
 		return $this;
 	}
 
-	protected static function check($value, $method)
+	protected function check($value, $method)
 	{
-		if (self::isObject($value) === false)
+		if ($this->analyzer->isObject($value) === false)
 		{
 			throw new exceptions\logic('Argument of ' . __CLASS__ . '::' . $method . '() must be a class instance');
 		}
-	}
 
-	protected static function isObject($value)
-	{
-		return (is_object($value) === true);
+		return $this;
 	}
 
 	protected static function classExists($value)

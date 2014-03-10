@@ -92,9 +92,19 @@ class adapter extends atoum\adapter
 		return ($call === null ? $this->calls : $this->calls->get($call, $identical));
 	}
 
+	public function getCallsNumber(adapter\call $call = null, $identical = false)
+	{
+		return sizeof($this->getCalls($call, $identical));
+	}
+
 	public function getCallsEqualTo(adapter\call $call)
 	{
 		return $this->calls->getEqualTo($call);
+	}
+
+	public function getCallsNumberEqualTo(adapter\call $call)
+	{
+		return sizeof($this->calls->getEqualTo($call));
 	}
 
 	public function getCallsIdenticalTo(adapter\call $call)

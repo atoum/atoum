@@ -3,180 +3,146 @@
 namespace mageekguy\atoum\tests\units\tools;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\tools
+	atoum,
+	atoum\tools
 ;
 
 require_once __DIR__ . '/../../runner.php';
 
-class diff extends atoum\test
+class diff extends atoum
 {
 	public function test__construct()
 	{
-		$diff = new tools\diff();
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->variable($this->testedInstance->getExpected())->isNull()
+				->variable($this->testedInstance->getActual())->isNull()
+				->object($this->testedInstance->getDecorator())->isEqualTo(new tools\diff\decorator())
 
-		$this->assert
-			->string($diff->getExpected())->isEmpty()
-			->string($diff->getActual())->isEmpty()
-		;
+			->if($this->newTestedInstance($reference = uniqid()))
+			->then
+				->string($this->testedInstance->getExpected())->isEqualTo($reference)
+				->variable($this->testedInstance->getActual())->isNull()
+				->object($this->testedInstance->getDecorator())->isEqualTo(new tools\diff\decorator())
 
-		$diff = new tools\diff($reference = uniqid());
+			->if($this->newTestedInstance('', $data = uniqid()))
+			->then
+				->string($this->testedInstance->getExpected())->isEmpty()
+				->string($this->testedInstance->getActual())->isEqualTo($data)
+				->object($this->testedInstance->getDecorator())->isEqualTo(new tools\diff\decorator())
 
-		$this->assert
-			->string($diff->getExpected())->isEqualTo($reference)
-			->string($diff->getActual())->isEmpty()
-		;
-
-		$diff = new tools\diff('', $data = uniqid());
-
-		$this->assert
-			->string($diff->getExpected())->isEmpty()
-			->string($diff->getActual())->isEqualTo($data)
-		;
-
-		$diff = new tools\diff($reference = uniqid(), $data = uniqid());
-
-		$this->assert
-			->string($diff->getExpected())->isEqualTo($reference)
-			->string($diff->getActual())->isEqualTo($data)
+			->if($this->newTestedInstance($reference = uniqid(), $data = uniqid()))
+			->then
+				->string($this->testedInstance->getExpected())->isEqualTo($reference)
+				->string($this->testedInstance->getActual())->isEqualTo($data)
+				->object($this->testedInstance->getDecorator())->isEqualTo(new tools\diff\decorator())
 		;
 	}
 
 	public function test__toString()
 	{
-		$diff = new tools\diff();
-
-		$this->assert
-			->castToString($diff)->isEmpty()
-		;
-
-		$diff->setActual($data = uniqid());
-
-		$this->assert
-			->castToString($diff)->isEqualTo(
-				'-Expected' . PHP_EOL .
-				'+Actual' . PHP_EOL .
-				'@@ -1 +1 @@' . PHP_EOL .
-				'+' . $data
+		$this
+			->given(
+				$this->newTestedInstance,
+				$this->testedInstance->setDecorator($decorator = new \mock\atoum\tools\diff\decorator())
 			)
+
+			->if($this->calling($decorator)->decorate = uniqid())
+			->then
+				->castToString($this->testedInstance)->isEqualTo($decorator->decorate($this->testedInstance))
 		;
+	}
 
-		$diff->setActual(($data = uniqid()) . PHP_EOL . ($otherSecondString = uniqid()));
-
-		$this->assert
-			->castToString($diff)->isEqualTo(
-				'-Expected' . PHP_EOL .
-				'+Actual' . PHP_EOL .
-				'@@ -1 +1,2 @@' . PHP_EOL .
-				'+' . $data . PHP_EOL .
-				'+' . $otherSecondString
-			)
+	public function test__invoke()
+	{
+		$this
+			->if($diff = $this->newTestedInstance)
+			->then
+				->castToString($diff())->isEmpty()
+				->object($diff())
+					->isIdenticalTo($diff)
+					->toString
+						->isEmpty()
+				->object($diff($expected = uniqid()))
+					->isIdenticalTo($diff)
+					->toString
+						->isNotEmpty()
+				->object($diff($expected = uniqid(), $actual = uniqid()))
+					->isIdenticalTo($diff)
+					->toString
+						->isNotEmpty()
 		;
+	}
 
-		$diff
-			->setExpected($reference = 'check this dokument.')
-			->setActual($data = 'check this document.')
-		;
-
-		$this->assert
-			->castToString($diff)->isEqualTo(
-				'-Expected' . PHP_EOL .
-				'+Actual' . PHP_EOL .
-				'@@ -1 +1 @@' . PHP_EOL .
-				'-' . $reference . PHP_EOL .
-				'+' . $data
-			)
-		;
-
-		$diff
-			->setExpected($reference = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
-			->setActual($data = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 5 . PHP_EOL))
-		;
-
-		$this->assert
-			->castToString($diff)->isEqualTo(
-				'-Expected' . PHP_EOL .
-				'+Actual' . PHP_EOL .
-				'@@ -4 +4 @@' . PHP_EOL .
-				'-4'. PHP_EOL .
-				'+6'
-			)
-		;
-
-		$diff
-			->setExpected($reference = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
-			->setActual($data = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 7 . PHP_EOL . 5 . PHP_EOL))
-		;
-
-		$this->assert
-			->castToString($diff)->isEqualTo(
-				'-Expected' . PHP_EOL .
-				'+Actual' . PHP_EOL .
-				'@@ -4 +4,2 @@' . PHP_EOL .
-				'-4'. PHP_EOL .
-				'+6' . PHP_EOL .
-				'+7'
-			)
+	public function testSetDecorator()
+	{
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setDecorator($decorator = new tools\diff\decorator()))->isTestedInstance
+				->object($this->testedInstance->getDecorator())->isIdenticalTo($decorator)
+				->object($this->testedInstance->setDecorator())->isTestedInstance
+				->object($this->testedInstance->getDecorator())
+					->isNotIdenticalTo($decorator)
+					->isEqualTo(new tools\diff\decorator())
 		;
 	}
 
 	public function testSetExpected()
 	{
-		$diff = new tools\diff();
-
-		$this->assert
-			->object($diff->setExpected($reference = uniqid()))->isIdenticalTo($diff)
-			->string($diff->getExpected())->isEqualTo($reference)
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setExpected($reference = uniqid()))->isIdenticalTo($this->testedInstance)
+				->string($this->testedInstance->getExpected())->isEqualTo($reference)
 		;
 	}
 
 	public function testSetActual()
 	{
-		$diff = new tools\diff();
-
-		$this->assert
-			->object($diff->setActual($data = uniqid()))->isIdenticalTo($diff)
-			->string($diff->getActual())->isEqualTo($data)
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setActual($data = uniqid()))->isIdenticalTo($this->testedInstance)
+				->string($this->testedInstance->getActual())->isEqualTo($data)
 		;
 	}
 
 	public function testMake()
 	{
-		$diff = new tools\diff();
-
-		$this->assert
-			->array($diff->make())->isEqualTo(array(
-					''
-				)
-			)
-			->array($diff->setActual($data = rand(0, 9))->make())->isEqualTo(array(
-					array(
-						'-' => array(''),
-						'+' => array($data)
-					)
-				)
-			)
-			->array($diff->setActual($data = uniqid())->make())->isEqualTo(array(
-					array(
-						'-' => array(''),
-						'+' => array($data)
-					)
-				)
-			)
-			->array($diff->setExpected($data)->make())->isEqualTo(array(
-					$data
-				)
-			)
-			->array($diff->setExpected('')->setActual(($firstLine = uniqid()). PHP_EOL . ($secondLine = uniqid()))->make())->isEqualTo(array(
-					array(
-						'-' => array(''),
-						'+' => array(
-							$firstLine,
-							$secondLine
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->array($this->testedInstance->make())->isEqualTo(array(''))
+				->array($this->testedInstance->setActual($data = rand(0, 9))->make())->isEqualTo(array(
+						array(
+							'-' => array(''),
+							'+' => array($data)
 						)
 					)
 				)
-			)
+				->array($this->testedInstance->setActual($data = uniqid())->make())->isEqualTo(array(
+						array(
+							'-' => array(''),
+							'+' => array($data)
+						)
+					)
+				)
+				->array($this->testedInstance->setExpected($data)->make())->isEqualTo(array(
+						$data
+					)
+				)
+				->array($this->testedInstance->setExpected('')->setActual(($firstLine = uniqid()). PHP_EOL . ($secondLine = uniqid()))->make())->isEqualTo(array(
+						array(
+							'-' => array(''),
+							'+' => array(
+								$firstLine,
+								$secondLine
+							)
+						)
+					)
+				)
 		;
 	}
 }

@@ -4,68 +4,53 @@ namespace mageekguy\atoum\tools;
 
 class diff
 {
-	protected $expected = '';
-	protected $actual = '';
+	protected $expected = null;
+	protected $actual = null;
+	protected $diff = null;
+	protected $decorator = null;
 
-	public function __construct($reference = '', $data = '')
+	public function __construct($expected = null, $actual = null)
 	{
-		$this
-			->setExpected($reference)
-			->setActual($data)
-		;
+		$this->setDecorator();
+
+		if ($expected !== null)
+		{
+			$this->setExpected($expected);
+		}
+
+		if ($actual !== null)
+		{
+			$this->setActual($actual);
+		}
+	}
+
+	public function __invoke($expected = null, $actual = null)
+	{
+		$this->make($expected, $actual);
+
+		return $this;
 	}
 
 	public function __toString()
 	{
-		$string = '';
+		return $this->decorator->decorate($this);
+	}
 
-		$diff = array_filter($this->make(), function($value) { return is_array($value) === true; });
+	public function setDecorator(diff\decorator $decorator = null)
+	{
+		$this->decorator = $decorator ?: new diff\decorator();
+		return $this;
+	}
 
-		if (sizeof($diff) > 0)
-		{
-			$string .= '-Expected' . PHP_EOL;
-			$string .= '+Actual' . PHP_EOL;
-
-			foreach ($diff as $lineNumber => $diff)
-			{
-				$lineNumber++;
-
-				$sizeofMinus = sizeof($diff['-']);
-				$sizeofPlus = sizeof($diff['+']);
-
-				$string .= '@@ -' . $lineNumber . ($sizeofMinus <= 1 ? '' : ',' . $sizeofMinus) . ' +' . $lineNumber . ($sizeofPlus <= 1 ? '' : ',' . $sizeofPlus) . ' @@' . PHP_EOL;
-
-				array_walk($diff['-'], function(& $value) { $value = ($value == '' ? '' : '-' . $value); });
-				$minus = join(PHP_EOL, $diff['-']);
-
-				if ($minus != '')
-				{
-					$string .= $minus . PHP_EOL;
-				}
-
-				array_walk($diff['+'], function(& $value) { $value = ($value == '' ? '' : '+' . $value); });
-				$plus = join(PHP_EOL, $diff['+']);
-
-				if ($plus != '')
-				{
-					$string .= $plus . PHP_EOL;
-				}
-			}
-		}
-
-		return trim($string);
+	public function getDecorator()
+	{
+		return $this->decorator;
 	}
 
 	public function setExpected($mixed)
 	{
 		$this->expected = (string) $mixed;
-
-		return $this;
-	}
-
-	public function setActual($mixed)
-	{
-		$this->actual = (string) $mixed;
+		$this->diff = null;
 
 		return $this;
 	}
@@ -75,19 +60,42 @@ class diff
 		return $this->expected;
 	}
 
+	public function setActual($mixed)
+	{
+		$this->actual = (string) $mixed;
+		$this->diff = null;
+
+		return $this;
+	}
+
 	public function getActual()
 	{
 		return $this->actual;
 	}
 
-	public function make()
+	public function make($expected = null, $actual = null)
 	{
-		return $this->diff(self::split($this->expected), self::split($this->actual));
+		if ($expected !== null)
+		{
+			$this->setExpected($expected);
+		}
+
+		if ($expected !== null)
+		{
+			$this->setActual($actual);
+		}
+
+		if ($this->diff === null)
+		{
+			$this->diff = $this->diff(self::split($this->expected), self::split($this->actual));
+		}
+
+		return $this->diff;
 	}
 
 	protected function diff($old, $new)
 	{
-		$return = array();
+		$diff = array();
 
 		if (sizeof($old) > 0 || sizeof($new) > 0)
 		{
@@ -113,11 +121,11 @@ class diff
 
 			if ($maxLength == 0)
 			{
-				$return = array(array('-' => $old, '+' => $new));
+				$diff = array(array('-' => $old, '+' => $new));
 			}
 			else
 			{
-				$return = array_merge(
+				$diff = array_merge(
 					$this->diff(array_slice($old, 0, $oldMaxLength), array_slice($new, 0, $newMaxLength)),
 					array_slice($new, $newMaxLength, $maxLength),
 					$this->diff(array_slice($old, $oldMaxLength + $maxLength), array_slice($new, $newMaxLength + $maxLength))
@@ -125,12 +133,11 @@ class diff
 			}
 		}
 
-		return $return;
+		return $diff;
 	}
 
 	protected static function split($value)
 	{
 		return explode(PHP_EOL, $value);
 	}
-
 }
