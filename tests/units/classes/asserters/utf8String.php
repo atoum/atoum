@@ -360,17 +360,17 @@ class utf8String extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
 
-				->exception(function() use ($asserter, & $failMessage, & $fragment) { $asserter->endWith($fragment = mb_strtoupper(mb_substr($asserter->getValue(), -6, null, 'UTF-8'), 'UTF-8')); })
+				->exception(function() use ($asserter, & $failMessage, & $fragment) { $asserter->endWith($fragment = mb_strtoupper(mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'), 'UTF-8')); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notEndWith)
 				->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
 
-				->exception(function() use ($asserter, & $fragment) { $asserter->endWith($fragment = uniqid() . mb_substr($asserter->getValue(), -6, null, 'UTF-8')); })
+				->exception(function() use ($asserter, & $fragment) { $asserter->endWith($fragment = uniqid() . mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8')); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notEndWith)
 				->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
 
-				->object($asserter->endWith(mb_substr($string, -6, null, 'UTF-8')))->isIdenticalTo($asserter)
+				->object($asserter->endWith(mb_substr($string, -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8')))->isIdenticalTo($asserter)
 		;
 	}
 
@@ -390,16 +390,16 @@ class utf8String extends atoum\test
 				$this->calling($locale)->_ = $endWith = uniqid()
 			)
 			->then
-				->exception(function() use ($asserter, & $fragment) { $asserter->notEndWith($fragment = mb_substr($asserter->getValue(), -6, null, 'UTF-8')); })
+				->exception(function() use ($asserter, & $fragment) { $asserter->notEndWith($fragment = mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8')); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($endWith)
 				->mock($locale)->call('_')->withArguments('%s end with %s', $asserter, $fragment)->once
 
-				->exception(function() use ($asserter, & $failMessage) { $asserter->notEndWith(mb_substr($asserter->getValue(), -6, null, 'UTF-8'), $failMessage = uniqid()); })
+				->exception(function() use ($asserter, & $failMessage) { $asserter->notEndWith(mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'), $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
 
-				->object($asserter->notEndWith(mb_strtoupper(mb_substr($asserter->getValue(), -6, null, 'UTF-8'), 'UTF-8')))->isIdenticalTo($asserter)
+				->object($asserter->notEndWith(mb_strtoupper(mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'), 'UTF-8')))->isIdenticalTo($asserter)
 				->object($asserter->notEndWith(uniqid()))->isIdenticalTo($asserter)
 		;
 	}
