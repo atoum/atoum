@@ -201,10 +201,27 @@ class float extends atoum\test
 			->if($asserter->setWith(0.0001))
 			->then
 				->object($asserter->isNearlyEqualTo(- 0.0001, 0.0001))->isIdenticalTo($asserter)
+		;
+	}
 
-			->if($asserter->setWith(INF))
+
+	/** @php > 5.3 */
+	public function testIsNearlyEqualToWithINF()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance
+				->setLocale($locale = new \mock\atoum\locale())
+				->setDiff($diff = new \mock\atoum\tools\diffs\variable())
+				->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+			)
+			->if(
+				$asserter->setWith(INF),
+				$this->calling($diff)->__toString = $diffValue = uniqid(),
+				$this->calling($locale)->_ = $notNearlyEqualTo = uniqid(),
+				$this->calling($analyzer)->getTypeOf = $type = uniqid()
+			)
 			->then
-				->object($asserter->isNearlyEqualTo((float) INF, 1))->isIdenticalTo($asserter)
+				->object($asserter->isNearlyEqualTo(INF, 1))->isIdenticalTo($asserter)
 
 				->exception(function() use ($asserter, & $lessValue) { $asserter->isNearlyEqualTo(- INF, 1); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
