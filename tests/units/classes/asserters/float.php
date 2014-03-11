@@ -205,7 +205,7 @@ class float extends atoum\test
 	}
 
 
-	/** @php > 5.3 */
+	/** @php 5.4 */
 	public function testIsNearlyEqualToWithINF()
 	{
 		$this
