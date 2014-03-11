@@ -5,7 +5,8 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\tools\diffs
+	mageekguy\atoum\tools\diffs,
+	mageekguy\atoum\tools\variable
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -22,16 +23,18 @@ class constant extends atoum\test
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->getLocale())->isIdenticalTo($this->testedInstance->getGenerator()->getLocale())
 				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new variable\analyzer())
+				->object($this->testedInstance->getLocale())->isIdenticalTo($this->testedInstance->getGenerator()->getLocale())
 				->object($this->testedInstance->getDiff())->isEqualTo(new diffs\variable())
 				->variable($this->testedInstance->getValue())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()
 
-			->given($this->newTestedInstance($generator = new asserter\generator()))
+			->given($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer()))
 			->then
-				->object($this->testedInstance->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
+				->object($this->testedInstance->getAnalyzer())->isIdenticalTo($analyzer)
+				->object($this->testedInstance->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($this->testedInstance->getDiff())->isEqualTo(new diffs\variable())
 				->variable($this->testedInstance->getValue())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()

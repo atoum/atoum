@@ -5,9 +5,9 @@ namespace mageekguy\atoum\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\variable,
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\tools\diffs
+	mageekguy\atoum\tools\diffs,
+	mageekguy\atoum\tools\variable
 ;
 
 class constant extends atoum\asserter
