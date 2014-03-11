@@ -4,10 +4,9 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\tools,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\tools\diffs,
-	mageekguy\atoum\tools\variable
+	mageekguy\atoum\exceptions
 ;
 
 class constant extends atoum\asserter
@@ -16,7 +15,7 @@ class constant extends atoum\asserter
 	protected $isSet = false;
 	protected $value = null;
 
-	public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null)
+	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null)
 	{
 		parent::__construct($generator, $analyzer);
 
@@ -40,9 +39,9 @@ class constant extends atoum\asserter
 		}
 	}
 
-	public function setDiff(diffs\variable $diff = null)
+	public function setDiff(tools\diffs\variable $diff = null)
 	{
-		$this->diff = $diff ?: new diffs\variable();
+		$this->diff = $diff ?: new tools\diffs\variable();
 
 		return $this;
 	}
