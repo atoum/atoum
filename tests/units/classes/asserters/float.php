@@ -180,7 +180,7 @@ class float extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
 				->mock($locale)->call('_')->withArguments('%s is not nearly equal to %s with epsilon %s', $asserter, $type, 0.00001)->once
-				->mock($analyzer)->call('getTypeOf')->withArguments(100.0)->once
+				->mock($analyzer)->call('getTypeOf')->withArguments(- 10000.0)->once
 				->mock($diff)
 					->call('setExpected')->withArguments(- 10000.0)->once
 					->call('setActual')->withArguments(- 10001.0)->once
@@ -193,7 +193,7 @@ class float extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
 				->mock($locale)->call('_')->withArguments('%s is not nearly equal to %s with epsilon %s', $asserter, $type, 0.00001)->twice
-				->mock($analyzer)->call('getTypeOf')->withArguments(100.0)->once
+				->mock($analyzer)->call('getTypeOf')->withArguments(- 1.0)->once
 				->mock($diff)
 					->call('setExpected')->withArguments(- 1.0)->once
 					->call('setActual')->withArguments(- 1.0001)->once
@@ -202,18 +202,18 @@ class float extends atoum\test
 			->then
 				->object($asserter->isNearlyEqualTo(- 0.0001, 0.0001))->isIdenticalTo($asserter)
 
-			->if($asserter->setWith((float) INF))
+			->if($asserter->setWith(INF))
 			->then
 				->object($asserter->isNearlyEqualTo((float) INF, 1))->isIdenticalTo($asserter)
 
-				->exception(function() use ($asserter, & $lessValue) { $asserter->isNearlyEqualTo((float) - INF, 1); })
+				->exception(function() use ($asserter, & $lessValue) { $asserter->isNearlyEqualTo(- INF, 1); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
 				->mock($locale)->call('_')->withArguments('%s is not nearly equal to %s with epsilon %s', $asserter, $type, 1)->once
-				->mock($analyzer)->call('getTypeOf')->withArguments(100.0)->once
+				->mock($analyzer)->call('getTypeOf')->withArguments(- INF)->once
 				->mock($diff)
-					->call('setExpected')->withArguments((float) - INF)->once
-					->call('setActual')->withArguments((float) INF)->once
+					->call('setExpected')->withArguments(- INF)->once
+					->call('setActual')->withArguments(INF)->once
 		;
 	}
 }
