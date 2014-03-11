@@ -50,7 +50,7 @@ class call
 		return $this;
 	}
 
-	public function copy(self $call)
+	public function copy(call $call)
 	{
 		$this->function = $call->function;
 		$this->arguments = $call->arguments;
