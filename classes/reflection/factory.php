@@ -2,11 +2,18 @@
 
 namespace mageekguy\atoum\reflection;
 
+use
+	atoum\test
+;
+
 class factory
 {
-	public function build(\reflectionClass $class, & $instance = null, & $numberOfDefaultArgument = 0)
+	private $factory = null;
+	private $allArgumentsAreOptional = false;
+
+	public function build(\reflectionClass $class, & $instance = null)
 	{
-		$factory = null;
+		$this->factory = null;
 		$numberOfDefaultArgument = 0;
 
 		if ($class->isInterface() === false && $class->isAbstract() === false)
@@ -28,15 +35,18 @@ class factory
 							$closureParameters[$position] = '& ' . $closureParameters[$position];
 						}
 
-						$defaultValue = null;
+						switch (true)
+						{
+							case $parameter->isDefaultValueAvailable():
+								$defaultValue = var_export($parameter->getDefaultValue(), true);
+								break;
 
-						if ($parameter->isDefaultValueAvailable() === true)
-						{
-							$defaultValue = var_export($parameter->getDefaultValue(), true);
-						}
-						else if ($parameter->isOptional() === true)
-						{
-							$defaultValue = 'null';
+							case $parameter->isOptional():
+								$defaultValue = 'null';
+								break;
+
+							default:
+								$defaultValue = null;
 						}
 
 						if ($defaultValue !== null)
@@ -49,17 +59,42 @@ class factory
 
 				if ($constructor === null || sizeof($closureParameters) <= 0)
 				{
-					$factory = 'function() use (& $instance, $class) { return ($instance = $class->newInstanceArgs(func_get_args())); };';
+					$factoryCode = 'function() use (& $instance, $class) { return ($instance = $class->newInstanceArgs(func_get_args())); };';
 				}
 				else
 				{
-					$factory = 'function(' . join(', ', $closureParameters) . ') use (& $instance) { return ($instance = new ' . $class->getName() . '(' . join(', ', $constructorParameters) . ')); };';
+					$factoryCode = 'function(' . join(', ', $closureParameters) . ') use (& $instance) { return ($instance = new ' . $class->getName() . '(' . join(', ', $constructorParameters) . ')); };';
 				}
 
-				$factory = eval('return ' . $factory);
+				if ($numberOfDefaultArgument === sizeof($closureParameters))
+				{
+					$this->allArgumentsAreOptional = true;
+				}
+
+				$this->factory = eval('return ' . $factoryCode);
 			}
 		}
 
-		return $factory;
+		return $this;
+	}
+
+	public function get()
+	{
+		return $this->factory;
+	}
+
+	public function addToAssertionManager(test\assertion\manager $assertionManager, $factoryName)
+	{
+		if ($this->factory !== null)
+		{
+			$assertionManager->setMethodHandler($factoryName, $this->factory);
+
+			if ($this->allArgumentsAreOptional === true)
+			{
+				$assertionManager->setPropertyHandler($factoryName, $this->factory);
+			}
+		}
+
+		return $this;
 	}
 }

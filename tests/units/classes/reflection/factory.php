@@ -47,6 +47,11 @@ class classWithConstructor
 	}
 }
 
+class classWithConstructorWithOptionalArguments
+{
+	public function __construct($a = null, $b = null) {}
+}
+
 class factory extends atoum
 {
 	public function testBuild()
@@ -54,37 +59,50 @@ class factory extends atoum
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithoutConstructor')))->isInstanceOf('\closure')
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithoutConstructor')))->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
 				->object($factory())->isInstanceOf(__NAMESPACE__ . '\classWithoutConstructor')
 
-				->object($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithoutConstructor'), $instance))->isInstanceOf('\closure')
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithoutConstructor'), $instance))->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
 				->object($builtInstance = $factory())->isInstanceOf(__NAMESPACE__ . '\classWithoutConstructor')
 				->object($instance)->isIdenticalTo($builtInstance)
 
-				->variable($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithProtectedConstructor')))->isNull
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithProtectedConstructor')))->isTestedInstance
+				->variable($this->testedInstance->get())->isNull
 
-				->variable($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithProtectedConstructor'), $instance))->isNull
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithProtectedConstructor'), $instance))->isTestedInstance
+				->variable($this->testedInstance->get())->isNull
 
-				->variable($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithPrivateConstructor')))->isNull
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithPrivateConstructor')))->isTestedInstance
+				->variable($this->testedInstance->get())->isNull
 
-				->variable($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithPrivateConstructor'), $instance))->isNull
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithPrivateConstructor'), $instance))->isTestedInstance
+				->variable($this->testedInstance->get())->isNull
 
-				->object($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithFinalConstructor')))->isInstanceOf('\closure')
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithFinalConstructor')))->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
 				->object($factory())->isInstanceOf(__NAMESPACE__ . '\classWithFinalConstructor')
 
-				->object($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithFinalConstructor'), $instance))->isInstanceOf('\closure')
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithFinalConstructor'), $instance))->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
 				->object($builtInstance = $factory())->isInstanceOf(__NAMESPACE__ . '\classWithFinalConstructor')
 				->object($instance)->isIdenticalTo($builtInstance)
 
-				->variable($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\abstractClass')))->isNull
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\abstractClass')))->isTestedInstance
+				->variable($this->testedInstance->get())->isNull
 
-				->variable($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\abstractClass'), $instance))->isNull
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\abstractClass'), $instance))->isTestedInstance
+				->variable($this->testedInstance->get())->isNull
 
-				->variable($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\isAnInterface')))->isNull
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\isAnInterface')))->isTestedInstance
+				->variable($this->testedInstance->get())->isNull
 
-				->variable($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\isAnInterface'), $instance))->isNull
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\isAnInterface'), $instance))->isTestedInstance
+				->variable($this->testedInstance->get())->isNull
 
-				->object($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructor')))->isInstanceOf('\closure')
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructor')))->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
 				->object($builtInstance = $factory('a', 'b', 'c', $reference))->isInstanceOf(__NAMESPACE__ . '\classWithConstructor')
 				->string($builtInstance->a)->isEqualTo('a')
 				->string($builtInstance->b)->isEqualTo('b')
@@ -93,7 +111,8 @@ class factory extends atoum
 				->string($builtInstance->reference)->isEqualTo($reference)
 				->array($builtInstance->array)->isEmpty
 
-				->object($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructor')))->isInstanceOf('\closure')
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructor')))->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
 				->object($builtInstance = $factory('a', 'b', 'c', $reference, $array = range(1, 5)))->isInstanceOf(__NAMESPACE__ . '\classWithConstructor')
 				->string($builtInstance->a)->isEqualTo('a')
 				->string($builtInstance->b)->isEqualTo('b')
@@ -102,7 +121,8 @@ class factory extends atoum
 				->string($builtInstance->reference)->isEqualTo($reference)
 				->array($builtInstance->array)->isEqualTo($array)
 
-				->object($factory = $this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructor'), $instance))->isInstanceOf('\closure')
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructor'), $instance))->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
 				->object($builtInstance = $factory('a', 'b', 'c', $reference))->isInstanceOf(__NAMESPACE__ . '\classWithConstructor')
 				->object($instance)->isIdenticalTo($builtInstance)
 				->string($instance->a)->isEqualTo('a')
@@ -111,7 +131,6 @@ class factory extends atoum
 				->string($instance->reference)->isNotEmpty
 				->string($instance->reference)->isEqualTo($reference)
 				->array($instance->array)->isEmpty
-
 				->object($builtInstance = $factory('a', 'b', 'c', $reference, $array = range(1, 5)))->isInstanceOf(__NAMESPACE__ . '\classWithConstructor')
 				->object($instance)->isIdenticalTo($builtInstance)
 				->string($instance->a)->isEqualTo('a')
@@ -120,6 +139,35 @@ class factory extends atoum
 				->string($instance->reference)->isNotEmpty
 				->string($instance->reference)->isEqualTo($reference)
 				->array($instance->array)->isEqualTo($array)
+		;
+	}
+
+	public function testAddToAssertionManager()
+	{
+		$this
+			->given(
+				$this->newTestedInstance,
+				$assertionManager = new \mock\atoum\test\assertion\manager()
+			)
+			->then
+				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid()))->isTestedInstance
+				->mock($assertionManager)
+					->call('setMethodHandler')->never
+					->call('setPropertyHandler')->never
+
+			->if($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructor')))
+			->then
+				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid()))->isTestedInstance
+				->mock($assertionManager)
+					->call('setMethodHandler')->withArguments($factoryName, $this->testedInstance->get())->once
+					->call('setPropertyHandler')->never
+
+			->if($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructorWithOptionalArguments')))
+			->then
+				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid()))->isTestedInstance
+				->mock($assertionManager)
+					->call('setMethodHandler')->withArguments($factoryName, $this->testedInstance->get())->once
+					->call('setPropertyHandler')->withArguments($factoryName, $this->testedInstance->get())->once
 		;
 	}
 }
