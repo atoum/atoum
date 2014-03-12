@@ -14,7 +14,6 @@ class factory
 	public function build(\reflectionClass $class, & $instance = null)
 	{
 		$this->factory = null;
-		$numberOfDefaultArgument = 0;
 
 		if ($class->isInterface() === false && $class->isAbstract() === false)
 		{
@@ -24,8 +23,11 @@ class factory
 			{
 				$constructorParameters = $closureParameters = array();
 
+				$numberOfDefaultArgument = 0;
+
 				if ($constructor !== null)
 				{
+
 					foreach ($constructor->getParameters() as $position => $parameter)
 					{
 						$closureParameters[$position] = $constructorParameters[$position] = '$' . $parameter->getName();
