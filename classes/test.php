@@ -1013,7 +1013,7 @@ abstract class test implements observable, \countable
 
 			if (spl_autoload_register($mockAutoloader, true, true) === false)
 			{
-				throw new \runtimeException('Unable to register mock autoloader');
+				throw new exceptions\runtime('Unable to register mock autoloader');
 			}
 
 			set_error_handler(array($this, 'errorHandler'));
@@ -1060,9 +1060,20 @@ abstract class test implements observable, \countable
 						$testedClass = new \reflectionClass($testedClassName = $mockGenerator->getDefaultNamespace() . '\\' . $testedClassName);
 					}
 
-					$this->reflectionFactory->build($testedClass, $instance)->addToAssertionManager($this->assertionManager, 'newTestedInstance');
+					$this->reflectionFactory->build($testedClass, $instance)->addToAssertionManager($this->assertionManager, 'newTestedInstance', function() use ($testedClass) {
+							throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor');
+						}
+					);
 
-					$this->assertionManager->setPropertyHandler('testedInstance', function() use (& $instance) { return $instance; });
+					$this->assertionManager->setPropertyHandler('testedInstance', function() use (& $instance) {
+							if ($instance === null)
+							{
+								throw new exceptions\runtime('Use $this->newTestedInstance before using $this->testedInstance');
+							}
+
+							return $instance;
+						}
+					);
 
 					test\adapter::setStorage($this->testAdapterStorage);
 					mock\controller::setLinker($this->mockControllerLinker);
