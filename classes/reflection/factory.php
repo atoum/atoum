@@ -85,9 +85,16 @@ class factory
 		return $this->factory;
 	}
 
-	public function addToAssertionManager(test\assertion\manager $assertionManager, $factoryName)
+	public function addToAssertionManager(test\assertion\manager $assertionManager, $factoryName, $defaultHandler)
 	{
-		if ($this->factory !== null)
+		if ($this->factory === null)
+		{
+			$assertionManager
+				->setMethodHandler($factoryName, $defaultHandler)
+				->setPropertyHandler($factoryName, $defaultHandler)
+			;
+		}
+		else
 		{
 			$assertionManager->setMethodHandler($factoryName, $this->factory);
 

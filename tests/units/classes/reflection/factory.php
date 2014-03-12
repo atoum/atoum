@@ -150,21 +150,21 @@ class factory extends atoum
 				$assertionManager = new \mock\atoum\test\assertion\manager()
 			)
 			->then
-				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid()))->isTestedInstance
+				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid(), $defaultHandler = function() {}))->isTestedInstance
 				->mock($assertionManager)
-					->call('setMethodHandler')->never
-					->call('setPropertyHandler')->never
+					->call('setMethodHandler')->withIdenticalArguments($factoryName, $defaultHandler)->once
+					->call('setPropertyHandler')->withIdenticalArguments($factoryName, $defaultHandler)->once
 
 			->if($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructor')))
 			->then
-				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid()))->isTestedInstance
+				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid(), function() {}))->isTestedInstance
 				->mock($assertionManager)
 					->call('setMethodHandler')->withArguments($factoryName, $this->testedInstance->get())->once
-					->call('setPropertyHandler')->never
+					->call('setPropertyHandler')->withArguments($factoryName, $this->testedInstance->get())->never
 
 			->if($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructorWithOptionalArguments')))
 			->then
-				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid()))->isTestedInstance
+				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid(), function() {}))->isTestedInstance
 				->mock($assertionManager)
 					->call('setMethodHandler')->withArguments($factoryName, $this->testedInstance->get())->once
 					->call('setPropertyHandler')->withArguments($factoryName, $this->testedInstance->get())->once
