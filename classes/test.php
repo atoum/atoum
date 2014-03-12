@@ -39,6 +39,7 @@ abstract class test implements observable, \countable
 	private $locale = null;
 	private $adapter = null;
 	private $mockGenerator = null;
+	private $reflectionFactory = null;
 	private $reflectionMethodFactory = null;
 	private $asserterGenerator = null;
 	private $assertionManager = null;
@@ -92,6 +93,7 @@ abstract class test implements observable, \countable
 			->setMockControllerLinker()
 			->setScore()
 			->setLocale()
+			->setReflectionFactory()
 			->setReflectionMethodFactory()
 			->setAsserterCallManager()
 			->enableCodeCoverage()
@@ -284,6 +286,18 @@ abstract class test implements observable, \countable
 	public function getMockGenerator()
 	{
 		return $this->mockGenerator;
+	}
+
+	public function setReflectionFactory(reflection\factory $reflectionFactory = null)
+	{
+		$this->reflectionFactory = $reflectionFactory ?: new reflection\factory();
+
+		return $this;
+	}
+
+	public function getReflectionFactory()
+	{
+		return $this->reflectionFactory;
 	}
 
 	public function setReflectionMethodFactory(\closure $factory = null)
@@ -1046,54 +1060,9 @@ abstract class test implements observable, \countable
 						$testedClass = new \reflectionClass($testedClassName = $mockGenerator->getDefaultNamespace() . '\\' . $testedClassName);
 					}
 
-					$newTestedInstanceHandlerParameters = $constructorParameters = array();
-					$defaultArguments = 0;
-
-					$testedClassConstructor = $testedClass->getConstructor();
-
-					if ($testedClassConstructor !== null)
-					{
-						foreach ($testedClassConstructor->getParameters() as $position => $parameter)
-						{
-							$newTestedInstanceHandlerParameters[$position] = $constructorParameters[$position] = '$' . $parameter->getName();
-
-							if ($parameter->isPassedByReference() === true)
-							{
-								$newTestedInstanceHandlerParameters[$position] = '& ' . $newTestedInstanceHandlerParameters[$position];
-							}
-
-							if ($parameter->isDefaultValueAvailable() === true)
-							{
-								$newTestedInstanceHandlerParameters[$position] .= ' = ' . var_export($parameter->getDefaultValue(), true);
-								$defaultArguments++;
-							}
-							else if ($parameter->isOptional() === true)
-							{
-								$newTestedInstanceHandlerParameters[$position] .= ' = null';
-								$defaultArguments++;
-							}
-						}
-					}
+					$this->reflectionFactory->build($testedClass, $instance)->addToAssertionManager($this->assertionManager, 'newTestedInstance');
 
 					$this->assertionManager->setPropertyHandler('testedInstance', function() use (& $instance) { return $instance; });
-
-					if (sizeof($newTestedInstanceHandlerParameters) <= 0)
-					{
-						$constructor = 'return function() use (& $instance, $testedClass) { return ($instance = $testedClass->newInstanceArgs(func_get_args())); };';
-					}
-					else
-					{
-						$constructor = 'return function(' . join(', ', $newTestedInstanceHandlerParameters) . ') use (& $instance) { return ($instance = new ' . $testedClassName . '(' . join(', ', $constructorParameters) . ')); };';
-					}
-
-					$newTestedInstanceHandler = eval($constructor);
-
-					$this->assertionManager->setMethodHandler('newTestedInstance', $newTestedInstanceHandler);
-
-					if (sizeof($newTestedInstanceHandlerParameters) <= $defaultArguments)
-					{
-						$this->assertionManager->setPropertyHandler('newTestedInstance', $newTestedInstanceHandler);
-					}
 
 					test\adapter::setStorage($this->testAdapterStorage);
 					mock\controller::setLinker($this->mockControllerLinker);

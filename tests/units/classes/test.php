@@ -275,6 +275,34 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testGetReflectionFactory()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->getReflectionFactory())->isInstanceOf('mageekguy\atoum\reflection\factory')
+
+				->if($test->setReflectionFactory($reflectionFactory = new atoum\reflection\factory()))
+				->then
+					->object($test->getReflectionFactory())->isIdenticalTo($reflectionFactory)
+			;
+		}
+
+		public function testSetReflectionFactory()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setReflectionFactory($reflectionFactory = new atoum\reflection\factory()))->isIdenticalTo($test)
+					->object($test->getReflectionFactory())->isIdenticalTo($reflectionFactory)
+
+					->object($test->setReflectionFactory())->isIdenticalTo($test)
+					->object($test->getReflectionFactory())
+						->isEqualTo(new atoum\reflection\factory())
+						->isNotIdenticalTo($reflectionFactory)
+			;
+		}
+
 		public function testSetPhpMocker()
 		{
 			$this
