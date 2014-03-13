@@ -1,12 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\reflection;
+namespace mageekguy\atoum\factory\builder;
 
 use
-	atoum\test
+	atoum\test,
+	atoum\factory
 ;
 
-class factory
+class closure implements factory\builder
 {
 	private $factory = null;
 	private $allArgumentsAreOptional = false;
@@ -21,21 +22,14 @@ class factory
 
 			if ($constructor === null || $constructor->isPublic() === true)
 			{
-				$constructorParameters = $closureParameters = array();
-
 				$numberOfDefaultArgument = 0;
+				$constructorParameters = $closureParameters = array();
 
 				if ($constructor !== null)
 				{
-
 					foreach ($constructor->getParameters() as $position => $parameter)
 					{
-						$closureParameters[$position] = $constructorParameters[$position] = '$' . $parameter->getName();
-
-						if ($parameter->isPassedByReference() === true)
-						{
-							$closureParameters[$position] = '& ' . $closureParameters[$position];
-						}
+						$closureParameters[$position] = ($parameter->isPassedByReference() === false ? '' : '& ') . $constructorParameters[$position] = '$' . $parameter->getName();
 
 						switch (true)
 						{
@@ -61,19 +55,14 @@ class factory
 
 				if ($constructor === null || sizeof($closureParameters) <= 0)
 				{
-					$factoryCode = 'function() use (& $instance, $class) { return ($instance = $class->newInstanceArgs(func_get_args())); };';
+					$this->factory = function() use (& $instance, $class) { return ($instance = $class->newInstanceArgs(func_get_args())); };
 				}
 				else
 				{
-					$factoryCode = 'function(' . join(', ', $closureParameters) . ') use (& $instance) { return ($instance = new ' . $class->getName() . '(' . join(', ', $constructorParameters) . ')); };';
+					$this->factory = eval('return function(' . join(', ', $closureParameters) . ') use (& $instance) { return ($instance = new ' . $class->getName() . '(' . join(', ', $constructorParameters) . ')); };');
 				}
 
-				if ($numberOfDefaultArgument === sizeof($closureParameters))
-				{
-					$this->allArgumentsAreOptional = true;
-				}
-
-				$this->factory = eval('return ' . $factoryCode);
+				$this->allArgumentsAreOptional = ($numberOfDefaultArgument === sizeof($closureParameters));
 			}
 		}
 

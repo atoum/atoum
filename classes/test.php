@@ -39,7 +39,7 @@ abstract class test implements observable, \countable
 	private $locale = null;
 	private $adapter = null;
 	private $mockGenerator = null;
-	private $reflectionFactory = null;
+	private $factoryBuilder = null;
 	private $reflectionMethodFactory = null;
 	private $asserterGenerator = null;
 	private $assertionManager = null;
@@ -93,7 +93,7 @@ abstract class test implements observable, \countable
 			->setMockControllerLinker()
 			->setScore()
 			->setLocale()
-			->setReflectionFactory()
+			->setFactoryBuilder()
 			->setReflectionMethodFactory()
 			->setAsserterCallManager()
 			->enableCodeCoverage()
@@ -288,16 +288,16 @@ abstract class test implements observable, \countable
 		return $this->mockGenerator;
 	}
 
-	public function setReflectionFactory(reflection\factory $reflectionFactory = null)
+	public function setFactoryBuilder(factory\builder $factoryBuilder = null)
 	{
-		$this->reflectionFactory = $reflectionFactory ?: new reflection\factory();
+		$this->factoryBuilder = $factoryBuilder ?: new factory\builder\closure();
 
 		return $this;
 	}
 
-	public function getReflectionFactory()
+	public function getFactoryBuilder()
 	{
-		return $this->reflectionFactory;
+		return $this->factoryBuilder;
 	}
 
 	public function setReflectionMethodFactory(\closure $factory = null)
@@ -1060,7 +1060,7 @@ abstract class test implements observable, \countable
 						$testedClass = new \reflectionClass($testedClassName = $mockGenerator->getDefaultNamespace() . '\\' . $testedClassName);
 					}
 
-					$this->reflectionFactory->build($testedClass, $instance)->addToAssertionManager($this->assertionManager, 'newTestedInstance', function() use ($testedClass) {
+					$this->factoryBuilder->build($testedClass, $instance)->addToAssertionManager($this->assertionManager, 'newTestedInstance', function() use ($testedClass) {
 							throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor');
 						}
 					);

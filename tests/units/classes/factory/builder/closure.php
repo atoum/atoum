@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reflection;
+namespace mageekguy\atoum\tests\units\factory\builder;
 
-require __DIR__ . '/../../runner.php';
+require __DIR__ . '/../../../runner.php';
 
 use
 	atoum
@@ -52,8 +52,13 @@ class classWithConstructorWithOptionalArguments
 	public function __construct($a = null, $b = null) {}
 }
 
-class factory extends atoum
+class closure extends atoum
 {
+	public function testClass()
+	{
+		$this->testedClass->implements('atoum\factory\builder');
+	}
+
 	public function testBuild()
 	{
 		$this

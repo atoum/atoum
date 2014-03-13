@@ -93,6 +93,7 @@ namespace mageekguy\atoum\tests\units
 					->object($test->getLocale())->isEqualTo(new atoum\locale())
 					->object($test->getAdapter())->isEqualTo(new atoum\adapter())
 					->object($test->getPhpMocker())->isInstanceOf('mageekguy\atoum\php\mocker')
+					->object($test->getFactoryBuilder())->isInstanceOf('mageekguy\atoum\factory\builder\closure')
 					->boolean($test->isIgnored())->isTrue()
 					->boolean($test->debugModeIsEnabled())->isFalse()
 					->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
@@ -275,31 +276,31 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testGetReflectionFactory()
+		public function testGetFactoryBuilder()
 		{
 			$this
 				->if($test = new emptyTest())
 				->then
-					->object($test->getReflectionFactory())->isInstanceOf('mageekguy\atoum\reflection\factory')
+					->object($test->getFactoryBuilder())->isInstanceOf('mageekguy\atoum\factory\builder\closure')
 
-				->if($test->setReflectionFactory($reflectionFactory = new atoum\reflection\factory()))
+				->if($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\factory\builder()))
 				->then
-					->object($test->getReflectionFactory())->isIdenticalTo($reflectionFactory)
+					->object($test->getFactoryBuilder())->isIdenticalTo($factoryBuilder)
 			;
 		}
 
-		public function testSetReflectionFactory()
+		public function testSetFactoryBuilder()
 		{
 			$this
 				->if($test = new emptyTest())
 				->then
-					->object($test->setReflectionFactory($reflectionFactory = new atoum\reflection\factory()))->isIdenticalTo($test)
-					->object($test->getReflectionFactory())->isIdenticalTo($reflectionFactory)
+					->object($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\factory\builder()))->isIdenticalTo($test)
+					->object($test->getFactoryBuilder())->isIdenticalTo($factoryBuilder)
 
-					->object($test->setReflectionFactory())->isIdenticalTo($test)
-					->object($test->getReflectionFactory())
-						->isEqualTo(new atoum\reflection\factory())
-						->isNotIdenticalTo($reflectionFactory)
+					->object($test->setFactoryBuilder())->isIdenticalTo($test)
+					->object($test->getFactoryBuilder())
+						->isEqualTo(new atoum\Factory\builder\closure())
+						->isNotIdenticalTo($factoryBuilder)
 			;
 		}
 
