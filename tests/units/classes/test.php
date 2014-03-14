@@ -1014,5 +1014,75 @@ namespace mageekguy\atoum\tests\units
 					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass', '#(?:^|\\\)aaas?\\\bbbs?\\\#i'))->isEqualTo('foo\bar\testedClass')
 			;
 		}
+
+		public function testAddExtension()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->addExtension($extension = new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
+					->array($test->getExtensions())->isEqualTo(array($extension))
+					->array($test->getObservers())->contains($extension)
+					->mock($extension)
+						->call('setTest')->withArguments($test)->once()
+				->if($this->resetMock($extension))
+				->then
+					->object($test->addExtension($extension))->isIdenticalTo($test)
+					->array($test->getExtensions())->isEqualTo(array($extension))
+					->array($test->getObservers())->contains($extension)
+					->mock($extension)
+						->call('setTest')->never();
+			;
+		}
+
+		public function testRemoveExtension()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->array($test->getExtensions())->isEmpty()
+					->array($test->getObservers())->isEmpty()
+					->object($test->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
+					->array($test->getExtensions())->isEmpty()
+					->array($test->getObservers())->isEmpty()
+				->if($extension = new \mock\mageekguy\atoum\extension())
+				->and($otherExtension = new \mock\mageekguy\atoum\extension())
+				->and($test->addExtension($extension)->addExtension($otherExtension))
+				->then
+					->array($test->getExtensions())->isEqualTo(array($extension, $otherExtension))
+					->array($test->getObservers())->isEqualTo(array($extension, $otherExtension))
+					->object($test->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
+					->array($test->getExtensions())->isEqualTo(array($extension, $otherExtension))
+					->array($test->getObservers())->isEqualTo(array($extension, $otherExtension))
+					->object($test->removeExtension($extension))->isIdenticalTo($test)
+					->array($test->getExtensions())->isEqualTo(array($otherExtension))
+					->array($test->getObservers())->isEqualTo(array($otherExtension))
+					->object($test->removeExtension($otherExtension))->isIdenticalTo($test)
+					->array($test->getExtensions())->isEmpty()
+					->array($test->getObservers())->isEmpty()
+			;
+		}
+
+		public function testRemoveExtensions()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->array($test->getExtensions())->isEmpty()
+					->array($test->getObservers())->isEmpty()
+					->object($test->removeExtensions())->isIdenticalTo($test)
+					->array($test->getExtensions())->isEmpty()
+					->array($test->getObservers())->isEmpty()
+				->if($extension = new \mock\mageekguy\atoum\extension())
+				->and($otherExtension = new \mock\mageekguy\atoum\extension())
+				->and($test->addExtension($extension)->addExtension($otherExtension))
+				->then
+					->array($test->getExtensions())->isEqualTo(array($extension, $otherExtension))
+					->array($test->getObservers())->isEqualTo(array($extension, $otherExtension))
+					->object($test->removeExtensions())->isIdenticalTo($test)
+					->array($test->getExtensions())->isEmpty()
+					->array($test->getObservers())->isEmpty()
+			;
+		}
 	}
 }

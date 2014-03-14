@@ -41,6 +41,7 @@ class runner implements observable
 	protected $failIfVoidMethods = false;
 	protected $failIfSkippedMethods = false;
 	protected $disallowUndefinedMethodInInterface = false;
+	protected $extensions = null;
 
 	private $start = null;
 	private $stop = null;
@@ -62,6 +63,7 @@ class runner implements observable
 
 		$this->observers = new \splObjectStorage();
 		$this->reports = new \splObjectStorage();
+		$this->extensions = new \splObjectStorage();
 	}
 
 	public function setAdapter(adapter $adapter = null)
@@ -511,6 +513,7 @@ class runner implements observable
 				if ($testMethodNumber > 0)
 				{
 					$tests[] = $test;
+					$test->addExtensions($this->extensions);
 
 					$this->testNumber++;
 					$this->testMethodNumber += $testMethodNumber;
@@ -748,6 +751,45 @@ class runner implements observable
 		}
 
 		return $reports;
+	}
+
+	public function getExtensions()
+	{
+		return iterator_to_array($this->extensions);
+	}
+
+	public function removeExtension(atoum\extension $extension)
+	{
+		$this->extensions->detach($extension);
+
+		return $this->removeObserver($extension);
+	}
+
+	public function removeExtensions()
+	{
+		foreach ($this->extensions as $extension)
+		{
+			$this->removeObserver($extension);
+		}
+
+		$this->extensions = new \splObjectStorage();
+
+		return $this;
+	}
+
+
+	public function addExtension(atoum\extension $extension)
+	{
+		if ($this->extensions->contains($extension) === false)
+		{
+			$extension->setRunner($this);
+
+			$this->extensions->attach($extension);
+
+			$this->addObserver($extension);
+		}
+
+		return $this;
 	}
 
 	public static function isIgnored(test $test, array $namespaces, array $tags)
