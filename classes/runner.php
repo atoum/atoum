@@ -38,7 +38,7 @@ class runner implements observable
 	protected $testDirectoryIterator = null;
 	protected $debugMode = false;
 	protected $xdebugConfig = null;
-    protected $extensions = null;
+	protected $extensions = null;
 
 	private $start = null;
 	private $stop = null;
@@ -440,7 +440,7 @@ class runner implements observable
 				if ($testMethodNumber > 0)
 				{
 					$tests[] = $test;
-                    $test->addExtensions($this->extensions);
+					$test->addExtensions($this->extensions);
 
 					$this->testNumber++;
 					$this->testMethodNumber += $testMethodNumber;
@@ -681,44 +681,44 @@ class runner implements observable
 		return $reports;
 	}
 
-    public function getExtensions()
-    {
-        return iterator_to_array($this->extensions);
-    }
+	public function getExtensions()
+	{
+		return iterator_to_array($this->extensions);
+	}
 
-    public function removeExtension(atoum\extension $extension)
-    {
-        $this->extensions->detach($extension);
+	public function removeExtension(atoum\extension $extension)
+	{
+		$this->extensions->detach($extension);
 
-        return $this->removeObserver($extension);
-    }
+		return $this->removeObserver($extension);
+	}
 
-    public function removeExtensions()
-    {
-        foreach ($this->extensions as $extension)
-        {
-            $this->removeObserver($extension);
-        }
+	public function removeExtensions()
+	{
+		foreach ($this->extensions as $extension)
+		{
+			$this->removeObserver($extension);
+		}
 
-        $this->extensions = new \splObjectStorage();
+		$this->extensions = new \splObjectStorage();
 
-        return $this;
-    }
+		return $this;
+	}
 
 
-    public function addExtension(atoum\extension $extension)
-    {
-        if ($this->extensions->contains($extension) === false)
-        {
-            $extension->setRunner($this);
+	public function addExtension(atoum\extension $extension)
+	{
+		if ($this->extensions->contains($extension) === false)
+		{
+			$extension->setRunner($this);
 
-            $this->extensions->attach($extension);
+			$this->extensions->attach($extension);
 
-            $this->addObserver($extension);
-        }
+			$this->addObserver($extension);
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
 	public static function isIgnored(test $test, array $namespaces, array $tags)
 	{
