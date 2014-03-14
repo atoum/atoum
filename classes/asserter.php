@@ -104,11 +104,21 @@ abstract class asserter
 		return $this->analyzer;
 	}
 
+	public function getTest()
+	{
+		return $this->test;
+	}
+
 	public function setWithTest(test $test)
 	{
 		$this->test = $test;
 
 		return $this;
+	}
+
+	public function setWith($mixed)
+	{
+		return $this->reset();
 	}
 
 	public function setWithArguments(array $arguments)
@@ -121,23 +131,47 @@ abstract class asserter
 		return $this;
 	}
 
-	public function setWith($mixed)
-	{
-		return $this->reset();
-	}
-
 	protected function pass()
 	{
-		$this->generator->asserterPass($this);
+		if ($this->test !== null)
+		{
+			$this->test->getScore()->addPass();
+		}
 
 		return $this;
 	}
 
 	protected function fail($reason)
 	{
-		$this->generator->asserterFail($this, $reason);
+		if ($this->test === null)
+		{
+			$exception = new asserter\exception($reason);
+		}
+		else
+		{
+			$class = $this->test->getClass();
+			$method = $this->test->getCurrentMethod();
+			$file = $this->test->getPath();
+			$line = null;
+			$function = null;
 
-		return $this;
+			foreach (array_filter(debug_backtrace(false), function($backtrace) use ($file) { return isset($backtrace['file']) === true && $backtrace['file'] === $file; }) as $backtrace)
+			{
+				if ($line === null && isset($backtrace['line']) === true)
+				{
+					$line = $backtrace['line'];
+				}
+
+				if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $this && $backtrace['function'] !== '__call')
+				{
+					$function = $backtrace['function'];
+				}
+			}
+
+			$exception = new asserter\exception($reason, $this->test->getScore()->addFail($file, $class, $method, $line, get_class($this) . ($function ? '::' . $function : '') . '()', $reason));
+		}
+
+		throw $exception;
 	}
 
 	protected function getTypeOf($mixed)
