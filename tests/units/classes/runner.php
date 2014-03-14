@@ -417,6 +417,76 @@ class runner extends atoum\test
 		;
 	}
 
+    public function testAddExtension()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->addExtension($extension = new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
+				->array($runner->getExtensions())->isEqualTo(array($extension))
+				->array($runner->getObservers())->contains($extension)
+                ->mock($extension)
+                    ->call('setRunner')->withArguments($runner)->once()
+            ->if($this->resetMock($extension))
+            ->then
+                ->object($runner->addExtension($extension))->isIdenticalTo($runner)
+                ->array($runner->getExtensions())->isEqualTo(array($extension))
+                ->array($runner->getObservers())->contains($extension)
+                ->mock($extension)
+                    ->call('setRunner')->never();
+		;
+	}
+
+	public function testRemoveExtension()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->array($runner->getExtensions())->isEmpty()
+				->array($runner->getObservers())->isEmpty()
+				->object($runner->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
+				->array($runner->getExtensions())->isEmpty()
+				->array($runner->getObservers())->isEmpty()
+			->if($extension = new \mock\mageekguy\atoum\extension())
+			->and($otherExtension = new \mock\mageekguy\atoum\extension())
+			->and($runner->addExtension($extension)->addExtension($otherExtension))
+			->then
+				->array($runner->getExtensions())->isEqualTo(array($extension, $otherExtension))
+				->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
+				->object($runner->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
+				->array($runner->getExtensions())->isEqualTo(array($extension, $otherExtension))
+				->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
+				->object($runner->removeExtension($extension))->isIdenticalTo($runner)
+				->array($runner->getExtensions())->isEqualTo(array($otherExtension))
+				->array($runner->getObservers())->isEqualTo(array($otherExtension))
+				->object($runner->removeExtension($otherExtension))->isIdenticalTo($runner)
+				->array($runner->getExtensions())->isEmpty()
+				->array($runner->getObservers())->isEmpty()
+		;
+	}
+
+	public function testRemoveExtensions()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->array($runner->getExtensions())->isEmpty()
+				->array($runner->getObservers())->isEmpty()
+				->object($runner->removeExtensions())->isIdenticalTo($runner)
+				->array($runner->getExtensions())->isEmpty()
+				->array($runner->getObservers())->isEmpty()
+            ->if($extension = new \mock\mageekguy\atoum\extension())
+            ->and($otherExtension = new \mock\mageekguy\atoum\extension())
+			->and($runner->addExtension($extension)->addExtension($otherExtension))
+			->then
+				->array($runner->getExtensions())->isEqualTo(array($extension, $otherExtension))
+				->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
+				->object($runner->removeExtensions())->isIdenticalTo($runner)
+				->array($runner->getExtensions())->isEmpty()
+				->array($runner->getObservers())->isEmpty()
+		;
+	}
+
 	public function testEnableCodeCoverage()
 	{
 		$this

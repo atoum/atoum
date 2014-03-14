@@ -117,6 +117,11 @@ class concurrent extends test\engine
 				}
 			}
 
+            foreach ($test->getExtensions() as $extension)
+            {
+                $phpCode .= '$test->addExtension(new ' . get_class($extension) . ');';
+            }
+
 			$phpCode .=
 				'ob_end_clean();' .
 				'mageekguy\atoum\scripts\runner::disableAutorun();' .
