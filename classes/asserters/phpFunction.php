@@ -14,14 +14,16 @@ class phpFunction extends atoum\asserters\adapter\call
 {
 	public function setWithTest(atoum\test $test)
 	{
-		if ($this->callIsSet()->adapter === null)
+		parent::setWithTest($test);
+
+		$function = $this->call->getFunction();
+
+		if ($function !== null)
 		{
-			parent::setWith(clone php\mocker::getAdapter());
+			$this->setWith($function);
 		}
 
-		$this->setFunction($test->getTestedClassNamespace() . '\\' . $this->getFunction());
-
-		return parent::setWithTest($test);
+		return $this;
 	}
 
 	public function setWith($function)
@@ -52,6 +54,23 @@ class phpFunction extends atoum\asserters\adapter\call
 	public function wasCalledWithoutAnyArgument()
 	{
 		return $this->setArguments(array());
+	}
+
+	protected function setFunction($function)
+	{
+		if ($this->test !== null)
+		{
+			$lastNamespaceSeparator = strrpos($function, '\\');
+
+			if ($lastNamespaceSeparator !== false)
+			{
+				$function = substr($function, $lastNamespaceSeparator + 1);
+			}
+
+			$function = $this->test->getTestedClassNamespace() . '\\' . $function;
+		}
+
+		return parent::setFunction($function);
 	}
 
 	protected function adapterIsSet()
