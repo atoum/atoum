@@ -159,7 +159,10 @@ class object extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Tested instance is undefined in the test')
 
-			->if($asserter->setWithTest($this))
+			->if(
+				$asserter->setWithTest($test = new \mock\atoum\test()),
+				$this->calling($test)->__get = $this->testedInstance
+			)
 			->then
 				->object($asserter->isTestedInstance())->isIdenticalTo($asserter)
 				->object($asserter->isTestedInstance)->isIdenticalTo($asserter)
@@ -191,7 +194,10 @@ class object extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Tested instance is undefined in the test')
 
-			->if($asserter->setWithTest($this))
+			->if(
+				$asserter->setWithTest($test = new \mock\atoum\test()),
+				$this->calling($test)->__get = $this->testedInstance
+			)
 			->then
 				->object($asserter->isNotTestedInstance())->isIdenticalTo($asserter)
 
@@ -220,7 +226,11 @@ class object extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Tested instance is undefined in the test')
 
-			->if($asserter->setWithTest($this))
+			->if(
+				$asserter->setWithTest($test = new \mock\atoum\test()),
+				$this->calling($test)->__get = $this->testedInstance,
+				$this->calling($test)->getTestedClassName = get_class($this->testedInstance)
+			)
 			->then
 				->object($asserter->isInstanceOfTestedClass())->isIdenticalTo($asserter)
 

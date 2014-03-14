@@ -23,7 +23,9 @@ class error extends atoum\asserter
 
 	public function setWithTest(atoum\test $test)
 	{
-		return $this->setScore($test->getScore());
+		$this->setScore($test->getScore());
+
+		return parent::setWithTest($test);
 	}
 
 	public function setWith($message = null, $type = null)

@@ -103,6 +103,13 @@ abstract class call extends atoum\asserter
 		return $this;
 	}
 
+	public function setWithTest(test $test)
+	{
+		$this->setManager($test->getAsserterCallManager());
+
+		return parent::setWithTest($test);
+	}
+
 	public function setWith($adapter)
 	{
 		$this->adapter = $adapter;
@@ -241,9 +248,14 @@ abstract class call extends atoum\asserter
 		return $this->exactly(0, $failMessage);
 	}
 
-	public function setWithTest(test $test)
+	public function getFunction()
 	{
-		return $this->setManager($test->getAsserterCallManager());
+		return $this->call->getFunction();
+	}
+
+	public function getArguments()
+	{
+		return $this->adapterIsSet()->call->getArguments();
 	}
 
 	protected function adapterIsSet()
@@ -339,11 +351,6 @@ abstract class call extends atoum\asserter
 		$this->afterCalls = array();
 
 		return $this;
-	}
-
-	protected function getFunction()
-	{
-		return $this->adapterIsSet()->call->getFunction();
 	}
 
 	protected function setArguments(array $arguments)
