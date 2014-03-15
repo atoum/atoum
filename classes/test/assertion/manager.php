@@ -58,33 +58,21 @@ class manager
 
 	public function invokePropertyHandler($event)
 	{
-		$handler = null;
-
-		if (isset($this->propertyHandlers[$event]) === true)
-		{
-			$handler = $this->propertyHandlers[$event];
-		}
-
-		switch (true)
-		{
-			case $handler === null && $this->defaultHandler === null:
-				throw new assertion\manager\exception('There is no handler defined for event \'' . $event . '\'');
-
-			case $handler !== null:
-				return call_user_func($handler);
-
-			default:
-				return call_user_func_array($this->defaultHandler, array($event, array()));
-		}
+		return $this->invokeHandler($this->propertyHandlers, $event);
 	}
 
 	public function invokeMethodHandler($event, array $arguments = array())
 	{
+		return $this->invokeHandler($this->methodHandlers, $event, $arguments);
+	}
+
+	private function invokeHandler(array $handlers, $event, array $arguments = array())
+	{
 		$handler = null;
 
-		if (isset($this->methodHandlers[$event]) === true)
+		if (isset($handlers[$event]) === true)
 		{
-			$handler = $this->methodHandlers[$event];
+			$handler = $handlers[$event];
 		}
 
 		switch (true)
