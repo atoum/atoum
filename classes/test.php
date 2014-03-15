@@ -383,6 +383,14 @@ abstract class test implements observable, \countable
 			->setHandler('resetAdapter', function(test\adapter $adapter) { return $adapter->resetCalls(); })
 		;
 
+		$assertionAliaser = $this->asserterGenerator->getAliaser();
+
+		$this->assertionManager
+			->setHandler('from', function($class) use ($assertionAliaser, $test) { $assertionAliaser->from($class); return $test; })
+			->setHandler('alias', function($target) use ($assertionAliaser, $test) { $assertionAliaser->alias($target); return $test; })
+			->setHandler('to', function($alias) use ($assertionAliaser, $test) { $assertionAliaser->to($alias); return $test; })
+		;
+
 		$asserterGenerator = $this->asserterGenerator;
 
 		$this->assertionManager
