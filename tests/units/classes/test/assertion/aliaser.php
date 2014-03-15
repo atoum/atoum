@@ -17,10 +17,14 @@ class aliaser extends atoum
 			->given($this->newTestedInstance)
 			->then
 				->object($this->testedInstance->getResolver())->isEqualTo(new asserter\resolver())
+				->array($this->testedInstance->getClassAliases())->isEmpty
+				->array($this->testedInstance->getMethodAliases())->isEmpty
 
 			->given($this->newTestedInstance($resolver = new asserter\resolver()))
 			->then
 				->object($this->testedInstance->getResolver())->isIdenticalTo($resolver)
+				->array($this->testedInstance->getClassAliases())->isEmpty
+				->array($this->testedInstance->getMethodAliases())->isEmpty
 		;
 	}
 
@@ -51,6 +55,20 @@ class aliaser extends atoum
 		;
 	}
 
+	public function testResetClassAliases()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->resetClassAliases())->isTestedInstance
+
+			->if($this->testedInstance->aliasClass(uniqid(), uniqid()))
+			->then
+				->object($this->testedInstance->resetClassAliases())->isTestedInstance
+				->array($this->testedInstance->getClassAliases())->isEmpty
+		;
+	}
+
 	public function testAliasMethod()
 	{
 		$this
@@ -60,6 +78,20 @@ class aliaser extends atoum
 				->string($this->testedInstance->resolveMethod($class, $alias))->isEqualTo($method)
 
 				->string($this->testedInstance->resolveMethod($class, $unknownAlias = uniqid()))->isEqualTo($unknownAlias)
+		;
+	}
+
+	public function testResetMethodAliases()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->resetMethodAliases())->isTestedInstance
+
+			->if($this->testedInstance->aliasMethod(uniqid(), uniqid(), uniqid()))
+			->then
+				->object($this->testedInstance->resetMethodAliases())->isTestedInstance
+				->array($this->testedInstance->getMethodAliases())->isEmpty
 		;
 	}
 

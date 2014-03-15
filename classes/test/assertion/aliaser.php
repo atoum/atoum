@@ -77,6 +77,18 @@ class aliaser
 		return (isset($this->classes[$class]) === false ? $class : $this->classes[$class]);
 	}
 
+	public function getClassAliases()
+	{
+		return $this->classes;
+	}
+
+	public function resetClassAliases()
+	{
+		$this->classes = array();
+
+		return $this;
+	}
+
 	public function aliasMethod($class, $method, $alias)
 	{
 		$this->methods[strtolower($this->resolver->resolve($class))][strtolower($alias)] = strtolower($method);
@@ -90,5 +102,17 @@ class aliaser
 		$alias = strtolower($alias);
 
 		return (isset($this->methods[$class]) === false || isset($this->methods[$class][$alias]) === false ? $alias : $this->methods[$class][$alias]);
+	}
+
+	public function getMethodAliases()
+	{
+		return $this->methods;
+	}
+
+	public function resetMethodAliases()
+	{
+		$this->methods = array();
+
+		return $this;
 	}
 }
