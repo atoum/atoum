@@ -100,16 +100,6 @@ class generator
 		return $this;
 	}
 
-	public function asserterPass(atoum\asserter $asserter)
-	{
-		return $this;
-	}
-
-	public function asserterFail(atoum\asserter $asserter, $reason)
-	{
-		throw new exception($reason);
-	}
-
 	public function getAsserterClass($asserter)
 	{
 		$asserter = strtolower($asserter);
