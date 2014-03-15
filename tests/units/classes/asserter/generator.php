@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\asserter;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserter\generator as testedClass
 ;
 
@@ -17,13 +18,13 @@ class generator extends atoum\test
 			->given($this->newTestedInstance)
 			->then
 				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
-				->object($this->testedInstance->getAdapter())->isEqualTo(new atoum\adapter())
+				->object($this->testedInstance->getResolver())->isEqualTo(new asserter\resolver())
 				->string($this->testedInstance->getAsserterNamespace())->isEqualTo(testedClass::defaultAsserterNamespace)
 
 			->given($this->newTestedInstance($locale = new atoum\locale(), $adapter = new atoum\adapter(), $asserterNamespace = uniqid()))
 			->then
 				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
-				->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
+				->object($this->testedInstance->getResolver())->isEqualTo(new asserter\resolver())
 				->string($this->testedInstance->getAsserterNamespace())->isEqualTo($asserterNamespace)
 		;
 	}
@@ -68,21 +69,6 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testSetAdapter()
-	{
-		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->setAdapter($adapter = new atoum\adapter()))->isTestedInstance
-				->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
-
-				->object($this->testedInstance->setAdapter())->isTestedInstance
-				->object($this->testedInstance->getAdapter())
-					->isNotIdenticalTo($adapter)
-					->isEqualTo(new atoum\adapter())
-		;
-	}
-
 	public function testSetLocale()
 	{
 		$this
@@ -95,6 +81,21 @@ class generator extends atoum\test
 				->object($this->testedInstance->getLocale())
 					->isNotIdenticalTo($locale)
 					->isEqualTo(new atoum\locale())
+		;
+	}
+
+	public function testSetResolver()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setResolver($resolver = new asserter\resolver()))->isTestedInstance
+				->object($this->testedInstance->getResolver())->isIdenticalTo($resolver)
+
+				->object($this->testedInstance->setResolver())->isTestedInstance
+				->object($this->testedInstance->getResolver())
+					->isEqualTo(new asserter\resolver())
+					->isNotIdenticalTo($resolver)
 		;
 	}
 
@@ -139,25 +140,22 @@ class generator extends atoum\test
 	public function testGetAsserterClass()
 	{
 		$this
-			->given($this->newTestedInstance->setAdapter($adapter = new atoum\test\adapter()))
+			->given($this->newTestedInstance->setResolver($resolver = new \mock\atoum\asserter\resolver()))
 
-			->if($adapter->class_exists = true)
+			->if($this->calling($resolver)->resolve = null)
 			->then
-				->string($this->testedInstance->getAsserterClass($asserter = uniqid()))->isEqualTo('mageekguy\atoum\asserters\\' . $asserter)
-				->string($this->testedInstance->getAsserterClass('\\' . $asserter))->isEqualTo('\\' . $asserter)
+				->variable($this->testedInstance->getAsserterClass($asserter = uniqid()))->isNull()
+				->mock($resolver)->call('resolve')->withArguments($asserter)->once
 
-			->if($this->testedInstance->setAlias($alias = uniqid(), $asserter))
+			->if($this->calling($resolver)->resolve = $class = uniqid())
 			->then
-				->string($this->testedInstance->getAsserterClass($asserter))->isEqualTo(testedClass::defaultAsserterNamespace . '\\' . $asserter)
-				->string($this->testedInstance->getAsserterClass($alias))->isEqualTo(testedClass::defaultAsserterNamespace . '\\' . $asserter)
+				->string($this->testedInstance->getAsserterClass($asserter = uniqid()))->isEqualTo($class)
+				->mock($resolver)->call('resolve')->withArguments($asserter)->once
 
-			->if($this->testedInstance->setAsserterNamespace($namespace = uniqid()))
+			->if($this->testedInstance->setAlias($alias = uniqid(), $asserter = uniqid()))
 			->then
-				->string($this->testedInstance->getAsserterClass($asserter))->isEqualTo($namespace . '\\' . $asserter)
-				->string($this->testedInstance->getAsserterClass($alias))->isEqualTo($namespace . '\\' . $asserter)
-
-			->if($adapter->class_exists = false)
-				->variable($this->testedInstance->getAsserterClass($asserter))->isNull()
+				->string($this->testedInstance->getAsserterClass($alias))->isEqualTo($class)
+				->mock($resolver)->call('resolve')->withArguments($asserter)->once
 		;
 	}
 }

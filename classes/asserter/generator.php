@@ -4,6 +4,7 @@ namespace mageekguy\atoum\asserter;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
 ;
 
@@ -13,14 +14,14 @@ class generator
 
 	protected $aliases = array();
 	protected $locale = null;
-	protected $adapter = null;
+	protected $resolver = null;
 	protected $asserterNamespace = '';
 
 	public function __construct(atoum\locale $locale = null, atoum\adapter $adapter = null, $asserterNamespace = null)
 	{
 		$this
-			->setAdapter($adapter)
 			->setLocale($locale)
+			->setResolver()
 			->setAsserterNamespace($asserterNamespace)
 		;
 	}
@@ -45,18 +46,6 @@ class generator
 		return $this->getAsserterInstance($method, $arguments);
 	}
 
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
-
 	public function setLocale(atoum\locale $locale = null)
 	{
 		$this->locale = $locale ?: new atoum\locale();
@@ -67,6 +56,18 @@ class generator
 	public function getLocale()
 	{
 		return $this->locale;
+	}
+
+	public function setResolver(asserter\resolver $resolver = null)
+	{
+		$this->resolver = $resolver ?: new asserter\resolver();
+
+		return $this;
+	}
+
+	public function getResolver()
+	{
+		return $this->resolver;
 	}
 
 	public function setAsserterNamespace($namespace = null)
@@ -102,21 +103,7 @@ class generator
 
 	public function getAsserterClass($asserter)
 	{
-		$asserter = strtolower($asserter);
-
-		$class = (isset($this->aliases[$asserter]) === false ? $asserter : $this->aliases[$asserter]);
-
-		if (substr($class, 0, 1) != '\\')
-		{
-			$class = $this->asserterNamespace . $class;
-		}
-
-		if ($this->adapter->class_exists($class, true) === false)
-		{
-			$class = null;
-		}
-
-		return $class;
+		return $this->resolver->resolve($this->resolveAlias($asserter));
 	}
 
 	public function getAsserterInstance($asserter, array $arguments = array())
@@ -132,5 +119,12 @@ class generator
 			->setGenerator($this)
 			->setWithArguments($arguments)
 		;
+	}
+
+	private function resolveAlias($alias)
+	{
+		$alias = strtolower($alias);
+
+		return (isset($this->aliases[$alias]) === false ? $alias : $this->aliases[$alias]);
 	}
 }
