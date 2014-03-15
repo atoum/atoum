@@ -20,10 +20,10 @@ class generator extends atoum\test
 				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
 				->object($this->testedInstance->getResolver())->isEqualTo(new asserter\resolver())
 
-			->given($this->newTestedInstance($locale = new atoum\locale()))
+			->given($this->newTestedInstance($locale = new atoum\locale(), $resolver = new asserter\resolver()))
 			->then
 				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
-				->object($this->testedInstance->getResolver())->isEqualTo(new asserter\resolver())
+				->object($this->testedInstance->getResolver())->isIdenticalTo($resolver)
 		;
 	}
 

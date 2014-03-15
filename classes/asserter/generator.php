@@ -16,11 +16,11 @@ class generator
 	protected $locale = null;
 	protected $resolver = null;
 
-	public function __construct(atoum\locale $locale = null)
+	public function __construct(atoum\locale $locale = null, asserter\resolver $resolver = null)
 	{
 		$this
 			->setLocale($locale)
-			->setResolver()
+			->setResolver($resolver)
 		;
 	}
 
