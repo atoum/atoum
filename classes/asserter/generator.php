@@ -5,7 +5,8 @@ namespace mageekguy\atoum\asserter;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test\assertion
 ;
 
 class generator
@@ -15,12 +16,14 @@ class generator
 	protected $aliases = array();
 	protected $locale = null;
 	protected $resolver = null;
+	protected $aliaser = null;
 
-	public function __construct(atoum\locale $locale = null, asserter\resolver $resolver = null)
+	public function __construct(atoum\locale $locale = null, asserter\resolver $resolver = null, assertion\aliaser $aliaser = null)
 	{
 		$this
 			->setLocale($locale)
 			->setResolver($resolver)
+			->setAliaser($aliaser)
 		;
 	}
 
@@ -68,28 +71,40 @@ class generator
 		return $this->resolver;
 	}
 
+	public function setAliaser(assertion\aliaser $aliaser = null)
+	{
+		$this->aliaser = $aliaser ?: new assertion\aliaser();
+
+		return $this;
+	}
+
+	public function getAliaser()
+	{
+		return $this->aliaser;
+	}
+
 	public function setAlias($alias, $asserterClass)
 	{
-		$this->aliases[strtolower($alias)] = $asserterClass;
+		$this->aliaser->aliasClass($asserterClass, $alias);
 
 		return $this;
 	}
 
 	public function getAliases()
 	{
-		return $this->aliases;
+		return $this->aliaser->getClassAliases();
 	}
 
 	public function resetAliases()
 	{
-		$this->aliases = array();
+		$this->aliaser->resetClassAliases();
 
 		return $this;
 	}
 
 	public function getAsserterClass($asserter)
 	{
-		return $this->resolver->resolve($this->resolveAlias($asserter));
+		return $this->resolver->resolve($this->aliaser->resolveClass($asserter));
 	}
 
 	public function getAsserterInstance($asserter, array $arguments = array())
@@ -105,12 +120,5 @@ class generator
 			->setGenerator($this)
 			->setWithArguments($arguments)
 		;
-	}
-
-	private function resolveAlias($alias)
-	{
-		$alias = strtolower($alias);
-
-		return (isset($this->aliases[$alias]) === false ? $alias : $this->aliases[$alias]);
 	}
 }

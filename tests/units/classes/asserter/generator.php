@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserter;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserter\generator as testedClass
+	mageekguy\atoum\test\assertion
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -19,11 +19,13 @@ class generator extends atoum\test
 			->then
 				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
 				->object($this->testedInstance->getResolver())->isEqualTo(new asserter\resolver())
+				->object($this->testedInstance->getAliaser())->isEqualTo(new assertion\aliaser())
 
-			->given($this->newTestedInstance($locale = new atoum\locale(), $resolver = new asserter\resolver()))
+			->given($this->newTestedInstance($locale = new atoum\locale(), $resolver = new asserter\resolver(), $aliaser = new assertion\aliaser()))
 			->then
 				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
 				->object($this->testedInstance->getResolver())->isIdenticalTo($resolver)
+				->object($this->testedInstance->getAliaser())->isIdenticalTo($aliaser)
 		;
 	}
 
@@ -94,6 +96,21 @@ class generator extends atoum\test
 				->object($this->testedInstance->getResolver())
 					->isEqualTo(new asserter\resolver())
 					->isNotIdenticalTo($resolver)
+		;
+	}
+
+	public function testSetAliaser()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setAliaser($aliaser = new assertion\aliaser()))->isTestedInstance
+				->object($this->testedInstance->getAliaser())->isIdenticalTo($aliaser)
+
+				->object($this->testedInstance->setAliaser())->isTestedInstance
+				->object($this->testedInstance->getAliaser())
+					->isEqualTo(new assertion\aliaser())
+					->isNotIdenticalTo($aliaser)
 		;
 	}
 
