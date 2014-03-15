@@ -19,13 +19,11 @@ class generator extends atoum\test
 			->then
 				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
 				->object($this->testedInstance->getResolver())->isEqualTo(new asserter\resolver())
-				->string($this->testedInstance->getAsserterNamespace())->isEqualTo(testedClass::defaultAsserterNamespace)
 
-			->given($this->newTestedInstance($locale = new atoum\locale(), $adapter = new atoum\adapter(), $asserterNamespace = uniqid()))
+			->given($this->newTestedInstance($locale = new atoum\locale()))
 			->then
 				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
 				->object($this->testedInstance->getResolver())->isEqualTo(new asserter\resolver())
-				->string($this->testedInstance->getAsserterNamespace())->isEqualTo($asserterNamespace)
 		;
 	}
 
@@ -96,19 +94,6 @@ class generator extends atoum\test
 				->object($this->testedInstance->getResolver())
 					->isEqualTo(new asserter\resolver())
 					->isNotIdenticalTo($resolver)
-		;
-	}
-
-	public function testSetAsserterNamespace()
-	{
-		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->setAsserterNamespace($namespace = uniqid()))->isTestedInstance
-				->string($this->testedInstance->getAsserterNamespace())->isEqualTo($namespace)
-
-				->object($this->testedInstance->setAsserterNamespace())->isTestedInstance
-				->string($this->testedInstance->getAsserterNamespace())->isEqualTo(testedClass::defaultAsserterNamespace)
 		;
 	}
 

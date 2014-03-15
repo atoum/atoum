@@ -15,14 +15,12 @@ class generator
 	protected $aliases = array();
 	protected $locale = null;
 	protected $resolver = null;
-	protected $asserterNamespace = '';
 
-	public function __construct(atoum\locale $locale = null, atoum\adapter $adapter = null, $asserterNamespace = null)
+	public function __construct(atoum\locale $locale = null)
 	{
 		$this
 			->setLocale($locale)
 			->setResolver()
-			->setAsserterNamespace($asserterNamespace)
 		;
 	}
 
@@ -68,18 +66,6 @@ class generator
 	public function getResolver()
 	{
 		return $this->resolver;
-	}
-
-	public function setAsserterNamespace($namespace = null)
-	{
-		$this->asserterNamespace = ($namespace === null ? static::defaultAsserterNamespace : trim($namespace, '\\')) . '\\';
-
-		return $this;
-	}
-
-	public function getAsserterNamespace()
-	{
-		return trim($this->asserterNamespace, '\\');
 	}
 
 	public function setAlias($alias, $asserterClass)
