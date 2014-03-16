@@ -25,16 +25,16 @@ class string extends atoum\test
 			->then
 				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
 				->object($this->testedInstance->getAnalyzer())->isEqualTo(new variable\analyzer())
-				->object($this->testedInstance->getLocale())->isIdenticalTo($this->testedInstance->getGenerator()->getLocale())
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
 				->variable($this->testedInstance->getValue())->isNull()
 				->variable($this->testedInstance->getCharlist())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()
 
-			->if($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer()))
+			->if($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer(), $locale = new atoum\locale()))
 			->then
 				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
 				->object($this->testedInstance->getAnalyzer())->isIdenticalTo($analyzer)
-				->object($this->testedInstance->getLocale())->isIdenticalTo($generator->getLocale())
+				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
 				->variable($this->testedInstance->getValue())->isNull()
 				->variable($this->testedInstance->getCharlist())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()

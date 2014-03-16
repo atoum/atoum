@@ -36,15 +36,15 @@ class utf8String extends atoum\test
 			->then
 				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
 				->object($asserter->getAnalyzer())->isEqualTo(new variable\analyzer())
-				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
+				->object($asserter->getLocale())->isEqualTo(new atoum\locale())
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
 
-			->if($asserter = $this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer()))
+			->if($asserter = $this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer(), $locale = new atoum\locale()))
 			->then
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
 				->object($asserter->getAnalyzer())->isIdenticalTo($analyzer)
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
+				->object($asserter->getLocale())->isIdenticalTo($locale)
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
 		;

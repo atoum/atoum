@@ -8,8 +8,7 @@ use
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\tools\variable,
-	mageekguy\atoum\test\adapter\call\decorators,
-	mageekguy\atoum\asserters\mock as sut
+	mageekguy\atoum\test\adapter\call\decorators
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -31,11 +30,21 @@ class mock extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer()))
+			->then
+			->if($this->newTestedInstance)
+				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new variable\analyzer())
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
+				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call())
+				->variable($this->testedInstance->getAdapter())->isNull
+				->variable($this->testedInstance->getLastAssertionFile())->isNull
+				->variable($this->testedInstance->getLastAssertionLine())->isNull
+
+			->if($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer(), $locale = new atoum\locale()))
 			->then
 				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
 				->object($this->testedInstance->getAnalyzer())->isIdenticalTo($analyzer)
-				->object($this->testedInstance->getLocale())->isIdenticalTo($generator->getLocale())
+				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call())
 				->variable($this->testedInstance->getAdapter())->isNull
 				->variable($this->testedInstance->getLastAssertionFile())->isNull

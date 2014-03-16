@@ -14,14 +14,14 @@ class utf8String extends asserters\string
 {
 	protected $adapter = null;
 
-	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null)
+	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
 	{
 		if (extension_loaded('mbstring') === false)
 		{
 			throw new exceptions\runtime('mbstring PHP extension is mandatory to use utf8String asserter');
 		}
 
-		parent::__construct($generator, $analyzer);
+		parent::__construct($generator, $analyzer, $locale);
 	}
 
 	public function __toString()

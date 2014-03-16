@@ -24,16 +24,16 @@ class variable extends atoum\test
 			->if($this->newTestedInstance)
 			->then
 				->object($this->testedInstance->getGenerator())->isEqualTo(new atoum\asserter\generator())
-				->object($this->testedInstance->getLocale())->isIdenticalTo($this->testedInstance->getGenerator()->getLocale())
 				->object($this->testedInstance->getAnalyzer())->isEqualTo(new atoum\tools\variable\analyzer())
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
 				->object($this->testedInstance->getDiff())->isEqualTo(new diffs\variable())
 				->variable($this->testedInstance->getValue())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse
 
-			->if($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new tools\variable\analyzer()))
+			->if($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new tools\variable\analyzer(), $locale = new atoum\locale()))
 			->then
 				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
-				->object($this->testedInstance->getLocale())->isIdenticalTo($generator->getLocale())
+				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
 				->object($this->testedInstance->getAnalyzer())->isEqualTo(new atoum\tools\variable\analyzer())
 				->object($this->testedInstance->getDiff())->isEqualTo(new diffs\variable())
 				->variable($this->testedInstance->getValue())->isNull()

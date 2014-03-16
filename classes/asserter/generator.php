@@ -113,8 +113,12 @@ class generator
 			throw new exceptions\logic\invalidArgument('Asserter \'' . $asserter . '\' does not exist');
 		}
 
-		$asserterInstance = new $asserterClass($this);
+		$asserterInstance = new $asserterClass();
 
-		return $asserterInstance->setWithArguments($arguments);
+		return $asserterInstance
+			->setGenerator($this)
+			->setLocale($this->locale)
+			->setWithArguments($arguments)
+		;
 	}
 }

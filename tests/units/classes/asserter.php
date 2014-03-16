@@ -22,14 +22,14 @@ class asserter extends atoum
 			->given($this->newTestedInstance)
 			->then
 				->object($this->testedInstance->getGenerator())->isEqualTo(new atoum\asserter\generator())
-				->object($this->testedInstance->getLocale())->isIdenticalTo($this->testedInstance->getGenerator()->getLocale())
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
 				->object($this->testedInstance->getAnalyzer())->isEqualTo(new atoum\tools\variable\analyzer())
 
-			->given($this->newTestedInstance($generator = new atoum\asserter\generator(), $analyzer = new variable\analyzer()))
+			->given($this->newTestedInstance($generator = new atoum\asserter\generator(), $analyzer = new variable\analyzer(), $locale = new atoum\locale()))
 			->then
 				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
-				->object($this->testedInstance->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($this->testedInstance->getAnalyzer())->isEqualTo($analyzer)
+				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
 		;
 	}
 
@@ -85,12 +85,11 @@ class asserter extends atoum
 			->then
 				->object($this->testedInstance->setGenerator($generator = new atoum\asserter\generator()))->isTestedInstance
 				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
-				->object($this->testedInstance->getLocale())->isIdenticalTo($generator->getLocale())
+
 				->object($this->testedInstance->setGenerator())->isTestedInstance
 				->object($this->testedInstance->getGenerator())
 					->isNotIdenticalTo($generator)
 					->isEqualTo(new atoum\asserter\generator())
-				->object($this->testedInstance->getLocale())->isIdenticalTo($this->testedInstance->getGenerator()->getLocale())
 		;
 	}
 

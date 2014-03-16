@@ -17,9 +17,9 @@ class variable extends atoum\asserter
 	protected $value = null;
 	protected $isSetByReference = false;
 
-	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null)
+	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
 	{
-		parent::__construct($generator, $analyzer);
+		parent::__construct($generator, $analyzer, $locale);
 
 		$this->setDiff();
 	}

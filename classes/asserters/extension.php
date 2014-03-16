@@ -11,13 +11,10 @@ use
 class extension extends atoum\asserter
 {
 	protected $name = null;
-	protected $adapter = null;
 
-	public function __construct(atoum\asserter\generator $generator = null, atoum\adapter $adapter = null)
+	public function __construct(atoum\asserter\generator $generator = null, atoum\locale $locale = null)
 	{
-		parent::__construct($generator);
-
-		$this->setAdapter($adapter);
+		parent::__construct($generator, null, $locale);
 	}
 
 	public function __toString()
@@ -30,18 +27,6 @@ class extension extends atoum\asserter
 		$this->name = $name;
 
 		return $this;
-	}
-
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
 	}
 
 	public function reset()
@@ -58,7 +43,9 @@ class extension extends atoum\asserter
 
 	public function isLoaded($failMessage = null)
 	{
-		if ($this->valueIsSet()->adapter->extension_loaded($this->name) === true)
+		$this->valueIsSet();
+
+		if (extension_loaded($this->name) === true)
 		{
 			$this->pass();
 		}

@@ -16,12 +16,12 @@ abstract class asserter
 	protected $generator = null;
 	protected $test = null;
 
-	public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null)
+	public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null, locale $locale = null)
 	{
 		$this
-			->setLocale()
 			->setGenerator($generator)
 			->setAnalyzer($analyzer)
+			->setLocale($locale)
 		;
 	}
 
@@ -65,11 +65,6 @@ abstract class asserter
 	{
 		$this->locale = $locale ?: new locale();
 
-		if ($this->generator !== null)
-		{
-			$this->generator->setLocale($this->locale);
-		}
-
 		return $this;
 	}
 
@@ -81,8 +76,6 @@ abstract class asserter
 	public function setGenerator(asserter\generator $generator = null)
 	{
 		$this->generator = $generator ?: new asserter\generator();
-
-		$this->generator->setLocale($this->locale);
 
 		return $this;
 	}

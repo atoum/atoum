@@ -5,7 +5,8 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\test,
-	mageekguy\atoum\asserter
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\tools\variable
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,12 +21,21 @@ class adapter extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->given($this->newTestedInstance($generator = new asserter\generator()))
+			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->getLocale())->isIdenticalTo($generator->getLocale())
-				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
-				->variable($this->testedInstance->getCall())->isEqualTo(new test\adapter\call())
+				->object($this->testedInstance->getGenerator())->isEqualTo(new atoum\asserter\generator())
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new atoum\tools\variable\analyzer())
 				->variable($this->testedInstance->getAdapter())->isNull()
+				->variable($this->testedInstance->getCall())->isEqualTo(new test\adapter\call())
+
+			->given($this->newTestedInstance($generator = new atoum\asserter\generator(), $analyzer = new variable\analyzer(), $locale = new atoum\locale()))
+			->then
+				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
+				->object($this->testedInstance->getAnalyzer())->isEqualTo($analyzer)
+				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
+				->variable($this->testedInstance->getAdapter())->isNull()
+				->variable($this->testedInstance->getCall())->isEqualTo(new test\adapter\call())
 		;
 	}
 

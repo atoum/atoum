@@ -15,9 +15,9 @@ class constant extends atoum\asserter
 	protected $isSet = false;
 	protected $value = null;
 
-	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null)
+	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
 	{
-		parent::__construct($generator, $analyzer);
+		parent::__construct($generator, $analyzer, $locale);
 
 		$this->setDiff();
 	}

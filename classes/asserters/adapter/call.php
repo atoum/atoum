@@ -24,9 +24,9 @@ abstract class call extends atoum\asserter
 
 	private static $instances = null;
 
-	public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null)
+	public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null, atoum\locale $locale = null)
 	{
-		parent::__construct($generator, $analyzer);
+		parent::__construct($generator, $analyzer, $locale);
 
 		$this->setCall();
 	}

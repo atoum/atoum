@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\tools,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters
@@ -10,9 +11,9 @@ use
 
 class output extends asserters\string
 {
-	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null)
+	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
 	{
-		parent::__construct($generator, $analyzer);
+		parent::__construct($generator, $analyzer, $locale);
 
 		$this->setWith(null);
 	}
