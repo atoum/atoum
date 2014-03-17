@@ -11,8 +11,6 @@ use
 
 class generator
 {
-	const defaultAsserterNamespace = 'mageekguy\atoum\asserters';
-
 	protected $locale = null;
 	protected $resolver = null;
 	protected $aliaser = null;
