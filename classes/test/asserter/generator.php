@@ -71,8 +71,8 @@ class generator extends asserter\generator
 		throw new asserter\exception($reason, $this->test->getScore()->addFail($file, $class, $method, $line, get_class($asserter) . ($function ? '::' . $function : '') . '()', $reason));
 	}
 
-	public function getAsserterInstance($asserter, array $arguments = array())
+	public function getAsserterInstance($asserter, array $arguments = array(), atoum\test $test = null)
 	{
-		return parent::getAsserterInstance($asserter, $arguments)->setWithTest($this->test);
+		return parent::getAsserterInstance($asserter, $arguments, $test ?: $this->test);
 	}
 }

@@ -128,7 +128,7 @@ class generator
 		return $this->resolver->resolve($this->aliaser->resolveClass($asserter));
 	}
 
-	public function getAsserterInstance($asserter, array $arguments = array())
+	public function getAsserterInstance($asserter, array $arguments = array(), atoum\test $test = null)
 	{
 		if (($asserterClass = $this->getAsserterClass($asserter)) === null)
 		{
@@ -136,6 +136,11 @@ class generator
 		}
 
 		$asserterInstance = new $asserterClass();
+
+		if ($test !== null)
+		{
+			$asserterInstance->setWithTest($test);
+		}
 
 		return $asserterInstance
 			->setGenerator($this)
