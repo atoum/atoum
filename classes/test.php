@@ -318,12 +318,7 @@ abstract class test implements observable, \countable
 			$generator->setTest($this);
 		}
 
-		$this->asserterGenerator = $generator
-			->setAlias('array', 'phpArray')
-			->setAlias('in', 'phpArray')
-			->setAlias('class', 'phpClass')
-			->setAlias('function', 'phpFunction')
-		;
+		$this->asserterGenerator = $generator->setTest($this);
 
 		return $this;
 	}
@@ -368,6 +363,7 @@ abstract class test implements observable, \countable
 			->setHandler('and', $returnTest)
 			->setHandler('then', $returnTest)
 			->setHandler('given', $returnTest)
+			->setMethodHandler('define', $returnTest)
 		;
 
 		$returnMockController = function(mock\aggregator $mock) { return $mock->getMockController(); };
@@ -383,19 +379,39 @@ abstract class test implements observable, \countable
 			->setHandler('resetAdapter', function(test\adapter $adapter) { return $adapter->resetCalls(); })
 		;
 
-		$assertionAliaser = $this->asserterGenerator->getAliaser();
+		$assertionAliaser = $this->assertionManager->getAliaser();
 
 		$this->assertionManager
+			->setPropertyHandler('define', function() use ($assertionAliaser, $test) { return $assertionAliaser; })
 			->setHandler('from', function($class) use ($assertionAliaser, $test) { $assertionAliaser->from($class); return $test; })
-			->setHandler('alias', function($target) use ($assertionAliaser, $test) { $assertionAliaser->alias($target); return $test; })
-			->setHandler('to', function($alias) use ($assertionAliaser, $test) { $assertionAliaser->to($alias); return $test; })
+			->setHandler('use', function($target) use ($assertionAliaser, $test) { $assertionAliaser->alias($target); return $test; })
+			->setHandler('as', function($alias) use ($assertionAliaser, $test) { $assertionAliaser->to($alias); return $test; })
 		;
 
 		$asserterGenerator = $this->asserterGenerator;
 
+		$this->assertionManager->setDefaultHandler(function($event, $arguments) use ($asserterGenerator, $assertionAliaser, & $lastAsserter) {
+				static $lastAsserter = null;
+
+				if ($lastAsserter !== null)
+				{
+					$realEvent = $assertionAliaser->resolveMethod(get_class($lastAsserter), $event);
+
+					if ($realEvent !== $event)
+					{
+						return call_user_func_array(array($lastAsserter, $realEvent), $arguments);
+					}
+				}
+
+				return ($lastAsserter = $asserterGenerator->getAsserterInstance($event, $arguments));
+			}
+		);
+
 		$this->assertionManager
-			->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; })
-			->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); })
+			->use('phpArray')->as('array')
+			->use('phpArray')->as('in')
+			->use('phpClass')->as('class')
+			->use('phpFunction')->as('function')
 		;
 
 		return $this;

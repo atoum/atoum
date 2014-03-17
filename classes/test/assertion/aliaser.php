@@ -20,6 +20,11 @@ class aliaser
 		$this->setResolver($resolver);
 	}
 
+	public function __set($class, $alias)
+	{
+		return $this->alias($alias)->to($class);
+	}
+
 	public function setResolver(asserter\resolver $resolver = null)
 	{
 		$this->resolver = $resolver ?: new asserter\resolver();

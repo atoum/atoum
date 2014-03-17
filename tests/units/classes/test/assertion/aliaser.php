@@ -108,8 +108,9 @@ class aliaser extends atoum
 	{
 		$this
 			->given($this->newTestedInstance)
+			->from('object')->use('isTestedInstance')->as('isSut')
 			->then
-				->object($this->testedInstance->alias(uniqid()))->isTestedInstance
+				->object($this->testedInstance->alias(uniqid()))->isSut
 		;
 	}
 

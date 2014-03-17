@@ -45,6 +45,13 @@ class manager
 		return $this->aliaser;
 	}
 
+	public function setAlias($alias, $asserterClass)
+	{
+		$this->aliaser->aliasClass($asserterClass, $alias);
+
+		return $this;
+	}
+
 	public function setMethodHandler($event, \closure $handler)
 	{
 		return $this->setHandlerIn($this->methodHandlers, $event, $handler);
@@ -91,7 +98,12 @@ class manager
 	{
 		$handler = null;
 
-		$realEvent = $this->aliaser->resolveClass($event);
+		$realEvent = strtolower($event);
+
+		if (isset($handlers[$realEvent]) === false)
+		{
+			$realEvent = $this->aliaser->resolveClass($event);
+		}
 
 		if (isset($handlers[$realEvent]) === true)
 		{

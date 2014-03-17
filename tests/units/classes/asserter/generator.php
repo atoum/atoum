@@ -19,13 +19,11 @@ class generator extends atoum\test
 			->then
 				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
 				->object($this->testedInstance->getResolver())->isEqualTo(new asserter\resolver())
-				->object($this->testedInstance->getAliaser())->isEqualTo(new assertion\aliaser())
 
 			->given($this->newTestedInstance($locale = new atoum\locale(), $resolver = new asserter\resolver(), $aliaser = new assertion\aliaser()))
 			->then
 				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
 				->object($this->testedInstance->getResolver())->isIdenticalTo($resolver)
-				->object($this->testedInstance->getAliaser())->isIdenticalTo($aliaser)
 		;
 	}
 
@@ -39,19 +37,6 @@ class generator extends atoum\test
 					->hasMessage('Asserter \'' . $asserter . '\' does not exist')
 
 				->object($generator->variable)->isInstanceOf('mageekguy\atoum\asserters\variable')
-		;
-	}
-
-	public function test__set()
-	{
-		$this
-			->given($generator = $this->newTestedInstance)
-			->then
-				->when(function() use ($generator, & $alias, & $asserter) { $generator->{$alias = uniqid()} = ($asserter = uniqid()); })
-					->array($generator->getAliases())->isEqualTo(array($alias => $asserter))
-
-				->when(function() use ($generator, & $otherAlias, & $otherAsserter) { $generator->{$otherAlias = uniqid()} = ($otherAsserter = uniqid()); })
-					->array($generator->getAliases())->isEqualTo(array($alias => $asserter, $otherAlias => $otherAsserter))
 		;
 	}
 
@@ -151,46 +136,6 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testSetAliaser()
-	{
-		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->setAliaser($aliaser = new assertion\aliaser()))->isTestedInstance
-				->object($this->testedInstance->getAliaser())->isIdenticalTo($aliaser)
-
-				->object($this->testedInstance->setAliaser())->isTestedInstance
-				->object($this->testedInstance->getAliaser())
-					->isEqualTo(new assertion\aliaser())
-					->isNotIdenticalTo($aliaser)
-		;
-	}
-
-	public function testSetAlias()
-	{
-		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->setAlias($alias = uniqid(), $asserter = uniqid()))->isTestedInstance
-				->array($this->testedInstance->getAliases())->isEqualTo(array($alias => $asserter))
-
-				->object($this->testedInstance->setAlias($otherAlias = 'FOO', $otherAsserter = uniqid()))->isTestedInstance
-				->array($this->testedInstance->getAliases())->isEqualTo(array($alias => $asserter, 'foo' => $otherAsserter))
-		;
-	}
-
-	public function testResetAliases()
-	{
-		$this
-			->given($this->newTestedInstance)
-
-			->if($this->testedInstance->setAlias(uniqid(), uniqid()))
-			->then
-				->object($this->testedInstance->resetAliases())->isTestedInstance
-				->array($this->testedInstance->getAliases())->isEmpty()
-		;
-	}
-
 	public function testGetAsserterClass()
 	{
 		$this
@@ -204,11 +149,6 @@ class generator extends atoum\test
 			->if($this->calling($resolver)->resolve = $class = uniqid())
 			->then
 				->string($this->testedInstance->getAsserterClass($asserter = uniqid()))->isEqualTo($class)
-				->mock($resolver)->call('resolve')->withArguments($asserter)->once
-
-			->if($this->testedInstance->setAlias($alias = uniqid(), $asserter = uniqid()))
-			->then
-				->string($this->testedInstance->getAsserterClass($alias))->isEqualTo($class)
 				->mock($resolver)->call('resolve')->withArguments($asserter)->once
 		;
 	}

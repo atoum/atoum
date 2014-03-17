@@ -13,20 +13,13 @@ class generator
 {
 	protected $locale = null;
 	protected $resolver = null;
-	protected $aliaser = null;
 
 	public function __construct(atoum\locale $locale = null, asserter\resolver $resolver = null, assertion\aliaser $aliaser = null)
 	{
 		$this
 			->setLocale($locale)
 			->setResolver($resolver)
-			->setAliaser($aliaser)
 		;
-	}
-
-	public function __set($asserter, $class)
-	{
-		$this->setAlias($asserter, $class);
 	}
 
 	public function __get($property)
@@ -92,40 +85,9 @@ class generator
 		return $this->resolver;
 	}
 
-	public function setAliaser(assertion\aliaser $aliaser = null)
-	{
-		$this->aliaser = $aliaser ?: new assertion\aliaser();
-
-		return $this;
-	}
-
-	public function getAliaser()
-	{
-		return $this->aliaser;
-	}
-
-	public function setAlias($alias, $asserterClass)
-	{
-		$this->aliaser->aliasClass($asserterClass, $alias);
-
-		return $this;
-	}
-
-	public function getAliases()
-	{
-		return $this->aliaser->getClassAliases();
-	}
-
-	public function resetAliases()
-	{
-		$this->aliaser->resetClassAliases();
-
-		return $this;
-	}
-
 	public function getAsserterClass($asserter)
 	{
-		return $this->resolver->resolve($this->aliaser->resolveClass($asserter));
+		return $this->resolver->resolve($asserter);
 	}
 
 	public function getAsserterInstance($asserter, array $arguments = array(), atoum\test $test = null)

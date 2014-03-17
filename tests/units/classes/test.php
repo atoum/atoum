@@ -123,7 +123,7 @@ namespace mageekguy\atoum\tests\units
 				->if($test = new emptyTest())
 				->then
 					->object($test->assert)->isInstanceOf('mageekguy\atoum\test')
-					->object($test->define)->isInstanceOf('mageekguy\atoum\test\asserter\generator')
+					->object($test->define)->isInstanceOf('mageekguy\atoum\test\assertion\aliaser')
 					->object($test->mockGenerator)->isInstanceOf('mageekguy\atoum\mock\generator')
 				->if($test->setMockGenerator($mockGenerator = new atoum\test\mock\generator($this)))
 				->then
