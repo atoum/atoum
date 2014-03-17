@@ -8,9 +8,15 @@ use
 
 class manager
 {
+	protected $aliaser = null;
 	protected $propertyHandlers = array();
 	protected $methodHandlers = array();
 	protected $defaultHandler = null;
+
+	public function __construct(assertion\aliaser $aliaser = null)
+	{
+		$this->setAliaser($aliaser);
+	}
 
 	public function __set($event, $handler)
 	{
@@ -25,6 +31,18 @@ class manager
 	public function __call($event, array $arguments)
 	{
 		return $this->invokeMethodHandler($event, $arguments);
+	}
+
+	public function setAliaser(assertion\aliaser $aliaser = null)
+	{
+		$this->aliaser = $aliaser ?: new assertion\aliaser();
+
+		return $this;
+	}
+
+	public function getAliaser()
+	{
+		return $this->aliaser;
 	}
 
 	public function setMethodHandler($event, \closure $handler)
@@ -73,7 +91,7 @@ class manager
 	{
 		$handler = null;
 
-		$realEvent = strtolower($event);
+		$realEvent = $this->aliaser->resolveClass($event);
 
 		if (isset($handlers[$realEvent]) === true)
 		{

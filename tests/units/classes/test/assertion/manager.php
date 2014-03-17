@@ -4,7 +4,7 @@ namespace mageekguy\atoum\tests\units\test\assertion;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\test
+	mageekguy\atoum\test\assertion
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -92,6 +92,21 @@ class manager extends atoum\test
 				->string($this->testedInstance->{$event}($eventArg = uniqid()))->isEqualTo($eventArg)
 				->string($this->testedInstance->{$methodEvent}())->isEqualTo($methodReturn)
 				->array($this->testedInstance->{$propertyEvent}($arg = uniqid()))->isEqualTo(array($arg))
+		;
+	}
+
+	public function testSetAliaser()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setAliaser($aliaser = new assertion\aliaser()))->isTestedInstance
+				->object($this->testedInstance->getAliaser())->isIdenticalTo($aliaser)
+
+				->object($this->testedInstance->setAliaser())->isTestedInstance
+				->object($this->testedInstance->getAliaser())
+					->isEqualTo(new assertion\aliaser())
+					->isNotIdenticalTo($aliaser)
 		;
 	}
 
