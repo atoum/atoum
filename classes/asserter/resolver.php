@@ -29,7 +29,7 @@ class resolver
 	{
 		$class = $asserter;
 
-		if (substr($class, 0, 1) != '\\')
+		if (strpos($class, '\\') === false)
 		{
 			$class = $this->namespace . $class;
 		}

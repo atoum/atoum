@@ -44,10 +44,11 @@ class resolver extends atoum
 				->if($this->function->class_exists = true)
 				->then
 					->string($this->testedInstance->resolve($asserter = uniqid()))->isEqualTo($this->testedInstance->getNamespace() . '\\' . $asserter)
-
 					->string($this->testedInstance->resolve($asserter = '\\' . uniqid()))->isEqualTo($asserter)
+					->string($this->testedInstance->resolve($asserter = uniqid() . '\\' . uniqid()))->isEqualTo($asserter)
+					->string($this->testedInstance->resolve($asserter = '\\' . uniqid() . '\\' . uniqid()))->isEqualTo($asserter)
 
-				->if($this->function->class_exists[5] = false)
+				->if($this->function->class_exists[9] = false)
 				->then
 					->variable($this->testedInstance->resolve(uniqid()))->isNull
 		;
