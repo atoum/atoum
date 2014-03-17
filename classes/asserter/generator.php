@@ -44,6 +44,30 @@ class generator
 		return $this->getAsserterInstance($method, $arguments);
 	}
 
+	public function setBaseClass($baseClass)
+	{
+		$this->resolver->setBaseClass($baseClass);
+
+		return $this;
+	}
+
+	public function getBaseClass()
+	{
+		return $this->resolver->getBaseClass();
+	}
+
+	public function addNamespace($namespace)
+	{
+		$this->resolver->addNamespace($namespace);
+
+		return $this;
+	}
+
+	public function getNamespaces()
+	{
+		return $this->resolver->getNamespaces();
+	}
+
 	public function setLocale(atoum\locale $locale = null)
 	{
 		$this->locale = $locale ?: new atoum\locale();
