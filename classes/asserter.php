@@ -136,35 +136,7 @@ abstract class asserter
 
 	protected function fail($reason)
 	{
-		if ($this->test === null)
-		{
-			$exception = new asserter\exception($reason);
-		}
-		else
-		{
-			$class = $this->test->getClass();
-			$method = $this->test->getCurrentMethod();
-			$file = $this->test->getPath();
-			$line = null;
-			$function = null;
-
-			foreach (array_filter(debug_backtrace(false), function($backtrace) use ($file) { return isset($backtrace['file']) === true && $backtrace['file'] === $file; }) as $backtrace)
-			{
-				if ($line === null && isset($backtrace['line']) === true)
-				{
-					$line = $backtrace['line'];
-				}
-
-				if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $this && $backtrace['function'] !== '__call')
-				{
-					$function = $backtrace['function'];
-				}
-			}
-
-			$exception = new asserter\exception($reason, $this->test->getScore()->addFail($file, $class, $method, $line, get_class($this) . ($function ? '::' . $function : '') . '()', $reason));
-		}
-
-		throw $exception;
+		throw new asserter\exception($this, $reason);
 	}
 
 	protected function getTypeOf($mixed)
