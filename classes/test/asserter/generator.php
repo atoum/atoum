@@ -11,11 +11,11 @@ class generator extends asserter\generator
 {
 	protected $test = null;
 
-	public function __construct(atoum\test $test, atoum\locale $locale = null)
+	public function __construct(atoum\test $test, asserter\resolver $resolver = null, assertion\aliaser $aliaser = null)
 	{
-		parent::__construct($locale ?: $test->getLocale());
+		parent::__construct($test->getLocale(), $resolver, $aliaser);
 
-		$this->setTest($test);
+		$this->test = $test;
 	}
 
 	public function __get($property)
@@ -32,7 +32,7 @@ class generator extends asserter\generator
 	{
 		$this->test = $test;
 
-		return $this;
+		return $this->setLocale($test->getLocale());
 	}
 
 	public function getTest()

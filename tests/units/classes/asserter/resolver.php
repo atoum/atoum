@@ -15,24 +15,32 @@ class resolver extends atoum
 		$this
 			->given($this->newTestedInstance())
 			->then
-				->string($this->testedInstance->getNamespace())->isEqualTo('mageekguy\atoum\asserters')
+				->string($this->testedInstance->getBaseClass())->isEqualTo('mageekguy\atoum\asserter')
+				->array($this->testedInstance->getNamespaces())->isEqualTo(array('mageekguy\atoum\asserters'))
 
-			->given($this->newTestedInstance($namespace = uniqid()))
+			->given($this->newTestedInstance($baseClass = uniqid(), $namespace = uniqid()))
 			->then
-				->string($this->testedInstance->getNamespace())->isEqualTo($namespace)
+				->string($this->testedInstance->getBaseClass())->isEqualTo($baseClass)
+				->array($this->testedInstance->getNamespaces())->isEqualTo(array($namespace))
 		;
 	}
 
-	public function testSetNamespace()
+	public function testAddNamespace()
 	{
 		$this
 			->given($this->newTestedInstance())
 			->then
-				->object($this->testedInstance->setNamespace($namespace = uniqid()))->isTestedInstance
-				->string($this->testedInstance->getNamespace())->isEqualTo($namespace)
+				->object($this->testedInstance->addNamespace($namespace1 = uniqid()))->isTestedInstance
+				->array($this->testedInstance->getNamespaces())->isEqualTo(array('mageekguy\atoum\asserters', $namespace1))
 
-				->object($this->testedInstance->setNamespace())->isTestedInstance
-				->string($this->testedInstance->getNamespace())->isEqualTo('mageekguy\atoum\asserters')
+				->object($this->testedInstance->addNamespace(($namespace2 = uniqid()) . '\\'))->isTestedInstance
+				->array($this->testedInstance->getNamespaces())->isEqualTo(array('mageekguy\atoum\asserters', $namespace1, $namespace2))
+
+				->object($this->testedInstance->addNamespace('\\' . ($namespace3 = uniqid()) . '\\'))->isTestedInstance
+				->array($this->testedInstance->getNamespaces())->isEqualTo(array('mageekguy\atoum\asserters', $namespace1, $namespace2, $namespace3))
+
+				->object($this->testedInstance->addNamespace('\\' . ($namespace4 = uniqid())))->isTestedInstance
+				->array($this->testedInstance->getNamespaces())->isEqualTo(array('mageekguy\atoum\asserters', $namespace1, $namespace2, $namespace3, $namespace4))
 		;
 	}
 
@@ -41,16 +49,19 @@ class resolver extends atoum
 		$this
 			->given($this->newTestedInstance())
 			->then
-				->if($this->function->class_exists = true)
+				->if(
+					$this->function->class_exists = true,
+					$this->function->is_subclass_of = true
+				)
 				->then
-					->string($this->testedInstance->resolve($asserter = uniqid()))->isEqualTo($this->testedInstance->getNamespace() . '\\' . $asserter)
+					->string($this->testedInstance->resolve($asserter = uniqid()))->isEqualTo('mageekguy\atoum\asserters\\' . $asserter)
 					->string($this->testedInstance->resolve($asserter = '\\' . uniqid()))->isEqualTo($asserter)
 					->string($this->testedInstance->resolve($asserter = uniqid() . '\\' . uniqid()))->isEqualTo($asserter)
 					->string($this->testedInstance->resolve($asserter = '\\' . uniqid() . '\\' . uniqid()))->isEqualTo($asserter)
 
-				->if($this->function->class_exists[9] = false)
+				->if($this->function->class_exists = function($class) use (& $unknownClass) { return ($class !== 'mageekguy\atoum\asserters\\' . $unknownClass); })
 				->then
-					->variable($this->testedInstance->resolve(uniqid()))->isNull
+					->variable($this->testedInstance->resolve($unknownClass = uniqid()))->isNull
 		;
 	}
 }
