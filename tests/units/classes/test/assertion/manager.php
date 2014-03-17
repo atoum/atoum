@@ -100,15 +100,21 @@ class manager extends atoum\test
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->setHandler($event = uniqid(), function() use (& $return) { return ($return = uniqid()); }))->isTestedInstance
-				->string($this->testedInstance->invokeMethodHandler($event))->isEqualTo($return)
-				->string($this->testedInstance->invokePropertyHandler($event))->isEqualTo($return)
+				->object($this->testedInstance->setHandler('foo', function() use (& $return) { return ($return = uniqid()); }))->isTestedInstance
+				->string($this->testedInstance->invokeMethodHandler('foo'))->isEqualTo($return)
+				->string($this->testedInstance->invokeMethodHandler('FoO'))->isEqualTo($return)
+				->string($this->testedInstance->invokePropertyHandler('foo'))->isEqualTo($return)
+				->string($this->testedInstance->invokePropertyHandler('fOO'))->isEqualTo($return)
 
-				->object($this->testedInstance->setHandler($otherEvent = uniqid(), function() use (& $otherReturn) { return ($otherReturn = uniqid()); }))->isTestedInstance
-				->string($this->testedInstance->invokeMethodHandler($event))->isEqualTo($return)
-				->string($this->testedInstance->invokePropertyHandler($event))->isEqualTo($return)
-				->string($this->testedInstance->invokeMethodHandler($otherEvent))->isEqualTo($otherReturn)
-				->string($this->testedInstance->invokePropertyHandler($otherEvent))->isEqualTo($otherReturn)
+				->object($this->testedInstance->setHandler('BAR', function() use (& $otherReturn) { return ($otherReturn = uniqid()); }))->isTestedInstance
+				->string($this->testedInstance->invokeMethodHandler('foo'))->isEqualTo($return)
+				->string($this->testedInstance->invokeMethodHandler('FoO'))->isEqualTo($return)
+				->string($this->testedInstance->invokePropertyHandler('foo'))->isEqualTo($return)
+				->string($this->testedInstance->invokePropertyHandler('fOO'))->isEqualTo($return)
+				->string($this->testedInstance->invokeMethodHandler('BAR'))->isEqualTo($otherReturn)
+				->string($this->testedInstance->invokeMethodHandler('BaR'))->isEqualTo($otherReturn)
+				->string($this->testedInstance->invokePropertyHandler('BAR'))->isEqualTo($otherReturn)
+				->string($this->testedInstance->invokePropertyHandler('baR'))->isEqualTo($otherReturn)
 		;
 	}
 
@@ -117,19 +123,22 @@ class manager extends atoum\test
 		$this
 			->given($assertionManager = $this->newTestedInstance)
 			->then
-				->object($this->testedInstance->setPropertyHandler($event = uniqid(), function() use (& $return) { return ($return = uniqid()); }))->isTestedInstance
-				->string($this->testedInstance->invokePropertyHandler($event))->isEqualTo($return)
+				->object($this->testedInstance->setPropertyHandler('foo', function() use (& $return) { return ($return = uniqid()); }))->isTestedInstance
+				->string($this->testedInstance->invokePropertyHandler('foo'))->isEqualTo($return)
+				->string($this->testedInstance->invokePropertyHandler('FoO'))->isEqualTo($return)
 
-				->object($this->testedInstance->setPropertyHandler($otherEvent = uniqid(), function() use (& $otherReturn) { return ($otherReturn = uniqid()); }))->isTestedInstance
-				->string($this->testedInstance->invokePropertyHandler($event))->isEqualTo($return)
-				->string($this->testedInstance->invokePropertyHandler($otherEvent))->isEqualTo($otherReturn)
+				->object($this->testedInstance->setPropertyHandler('BAR', function() use (& $otherReturn) { return ($otherReturn = uniqid()); }))->isTestedInstance
+				->string($this->testedInstance->invokePropertyHandler('foo'))->isEqualTo($return)
+				->string($this->testedInstance->invokePropertyHandler('fOo'))->isEqualTo($return)
+				->string($this->testedInstance->invokePropertyHandler('BAR'))->isEqualTo($otherReturn)
+				->string($this->testedInstance->invokePropertyHandler('bar'))->isEqualTo($otherReturn)
 
-				->exception(function() use ($assertionManager, $event) {
-						$assertionManager->invokeMethodHandler($event);
+				->exception(function() use ($assertionManager) {
+						$assertionManager->invokeMethodHandler('foo');
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\test\assertion\manager\exception')
-					->hasMessage('There is no handler defined for event \'' . $event . '\'')
+					->hasMessage('There is no handler defined for event \'foo\'')
 		;
 	}
 
@@ -138,19 +147,22 @@ class manager extends atoum\test
 		$this
 			->given($assertionManager = $this->newTestedInstance)
 			->then
-				->object($this->testedInstance->setMethodHandler($event = uniqid(), function() use (& $return) { return ($return = uniqid()); }))->isTestedInstance
-				->string($this->testedInstance->invokeMethodHandler($event))->isEqualTo($return)
+				->object($this->testedInstance->setMethodHandler('foo', function() use (& $return) { return ($return = uniqid()); }))->isTestedInstance
+				->string($this->testedInstance->invokeMethodHandler('foo'))->isEqualTo($return)
+				->string($this->testedInstance->invokeMethodHandler('FoO'))->isEqualTo($return)
 
-				->object($this->testedInstance->setMethodHandler($otherEvent = uniqid(), function() use (& $otherReturn) { return ($otherReturn = uniqid()); }))->isTestedInstance
-				->string($this->testedInstance->invokeMethodHandler($event))->isEqualTo($return)
-				->string($this->testedInstance->invokeMethodHandler($otherEvent))->isEqualTo($otherReturn)
+				->object($this->testedInstance->setMethodHandler('BAR', function() use (& $otherReturn) { return ($otherReturn = uniqid()); }))->isTestedInstance
+				->string($this->testedInstance->invokeMethodHandler('foo'))->isEqualTo($return)
+				->string($this->testedInstance->invokeMethodHandler('fOo'))->isEqualTo($return)
+				->string($this->testedInstance->invokeMethodHandler('BAR'))->isEqualTo($otherReturn)
+				->string($this->testedInstance->invokeMethodHandler('bAR'))->isEqualTo($otherReturn)
 
-				->exception(function() use ($assertionManager, $event) {
-						$assertionManager->invokePropertyHandler($event);
+				->exception(function() use ($assertionManager) {
+						$assertionManager->invokePropertyHandler('foo');
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\test\assertion\manager\exception')
-					->hasMessage('There is no handler defined for event \'' . $event . '\'')
+					->hasMessage('There is no handler defined for event \'foo\'')
 		;
 	}
 

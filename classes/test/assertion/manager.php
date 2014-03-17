@@ -29,16 +29,12 @@ class manager
 
 	public function setMethodHandler($event, \closure $handler)
 	{
-		$this->methodHandlers[$event] = $handler;
-
-		return $this;
+		return $this->setHandlerIn($this->methodHandlers, $event, $handler);
 	}
 
 	public function setPropertyHandler($event, \closure $handler)
 	{
-		$this->propertyHandlers[$event] = $handler;
-
-		return $this;
+		return $this->setHandlerIn($this->propertyHandlers, $event, $handler);
 	}
 
 	public function setHandler($event, \closure $handler)
@@ -58,21 +54,30 @@ class manager
 
 	public function invokePropertyHandler($event)
 	{
-		return $this->invokeHandler($this->propertyHandlers, $event);
+		return $this->invokeHandlerFrom($this->propertyHandlers, $event);
 	}
 
 	public function invokeMethodHandler($event, array $arguments = array())
 	{
-		return $this->invokeHandler($this->methodHandlers, $event, $arguments);
+		return $this->invokeHandlerFrom($this->methodHandlers, $event, $arguments);
 	}
 
-	private function invokeHandler(array $handlers, $event, array $arguments = array())
+	private function setHandlerIn(array & $handlers, $event, \closure $handler)
+	{
+		$handlers[strtolower($event)] = $handler;
+
+		return $this;
+	}
+
+	private function invokeHandlerFrom(array $handlers, $event, array $arguments = array())
 	{
 		$handler = null;
 
-		if (isset($handlers[$event]) === true)
+		$realEvent = strtolower($event);
+
+		if (isset($handlers[$realEvent]) === true)
 		{
-			$handler = $handlers[$event];
+			$handler = $handlers[$realEvent];
 		}
 
 		switch (true)
@@ -84,7 +89,7 @@ class manager
 				return call_user_func_array($handler, $arguments);
 
 			default:
-				return call_user_func_array($this->defaultHandler, array($event, $arguments));
+				return call_user_func_array($this->defaultHandler, array($realEvent, $arguments));
 		}
 	}
 }
