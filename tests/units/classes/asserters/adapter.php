@@ -202,62 +202,87 @@ class adapter extends atoum\test
 				->exception(function() use ($asserter) { $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
+
 				->exception(function() use ($asserter) { $asserter->once; })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 
-			->if($asserter->setWith($adapter = new test\adapter()))
+				->exception(function() use ($asserter) { $asserter->oNCE; })
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
+					->hasMessage('Adapter is undefined')
+
+			->if($asserter->setWith($adapter = new \mock\atoum\test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
+
 				->exception(function() use ($asserter) { $asserter->once; })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 
-			->if($asserter->call('md5'))
-			->then
-				->exception(function() use ($asserter) { $asserter->once(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 1'), $asserter->getCall()))
-				->exception(function() use ($asserter) { $asserter->once; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 1'), $asserter->getCall()))
+				->exception(function() use ($asserter) { $asserter->oNCE; })
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
+					->hasMessage('Call is undefined')
 
 			->if(
-				$call = new test\adapter\call('md5'),
-				$adapter->md5($firstArgument = uniqid())
+				$asserter
+					->call(uniqid())
+					->setCall($call = new \mock\atoum\test\adapter\call())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+				$this->calling($calls)->count = 0,
+				$this->calling($call)->__toString = $callAsString = uniqid(),
+				$this->calling($locale)->__ = $notCalled = uniqid()
 			)
-			->then
-				->object($asserter->once())->isIdenticalTo($asserter)
-				->object($asserter->once)->isIdenticalTo($asserter)
-
-			->if($adapter->md5($secondArgument = uniqid()))
 			->then
 				->exception(function() use ($asserter) { $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 2 times instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)))
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 1)->once
+
 				->exception(function() use ($asserter) { $asserter->once; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 2 times instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)))
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 1)->twice
+
+				->exception(function() use ($asserter) { $asserter->OncE; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 1)->thrice
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->once($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+			->if($this->calling($calls)->count = 1)
+			->then
+				->object($this->testedInstance->once())->isTestedInstance
+				->object($this->testedInstance->once)->isTestedInstance
+				->object($this->testedInstance->oNCE)->isTestedInstance
 
 			->if(
-				$adapter->resetCalls(),
-				$asserter->withArguments($arg = uniqid()),
-				$adapter->md5($arg)
+				$this->calling($calls)->count = $count = rand(2, PHP_INT_MAX),
+				$this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+				$this->calling($callsEqualTo)->count = rand(1, PHP_INT_MAX),
+				$this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
 			)
-			->then
-				->object($asserter->once())->isIdenticalTo($asserter)
-				->object($asserter->once)->isIdenticalTo($asserter)
-
-			->if($asserter->withArguments(uniqid()))
 			->then
 				->exception(function() use ($asserter) { $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 1)->once
+
 				->exception(function() use ($asserter) { $asserter->once; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 1)->twice
+
+				->exception(function() use ($asserter) { $asserter->OncE; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 1)->thrice
+
 				->exception(function() use ($asserter, & $failMessage) { $asserter->once($failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
@@ -272,76 +297,114 @@ class adapter extends atoum\test
 				->exception(function() use ($asserter) { $asserter->twice(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
+
 				->exception(function() use ($asserter) { $asserter->twice; })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 
-			->if($asserter->setWith($adapter = new test\adapter()))
+				->exception(function() use ($asserter) { $asserter->TWICe; })
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
+					->hasMessage('Adapter is undefined')
+
+			->if($asserter->setWith($adapter = new \mock\atoum\test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->twice(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
+
 				->exception(function() use ($asserter) { $asserter->twice; })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 
-			->if($asserter->call('md5'))
-			->then
-				->exception(function() use ($asserter) { $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 2'), $asserter->getCall()))
-				->exception(function() use ($asserter) { $asserter->twice; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 2'), $asserter->getCall()))
+				->exception(function() use ($asserter) { $asserter->twICE; })
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
+					->hasMessage('Call is undefined')
 
 			->if(
-				$call = new test\adapter\call('md5'),
-				$adapter->md5($firstArgument = uniqid())
+				$asserter
+					->call(uniqid())
+					->setCall($call = new \mock\atoum\test\adapter\call())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+				$this->calling($calls)->count = 0,
+				$this->calling($call)->__toString = $callAsString = uniqid(),
+				$this->calling($locale)->__ = $notCalled = uniqid()
 			)
 			->then
 				->exception(function() use ($asserter) { $asserter->twice(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)))
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 2)->once
+
 				->exception(function() use ($asserter) { $asserter->twice; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)))
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 2)->twice
 
-			->if($adapter->md5($secondArgument = uniqid()))
-			->then
-				->object($asserter->twice())->isIdenticalTo($asserter)
-				->object($asserter->twice)->isIdenticalTo($asserter)
+				->exception(function() use ($asserter) { $asserter->TWICe; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 2)->thrice
 
-			->if($adapter->md5($thirdArgument = uniqid()))
-			->then
-				->exception(function() use ($asserter) { $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)) . PHP_EOL . '[3] ' . $call->setArguments(array($thirdArgument)))
-				->exception(function() use ($asserter) { $asserter->twice; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)) . PHP_EOL . '[3] ' . $call->setArguments(array($thirdArgument)))
-
-			->if(
-				$adapter->resetCalls(),
-				$asserter->withArguments($arg = uniqid()),
-				$adapter->md5($arg)
-			)
-			->then
-				->exception(function() use ($asserter) { $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					 ->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
-				->exception(function() use ($asserter) { $asserter->twice; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					 ->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
-
-			->if($asserter->withArguments(uniqid()))
-			->then
-				->exception(function() use ($asserter) { $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
-				->exception(function() use ($asserter) { $asserter->twice; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 				->exception(function() use ($asserter, & $failMessage) { $asserter->twice($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+			->if(
+				$this->calling($calls)->count = 1,
+				$this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+				$this->calling($callsEqualTo)->count = 1,
+				$this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
+			)
+			->then
+				->exception(function() use ($asserter) { $asserter->twice(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 1, $callAsString, 1, 2)->once
+
+				->exception(function() use ($asserter) { $asserter->twice; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 1, $callAsString, 1, 2)->twice
+
+				->exception(function() use ($asserter) { $asserter->TWICe; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 1, $callAsString, 1, 2)->thrice
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->twice($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+			->if($this->calling($calls)->count = 2)
+			->then
+				->object($this->testedInstance->twice())->isTestedInstance
+				->object($this->testedInstance->twice)->isTestedInstance
+				->object($this->testedInstance->TWICe)->isTestedInstance
+
+			->if(
+				$this->calling($calls)->count = $count = rand(3, PHP_INT_MAX),
+				$this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+				$this->calling($callsEqualTo)->count = rand(1, PHP_INT_MAX),
+				$this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
+			)
+			->then
+				->exception(function() use ($asserter) { $asserter->twice(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 2)->once
+
+				->exception(function() use ($asserter) { $asserter->twice; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 2)->twice
+
+				->exception(function() use ($asserter) { $asserter->TWICe; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 2)->thrice
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->once($failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
 		;
@@ -355,81 +418,113 @@ class adapter extends atoum\test
 				->exception(function() use ($asserter) { $asserter->thrice(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
+
 				->exception(function() use ($asserter) { $asserter->thrice; })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 
-			->if($asserter->setWith($adapter = new test\adapter()))
+				->exception(function() use ($asserter) { $asserter->tHRICe; })
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
+					->hasMessage('Adapter is undefined')
+
+			->if($asserter->setWith($adapter = new \mock\atoum\test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->thrice(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
+
 				->exception(function() use ($asserter) { $asserter->thrice; })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 
-			->if($asserter->call('md5'))
-			->then
-				->exception(function() use ($asserter) { $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 3'), $asserter->getCall()))
-				->exception(function() use ($asserter) { $asserter->thrice; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 3'), $asserter->getCall()))
+				->exception(function() use ($asserter) { $asserter->thRICE; })
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
+					->hasMessage('Call is undefined')
 
 			->if(
-				$call = new test\adapter\call('md5'),
-				$adapter->md5($firstArgument = uniqid())
+				$asserter
+					->call(uniqid())
+					->setCall($call = new \mock\atoum\test\adapter\call())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+				$this->calling($calls)->count = 0,
+				$this->calling($call)->__toString = $callAsString = uniqid(),
+				$this->calling($locale)->__ = $notCalled = uniqid()
 			)
 			->then
 				->exception(function() use ($asserter) { $asserter->thrice(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)))
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 3)->once
+
 				->exception(function() use ($asserter) { $asserter->thrice; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)))
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 3)->twice
 
-			->if($adapter->md5($secondArgument = uniqid()))
-			->then
-				->exception(function() use ($asserter) { $asserter->thrice(); })
+				->exception(function() use ($asserter) { $asserter->THRIce; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 2 times instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)))
-				->exception(function() use ($asserter) { $asserter->thrice; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 2 times instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)))
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 3)->thrice
 
-			->if($adapter->md5($thirdArgument = uniqid()))
-			->then
-				->object($asserter->thrice())->isIdenticalTo($asserter)
-				->object($asserter->thrice)->isIdenticalTo($asserter)
-
-			->if($adapter->md5($fourthArgument = uniqid()))
-			->then
-				->exception(function() use ($asserter) { $asserter->thrice(); })
+				->exception(function() use ($asserter, & $failMessage) { $asserter->thrice($failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 4 times instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)) . PHP_EOL . '[3] ' . $call->setArguments(array($thirdArgument)) . PHP_EOL . '[4] ' . $call->setArguments(array($fourthArgument)))
-				->exception(function() use ($asserter) { $asserter->thrice; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 4 times instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)) . PHP_EOL . '[3] ' . $call->setArguments(array($thirdArgument)) . PHP_EOL . '[4] ' . $call->setArguments(array($fourthArgument)))
+					->hasMessage($failMessage)
 
 			->if(
-				$adapter->resetCalls(),
-				$asserter->withArguments($arg = uniqid()),
-				$adapter->md5($arg)
+				$this->calling($calls)->count = $count = rand(1, 2),
+				$this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+				$this->calling($callsEqualTo)->count = $count,
+				$this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
 			)
 			->then
 				->exception(function() use ($asserter) { $asserter->thrice(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->once
+
 				->exception(function() use ($asserter) { $asserter->thrice; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->twice
 
-			->if($asserter->withArguments(uniqid()))
+				->exception(function() use ($asserter) { $asserter->tHRICe; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->thrice
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->thrice($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+			->if($this->calling($calls)->count = 3)
+			->then
+				->object($this->testedInstance->thrice())->isTestedInstance
+				->object($this->testedInstance->thrice)->isTestedInstance
+				->object($this->testedInstance->THRIcE)->isTestedInstance
+
+			->if(
+				$this->calling($calls)->count = $count = rand(3, PHP_INT_MAX),
+				$this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+				$this->calling($callsEqualTo)->count = $count,
+				$this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter) { $asserter->thrice(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->once
+
+				->exception(function() use ($asserter) { $asserter->thrice; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->twice
+
+				->exception(function() use ($asserter) { $asserter->tHRICe; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->thrice
+
 				->exception(function() use ($asserter, & $failMessage) { $asserter->thrice($failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
@@ -444,66 +539,64 @@ class adapter extends atoum\test
 				->exception(function() use ($asserter) { $asserter->atLeastOnce(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
+
 				->exception(function() use ($asserter) { $asserter->atLeastOnce; })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 
-			->if($asserter->setWith($adapter = new test\adapter()))
+				->exception(function() use ($asserter) { $asserter->atLEASToNce; })
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
+					->hasMessage('Adapter is undefined')
+
+			->if($asserter->setWith($adapter = new \mock\atoum\test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->atLeastOnce(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
+
 				->exception(function() use ($asserter) { $asserter->atLeastOnce; })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 
-			->if($asserter->call('md5'))
-			->then
-				->exception(function() use ($asserter) { $asserter->atLeastOnce(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time'), $asserter->getCall()))
-				->exception(function() use ($asserter) { $asserter->atLeastOnce; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time'), $asserter->getCall()))
-
-			->if($adapter->md5(uniqid()))
-			->then
-				->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
-				->object($asserter->atLeastOnce)->isIdenticalTo($asserter)
-
-			->if($adapter->md5(uniqid()))
-			->then
-				->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
-				->object($asserter->atLeastOnce)->isIdenticalTo($asserter)
+				->exception(function() use ($asserter) { $asserter->atLeASTonce; })
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
+					->hasMessage('Call is undefined')
 
 			->if(
-				$adapter->resetCalls(),
-				$asserter->withArguments($arg = uniqid())
+				$asserter
+					->call(uniqid())
+					->setCall($call = new \mock\atoum\test\adapter\call())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+				$this->calling($calls)->count = 0,
+				$this->calling($call)->__toString = $callAsString = uniqid(),
+				$this->calling($locale)->_ = $notCalled = uniqid()
 			)
 			->then
 				->exception(function() use ($asserter) { $asserter->atLeastOnce(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time'), $asserter->getCall()))
+					->hasMessage($notCalled)
+				->mock($locale)->call('_')->withArguments('%s is called 0 time', $callAsString)->once
+
 				->exception(function() use ($asserter) { $asserter->atLeastOnce; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time'), $asserter->getCall()))
+					->hasMessage($notCalled)
+				->mock($locale)->call('_')->withArguments('%s is called 0 time', $callAsString)->twice
 
-			->if(
-				$call = new test\adapter\call('md5'),
-				$adapter->md5($arg)
-			)
-			->then
-				->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
-				->object($asserter->atLeastOnce)->isIdenticalTo($asserter)
-
-			->if($asserter->withArguments(uniqid()))
-			->then
-				->exception(function() use ($asserter) { $asserter->atLeastOnce(); })
+				->exception(function() use ($asserter) { $asserter->atLEASToNCE; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+					->hasMessage($notCalled)
+				->mock($locale)->call('_')->withArguments('%s is called 0 time', $callAsString)->thrice
+
 				->exception(function() use ($asserter, & $failMessage) { $asserter->atLeastOnce($failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
+
+			->if($this->calling($calls)->count = rand(1, PHP_INT_MAX))
+			->then
+				->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
+				->object($asserter->atLeastOnce)->isIdenticalTo($asserter)
+				->object($asserter->atLEASToNCe)->isIdenticalTo($asserter)
 		;
 	}
 
@@ -516,67 +609,51 @@ class adapter extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 
-			->if($asserter->setWith($adapter = new test\adapter()))
+			->if($asserter->setWith($adapter = new \mock\atoum\test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->exactly(2); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 
-			->if($asserter->call('md5'))
-			->then
-				->exception(function() use ($asserter) { $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 2'), $asserter->getCall()))
-
 			->if(
-				$call = new test\adapter\call('md5'),
-				$adapter->md5($arg = uniqid())
+				$asserter
+					->call(uniqid())
+					->setCall($call = new \mock\atoum\test\adapter\call())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+				$this->calling($calls)->count = 0,
+				$this->calling($call)->__toString = $callAsString = uniqid(),
+				$this->calling($locale)->__ = $notCalled = uniqid()
 			)
 			->then
-				->exception(function() use ($asserter) { $asserter->exactly(2); })
+				->exception(function() use ($asserter, & $callNumber) { $asserter->exactly($callNumber = rand(1, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, $callNumber)->once
 
-			->if($adapter->md5($otherArg = uniqid()))
-			->then
-				->object($asserter->exactly(2))->isIdenticalTo($asserter)
-
-			->if($adapter->md5($anOtherArg = uniqid()))
-			->then
-				->exception(function() use ($asserter) { $asserter->exactly(2); })
+				->exception(function() use ($asserter, & $callNumber, & $failMessage) { $asserter->exactly($callNumber = rand(1, PHP_INT_MAX), $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherArg)) . PHP_EOL . '[3] ' . $call->setArguments(array($anOtherArg)))
+					->hasMessage($failMessage)
+
+				->object($this->testedInstance->exactly(0))->isTestedInstance
 
 			->if(
-				$adapter->resetCalls(),
-				$asserter->withArguments($arg = uniqid())
+				$this->calling($calls)->count = $count = rand(1, PHP_INT_MAX),
+				$this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+				$this->calling($callsEqualTo)->count = $count,
+				$this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
 			)
 			->then
-				->exception(function() use ($asserter) { $asserter->exactly(2); })
+				->exception(function() use ($asserter) { $asserter->exactly(0); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 2'), $asserter->getCall()))
+					->hasMessage($notCalled . PHP_EOL . $callsEqualToAsString)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->once
 
-			->if($adapter->md5($usedArg = uniqid()))
-			->then
-				->exception(function() use ($asserter) { $asserter->exactly(2); })
+				->exception(function() use ($asserter, & $failMessage) { $asserter->exactly(0, $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
+					->hasMessage($failMessage)
 
-			->if($adapter->md5($arg))
-			->then
-				->exception(function() use ($asserter) { $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)))
-
-			->if($adapter->md5($arg))
-			->then
-				->object($asserter->exactly(2))->isIdenticalTo($asserter)
-
-			->if($adapter->md5($arg))
-			->then
-				->exception(function() use ($asserter) { $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)) . PHP_EOL . '[3] ' . $call->setArguments(array($arg))  . PHP_EOL . '[4] ' . $call->setArguments(array($arg)))
+				->object($this->testedInstance->exactly($count))->isTestedInstance
 		;
 	}
 
@@ -588,69 +665,56 @@ class adapter extends atoum\test
 				->exception(function() use ($asserter) { $asserter->never(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
+
 				->exception(function() use ($asserter) { $asserter->never; })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 
-			->if($asserter->setWith($adapter = new test\adapter()))
+			->if($asserter->setWith($adapter = new \mock\atoum\test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->never(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
+
 				->exception(function() use ($asserter) { $asserter->never; })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 
 			->if(
-				$call = new test\adapter\call('md5'),
-				$asserter->call('md5')
+				$asserter
+					->call(uniqid())
+					->setCall($call = new \mock\atoum\test\adapter\call())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+				$this->calling($calls)->count = $count = rand(1, PHP_INT_MAX),
+				$this->calling($call)->__toString = $callAsString = uniqid(),
+				$this->calling($locale)->__ = $wasCalled = uniqid()
 			)
 			->then
-				->object($asserter->never())->isIdenticalTo($asserter)
-				->object($asserter->never)->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $callNumber) { $asserter->never(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($wasCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->once
 
-			->if($adapter->md5($usedArg = uniqid()))
-			->then
-				->exception(function() use ($asserter) { $asserter->never(); })
+				->exception(function() use ($asserter, & $callNumber) { $asserter->never; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
-				->exception(function() use ($asserter) { $asserter->never; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
+					->hasMessage($wasCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->twice
 
-			->if(
-				$adapter->resetCalls(),
-				$asserter->withArguments($arg = uniqid())
-			)
-			->then
-				->object($asserter->never())->isIdenticalTo($asserter)
-				->object($asserter->never)->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $callNumber) { $asserter->NEvEr; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($wasCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->thrice
 
-			->if($adapter->md5($arg))
-			->then
-				->exception(function() use ($asserter) { $asserter->never(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
-				->exception(function() use ($asserter) { $asserter->never; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
-
-			->if($adapter->md5($arg))
-			->then
-				->exception(function() use ($asserter) { $asserter->never(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 2 times instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)))
-				->exception(function() use ($asserter) { $asserter->never; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is called 2 times instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)))
 				->exception(function() use ($asserter, & $failMessage) { $asserter->never($failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
 
-			->if($asserter->withArguments(uniqid()))
+			->if($this->calling($calls)->count = 0)
 			->then
-				->object($asserter->never())->isIdenticalTo($asserter)
-				->object($asserter->never)->isIdenticalTo($asserter)
+				->object($this->testedInstance->never())->isTestedInstance
+				->object($this->testedInstance->never)->isTestedInstance
+				->object($this->testedInstance->nEVER)->isTestedInstance
 		;
 	}
 

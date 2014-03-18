@@ -411,8 +411,7 @@ abstract class call extends atoum\asserter
 
 		if (sizeof($this->beforeCalls) <= 0 && sizeof($this->afterCalls) <= 0)
 		{
-			$referenceCall = clone $this->call;
-			$calls = $this->adapter->getCallsEqualTo($referenceCall->unsetArguments());
+			$calls = $this->adapter->getCallsEqualTo($this->call->unsetArguments());
 
 			$string = (sizeof($calls) <= 0 ? '' : PHP_EOL . rtrim($calls));
 		}
