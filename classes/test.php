@@ -309,13 +309,13 @@ abstract class test implements observable, \countable
 
 	public function setAsserterGenerator(test\asserter\generator $generator = null)
 	{
-		if ($generator === null)
+		if ($generator !== null)
 		{
-			$generator = new test\asserter\generator($this);
+			$generator->setTest($this);
 		}
 		else
 		{
-			$generator->setTest($this);
+			$generator = new test\asserter\generator($this);
 		}
 
 		$this->asserterGenerator = $generator->setTest($this);
