@@ -70,14 +70,14 @@ class aliaser
 
 	public function aliasClass($class, $alias)
 	{
-		$this->classes[strtolower($alias)] = strtolower($class);
+		$this->classes[static::getKey($alias)] = $class;
 
 		return $this;
 	}
 
 	public function resolveClass($class)
 	{
-		$class = strtolower($class);
+		$class = static::getKey($class);
 
 		return (isset($this->classes[$class]) === false ? $class : $this->classes[$class]);
 	}
@@ -96,15 +96,15 @@ class aliaser
 
 	public function aliasMethod($class, $method, $alias)
 	{
-		$this->methods[strtolower($this->resolver->resolve($class))][strtolower($alias)] = strtolower($method);
+		$this->methods[static::getKey($this->resolver->resolve($class))][static::getKey($alias)] = $method;
 
 		return $this;
 	}
 
 	public function resolveMethod($class, $alias)
 	{
-		$class = strtolower($this->resolver->resolve($class));
-		$alias = strtolower($alias);
+		$class = static::getKey($this->resolver->resolve($class));
+		$alias = static::getKey($alias);
 
 		return (isset($this->methods[$class]) === false || isset($this->methods[$class][$alias]) === false ? $alias : $this->methods[$class][$alias]);
 	}
@@ -119,5 +119,10 @@ class aliaser
 		$this->methods = array();
 
 		return $this;
+	}
+
+	private static function getKey($value)
+	{
+		return strtolower($value);
 	}
 }
