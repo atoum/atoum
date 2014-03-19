@@ -390,20 +390,20 @@ abstract class test implements observable, \countable
 
 		$asserterGenerator = $this->asserterGenerator;
 
-		$this->assertionManager->setDefaultHandler(function($event, $arguments) use ($asserterGenerator, $assertionAliaser, & $lastAsserter) {
+		$this->assertionManager->setDefaultHandler(function($keyword, $arguments) use ($asserterGenerator, $assertionAliaser, & $lastAsserter) {
 				static $lastAsserter = null;
 
 				if ($lastAsserter !== null)
 				{
-					$realEvent = $assertionAliaser->resolveMethod(get_class($lastAsserter), $event);
+					$realKeyword = $assertionAliaser->resolveAlias($keyword, get_class($lastAsserter));
 
-					if ($realEvent !== $event)
+					if ($realKeyword !== $keyword)
 					{
-						return call_user_func_array(array($lastAsserter, $realEvent), $arguments);
+						return call_user_func_array(array($lastAsserter, $realKeyword), $arguments);
 					}
 				}
 
-				return ($lastAsserter = $asserterGenerator->getAsserterInstance($event, $arguments));
+				return ($lastAsserter = $asserterGenerator->getAsserterInstance($keyword, $arguments));
 			}
 		);
 

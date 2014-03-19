@@ -45,9 +45,9 @@ class manager
 		return $this->aliaser;
 	}
 
-	public function setAlias($alias, $asserterClass)
+	public function setAlias($alias, $keyword)
 	{
-		$this->aliaser->aliasClass($asserterClass, $alias);
+		$this->aliaser->aliasKeyword($keyword, $alias);
 
 		return $this;
 	}
@@ -102,7 +102,7 @@ class manager
 
 		if (isset($handlers[$realEvent]) === false)
 		{
-			$realEvent = $this->aliaser->resolveClass($event);
+			$realEvent = $this->aliaser->resolveAlias($event);
 		}
 
 		if (isset($handlers[$realEvent]) === true)

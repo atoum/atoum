@@ -6,23 +6,90 @@ use
 	atoum\asserter
 ;
 
-class aliaser
+class aliaser implements \arrayAccess
 {
 	protected $resolver = null;
-	protected $classes = array();
-	protected $methods = array();
+	protected $aliases = array();
 
-	private $class = null;
-	private $target = null;
+	private $context = null;
+	private $keyword = null;
 
 	public function __construct(asserter\resolver $resolver = null)
 	{
 		$this->setResolver($resolver);
 	}
 
-	public function __set($class, $alias)
+	public function __set($alias, $keyword)
 	{
-		return $this->alias($alias)->to($class);
+		return $this->aliasKeyword($keyword, $alias);
+	}
+
+	public function __get($alias)
+	{
+		return $this->resolveAlias($alias);
+	}
+
+	public function __unset($alias)
+	{
+		$contextKey = $this->getContextKey($this->context);
+
+		if (isset($this->aliases[$contextKey]) === true)
+		{
+			$aliasKey = $this->getAliasKey($alias);
+
+			if (isset($this->aliases[$contextKey][$aliasKey]) === true)
+			{
+				unset($this->aliases[$contextKey][$aliasKey]);
+			}
+		}
+	}
+
+	public function __isset($alias)
+	{
+		$contextKey = $this->getContextKey($this->context);
+
+		if (isset($this->aliases[$contextKey]) === true)
+		{
+			$aliasKey = $this->getAliasKey($alias);
+
+			return (isset($this->aliases[$contextKey][$aliasKey]) === true);
+		}
+	}
+
+	public function offsetGet($context)
+	{
+		$this->context = $context;
+
+		return $this;
+	}
+
+	public function offsetSet($newContext, $context)
+	{
+		$contextKey = $this->getContextKey($context);
+
+		if (isset($this->aliases[$contextKey]) === true)
+		{
+			$this->aliases[$this->getContextKey($newContext)] = $this->aliases[$contextKey];
+		}
+
+		return $this;
+	}
+
+	public function offsetUnset($context)
+	{
+		$contextKey = $this->getContextKey($context);
+
+		if (isset($this->aliases[$contextKey]) === true)
+		{
+			unset($this->aliases[$contextKey]);
+		}
+
+		return $this;
+	}
+
+	public function offsetExists($context)
+	{
+		return (isset($this->aliases[$this->getContextKey($context)]) === true);
 	}
 
 	public function setResolver(asserter\resolver $resolver = null)
@@ -37,92 +104,65 @@ class aliaser
 		return $this->resolver;
 	}
 
-	public function from($class)
+	public function from($context)
 	{
-		$this->class = $class;
+		$this->context = $context;
 
 		return $this;
 	}
 
-	public function alias($target)
+	public function alias($keyword)
 	{
-		$this->target = $target;
+		$this->keyword = $keyword;
 
 		return $this;
 	}
 
 	public function to($alias)
 	{
-		if ($this->target !== null)
+		$this->aliasKeyword($this->keyword, $alias, $this->context);
+
+		$this->context = $this->keyword = null;
+
+		return $this;
+	}
+
+	public function aliasKeyword($keyword, $alias, $context = null)
+	{
+		$this->aliases[$this->getContextKey($context)][$this->getAliasKey($alias)] = $keyword;
+
+		if ($context === null && $this->context !== null)
 		{
-			if ($this->class === null)
-			{
-				$this->aliasClass($this->target, $alias);
-			}
-			else
-			{
-				$this->aliasMethod($this->class, $this->target, $alias);
-			}
+			$this->context = null;
 		}
 
 		return $this;
 	}
 
-	public function aliasClass($class, $alias)
+	public function resolveAlias($alias, $context = null)
 	{
-		$this->classes[static::getKey($alias)] = $class;
+		$aliasKey = $this->getAliasKey($alias);
+		$contextKey = $this->getContextKey($context);
 
-		return $this;
+		$alias = (isset($this->aliases[$contextKey]) === false || isset($this->aliases[$contextKey][$aliasKey]) === false ? $alias : $this->aliases[$contextKey][$aliasKey]);
+
+		$this->context = null;
+
+		return $alias;
 	}
 
-	public function resolveClass($class)
+	private function getAliasKey($keyword)
 	{
-		$class = static::getKey($class);
-
-		return (isset($this->classes[$class]) === false ? $class : $this->classes[$class]);
+		return strtolower($keyword);
 	}
 
-	public function getClassAliases()
+	private function getContextKey($context)
 	{
-		return $this->classes;
-	}
+		if ($context === null)
+		{
+			$context = $this->context;
+		}
 
-	public function resetClassAliases()
-	{
-		$this->classes = array();
-
-		return $this;
-	}
-
-	public function aliasMethod($class, $method, $alias)
-	{
-		$this->methods[static::getKey($this->resolver->resolve($class))][static::getKey($alias)] = $method;
-
-		return $this;
-	}
-
-	public function resolveMethod($class, $alias)
-	{
-		$class = static::getKey($this->resolver->resolve($class));
-		$alias = static::getKey($alias);
-
-		return (isset($this->methods[$class]) === false || isset($this->methods[$class][$alias]) === false ? $alias : $this->methods[$class][$alias]);
-	}
-
-	public function getMethodAliases()
-	{
-		return $this->methods;
-	}
-
-	public function resetMethodAliases()
-	{
-		$this->methods = array();
-
-		return $this;
-	}
-
-	private static function getKey($value)
-	{
-		return strtolower($value);
+		return ($context == '' ? '' : $this->getAliasKey($this->resolver->resolve($context) ?: $context));
 	}
 }

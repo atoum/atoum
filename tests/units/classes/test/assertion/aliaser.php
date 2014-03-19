@@ -11,20 +11,149 @@ use
 
 class aliaser extends atoum
 {
+	public function testClass()
+	{
+		$this->testedClass->implements('arrayAccess');
+	}
+
 	public function test__construct()
 	{
 		$this
 			->given($this->newTestedInstance)
 			->then
 				->object($this->testedInstance->getResolver())->isEqualTo(new asserter\resolver())
-				->array($this->testedInstance->getClassAliases())->isEmpty
-				->array($this->testedInstance->getMethodAliases())->isEmpty
 
 			->given($this->newTestedInstance($resolver = new asserter\resolver()))
 			->then
 				->object($this->testedInstance->getResolver())->isIdenticalTo($resolver)
-				->array($this->testedInstance->getClassAliases())->isEmpty
-				->array($this->testedInstance->getMethodAliases())->isEmpty
+		;
+	}
+
+	public function test__get()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->string($this->testedInstance->{$alias = uniqid()})->isEqualTo($alias)
+
+			->if($this->testedInstance->{$alias} = $keyword = uniqid())
+			->then
+				->string($this->testedInstance->{$alias})->isEqualTo($keyword)
+				->string($this->testedInstance[$context = uniqid()]->{$alias})->isEqualTo($alias)
+
+			->if($this->testedInstance[$context]->{$alias} = $contextKeyword = uniqid())
+			->then
+				->string($this->testedInstance->{$alias})->isEqualTo($keyword)
+				->string($this->testedInstance[$context]->{$alias})->isEqualTo($contextKeyword)
+		;
+	}
+
+	public function test__set()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->if($this->newTestedInstance->{$alias = uniqid()} = $keyword = uniqid())
+				->then
+					->string($this->testedInstance->{$alias})->isEqualTo($keyword)
+		;
+	}
+
+	public function test__isset()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->boolean(isset($this->testedInstance->{$alias = uniqid()}))->isFalse
+
+			->if($this->testedInstance->{$alias} = uniqid())
+			->then
+				->boolean(isset($this->testedInstance->{$alias}))->isTrue
+				->boolean(isset($this->testedInstance->{uniqid()}))->isFalse
+		;
+	}
+
+	public function test__unset()
+	{
+		$this
+			->given($aliaser = $this->newTestedInstance)
+			->then
+				->if($this->testedInstance->{$alias = uniqid()} = uniqid())
+				->when(function() use ($aliaser, $alias) { unset($aliaser->{$alias}); })
+				->then
+					->boolean(isset($this->testedInstance->{$alias}))->isFalse
+		;
+	}
+
+	public function testOffsetGet()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance[$context = uniqid()])->isTestedInstance
+
+			->if($this->testedInstance[$context = uniqid()]->{$alias = uniqid()} = $keyword = uniqid())
+			->then
+				->string($this->testedInstance->resolveAlias($alias))->isEqualTo($alias)
+				->string($this->testedInstance->resolveAlias($alias, $context))->isEqualTo($keyword)
+
+			->if($this->testedInstance->{$otherAlias = uniqid()} = $otherKeyword = uniqid())
+			->then
+				->string($this->testedInstance->resolveAlias($alias))->isEqualTo($alias)
+				->string($this->testedInstance->resolveAlias($alias, $context))->isEqualTo($keyword)
+				->string($this->testedInstance->resolveAlias($otherAlias))->isEqualTo($otherKeyword)
+				->string($this->testedInstance->resolveAlias($otherAlias, $context))->isEqualTo($otherAlias)
+		;
+	}
+
+	public function testOffsetSet()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->if($this->testedInstance[$newContext = uniqid()] = $oldContext = uniqid())
+				->then
+					->boolean(isset($this->testedInstance[$newContext]))->isFalse
+
+				->if(
+					$this->testedInstance[$oldContext]->{$alias = uniqid()} = $keyword = uniqid(),
+					$this->testedInstance[$newContext] = $oldContext
+				)
+				->then
+					->boolean(isset($this->testedInstance[$newContext]))->isTrue
+				->string($this->testedInstance->resolveAlias($alias, $newContext))->isEqualTo($keyword)
+				->string($this->testedInstance->resolveAlias($alias, $oldContext))->isEqualTo($keyword)
+		;
+	}
+
+	public function testOffsetUnset()
+	{
+		$this
+			->given($aliaser = $this->newTestedInstance)
+			->then
+				->if($this->testedInstance[$context = uniqid()]->{$alias = uniqid()} = $keyword = uniqid())
+				->when(function() use ($aliaser, $context) { unset($aliaser[$context]); })
+				->then
+					->string($this->testedInstance->resolveAlias($alias))->isEqualTo($alias)
+		;
+	}
+
+	public function testOffsetExists()
+	{
+		$this
+			->given($aliaser = $this->newTestedInstance)
+			->then
+				->boolean(isset($this->testedInstance[uniqid()]))->isFalse
+
+			->if($this->testedInstance[$context = uniqid()]->{uniqid()} = uniqid())
+			->then
+				->boolean(isset($this->testedInstance[uniqid()]))->isFalse
+				->boolean(isset($this->testedInstance[$context]))->isTrue
+
+			->when(function() use ($aliaser, $context) { unset($aliaser[$context]); })
+			->then
+				->boolean(isset($this->testedInstance[uniqid()]))->isFalse
+				->boolean(isset($this->testedInstance[$context]))->isFalse
 		;
 	}
 
@@ -43,55 +172,25 @@ class aliaser extends atoum
 		;
 	}
 
-	public function testAliasClass()
+	public function testAliasKeyword()
 	{
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->aliasClass($class = uniqid(), $alias = uniqid()))->isTestedInstance
-				->string($this->testedInstance->resolveClass($alias))->isEqualTo($class)
+				->object($this->testedInstance->aliasKeyword($keyword = uniqid(), $alias = uniqid()))->isTestedInstance
+				->string($this->testedInstance->resolveAlias($alias))->isEqualTo($keyword)
+				->string($this->testedInstance->{$alias})->isEqualTo($keyword)
+				->string($this->testedInstance[uniqid()]->{$alias})->isEqualTo($alias)
 
-				->string($this->testedInstance->resolveClass($unknownAlias = uniqid()))->isEqualTo($unknownAlias)
-		;
-	}
-
-	public function testResetClassAliases()
-	{
-		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->resetClassAliases())->isTestedInstance
-
-			->if($this->testedInstance->aliasClass(uniqid(), uniqid()))
-			->then
-				->object($this->testedInstance->resetClassAliases())->isTestedInstance
-				->array($this->testedInstance->getClassAliases())->isEmpty
-		;
-	}
-
-	public function testAliasMethod()
-	{
-		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->aliasMethod($class = uniqid(), $method = uniqid(), $alias = uniqid()))->isTestedInstance
-				->string($this->testedInstance->resolveMethod($class, $alias))->isEqualTo($method)
-
-				->string($this->testedInstance->resolveMethod($class, $unknownAlias = uniqid()))->isEqualTo($unknownAlias)
-		;
-	}
-
-	public function testResetMethodAliases()
-	{
-		$this
-			->given($this->newTestedInstance)
-			->then
-				->object($this->testedInstance->resetMethodAliases())->isTestedInstance
-
-			->if($this->testedInstance->aliasMethod(uniqid(), uniqid(), uniqid()))
-			->then
-				->object($this->testedInstance->resetMethodAliases())->isTestedInstance
-				->array($this->testedInstance->getMethodAliases())->isEmpty
+				->object($this->testedInstance->aliasKeyword($otherKeyword = uniqid(), $otherAlias = uniqid(), $context = uniqid()))->isTestedInstance
+				->string($this->testedInstance->resolveAlias($alias))->isEqualTo($keyword)
+				->string($this->testedInstance->{$alias})->isEqualTo($keyword)
+				->string($this->testedInstance[uniqid()]->{$alias})->isEqualTo($alias)
+				->string($this->testedInstance->resolveAlias($otherAlias))->isEqualTo($otherAlias)
+				->string($this->testedInstance->{$otherAlias})->isEqualTo($otherAlias)
+				->string($this->testedInstance->resolveAlias($otherAlias, $context))->isEqualTo($otherKeyword)
+				->string($this->testedInstance[$context]->{$otherAlias})->isEqualTo($otherKeyword)
+				->string($this->testedInstance[uniqid()]->{$otherAlias})->isEqualTo($otherAlias)
 		;
 	}
 
@@ -119,18 +218,18 @@ class aliaser extends atoum
 		$this
 			->given($this->newTestedInstance)
 
-			->if($this->testedInstance->alias($class = uniqid()))
+			->if($this->testedInstance->alias($keyword = uniqid()))
 			->then
 				->object($this->testedInstance->to($alias = uniqid()))->isTestedInstance
-				->string($this->testedInstance->resolveClass($alias))->isEqualTo($class)
+				->string($this->testedInstance->resolveAlias($alias))->isEqualTo($keyword)
 
 			->if(
-				$this->testedInstance->from($class = uniqid()),
-				$this->testedInstance->alias($method = uniqid())
+				$this->testedInstance->from($context = uniqid()),
+				$this->testedInstance->alias($keyword = uniqid())
 			)
 			->then
 				->object($this->testedInstance->to($alias = uniqid()))->isTestedInstance
-				->string($this->testedInstance->resolveMethod($class, $alias))->isEqualTo($method)
+				->string($this->testedInstance->resolveAlias($alias, $context))->isEqualTo($keyword)
 		;
 	}
 }
