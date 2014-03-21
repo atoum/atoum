@@ -1292,7 +1292,7 @@ abstract class test implements observable, \countable
 
 	public static function getMethodPrefix()
 	{
-		return self::$methodPrefix ?: self::defaultMethodPrefix;
+		return self::$methodPrefix ?: static::defaultMethodPrefix;
 	}
 
 	public static function setDefaultEngine($defaultEngine)
