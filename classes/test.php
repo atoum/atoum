@@ -371,13 +371,17 @@ abstract class test implements observable, \countable
 		$this->assertionManager
 			->setHandler('calling', $returnMockController)
 			->setHandler('ƒ', $returnMockController)
-			->setHandler('resetMock', function(mock\aggregator $mock) { return $mock->getMockController()->resetCalls(); })
-			->setHandler('resetFunction', function(test\adapter\invoker $invoker) { php\mocker::getAdapter()->resetCalls($invoker->getFunction()); return $invoker; })
+
 		;
 
 		$this->assertionManager
+			->setHandler('resetMock', function(mock\aggregator $mock) { return $mock->getMockController()->resetCalls(); })
 			->setHandler('resetAdapter', function(test\adapter $adapter) { return $adapter->resetCalls(); })
 		;
+
+		$phpMocker = $this->phpMocker;
+
+		$this->assertionManager->setHandler('resetFunction', function(test\adapter\invoker $invoker) use ($phpMocker) { $phpMocker->resetCalls($invoker->getFunction()); return $invoker; });
 
 		$assertionAliaser = $this->assertionManager->getAliaser();
 
