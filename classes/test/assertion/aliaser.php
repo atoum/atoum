@@ -122,7 +122,7 @@ class aliaser implements \arrayAccess
 	{
 		$this->aliasKeyword($this->keyword, $alias, $this->context);
 
-		$this->context = $this->keyword = null;
+		$this->keyword = null;
 
 		return $this;
 	}
@@ -130,11 +130,6 @@ class aliaser implements \arrayAccess
 	public function aliasKeyword($keyword, $alias, $context = null)
 	{
 		$this->aliases[$this->getContextKey($context)][$this->getAliasKey($alias)] = $keyword;
-
-		if ($context === null && $this->context !== null)
-		{
-			$this->context = null;
-		}
 
 		return $this;
 	}
@@ -144,25 +139,23 @@ class aliaser implements \arrayAccess
 		$aliasKey = $this->getAliasKey($alias);
 		$contextKey = $this->getContextKey($context);
 
-		$alias = (isset($this->aliases[$contextKey]) === false || isset($this->aliases[$contextKey][$aliasKey]) === false ? $alias : $this->aliases[$contextKey][$aliasKey]);
-
-		$this->context = null;
-
-		return $alias;
+		return (isset($this->aliases[$contextKey]) === false || isset($this->aliases[$contextKey][$aliasKey]) === false ? $alias : $this->aliases[$contextKey][$aliasKey]);
 	}
 
-	private function getAliasKey($keyword)
+	private function getAliasKey($alias)
 	{
-		return strtolower($keyword);
+		return strtolower($alias);
 	}
 
 	private function getContextKey($context)
 	{
-		if ($context === null)
+		if ($context === null && $this->context !== null)
 		{
 			$context = $this->context;
+
+			$this->context = null;
 		}
 
-		return ($context == '' ? '' : $this->getAliasKey($this->resolver->resolve($context) ?: $context));
+		return ($context == '' ? '' : strtolower($this->resolver->resolve($context) ?: $context));
 	}
 }
