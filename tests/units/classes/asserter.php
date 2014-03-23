@@ -13,7 +13,10 @@ class asserter extends atoum
 {
 	public function testClass()
 	{
-		$this->testedClass->isAbstract();
+		$this->testedClass
+			->isAbstract
+			->implements('mageekguy\atoum\asserter\definition')
+		;
 	}
 
 	public function test__construct()

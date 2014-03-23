@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\tools\variable
 ;
 
-abstract class asserter
+abstract class asserter implements asserter\definition
 {
 	protected $locale = null;
 	protected $analyzer = null;
