@@ -14,7 +14,7 @@ class asserter extends atoum
 	public function testClass()
 	{
 		$this->testedClass
-			->isAbstract()
+			->isAbstract
 			->implements('mageekguy\atoum\asserter\definition')
 		;
 	}
