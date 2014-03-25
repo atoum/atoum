@@ -5,65 +5,116 @@ namespace mageekguy\atoum\tests\units\asserters\adapter;
 require __DIR__ . '/../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test\adapter,
-	mock\mageekguy\atoum\asserters\adapter\call as testedClass
+	mageekguy\atoum
 ;
 
 class call extends atoum
 {
 	public function testClass()
 	{
-		$this->testedClass->isAbstract()->extends('mageekguy\atoum\asserter');
+		$this->testedClass
+			->isAbstract
+			->extends('mageekguy\atoum\asserter')
+		;
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->given($this->newTestedInstance)
 			->then
-				->variable($asserter->getLastAssertionFile())->isNull()
-				->variable($asserter->getLastAssertionLine())->isNull()
+				->variable($this->testedInstance->getLastAssertionFile())->isNull()
+				->variable($this->testedInstance->getLastAssertionLine())->isNull()
+		;
+	}
+
+	public function test__get()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+			->then
+				->exception(function() use ($asserter) { $asserter->{rand(0, PHP_INT_MAX)}; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Adapter is undefined')
+
+			->given($adapter = new \mock\atoum\test\adapter())
+			->if($asserter->setWith($adapter))
+			->then
+				->exception(function() use ($asserter) { $asserter->{rand(0, PHP_INT_MAX)}; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Call is undefined')
+
+			->if(
+				$asserter
+					->setCall($call = new \mock\atoum\test\adapter\call())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$call->setFunction(uniqid()),
+				$this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+				$this->calling($calls)->count = 0,
+				$this->calling($call)->__toString = $callAsString = uniqid(),
+				$this->calling($locale)->__ = $notCalled = uniqid()
+			)
+			->then
+				->exception(function() use ($asserter, & $callNumber) { $asserter->{$callNumber = rand(1, PHP_INT_MAX)}; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, $callNumber)->once
+
+			->if(
+				$this->calling($calls)->count = $count = rand(1, PHP_INT_MAX),
+				$this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+				$this->calling($callsEqualTo)->count = $count,
+				$this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
+			)
+			->then
+				->exception(function() use ($asserter) { $asserter->{0}; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notCalled . PHP_EOL . $callsEqualToAsString)
+				->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->once
+
+				->object($this->testedInstance->{$count})->isTestedInstance
 		;
 	}
 
 	public function testBefore()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->given($this->newTestedInstance)
 			->then
-				->object($asserter->before($asserter1 = new testedClass()))->isIdenticalTo($asserter)
-				->array($asserter->getBefore())->isEqualTo(array($asserter1))
-				->variable($asserter->getLastAssertionFile())->isNotNull()
-				->variable($asserter->getLastAssertionLine())->isNotNull()
-				->object($asserter->before(
-							$asserter2 = new testedClass(),
-							$asserter3 = new testedClass()
+				->object($this->testedInstance->before($asserter1 = new \mock\atoum\asserters\adapter\call()))->isTestedInstance
+				->array($this->testedInstance->getBefore())->isEqualTo(array($asserter1))
+				->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
+				->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
+
+				->object($this->testedInstance->before(
+							$asserter2 = new \mock\atoum\asserters\adapter\call(),
+							$asserter3 = new \mock\atoum\asserters\adapter\call()
 						)
-					)->isIdenticalTo($asserter)
-				->array($asserter->getBefore())->isEqualTo(array($asserter1, $asserter2, $asserter3))
-				->variable($asserter->getLastAssertionFile())->isNotNull()
-				->variable($asserter->getLastAssertionLine())->isNotNull()
+					)->isTestedInstance
+				->array($this->testedInstance->getBefore())->isEqualTo(array($asserter1, $asserter2, $asserter3))
+				->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
+				->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
 		;
 	}
 
 	public function testAfter()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->given($this->newTestedInstance)
 			->then
-				->object($asserter->after($asserter1 = new testedClass()))->isIdenticalTo($asserter)
-				->array($asserter->getAfter())->isEqualTo(array($asserter1))
-				->variable($asserter->getLastAssertionFile())->isNotNull()
-				->variable($asserter->getLastAssertionLine())->isNotNull()
-				->object($asserter->after(
-							$asserter2 = new testedClass(),
-							$asserter3 = new testedClass()
+				->object($this->testedInstance->after($asserter1 = new \mock\atoum\asserters\adapter\call()))->isTestedInstance
+				->array($this->testedInstance->getAfter())->isEqualTo(array($asserter1))
+				->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
+				->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
+
+				->object($this->testedInstance->after(
+							$asserter2 = new \mock\atoum\asserters\adapter\call(),
+							$asserter3 = new \mock\atoum\asserters\adapter\call()
 						)
-					)->isIdenticalTo($asserter)
-				->array($asserter->getAfter())->isEqualTo(array($asserter1, $asserter2, $asserter3))
-				->variable($asserter->getLastAssertionFile())->isNotNull()
-				->variable($asserter->getLastAssertionLine())->isNotNull()
+					)->isTestedInstance
+				->array($this->testedInstance->getAfter())->isEqualTo(array($asserter1, $asserter2, $asserter3))
+				->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
+				->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
 		;
 	}
 }

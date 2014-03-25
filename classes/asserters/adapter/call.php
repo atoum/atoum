@@ -33,7 +33,11 @@ abstract class call extends atoum\asserter
 
 	public function __get($property)
 	{
-		switch (strtolower($property))
+		if (is_numeric($property) === true)
+		{
+			return $this->exactly($property);
+		}
+		else switch (strtolower($property))
 		{
 			case 'once':
 			case 'twice':
@@ -200,7 +204,7 @@ abstract class call extends atoum\asserter
 	{
 		$callsNumber = $this->removeFromManager()->countBeforeAndAfterCalls();
 
-		if ($callsNumber === $number)
+		if ($callsNumber == $number)
 		{
 			$this->pass();
 		}
