@@ -3,10 +3,8 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum\test,
 	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\tools\diffs
+	mageekguy\atoum\exceptions
 ;
 
 class exception extends asserters\object
@@ -15,8 +13,12 @@ class exception extends asserters\object
 
 	public function __get($asserter)
 	{
-		switch ($asserter)
+		switch (strtolower($asserter))
 		{
+			case 'hasdefaultcode':
+			case 'hasnestedexception':
+				return $this->{$asserter}();
+
 			case 'message':
 				return $this->getMessageAsserter();
 
@@ -84,7 +86,7 @@ class exception extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : $this->_('code is %s instead of 0', $this->value->getCode()));
+			$this->fail($failMessage ?: $this->_('code is %s instead of 0', $this->value->getCode()));
 		}
 
 		return $this;
@@ -112,7 +114,7 @@ class exception extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : $this->_('message \'%s\' is not identical to \'%s\'', $this->value->getMessage(), $message));
+			$this->fail($failMessage ?: $this->_('message \'%s\' is not identical to \'%s\'', $this->value->getMessage(), $message));
 		}
 
 		return $this;
@@ -120,24 +122,15 @@ class exception extends asserters\object
 
 	public function hasNestedException(\exception $exception = null, $failMessage = null)
 	{
-		if ($exception === null)
-		{
-			if ($this->valueIsSet()->value->getPrevious() !== null)
-			{
-				$this->pass();
-			}
-			else
-			{
-				$this->fail($failMessage !== null ? $failMessage : $this->getLocale()->_('exception does not contain any nested exception'));
-			}
-		}
-		else if ($this->valueIsSet()->value->getPrevious() == $exception)
+		$nestedException = $this->valueIsSet()->value->getPrevious();
+
+		if (($exception === null && $nestedException !== null) || ($exception !== null && $nestedException == $exception))
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : $this->getLocale()->_('exception does not contain this nested exception'));
+			$this->fail($failMessage ?: ($exception === null ? $this->_('exception does not contain any nested exception') : $this->_('exception does not contain this nested exception')));
 		}
 
 		return $this;

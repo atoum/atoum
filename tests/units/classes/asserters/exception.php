@@ -5,8 +5,8 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\tools\variable,
-	mageekguy\atoum\asserters\exception as sut
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\tools\variable
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -23,7 +23,7 @@ class exception extends atoum\test
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->getGenerator())->isEqualTo(new atoum\asserter\generator())
+				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
 				->object($this->testedInstance->getAnalyzer())->isEqualTo(new variable\analyzer())
 				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
 				->variable($this->testedInstance->getValue())->isNull()
@@ -47,7 +47,7 @@ class exception extends atoum\test
 				->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
 			)
 			->then
-				->object($asserter->setWith($value = new \exception()))->isIdenticalTo($asserter)
+				->object($this->testedInstance->setWith($value = new \exception()))->isTestedInstance
 				->exception($asserter->getValue())->isIdenticalTo($value)
 
 			->if(
@@ -75,12 +75,12 @@ class exception extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Exception is undefined')
 
-			->if($asserter->setWith(new \exception()))
+			->if($this->testedInstance->setWith(new \exception()))
 			->then
-				->object($asserter->isInstanceOf('\Exception'))->isIdenticalTo($asserter)
-				->object($asserter->isInstanceOf('Exception'))->isIdenticalTo($asserter)
-				->object($asserter->isInstanceOf('\exception'))->isIdenticalTo($asserter)
-				->object($asserter->isInstanceOf('exception'))->isIdenticalTo($asserter)
+				->object($this->testedInstance->isInstanceOf('\Exception'))->isTestedInstance
+				->object($this->testedInstance->isInstanceOf('Exception'))->isTestedInstance
+				->object($this->testedInstance->isInstanceOf('\exception'))->isTestedInstance
+				->object($this->testedInstance->isInstanceOf('exception'))->isTestedInstance
 
 				->exception(function() use ($asserter) { $asserter->isInstanceOf(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
@@ -92,6 +92,10 @@ class exception extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($isNotAnInstance)
 				->mock($locale)->call('_')->withArguments('%s is not an instance of %s', $asserter)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isInstanceOf('mageekguy\atoum\exceptions\runtime', $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
 		;
 	}
 
@@ -106,9 +110,9 @@ class exception extends atoum\test
 					->isInstanceOf('logicException')
 					->hasMessage('Exception is undefined')
 
-			->if($asserter->setWith(new atoum\exceptions\runtime(uniqid(), $code = rand(2, PHP_INT_MAX))))
+			->if($this->testedInstance->setWith(new \exception(uniqid(), $code = rand(2, PHP_INT_MAX))))
 			->then
-				->object($asserter->hasCode($code))->isIdenticalTo($asserter)
+				->object($this->testedInstance->hasCode($code))->isTestedInstance
 
 			->if($this->calling($locale)->_ = $hasNotCode = uniqid())
 			->then
@@ -116,6 +120,51 @@ class exception extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($hasNotCode)
 				->mock($locale)->call('_')->withArguments('code is %s instead of %s', $code, $badCode)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasCode(rand(1, PHP_INT_MAX), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+		;
+	}
+
+	public function testHasDefaultCode()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance
+				->setLocale($locale = new \mock\atoum\locale())
+			)
+			->then
+				->exception(function() use ($asserter) { $asserter->hasDefaultCode(); })
+					->isInstanceOf('logicException')
+					->hasMessage('Exception is undefined')
+
+				->exception(function() use ($asserter) { $asserter->hasDefaultCode; })
+					->isInstanceOf('logicException')
+					->hasMessage('Exception is undefined')
+
+			->if($this->testedInstance->setWith(new \exception(uniqid())))
+			->then
+				->object($this->testedInstance->hasDefaultCode())->isTestedInstance
+				->object($this->testedInstance->hasDefaultCode())->isTestedInstance
+
+			->if(
+				$this->testedInstance->setWith(new \exception(uniqid(), $code = rand(1, PHP_INT_MAX))),
+				$this->calling($locale)->_ = $hasNotDefaultCode = uniqid()
+			)
+			->then
+				->exception(function() use ($asserter) { $asserter->hasDefaultCode(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($hasNotDefaultCode)
+				->mock($locale)->call('_')->withArguments('code is %s instead of 0', $code)->once
+
+				->exception(function() use ($asserter) { $asserter->hasDefaultCode; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($hasNotDefaultCode)
+				->mock($locale)->call('_')->withArguments('code is %s instead of 0', $code)->twice
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasDefaultCode($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
 		;
 	}
 
@@ -130,9 +179,9 @@ class exception extends atoum\test
 					->isInstanceOf('logicException')
 					->hasMessage('Exception is undefined')
 
-			->if($asserter->setWith(new atoum\exceptions\runtime($message = uniqid())))
+			->if($this->testedInstance->setWith(new \exception($message = uniqid())))
 			->then
-				->object($asserter->hasMessage($message))->isIdenticalTo($asserter)
+				->object($this->testedInstance->hasMessage($message))->isTestedInstance
 
 			->if($this->calling($locale)->_ = $hasNotMessage = uniqid())
 			->then
@@ -140,70 +189,106 @@ class exception extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($hasNotMessage)
 				->mock($locale)->call('_')->withArguments('message \'%s\' is not identical to \'%s\'', $message, $badMessage)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasMessage(uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
 		;
 	}
 
 	public function testHasNestedException()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasNestedException(); })
 					->isInstanceOf('logicException')
 					->hasMessage('Exception is undefined')
-			->if($asserter->setWith(new atoum\exceptions\runtime('', 0)))
+
+			->if(
+				$asserter
+					->setWith(new \exception())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $hasNoNestedException = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter) { $asserter->hasNestedException(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($generator->getLocale()->_('exception does not contain any nested exception'))
+					->hasMessage($hasNoNestedException)
+				->mock($locale)->call('_')->withArguments('exception does not contain any nested exception')->once
+
+				->exception(function() use ($asserter) { $asserter->hasNestedException; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($hasNoNestedException)
+				->mock($locale)->call('_')->withArguments('exception does not contain any nested exception')->twice
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasNestedException(null, $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
 				->exception(function() use ($asserter) { $asserter->hasNestedException(new \exception()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($generator->getLocale()->_('exception does not contain this nested exception'))
-			->if($asserter->setWith(new atoum\exceptions\runtime('', 0, $nestedException = new \exception())))
+					->hasMessage($hasNoNestedException)
+				->mock($locale)->call('_')->withArguments('exception does not contain this nested exception')->once
+
+			->if($this->testedInstance->setWith(new \exception(uniqid(), rand(1, PHP_INT_MAX), $nestedException = new \exception())))
 			->then
-				->object($asserter->hasNestedException())->isIdenticalTo($asserter)
-				->object($asserter->hasNestedException($nestedException))->isIdenticalTo($asserter)
+				->object($this->testedInstance->hasNestedException())->isTestedInstance
+
+				->object($this->testedInstance->hasNestedException($nestedException))->isTestedInstance
+
 				->exception(function() use ($asserter) { $asserter->hasNestedException(new \exception()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($generator->getLocale()->_('exception does not contain this nested exception'))
+					->hasMessage($hasNoNestedException)
+				->mock($locale)->call('_')->withArguments('exception does not contain this nested exception')->twice
 		;
 	}
 
 	public function testMessage()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->message; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Exception is undefined')
-			->if($asserter->setWith(new atoum\exceptions\runtime('', 0)))
+
+				->exception(function() use ($asserter) { $asserter->mESSAGe; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Exception is undefined')
+
+			->if($this->testedInstance->setWith(new \exception('')))
 			->then
-				->object($string = $asserter->message)
-					->isInstanceOf('mageekguy\atoum\asserters\string')
-				->string($string->getValue())
-					->isEqualTo('')
-			->if($asserter->setWith(new atoum\exceptions\runtime('Exception message', 0)))
+				->object($string = $this->testedInstance->message)->isInstanceOf('mageekguy\atoum\asserters\string')
+				->string($string->getValue())->isEqualTo('')
+
+				->object($string = $this->testedInstance->MesSAge)->isInstanceOf('mageekguy\atoum\asserters\string')
+				->string($string->getValue())->isEqualTo('')
+
+			->if($this->testedInstance->setWith(new \exception($message = uniqid())))
 			->then
-				->object($string = $asserter->message)
-					->isInstanceOf('mageekguy\atoum\asserters\string')
-				->string($string->getValue())
-					->isEqualTo('Exception message')
+				->object($string = $this->testedInstance->message)->isInstanceOf('mageekguy\atoum\asserters\string')
+				->string($string->getValue())->isEqualTo($message)
+
+				->object($string = $this->testedInstance->meSSAGe)->isInstanceOf('mageekguy\atoum\asserters\string')
+				->string($string->getValue())->isEqualTo($message)
 		;
 	}
 
 	public function testGetLastValue()
 	{
 		$this
-			->variable(sut::getLastValue())->isNull()
-			->if($asserter = new sut(new asserter\generator()))
-			->and($asserter->setWith(function() use (& $exception) { $exception = new \exception(); throw $exception; }))
+			->variable(asserters\exception::getLastValue())->isNull()
+
+			->if(
+				$this->newTestedInstance->setWith(function() use (& $exception) { $exception = new \exception(); throw $exception; })
+			)
 			->then
-				->object(sut::getLastValue())->isIdenticalTo($exception)
-			->and($asserter->setWith(function() use (& $otherException) { $otherException = new \exception(); throw $otherException; }))
+				->object(asserters\exception::getLastValue())->isIdenticalTo($exception)
+
+			->if($this->testedInstance->setWith(function() use (& $otherException) { $otherException = new \exception(); throw $otherException; }))
 			->then
-				->object(sut::getLastValue())->isIdenticalTo($otherException)
+				->object(asserters\exception::getLastValue())->isIdenticalTo($otherException)
 		;
 	}
 }
