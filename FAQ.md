@@ -36,3 +36,6 @@ As all PHP extension, APC has some configuration options to enable it:
 * `apc.enable_cli`: whether to enable or disable APC for PHP CLI.
 
 Setting `apc.enabled` to 1 in your CLI configuration does not do the trick: to avoid these failure messages, you have to set the `apc.enable_cli` option to 1, otherwise, the extension won't be enabled for the PHP CLI version, which is used by atoum.
+
+## Why ABOUT and COPYING does not use markdown syntax?
+These files are used by PHAR to display useful information to the user in CLI, so using markdown in it is a bad idea.
