@@ -3,7 +3,7 @@
 namespace mageekguy\atoum\factory;
 
 use
-	atoum\test
+	mageekguy\atoum\test
 ;
 
 interface builder

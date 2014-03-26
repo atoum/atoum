@@ -7,7 +7,6 @@ use
 	mageekguy\atoum\php,
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\tools\arguments,
 	mageekguy\atoum\asserters\adapter\call,
 	mageekguy\atoum\asserters\adapter\exceptions
 ;

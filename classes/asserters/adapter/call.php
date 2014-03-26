@@ -8,7 +8,6 @@ use
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\tools\variable,
-	mageekguy\atoum\tools\arguments,
 	mageekguy\atoum\asserters\adapter\call\exceptions
 ;
 
@@ -21,8 +20,6 @@ abstract class call extends atoum\asserter
 	protected $afterCalls = array();
 	protected $trace = array('file' => null, 'line' => null);
 	protected $manager = null;
-
-	private static $instances = null;
 
 	public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null, atoum\locale $locale = null)
 	{

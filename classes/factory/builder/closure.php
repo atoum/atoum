@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\factory\builder;
 
 use
-	atoum\test,
-	atoum\factory
+	mageekguy\atoum\test,
+	mageekguy\atoum\factory
 ;
 
 class closure implements factory\builder
