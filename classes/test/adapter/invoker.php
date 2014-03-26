@@ -18,6 +18,11 @@ class invoker implements \arrayAccess, \countable
 		$this->function = (string) $function;
 	}
 
+	public function __get($keyword)
+	{
+		return $this->{$keyword}();
+	}
+
 	public function __set($keyword, $mixed)
 	{
 		switch ($keyword)
