@@ -5,6 +5,7 @@ namespace mageekguy\atoum\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\test,
+	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
 ;
 
@@ -12,7 +13,7 @@ class extension extends atoum\asserter
 {
 	protected $name = null;
 
-	public function __construct(atoum\asserter\generator $generator = null, atoum\locale $locale = null)
+	public function __construct(asserter\generator $generator = null, atoum\locale $locale = null)
 	{
 		parent::__construct($generator, null, $locale);
 	}
@@ -43,15 +44,13 @@ class extension extends atoum\asserter
 
 	public function isLoaded($failMessage = null)
 	{
-		$this->valueIsSet();
-
-		if (extension_loaded($this->name) === true)
+		if (extension_loaded($this->valueIsSet()->name) === true)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('PHP extension \'%s\' is not loaded'), $this));
+			$this->fail($failMessage ?: $this->_('PHP extension \'%s\' is not loaded', $this));
 		}
 
 		return $this;

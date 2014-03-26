@@ -74,7 +74,9 @@ class extension extends atoum\test
 	public function testIsLoaded()
 	{
 		$this
-			->if($asserter = $this->newTestedInstance)
+			->given($asserter = $this->newTestedInstance)
+
+			->if($this->function->extension_loaded->doesNothing)
 			->then
 				->exception(function() use ($asserter) {
 						$asserter->isLoaded();
@@ -85,7 +87,7 @@ class extension extends atoum\test
 
 			->if(
 				$this->function->extension_loaded = false,
-				$asserter->setWith($extensionName = uniqid())
+				$this->testedInstance->setWith($extensionName = uniqid())
 			)
 			->then
 				->exception(function() use ($asserter) {
@@ -97,7 +99,7 @@ class extension extends atoum\test
 
 			->if($this->function->extension_loaded = true)
 			->then
-				->object($asserter->isLoaded())->isIdenticalTo($asserter)
+				->object($this->testedInstance->isLoaded())->isTestedInstance
 		;
 	}
 }
