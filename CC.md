@@ -4,7 +4,7 @@ Use only tabs, with no space.
 Lines should have no trailing whitespace at the end. 
 Files should be formatted with \n as the line ending (Unix line endings), not \r\n (Windows line endings). 
 PHP files should be in UTF-8. 
-PHP files should begin with `<?php ` and should not have a end tag (no `?>`).
+PHP files should begin with `<?php ` and should not have an end tag (no `?>`).
 The reasons for this can be summarized as:
 * Removing it eliminates the possibility for unwanted whitespace at the end of files which can cause "header already sent" errors, XHTML/XML validation issues, and other problems.
 * The closing delimiter at the end of a file is optional.
@@ -106,14 +106,14 @@ $var = $object->foo($bar, $baz, $quux);
 
 As displayed above, there should be one space on either side of an equals sign used to assign the return value of a function to a variable. 
 In the case of a block of related assignments, more space should not be used to indent them.
-This is a bad practice in the sense of this coding convetion:
+This is a bad practice in the sense of this coding convention:
 
 ```php
 $short				 = foo($bar);
 $long_variable = foo($baz);
 ```
 
-Always attempt to return a meaningful value from a function if one is appropriate.
+Always attempt to return a meaningful value from a function if one is appropriated.
 If there is no meaningful value, always return `$this` (fluent syntax).
 
 # Class Constructor Calls
