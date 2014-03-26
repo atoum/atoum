@@ -41,6 +41,30 @@ class phpClass extends atoum\test
 		;
 	}
 
+	public function test__toString()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->castToString($this->testedInstance)->isEmpty
+
+			->if(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct->doesNothing();
+							$mockController->getName = $class;
+
+							return new \mock\reflectionClass($class, $mockController);
+						}
+					),
+				$this->testedInstance->setWith($class = uniqid())
+			)
+			->then
+				->castToString($this->testedInstance)->isEqualTo($class)
+		;
+	}
+
 	public function testGetClass()
 	{
 		$this

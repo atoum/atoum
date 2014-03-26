@@ -40,6 +40,11 @@ class phpClass extends atoum\asserter
 		}
 	}
 
+	public function __toString()
+	{
+		return (string) $this->getClass();
+	}
+
 	public function getReflectionClass($class)
 	{
 		$reflectionClass = null;
