@@ -11,11 +11,13 @@ The reasons for this can be summarized as:
 * PHP.net itself removes the closing delimiter from the end of its files (example: prepend.inc), so this can be seen as a "best practice."
 
 # Operators
+
 All binary operators (operators that come between two values), such as `+`, `-`, `=`, `!=`, `==`, `>`, etc. should have a space before and after the operator, for readability. 
 For example, an assignment should be formatted as `$foo = $bar;` rather than `$foo=$bar;`. 
 Unary operators (operators that operate on only one value), such as `++`, should not have a space between the operator and the variable or number they are operating on.
 
 # Casting
+
 Put a space between the (type) and the `$variable` in a cast: `(int) $mynumber`.
 
 # Control Structures
@@ -115,6 +117,7 @@ Always attempt to return a meaningful value from a function if one is appropriat
 If there is no meaningful value, always return `$this` (fluent syntax).
 
 # Class Constructor Calls
+
 When calling class constructors with no arguments, always include parentheses:
 
 ```php
@@ -182,9 +185,9 @@ Currently, atoum does not support PHPDoc.
 
 Anywhere you are unconditionally including a class file, use `require_once`. 
 Anywhere you are conditionally including a class file, use `include_once`. 
-Either of these will ensure that class files are included only once. 
-They share the same file list, so you don't need to worry about mixing them (a file included with `require_once`	will not be included again by `include_once`.
-You don't need parentheres around the file name to be included.
+Both of these will ensure that class files are included only once. 
+They share the same file list, so you don't need to worry about mixing them (a file included with `require_once` will not be included again by `include_once`).
+You don't need parenthesis around the file name to be included.
 When including code, you should always use a relative path from the current directory:
 
 ```php
@@ -193,11 +196,11 @@ require_once __DIR__ . '/../../../path/to/the/included/php/file.php';
 
 # Naming Conventions
 
-Functions, variables, constants, classes, interfaces and methods should be named using lowerCamelCase.
+Function, variable, constant, class, interface and method must be named using lowerCamelCase.
 Protected or private properties and methods should not use an underscore prefix.
 
 # Global Variables
 
 You should not use global variable.
 
-Thanks to the Drupal community for its work about its coding convention.
+Thanks to the Drupal community for its work about its [coding convention](https://drupal.org/coding-standards).
