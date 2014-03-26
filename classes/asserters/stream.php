@@ -34,7 +34,7 @@ class stream extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('stream %s is not read'), $this->streamController));
+			$this->fail($failMessage ?: $this->_('stream %s is not read', $this->streamController));
 		}
 
 		return $this;
@@ -48,7 +48,7 @@ class stream extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('stream %s is not writed'), $this->streamController));
+			$this->fail($failMessage ?: $this->_('stream %s is not writed', $this->streamController));
 		}
 
 		return $this;
