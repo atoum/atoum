@@ -82,11 +82,11 @@ class error extends atoum\test
 				->variable($this->testedInstance->getMessage())->isNull()
 				->variable($this->testedInstance->getType())->isNull()
 
-				->object($this->testedInstance->setWith($message = uniqid(), null))->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->setWith($message = uniqid(), null))->isTestedInstance
 				->string($this->testedInstance->getMessage())->isEqualTo($message)
 				->variable($this->testedInstance->getType())->isNull()
 
-				->object($this->testedInstance->setWith($message = uniqid(), $type = rand(0, PHP_INT_MAX)))->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->setWith($message = uniqid(), $type = rand(0, PHP_INT_MAX)))->isTestedInstance
 				->string($this->testedInstance->getMessage())->isEqualTo($message)
 				->integer($this->testedInstance->getType())->isEqualTo($type)
 		;
@@ -209,7 +209,7 @@ class error extends atoum\test
 
 			->if($this->testedInstance->withPattern(uniqid()))
 			->then
-				->object($this->testedInstance->withAnyMessage())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->withAnyMessage())->isTestedInstance
 				->variable($this->testedInstance->getMessage())->isNull()
 				->boolean($this->testedInstance->messageIsPattern())->isFalse()
 		;
@@ -222,7 +222,7 @@ class error extends atoum\test
 			->then
 				->object($this->testedInstance->setScore($score = new atoum\test\score()))->isTestedInstance
 				->object($this->testedInstance->getScore())->isIdenticalTo($score)
-				->object($this->testedInstance->setScore())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->setScore())->isTestedInstance
 				->object($this->testedInstance->getScore())
 					->isNotIdenticalTo($score)
 					->isInstanceOf('mageekguy\atoum\score')

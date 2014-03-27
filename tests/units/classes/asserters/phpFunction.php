@@ -76,7 +76,7 @@ class phpFunction extends atoum\test
 			->if($this->testedInstance->wasCalledWithArguments(range(1, 5)))
 			->then
 				->object($this->testedInstance->wasCalled())->isTestedInstance
-				->object($this->testedInstance->wasCalled)->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->wasCalled)->isTestedInstance
 				->variable($this->testedInstance->getCall()->getArguments())->isNull()
 		;
 	}
@@ -180,7 +180,7 @@ class phpFunction extends atoum\test
 					->wasCalledWithArguments(array())
 			)
 			->then
-				->object($this->testedInstance->wasCalledWithAnyArguments())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->wasCalledWithAnyArguments())->isTestedInstance
 				->variable($this->testedInstance->getArguments())->isNull()
 		;
 	}

@@ -52,9 +52,9 @@ class phpArray extends atoum\test
 		$this
 			->given($this->newTestedInstance($generator = new \mock\mageekguy\atoum\asserter\generator()))
 			->then
-				->object($this->testedInstance->object)->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->object)->isTestedInstance
 				->object($this->testedInstance->getInnerAsserter())->isEqualTo($generator->object)
-				->object($this->testedInstance->object->string)->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->object->string)->isTestedInstance
 				->object($this->testedInstance->getInnerAsserter())->isEqualTo($generator->string)
 				->object($this->testedInstance->error)->isInstanceOf($generator->error)
 				->variable($this->testedInstance->getInnerAsserter())->isNull()
@@ -71,8 +71,8 @@ class phpArray extends atoum\test
 				)
 			)
 			->then
-				->object($this->testedInstance->phpArray[0][0][1]->isEqualTo(array('foo', 'bar')))->isIdenticalTo($this->testedInstance)
-				->object($this->testedInstance->string[1]->isEqualTo('foobar'))->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->phpArray[0][0][1]->isEqualTo(array('foo', 'bar')))->isTestedInstance
+				->object($this->testedInstance->string[1]->isEqualTo('foobar'))->isTestedInstance
 
 			->given($this->newTestedInstance->setWith(array($array1 = array('foo', 'bar'), $array2 = array(1, new \mock\object()))))
 			->then
@@ -86,7 +86,7 @@ class phpArray extends atoum\test
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->reset())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->reset())->isTestedInstance
 				->variable($this->testedInstance->getValue())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()
 				->boolean($this->testedInstance->isSetByReference())->isFalse()
@@ -96,7 +96,7 @@ class phpArray extends atoum\test
 
 			->if($this->testedInstance->setWith(array()))
 			->then
-				->object($this->testedInstance->reset())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->reset())->isTestedInstance
 				->variable($this->testedInstance->getValue())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()
 				->boolean($this->testedInstance->isSetByReference())->isFalse()
@@ -109,7 +109,7 @@ class phpArray extends atoum\test
 				$this->testedInstance->setByReferenceWith($reference)
 			)
 			->then
-				->object($this->testedInstance->reset())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->reset())->isTestedInstance
 				->variable($this->testedInstance->getValue())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()
 				->boolean($this->testedInstance->isSetByReference())->isFalse()
@@ -119,7 +119,7 @@ class phpArray extends atoum\test
 
 			->if($this->testedInstance->object)
 			->then
-				->object($this->testedInstance->reset())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->reset())->isTestedInstance
 				->variable($this->testedInstance->getValue())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()
 				->boolean($this->testedInstance->isSetByReference())->isFalse()
@@ -132,7 +132,7 @@ class phpArray extends atoum\test
 				$this->testedInstance->atKey(2)
 			)
 			->then
-				->object($this->testedInstance->reset())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->reset())->isTestedInstance
 				->variable($this->testedInstance->getValue())->isNull()
 				->boolean($this->testedInstance->wasSet())->isFalse()
 				->boolean($this->testedInstance->isSetByReference())->isFalse()

@@ -70,14 +70,14 @@ class adapter extends atoum\test
 			->if($this->newTestedInstance(new asserter\generator()))
 			->then
 				->variable($this->testedInstance->getAdapter())->isNull()
-				->object($this->testedInstance->reset())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->reset())->isTestedInstance
 				->variable($this->testedInstance->getAdapter())->isNull()
 
 			->if($this->testedInstance->setWith($adapter = new atoum\test\adapter()))
 			->then
 				->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
 				->sizeOf($adapter->getCalls())->isZero()
-				->object($this->testedInstance->reset())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->reset())->isTestedInstance
 				->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
 				->sizeOf($adapter->getCalls())->isZero()
 
@@ -85,7 +85,7 @@ class adapter extends atoum\test
 			->then
 				->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
 				->sizeOf($adapter->getCalls())->isEqualTo(1)
-				->object($this->testedInstance->reset())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->reset())->isTestedInstance
 				->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
 				->sizeOf($adapter->getCalls())->isZero()
 		;
@@ -103,13 +103,13 @@ class adapter extends atoum\test
 
 			->if($this->testedInstance->setWith($adapter = new test\adapter()))
 			->then
-				->object($this->testedInstance->call($function = uniqid()))->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->call($function = uniqid()))->isTestedInstance
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function))
 
 			->if($this->testedInstance->withArguments())
 			->then
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array()))
-				->object($this->testedInstance->disableEvaluationChecking()->call($function = uniqid()))->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->disableEvaluationChecking()->call($function = uniqid()))->isTestedInstance
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function))
 		;
 	}
@@ -132,11 +132,11 @@ class adapter extends atoum\test
 
 			->if($this->testedInstance->call($function = uniqid()))
 			->then
-				->object($this->testedInstance->withArguments())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->withArguments())->isTestedInstance
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array()))
-				->object($this->testedInstance->withArguments($arg1 = uniqid()))->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->withArguments($arg1 = uniqid()))->isTestedInstance
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array($arg1)))
-				->object($this->testedInstance->disableEvaluationChecking()->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->disableEvaluationChecking()->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isTestedInstance
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array($arg1, $arg2)))
 		;
 	}
@@ -160,13 +160,13 @@ class adapter extends atoum\test
 			->if($this->testedInstance->call($function = uniqid()))
 			->then
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function))
-				->object($this->testedInstance->withAnyArguments())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->withAnyArguments())->isTestedInstance
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function))
 
 			->if($this->testedInstance->disableEvaluationChecking()->withArguments($arg = uniqid()))
 			->then
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array($arg)))
-				->object($this->testedInstance->withAnyArguments())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->withAnyArguments())->isTestedInstance
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function))
 		;
 	}
@@ -189,7 +189,7 @@ class adapter extends atoum\test
 
 			->if($this->testedInstance->call($function = uniqid()))
 			->then
-				->object($this->testedInstance->disableEvaluationChecking()->withoutAnyArgument())->isIdenticalTo($this->testedInstance)
+				->object($this->testedInstance->disableEvaluationChecking()->withoutAnyArgument())->isTestedInstance
 				->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array()))
 		;
 	}
