@@ -5,8 +5,7 @@ namespace mageekguy\atoum\tests\units\mock\controller;
 require_once __DIR__ . '/../../../runner.php';
 
 use
-	atoum,
-	atoum\mock\controller\invoker as testedClass
+	atoum
 ;
 
 class invoker extends atoum
@@ -19,24 +18,35 @@ class invoker extends atoum
 	public function test__construct()
 	{
 		$this
-			->if($invoker = new testedClass($method = uniqid()))
+			->given($this->newTestedInstance($method = uniqid()))
 			->then
-				->string($invoker->getFunction())->isEqualTo($method)
-				->variable($invoker->getMock())->isNull()
-			->if($invoker = new testedClass($method = uniqid(), $mock = new \mock\foo()))
+				->string($this->testedInstance->getFunction())->isEqualTo($method)
+				->variable($this->testedInstance->getMock())->isNull()
+
+			->given($this->newTestedInstance($method = uniqid(), $mock = new \mock\foo()))
 			->then
-				->string($invoker->getFunction())->isEqualTo($method)
-				->object($invoker->getMock())->isIdenticalTo($mock)
+				->string($this->testedInstance->getFunction())->isEqualTo($method)
+				->object($this->testedInstance->getMock())->isIdenticalTo($mock)
 		;
 	}
 
 	public function testReturnThis()
 	{
 		$this
-			->if($invoker = new testedClass($method = uniqid(), $mock = new \mock\foo()))
+			->if($this->newTestedInstance($method = uniqid(), $mock = new \mock\foo()))
 			->then
-				->object($invoker->returnThis())->isIdenticalTo($invoker)
-				->object($invoker->invoke())->isIdenticalTo($mock)
+				->object($this->testedInstance->returnThis())->isTestedInstance
+				->object($this->testedInstance->invoke())->isIdenticalTo($mock)
+
+			->if($this->newTestedInstance($method = uniqid(), $mock = new \mock\foo()))
+			->then
+				->object($this->testedInstance->returnThis)->isTestedInstance
+				->object($this->testedInstance->invoke())->isIdenticalTo($mock)
+
+			->if($this->newTestedInstance($method = uniqid(), $mock = new \mock\foo()))
+			->then
+				->object($this->testedInstance->isFluent)->isTestedInstance
+				->object($this->testedInstance->invoke())->isIdenticalTo($mock)
 		;
 	}
 }

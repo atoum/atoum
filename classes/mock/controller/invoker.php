@@ -18,6 +18,19 @@ class invoker extends adapter\invoker
 		$this->mock = $mock;
 	}
 
+	public function __get($property)
+	{
+		switch (strtolower($property))
+		{
+			case 'isfluent':
+			case 'returnthis':
+				return $this->returnThis();
+
+			default:
+				return parent::__get($property);
+		}
+	}
+
 	public function setMock(mock\aggregator $mock)
 	{
 		$this->mock = $mock;
