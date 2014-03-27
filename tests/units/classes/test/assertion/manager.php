@@ -21,7 +21,7 @@ class manager extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\test\assertion\manager\exception')
-					->hasMessage('There is no handler defined for event \'' . $event . '\'')
+					->hasMessage('There is no handler defined for \'' . $event . '\'')
 
 			->if($this->testedInstance->setDefaultHandler(function() use (& $defaultReturn) { return ($defaultReturn = uniqid()); }))
 			->then
@@ -69,7 +69,7 @@ class manager extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\test\assertion\manager\exception')
-					->hasMessage('There is no handler defined for event \'' . $event . '\'')
+					->hasMessage('There is no handler defined for \'' . $event . '\'')
 
 			->if($this->testedInstance->setDefaultHandler(function($event, $defaultArg) { return $defaultArg; }))
 			->then
@@ -153,7 +153,7 @@ class manager extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\test\assertion\manager\exception')
-					->hasMessage('There is no handler defined for event \'foo\'')
+					->hasMessage('There is no handler defined for \'foo\'')
 		;
 	}
 
@@ -177,7 +177,7 @@ class manager extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\test\assertion\manager\exception')
-					->hasMessage('There is no handler defined for event \'foo\'')
+					->hasMessage('There is no handler defined for \'foo\'')
 		;
 	}
 
@@ -200,7 +200,7 @@ class manager extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\test\assertion\manager\exception')
-					->hasMessage('There is no handler defined for event \'' . $event . '\'')
+					->hasMessage('There is no handler defined for \'' . $event . '\'')
 
 			->if($this->testedInstance->setDefaultHandler(function($event, $arg) { return $arg; }))
 			->then
