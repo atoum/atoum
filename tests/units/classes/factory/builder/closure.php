@@ -162,10 +162,11 @@ class closure extends atoum
 
 			->if($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructor')))
 			->then
-				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid(), function() {}))->isTestedInstance
+				->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid(), $defaultHandler = function() {}))->isTestedInstance
 				->mock($assertionManager)
 					->call('setMethodHandler')->withArguments($factoryName, $this->testedInstance->get())->once
 					->call('setPropertyHandler')->withArguments($factoryName, $this->testedInstance->get())->never
+					->call('setPropertyHandler')->withArguments($factoryName, $defaultHandler)->once
 
 			->if($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructorWithOptionalArguments')))
 			->then

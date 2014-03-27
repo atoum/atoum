@@ -78,19 +78,14 @@ class closure implements factory\builder
 	{
 		if ($this->factory === null)
 		{
-			$assertionManager
-				->setMethodHandler($factoryName, $defaultHandler)
-				->setPropertyHandler($factoryName, $defaultHandler)
-			;
+			$assertionManager->setHandler($factoryName, $defaultHandler);
 		}
 		else
 		{
-			$assertionManager->setMethodHandler($factoryName, $this->factory);
-
-			if ($this->allArgumentsAreOptional === true)
-			{
-				$assertionManager->setPropertyHandler($factoryName, $this->factory);
-			}
+			$assertionManager
+				->setMethodHandler($factoryName, $this->factory)
+				->setPropertyHandler($factoryName, $this->allArgumentsAreOptional === false ? $defaultHandler : $this->factory)
+			;
 		}
 
 		return $this;
