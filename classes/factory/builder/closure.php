@@ -10,7 +10,7 @@ use
 class closure implements factory\builder
 {
 	private $factory = null;
-	private $allArgumentsAreOptional = false;
+	private $allArgumentsAreOptional = true;
 
 	public function build(\reflectionClass $class, & $instance = null)
 	{
@@ -22,11 +22,12 @@ class closure implements factory\builder
 
 			if ($constructor === null || $constructor->isPublic() === true)
 			{
-				$numberOfDefaultArgument = 0;
 				$constructorParameters = $closureParameters = array();
 
 				if ($constructor !== null)
 				{
+					$this->allArgumentsAreOptional = ($constructor->getNumberOfRequiredParameters() === 0);
+
 					foreach ($constructor->getParameters() as $position => $parameter)
 					{
 						$closureParameters[$position] = ($parameter->isPassedByReference() === false ? '' : '& ') . $constructorParameters[$position] = '$' . $parameter->getName();
@@ -48,7 +49,6 @@ class closure implements factory\builder
 						if ($defaultValue !== null)
 						{
 							$closureParameters[$position] .= ' = ' . $defaultValue;
-							$numberOfDefaultArgument++;
 						}
 					}
 				}
@@ -61,8 +61,6 @@ class closure implements factory\builder
 				{
 					$this->factory = eval('return function(' . join(', ', $closureParameters) . ') use (& $instance) { return ($instance = new ' . $class->getName() . '(' . join(', ', $constructorParameters) . ')); };');
 				}
-
-				$this->allArgumentsAreOptional = ($numberOfDefaultArgument === sizeof($closureParameters));
 			}
 		}
 
