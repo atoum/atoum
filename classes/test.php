@@ -1083,7 +1083,7 @@ abstract class test implements observable, \countable
 						throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 					}
 
-					if (($testedClass->isAbstract() === true || $testedClass->isInterface() === true) && $testedClass->isFinal() === false)
+					if ($testedClass->isAbstract() === true)
 					{
 						$testedClass = new \reflectionClass($testedClassName = $mockGenerator->getDefaultNamespace() . '\\' . $testedClassName);
 					}
