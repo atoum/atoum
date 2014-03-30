@@ -33,7 +33,10 @@
 							<div class="bar">
 								<div class="background"></div>
 								<div class="graph" style="width: <tpl:classCoverageValue />%"></div>
-								<div class="label"><a href="<tpl:classUrl />"><tpl:className /></a> <span><tpl:classCoverageValue />%</span></div>
+								<div class="label">
+									<span class="percent"><tpl:classCoverageValue />%</span>
+									<a href="<tpl:classUrl />"><tpl:className /></a>
+								</div>
 							</div>
 							</tpl:classCoverageAvailable>
 						</li>
