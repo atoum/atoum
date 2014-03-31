@@ -1022,7 +1022,7 @@ class phpArray extends atoum\test
 					->isIdenticalTo($exception)
 				->mock($integerAsserter)->call('isEqualTo')->withArguments($expectedValue)->once
 
-			->if($this->calling($integerAsserter)->isEqualTo->returnThis())
+			->if($this->method($integerAsserter)->isEqualTo->isFluent())
 			->then
 				->object($asserter->isEqualTo(3))->isIdenticalTo($asserter)
 				->mock($integerAsserter)->call('isEqualTo')->withArguments(3)->once
@@ -1089,7 +1089,7 @@ class phpArray extends atoum\test
 					->isIdenticalTo($exception)
 				->mock($integerAsserter)->call('isNotEqualTo')->withArguments($expectedValue)->once
 
-			->if($this->calling($integerAsserter)->isNotEqualTo->returnThis())
+			->if($this->method($integerAsserter)->isNotEqualTo->isFluent())
 			->then
 				->object($asserter->isNotEqualTo(3))->isIdenticalTo($asserter)
 				->mock($integerAsserter)->call('isNotEqualTo')->withArguments(3)->once
@@ -1147,7 +1147,7 @@ class phpArray extends atoum\test
 					->isIdenticalTo($exception)
 				->mock($integerAsserter)->call('isIdenticalTo')->withArguments($expectedValue)->once
 
-			->if($this->calling($integerAsserter)->isIdenticalTo->returnThis())
+			->if($this->method($integerAsserter)->isIdenticalTo->isFluent())
 			->then
 				->object($asserter->isEqualTo(2))->isIdenticalTo($asserter)
 				->mock($integerAsserter)->call('isIdenticalTo')->withArguments($expectedValue)->once
@@ -1198,7 +1198,7 @@ class phpArray extends atoum\test
 					->isIdenticalTo($exception)
 				->mock($integerAsserter)->call('isNotIdenticalTo')->withArguments($expectedValue)->once
 
-			->if($this->calling($integerAsserter)->isNotIdenticalTo->returnThis())
+			->if($this->method($integerAsserter)->isNotIdenticalTo->isFluent())
 			->then
 				->object($asserter->isNotIdenticalTo(3))->isIdenticalTo($asserter)
 				->mock($integerAsserter)->call('isNotIdenticalTo')->withArguments(3)->once

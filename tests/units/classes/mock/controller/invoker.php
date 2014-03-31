@@ -30,17 +30,12 @@ class invoker extends atoum
 		;
 	}
 
-	public function testReturnThis()
+	public function testIsFluent()
 	{
 		$this
 			->if($this->newTestedInstance($method = uniqid(), $mock = new \mock\foo()))
 			->then
-				->object($this->testedInstance->returnThis())->isTestedInstance
-				->object($this->testedInstance->invoke())->isIdenticalTo($mock)
-
-			->if($this->newTestedInstance($method = uniqid(), $mock = new \mock\foo()))
-			->then
-				->object($this->testedInstance->returnThis)->isTestedInstance
+				->object($this->testedInstance->isFluent())->isTestedInstance
 				->object($this->testedInstance->invoke())->isIdenticalTo($mock)
 
 			->if($this->newTestedInstance($method = uniqid(), $mock = new \mock\foo()))

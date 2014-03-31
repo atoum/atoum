@@ -23,8 +23,7 @@ class invoker extends adapter\invoker
 		switch (strtolower($property))
 		{
 			case 'isfluent':
-			case 'returnthis':
-				return $this->returnThis();
+				return $this->isFluent();
 
 			default:
 				return parent::__get($property);
@@ -43,7 +42,7 @@ class invoker extends adapter\invoker
 		return $this->mock;
 	}
 
-	public function returnThis()
+	public function isFluent()
 	{
 		$mock = $this->mock;
 
