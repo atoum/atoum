@@ -1089,10 +1089,19 @@ abstract class test implements observable, \countable
 						$testedClass = new \reflectionClass($testedClassName = $mockGenerator->getDefaultNamespace() . '\\' . $testedClassName);
 					}
 
-					$this->factoryBuilder->build($testedClass, $instance)->addToAssertionManager($this->assertionManager, 'newTestedInstance', function() use ($testedClass) {
-							throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
-						}
-					);
+					$this->factoryBuilder->build($testedClass, $instance)
+						->addToAssertionManager($this->assertionManager, 'newTestedInstance', function() use ($testedClass) {
+								throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
+							}
+						)
+					;
+
+					$this->factoryBuilder->build($testedClass)
+						->addToAssertionManager($this->assertionManager, 'newInstance', function() use ($testedClass) {
+								throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
+							}
+						)
+					;
 
 					$this->assertionManager->setPropertyHandler('testedInstance', function() use (& $instance) {
 							if ($instance === null)
