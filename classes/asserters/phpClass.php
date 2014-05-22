@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class phpClass extends atoum\asserter
+class phpClass extends atoum\asserter implements atoum\phpDoc\phpClass
 {
 	protected $class = null;
 	protected $reflectionClassInjector = null;

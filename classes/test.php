@@ -11,7 +11,7 @@ use
 	mageekguy\atoum\annotations
 ;
 
-abstract class test implements observable, \countable
+abstract class test implements observable, \countable, phpDoc\test
 {
 	const testMethodPrefix = 'test';
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';

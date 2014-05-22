@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-abstract class asserter
+abstract class asserter implements phpDoc\test
 {
 	protected $locale = null;
 	protected $generator = null;
