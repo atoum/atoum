@@ -201,6 +201,11 @@ abstract class call extends atoum\asserter
 	{
 		$callsNumber = $this->removeFromManager()->countBeforeAndAfterCalls();
 
+		if ((int) $number != $number)
+		{
+			throw new atoum\exceptions\logic\invalidArgument('Argument 1 of ' . __FUNCTION__ . ' must be an integer');
+		}
+
 		if ($callsNumber == $number)
 		{
 			$this->pass();
