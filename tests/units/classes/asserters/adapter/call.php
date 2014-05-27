@@ -80,7 +80,7 @@ class call extends atoum
 			)
 			->then
 				->object($this->testedInstance->{$count})->isTestedInstance
-				->exception(function () use ($asserter, $count) { $this->testedInstance->{$count + (1 / 3)}; })
+				->exception(function () use ($asserter, $count) { $asserter->{$count + (1 / 3)}; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Argument 1 of exactly must be an integer')
 		;
@@ -147,7 +147,7 @@ class call extends atoum
 			)
 			->then
 				->object($this->testedInstance->exactly($count))->isTestedInstance
-				->exception(function () use ($asserter, $count) { $this->testedInstance->{$count + (1 / 3)}; })
+				->exception(function () use ($asserter, $count) { $asserter->{$count + (1 / 3)}; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Argument 1 of exactly must be an integer')
 		;
