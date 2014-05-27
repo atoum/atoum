@@ -87,18 +87,19 @@ class mocker
 			$lastAntislash = strrpos($fqdn, '\\');
 			$namespace = substr($fqdn, 0, $lastAntislash);
 			$function = substr($fqdn, $lastAntislash + 1);
-			$reflectedFunction = null;
-
-			try
-			{
-				$reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, array($function));
-			}
-			catch (\exception $exception) {}
+			$reflectedFunction = $this->buildReflectedFunction($function);
 
 			static::defineMockedFunction($namespace, get_class($this), $function, $reflectedFunction);
 		}
 
 		return $this->setDefaultBehavior($fqdn);
+	}
+
+	public function resetCalls($functionName = null)
+	{
+		static::$adapter->resetCalls($this->getFqdn($functionName));
+
+		return $this;
 	}
 
 	public static function setAdapter(atoum\test\adapter $adapter = null)
@@ -132,11 +133,7 @@ class mocker
 
 		if ($reflectedFunction === null)
 		{
-			try
-			{
-				$reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, array($function));
-			}
-			catch (\exception $exception) {}
+			$reflectedFunction = $this->buildReflectedFunction($function);
 		}
 
 		if ($reflectedFunction === null)
@@ -162,7 +159,7 @@ class mocker
 	{
 		$parameters = array();
 
-		foreach ($function->getParameters() as $parameter)
+		foreach (static::filterParameters($function) as $parameter)
 		{
 			$parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
 
@@ -186,7 +183,7 @@ class mocker
 	{
 		$parameters = array();
 
-		foreach ($function->getParameters() as $parameter)
+		foreach (static::filterParameters($function) as $parameter)
 		{
 			$parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
 		}
@@ -222,6 +219,24 @@ class mocker
 			$class,
 			$reflectedFunction ? static::getParameters($reflectedFunction) : 'func_get_args()'
 		));
+	}
+
+	private function buildReflectedFunction($function)
+	{
+		$reflectedFunction = null;
+
+		try
+		{
+			$reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, array($function));
+		}
+		catch (\exception $exception) {}
+
+		return $reflectedFunction;
+	}
+
+	private static function filterParameters(\reflectionFunction $function)
+	{
+		return array_filter($function->getParameters(), function($parameter) { return ($parameter->getName() != '...'); });
 	}
 }
 

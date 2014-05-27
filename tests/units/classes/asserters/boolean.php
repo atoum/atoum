@@ -6,7 +6,7 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\tools\diffs,
-	mageekguy\atoum\asserters\boolean as sut
+	mageekguy\atoum\tools\variable
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -15,92 +15,149 @@ class boolean extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable');
+		$this->testedClass->extends('mageekguy\atoum\asserters\variable');
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($this->newTestedInstance)
 			->then
-				->variable($asserter->getValue())->isNull()
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
-				->object($asserter->getGenerator())->isIdenticalTo($generator)
-				->boolean($asserter->wasSet())->isFalse()
+				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new variable\analyzer())
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
+				->variable($this->testedInstance->getValue())->isNull()
+				->boolean($this->testedInstance->wasSet())->isFalse()
+
+			->given($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer(), $locale = new atoum\locale()))
+			->then
+				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
+				->object($this->testedInstance->getAnalyzer())->isIdenticalTo($analyzer)
+				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
+				->variable($this->testedInstance->getValue())->isNull()
+				->boolean($this->testedInstance->wasSet())->isFalse()
 		;
 	}
 
 	public function testIsTrue()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->isTrue(); })
 					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
+
 			->if($asserter->setWith(true))
 			->then
 				->object($asserter->isTrue())->isIdenticalTo($asserter)
-			->if($asserter->setWith(false))
-			->and($diff = new diffs\variable())
+				->object($asserter->isTrue)->isIdenticalTo($asserter)
+
+			->if(
+				$asserter
+					->setWith(false)
+					->setLocale($locale = new \mock\atoum\locale())
+					->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+				$this->calling($locale)->_ = $notTrue = uniqid(),
+				$this->calling($diff)->__toString = $diffValue = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter) { $asserter->isTrue(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not true'), $asserter) . PHP_EOL . $diff->setExpected(true)->setActual(false))
-			->if($asserter->setWith(true))
-			->then
-				->object($asserter->isTrue)->isIdenticalTo($asserter)
-			->if($asserter->setWith(false))
-			->and($diff = new diffs\variable())
-			->then
+					->hasMessage($notTrue . PHP_EOL . $diffValue)
+				->mock($locale)->call('_')->withArguments('%s is not true', $asserter)->once
+				->mock($diff)
+					->call('setExpected')->withArguments(true)->once
+					->call('setActual')->withArguments(false)->once
+
 				->exception(function() use ($asserter) { $asserter->isTrue; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not true'), $asserter) . PHP_EOL . $diff->setExpected(true)->setActual(false))
+					->hasMessage($notTrue . PHP_EOL . $diffValue)
+				->mock($locale)->call('_')->withArguments('%s is not true', $asserter)->twice
+				->mock($diff)
+					->call('setExpected')->withArguments(true)->twice
+					->call('setActual')->withArguments(false)->twice
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isTrue($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage . PHP_EOL . $diffValue)
+				->mock($diff)
+					->call('setExpected')->withArguments(true)->thrice
+					->call('setActual')->withArguments(false)->thrice
 		;
 	}
 
 	public function testIsFalse()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->isFalse(); })
 					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
+
 			->if($asserter->setWith(false))
 			->then
 				->object($asserter->isFalse())->isIdenticalTo($asserter)
-			->if($asserter->setWith(true))
-			->and($diff = new diffs\variable())
+				->object($asserter->isFalse)->isIdenticalTo($asserter)
+
+			->if(
+				$asserter
+					->setWith(true)
+					->setLocale($locale = new \mock\atoum\locale())
+					->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+				$this->calling($locale)->_ = $notFalse = uniqid(),
+				$this->calling($diff)->__toString = $diffValue = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter) { $asserter->isFalse(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not false'), $asserter) . PHP_EOL . $diff->setExpected(false)->setActual(true))
-			->if($asserter->setWith(false))
-			->then
-				->object($asserter->isFalse)->isIdenticalTo($asserter)
-			->if($asserter->setWith(true))
-			->and($diff = new diffs\variable())
-			->then
+					->hasMessage($notFalse . PHP_EOL . $diffValue)
+				->mock($locale)->call('_')->withArguments('%s is not false', $asserter)->once
+				->mock($diff)
+					->call('setExpected')->withArguments(false)->once
+					->call('setActual')->withArguments(true)->once
+
 				->exception(function() use ($asserter) { $asserter->isFalse; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not false'), $asserter) . PHP_EOL . $diff->setExpected(false)->setActual(true))
+					->hasMessage($notFalse . PHP_EOL . $diffValue)
+				->mock($locale)->call('_')->withArguments('%s is not false', $asserter)->twice
+				->mock($diff)
+					->call('setExpected')->withArguments(false)->twice
+					->call('setActual')->withArguments(true)->twice
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isFalse($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage . PHP_EOL . $diffValue)
+				->mock($diff)
+					->call('setExpected')->withArguments(false)->thrice
+					->call('setActual')->withArguments(true)->thrice
 		;
 	}
 
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance
+				->setLocale($locale = new \mock\atoum\locale())
+				->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+			)
 			->then
-				->assert('Set the asserter with something else than a boolean throw an exception')
-					->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-						->isInstanceOf('mageekguy\atoum\asserter\exception')
-						->hasMessage(sprintf($generator->getLocale()->_('%s is not a boolean'), $asserter->getTypeOf($value)))
-				->assert('The asserter was returned when it set with a boolean')
-					->string($asserter->getValue())->isEqualTo($value)
-					->object($asserter->setWith(true))->isIdenticalTo($asserter)
-					->boolean($asserter->getValue())->isTrue()
+				->object($asserter->setWith(true))->isIdenticalTo($asserter)
+				->boolean($asserter->getValue())->isTrue()
+				->object($asserter->setWith(false))->isIdenticalTo($asserter)
+				->boolean($asserter->getValue())->isFalse()
+
+			->if(
+				$this->calling($locale)->_ = $notBoolean = uniqid(),
+				$this->calling($analyzer)->getTypeOf = $type = uniqid()
+			)
+			->then
+				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notBoolean)
+				->mock($locale)->call('_')->withArguments('%s is not a boolean', $type)->once
+				->mock($analyzer)->call('getTypeOf')->withArguments($value)->once
 		;
 	}
 }

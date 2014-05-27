@@ -12,6 +12,19 @@ class phpClass extends atoum\asserter
 	protected $class = null;
 	protected $reflectionClassInjector = null;
 
+	public function __get($property)
+	{
+		switch (strtolower($property))
+		{
+			case 'isabstract':
+			case 'hasnoparent':
+				return $this->{$property}();
+
+			default:
+				return parent::__get($property);
+		}
+	}
+
 	public function __call($method, $arguments)
 	{
 		switch (strtolower($method))
@@ -25,6 +38,11 @@ class phpClass extends atoum\asserter
 			default:
 				return parent::__call($method, $arguments);
 		}
+	}
+
+	public function __toString()
+	{
+		return (string) $this->getClass();
 	}
 
 	public function getReflectionClass($class)
@@ -77,7 +95,7 @@ class phpClass extends atoum\asserter
 		}
 		catch (\exception $exception)
 		{
-			$this->fail(sprintf($this->getLocale()->_('Class \'%s\' does not exist'), $class));
+			$this->fail($this->_('Class \'%s\' does not exist', $class));
 		}
 
 		$this->pass();
@@ -95,21 +113,7 @@ class phpClass extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not the parent of class %s'), $parent, $this->class->getName()));
-		}
-
-		return $this;
-	}
-
-	public function isSubClassOf($parent, $failMessage = null)
-	{
-		if ($this->classIsSet()->class->isSubClassOf($parent) == true)
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Class %s is not a sub-class of %s'), $this->class->getName(), $parent));
+			$this->fail($failMessage ?: $this->_('%s is not the parent of class %s', $parent, $this));
 		}
 
 		return $this;
@@ -123,7 +127,21 @@ class phpClass extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('class %s has parent %s'), $this->class->getName(), $parentClass));
+			$this->fail($failMessage ?: $this->_('%s has parent %s', $this, $parentClass));
+		}
+
+		return $this;
+	}
+
+	public function isSubClassOf($parent, $failMessage = null)
+	{
+		if ($this->classIsSet()->class->isSubClassOf($parent) == true)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage ?: $this->_('%s does not extend %s', $this, $parent));
 		}
 
 		return $this;
@@ -137,7 +155,7 @@ class phpClass extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Class %s does not implement interface %s'), $this->class->getName(), $interface));
+			$this->fail($failMessage ?: $this->_('%s does not implement %s', $this, $interface));
 		}
 
 		return $this;
@@ -151,7 +169,7 @@ class phpClass extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Class %s is not abstract'), $this->class->getName()));
+			$this->fail($failMessage ?: $this->_('%s is not abstract', $this));
 		}
 
 		return $this;
@@ -165,10 +183,27 @@ class phpClass extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Method %s::%s() does not exist'), $this->class->getName(), $method));
+			$this->fail($failMessage ?: $this->_('%s::%s() does not exist', $this, $method));
 		}
 
 		return $this;
+	}
+
+	public function hasConstant($constant, $failMessage = null)
+	{
+		if ($this->classIsSet()->class->hasConstant($constant) === false)
+		{
+			$this->fail($failMessage ?: $this->_('%s::%s does not exist', $this, $constant));
+
+			return $this;
+		}
+		else
+		{
+			$this->pass();
+
+			return $this->generator->constant($this->class->getConstant($constant));
+		}
+
 	}
 
 	protected function classIsSet()

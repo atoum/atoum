@@ -58,6 +58,20 @@ class writer extends atoum\test
 		;
 	}
 
+	public function testRemoveDecorators()
+	{
+		$this
+			->if($writer = new testedClass())
+			->then
+				->object($writer->removeDecorators())->isIdenticalTo($writer)
+				->array($writer->getDecorators())->isEmpty()
+			->if($writer->addDecorator(new \mock\mageekguy\atoum\writer\decorator()))
+			->then
+				->object($writer->removeDecorators())->isIdenticalTo($writer)
+				->array($writer->getDecorators())->isEmpty()
+		;
+	}
+
 	public function testWrite()
 	{
 		$this

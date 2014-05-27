@@ -54,7 +54,7 @@ class command
 
 				if ($value !== null)
 				{
-					$command .= ' ' . $value;
+					$command .= ' ' . escapeshellarg($value);
 				}
 			}
 		}

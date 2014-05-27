@@ -17,13 +17,16 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function __get($asserter)
 	{
-		switch ($asserter)
+		switch (strtolower($asserter))
 		{
 			case 'keys':
 				return $this->getKeysAsserter();
 
 			case 'size':
 				return $this->getSizeAsserter();
+
+			case 'isempty':
+				return $this->isEmpty();
 
 			default:
 				$asserter = parent::__get($asserter);
@@ -87,20 +90,20 @@ class phpArray extends asserters\variable implements \arrayAccess
 	{
 		if ($this->innerAsserter === null)
 		{
-			if (self::isArray($this->hasKey($key)->value[$key]) === true)
+			if ($this->analyzer->isArray($this->hasKey($key)->value[$key]) === true)
 			{
 				parent::setWith($this->value[$key]);
 			}
 			else
 			{
-				$this->fail(sprintf($this->getLocale()->_('Value %s at key %s is not an array'), $this->getTypeOf($this->value[$key]), $key));
+				$this->fail($this->_('Value %s at key %s is not an array', $this->getTypeOf($this->value[$key]), $key));
 			}
 		}
 		else
 		{
 			if (array_key_exists($key, $this->innerValue) === false)
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s has no key %s'), $this->getTypeOf($this->innerValue), $this->getTypeOf($key)));
+				$this->fail($this->_('%s has no key %s', $this->getTypeOf($this->innerValue), $this->getTypeOf($key)));
 			}
 			else
 			{
@@ -143,13 +146,13 @@ class phpArray extends asserters\variable implements \arrayAccess
 		{
 			parent::setWith($value);
 
-			if (self::isArray($this->value) === true)
+			if ($this->analyzer->isArray($this->value) === true)
 			{
 				$this->pass();
 			}
 			else
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not an array'), $this));
+				$this->fail($this->_('%s is not an array', $this));
 			}
 
 			return $this;
@@ -166,13 +169,13 @@ class phpArray extends asserters\variable implements \arrayAccess
 		{
 			parent::setByReferenceWith($value);
 
-			if (self::isArray($this->value) === true)
+			if ($this->analyzer->isArray($this->value) === true)
 			{
 				$this->pass();
 			}
 			else
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not an array'), $this));
+				$this->fail($this->_('%s is not an array', $this));
 			}
 
 			return $this;
@@ -187,7 +190,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 		}
 		else
 		{
-			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s has not size %d'), $this, $size));
+			$this->fail($failMessage ?: $this->_('%s has not size %d', $this, $size));
 		}
 
 		return $this;
@@ -201,7 +204,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 		}
 		else
 		{
-			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is not empty'), $this));
+			$this->fail($failMessage ?: $this->_('%s is not empty', $this));
 		}
 
 		return $this;
@@ -215,7 +218,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 		}
 		else
 		{
-			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is empty'), $this));
+			$this->fail($failMessage ?: $this->_('%s is empty', $this));
 		}
 
 		return $this;
@@ -256,7 +259,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 		}
 		else
 		{
-			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s should have keys %s'), $this, $this->getTypeOf($undefinedKeys)));
+			$this->fail($failMessage ?: $this->_('%s has no keys %s', $this, $this->getTypeOf($undefinedKeys)));
 		}
 
 		return $this;
@@ -264,13 +267,15 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function notHasKeys(array $keys, $failMessage = null)
 	{
-		if (sizeof($definedKeys = array_intersect(array_keys($this->value), $keys)) <= 0)
+		$this->valueIsSet();
+
+		if (sizeof($definedKeys = array_intersect($keys, array_keys($this->value))) <= 0)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s should not have keys %s'), $this, $this->getTypeOf($definedKeys)));
+			$this->fail($failMessage ?: $this->_('%s has keys %s', $this, $this->getTypeOf($definedKeys)));
 		}
 
 		return $this;
@@ -284,7 +289,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 		}
 		else
 		{
-			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s has no key %s'), $this, $this->getTypeOf($key)));
+			$this->fail($failMessage ?: $this->_('%s has no key %s', $this, $this->getTypeOf($key)));
 		}
 
 		return $this;
@@ -292,13 +297,13 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function notHasKey($key, $failMessage = null)
 	{
-		if (array_key_exists($key, $this->value) === false)
+		if (array_key_exists($key, $this->valueIsSet()->value) === false)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s has a key %s'), $this, $this->getTypeOf($key)));
+			$this->fail($failMessage ?: $this->_('%s has key %s', $this, $this->getTypeOf($key)));
 		}
 
 		return $this;
@@ -359,8 +364,6 @@ class phpArray extends asserters\variable implements \arrayAccess
 			}
 			else
 			{
-				$pass = false;
-
 				if ($strict === false)
 				{
 					$pass = ($this->value[$this->key] == $value);
@@ -383,13 +386,16 @@ class phpArray extends asserters\variable implements \arrayAccess
 				}
 				else
 				{
-					if ($strict === false)
+					if ($failMessage === null)
 					{
-						$failMessage = sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key));
-					}
-					else
-					{
-						$failMessage = sprintf($this->getLocale()->_('%s does not strictly contain %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key));
+						if ($strict === false)
+						{
+							$failMessage = $this->_('%s does not contain %s at key %s', $this, $this->getTypeOf($value), $this->getTypeOf($key));
+						}
+						else
+						{
+							$failMessage = $this->_('%s does not strictly contain %s at key %s', $this, $this->getTypeOf($value), $this->getTypeOf($key));
+						}
 					}
 
 					$this->fail($failMessage);
@@ -402,11 +408,11 @@ class phpArray extends asserters\variable implements \arrayAccess
 			{
 				if ($strict === false)
 				{
-					$failMessage = sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->getTypeOf($value));
+					$failMessage = $this->_('%s does not contain %s', $this, $this->getTypeOf($value));
 				}
 				else
 				{
-					$failMessage = sprintf($this->getLocale()->_('%s does not strictly contain %s'), $this, $this->getTypeOf($value));
+					$failMessage = $this->_('%s does not strictly contain %s', $this, $this->getTypeOf($value));
 				}
 			}
 
@@ -430,11 +436,11 @@ class phpArray extends asserters\variable implements \arrayAccess
 				{
 					if ($strict === false)
 					{
-						$failMessage = sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value));
+						$failMessage = $this->_('%s contains %s', $this, $this->getTypeOf($value));
 					}
 					else
 					{
-						$failMessage = sprintf($this->getLocale()->_('%s strictly contains %s'), $this, $this->getTypeOf($value));
+						$failMessage = $this->_('%s strictly contains %s', $this, $this->getTypeOf($value));
 					}
 				}
 
@@ -466,13 +472,16 @@ class phpArray extends asserters\variable implements \arrayAccess
 				}
 				else
 				{
-					if ($strict === false)
+					if ($failMessage === null)
 					{
-						$failMessage = sprintf($this->getLocale()->_('%s contains %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key));
-					}
-					else
-					{
-						$failMessage = sprintf($this->getLocale()->_('%s strictly contains %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key));
+						if ($strict === false)
+						{
+							$failMessage = $this->_('%s contains %s at key %s', $this, $this->getTypeOf($value), $this->getTypeOf($key));
+						}
+						else
+						{
+							$failMessage = $this->_('%s strictly contains %s at key %s', $this, $this->getTypeOf($value), $this->getTypeOf($key));
+						}
 					}
 
 					$this->fail($failMessage);
@@ -485,6 +494,8 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	protected function intersect(array $values, $failMessage, $strict)
 	{
+		$this->valueIsSet();
+
 		$unknownValues = array();
 
 		foreach ($values as $value) if (in_array($value, $this->value, $strict) === false)
@@ -502,11 +513,11 @@ class phpArray extends asserters\variable implements \arrayAccess
 			{
 				if ($strict === false)
 				{
-					$failMessage = sprintf($this->getLocale()->_('%s does not contain values %s'), $this, $this->getTypeOf($unknownValues));
+					$failMessage = $this->_('%s does not contain values %s', $this, $this->getTypeOf($unknownValues));
 				}
 				else
 				{
-					$failMessage = sprintf($this->getLocale()->_('%s does not contain strictly values %s'), $this, $this->getTypeOf($unknownValues));
+					$failMessage = $this->_('%s does not contain strictly values %s', $this, $this->getTypeOf($unknownValues));
 				}
 			}
 
@@ -518,6 +529,8 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	protected function notIntersect(array $values, $failMessage, $strict)
 	{
+		$this->valueIsSet();
+
 		$knownValues = array();
 
 		foreach ($values as $value) if (in_array($value, $this->value, $strict) === true)
@@ -535,11 +548,11 @@ class phpArray extends asserters\variable implements \arrayAccess
 			{
 				if ($strict === false)
 				{
-					$failMessage = sprintf($this->getLocale()->_('%s should not contain values %s'), $this, $this->getTypeOf($knownValues));
+					$failMessage = $this->_('%s contains values %s', $this, $this->getTypeOf($knownValues));
 				}
 				else
 				{
-					$failMessage = sprintf($this->getLocale()->_('%s should not contain strictly values %s'), $this, $this->getTypeOf($knownValues));
+					$failMessage = $this->_('%s contains strictly values %s', $this, $this->getTypeOf($knownValues));
 				}
 			}
 
@@ -599,18 +612,5 @@ class phpArray extends asserters\variable implements \arrayAccess
 		$this->innerValueIsSet = false;
 
 		return $this;
-	}
-
-	protected static function check($value, $method)
-	{
-		if (self::isArray($value) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be an array');
-		}
-	}
-
-	protected static function isArray($value)
-	{
-		return (is_array($value) === true);
 	}
 }

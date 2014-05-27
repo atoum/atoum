@@ -10,12 +10,7 @@ class exception extends asserters\exception
 {
 	public function hasErrorLine($line, $failMessage = null)
 	{
-		if (self::isException($this->value) === false)
-		{
-			$this->fail(sprintf($this->getLocale()->_('Line not found because %s is not an exception'), $this->value));
-		}
-
-		if ($this->value->getErrorLine() === $line)
+		if ($this->valueIsSet()->value->getErrorLine() === $line)
 		{
 			return $this->pass();
 		}
@@ -27,12 +22,7 @@ class exception extends asserters\exception
 
 	public function hasErrorOffset($offset, $failMessage = null)
 	{
-		if (self::isException($this->value) === false)
-		{
-			$this->fail(sprintf($this->getLocale()->_('Offset not found because %s is not an exception'), $this->value));
-		}
-
-		if ($this->value->getErrorOffset() === $offset)
+		if ($this->valueIsSet()->value->getErrorOffset() === $offset)
 		{
 			return $this->pass();
 		}

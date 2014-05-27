@@ -50,6 +50,15 @@ class call
 		return $this;
 	}
 
+	public function copy(call $call)
+	{
+		$this->function = $call->function;
+		$this->arguments = $call->arguments;
+		$this->decorator = $call->decorator;
+
+		return $this;
+	}
+
 	public function getArguments()
 	{
 		return $this->arguments;

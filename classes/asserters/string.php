@@ -12,22 +12,19 @@ use
 class string extends asserters\variable
 {
 	protected $charlist = null;
-	protected $streamController = null;
-	protected $adapter = null;
-
-	public function __construct(asserter\generator $generator = null, atoum\adapter $adapter = null)
-	{
-		parent::__construct($generator);
-
-		$this->setAdapter($adapter);
-	}
 
 	public function __get($asserter)
 	{
-		switch ($asserter)
+		switch (strtolower($asserter))
 		{
 			case 'length':
 				return $this->getLengthAsserter();
+
+			case 'isempty':
+				return $this->isEmpty();
+
+			case 'isnotempty':
+				return $this->isNotEmpty();
 
 			default:
 				return $this->generator->__get($asserter);
@@ -36,19 +33,7 @@ class string extends asserters\variable
 
 	public function __toString()
 	{
-		return (is_string($this->value) === false ? parent::__toString() : sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($this->value), addcslashes($this->value, $this->charlist)));
-	}
-
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
+		return (is_string($this->value) === false ? parent::__toString() : $this->_('string(%s) \'%s\'', strlen($this->value), addcslashes($this->value, $this->charlist)));
 	}
 
 	public function getCharlist()
@@ -56,21 +41,21 @@ class string extends asserters\variable
 		return $this->charlist;
 	}
 
-	public function setWith($value, $label = null, $charlist = null, $checkType = true)
+	public function setWith($value, $charlist = null, $checkType = true)
 	{
-		parent::setWith($value, $label);
+		parent::setWith($value);
 
 		$this->charlist = $charlist;
 
 		if ($checkType === true)
 		{
-			if (self::isString($this->value) === true)
+			if ($this->analyzer->isString($this->value) === true)
 			{
 				$this->pass();
 			}
 			else
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not a string'), $this));
+				$this->fail($this->_('%s is not a string', $this));
 			}
 		}
 
@@ -79,12 +64,12 @@ class string extends asserters\variable
 
 	public function isEmpty($failMessage = null)
 	{
-		return $this->isEqualTo('', $failMessage);
+		return $this->isEqualTo('', $failMessage ?: $this->_('string is not empty'));
 	}
 
 	public function isNotEmpty($failMessage = null)
 	{
-		return $this->isNotEqualTo('', $failMessage !== null ? $failMessage : $this->getLocale()->_('string is empty'));
+		return $this->isNotEqualTo('', $failMessage ?: $this->_('string is empty'));
 	}
 
 	public function match($pattern, $failMessage = null)
@@ -95,7 +80,7 @@ class string extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not match %s'), $this, $pattern));
+			$this->fail($failMessage ?: $this->_('%s does not match %s', $this, $pattern));
 		}
 
 		return $this;
@@ -103,20 +88,22 @@ class string extends asserters\variable
 
 	public function isEqualTo($value, $failMessage = null)
 	{
-		return parent::isEqualTo($value, $failMessage !== null ? $failMessage : $this->getLocale()->_('strings are not equals'));
+		return parent::isEqualTo($value, $failMessage ?: $this->_('strings are not equals'));
 	}
 
 	public function isEqualToContentsOfFile($path, $failMessage = null)
 	{
-		$fileContents = @$this->valueIsSet()->adapter->file_get_contents($path);
+		$this->valueIsSet();
+
+		$fileContents = @file_get_contents($path);
 
 		if ($fileContents === false)
 		{
-			$this->fail(sprintf($this->getLocale()->_('Unable to get contents of file %s'), $path));
+			$this->fail($this->_('Unable to get contents of file %s', $path));
 		}
 		else
 		{
-			return parent::isEqualTo($fileContents, $failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('string is not equals to contents of file %s'), $path));
+			return parent::isEqualTo($fileContents, $failMessage ?: $this->_('string is not equals to contents of file %s', $path));
 		}
 	}
 
@@ -128,7 +115,7 @@ class string extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('length of %s is not %d'), $this, $length));
+			$this->fail($failMessage ?: $this->_('length of %s is not %d', $this, $length));
 		}
 
 		return $this;
@@ -142,7 +129,7 @@ class string extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('length of %s is not greater than %d'), $this, $length));
+			$this->fail($failMessage ?: $this->_('length of %s is not greater than %d', $this, $length));
 		}
 
 		return $this;
@@ -156,7 +143,7 @@ class string extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('length of %s is not less than %d'), $this, $length));
+			$this->fail($failMessage ?: $this->_('length of %s is not less than %d', $this, $length));
 		}
 
 		return $this;
@@ -170,7 +157,7 @@ class string extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String does not contain %s'), $fragment));
+			$this->fail($failMessage ?: $this->_('%s does not contain %s', $this, $fragment));
 		}
 
 		return $this;
@@ -180,7 +167,7 @@ class string extends asserters\variable
 	{
 		if (strpos($this->valueIsSet()->value, $fragment) !== false)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String contains %s'), $fragment));
+			$this->fail($failMessage ?: $this->_('%s contains %s', $this, $fragment));
 		}
 		else
 		{
@@ -198,7 +185,7 @@ class string extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String does not start with %s'), $fragment));
+			$this->fail($failMessage ?: $this->_('%s does not start with %s', $this, $fragment));
 		}
 
 		return $this;
@@ -206,13 +193,15 @@ class string extends asserters\variable
 
 	public function notStartWith($fragment, $failMessage = null)
 	{
-		if (strpos($this->valueIsSet()->value, $fragment) === 0)
+		$fragmentPosition = strpos($this->valueIsSet()->value, $fragment);
+
+		if ($fragmentPosition === false || $fragmentPosition > 0)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String start with %s'), $fragment));
+			$this->pass();
 		}
 		else
 		{
-			$this->pass();
+			$this->fail($failMessage ?: $this->_('%s start with %s', $this, $fragment));
 		}
 
 		return $this;
@@ -226,7 +215,7 @@ class string extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String does not end with %s'), $fragment));
+			$this->fail($failMessage ?: $this->_('%s does not end with %s', $this, $fragment));
 		}
 
 		return $this;
@@ -236,7 +225,7 @@ class string extends asserters\variable
 	{
 		if (strpos($this->valueIsSet()->value, $fragment) === (strlen($this->valueIsSet()->value) - strlen($fragment)))
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String end with %s'), $fragment));
+			$this->fail($failMessage ?: $this->_('%s end with %s', $this, $fragment));
 		}
 		else
 		{
@@ -249,18 +238,5 @@ class string extends asserters\variable
 	protected function getLengthAsserter()
 	{
 		return $this->generator->__call('integer', array(strlen($this->valueIsSet()->value)));
-	}
-
-	protected static function check($value, $method)
-	{
-		if (self::isString($value) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be a string');
-		}
-	}
-
-	protected static function isString($value)
-	{
-		return (is_string($value) === true);
 	}
 }

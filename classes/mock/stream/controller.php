@@ -125,11 +125,6 @@ class controller extends test\adapter
 		return ($this->nextCallIsOverloaded($method) === false ? null : parent::invoke($method, $arguments));
 	}
 
-	protected function buildInvoker()
-	{
-		return new invoker();
-	}
-
 	protected static function mapMethod($method)
 	{
 		$method = strtolower($method);

@@ -4,8 +4,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\extension as sut // use sut here instead of testedClass because atoum\asserters\testedClass exists !
+	mageekguy\atoum\asserter
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,75 +19,64 @@ class extension extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new sut())
+			->if($this->newTestedInstance)
 			->then
-				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
-				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
-				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
-				->variable($asserter->getName())->isNull()
-			->if($asserter = new sut($generator = new asserter\generator(), $adapter = new atoum\adapter()))
+				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
+				->variable($this->testedInstance->getName())->isNull()
+
+			->if($this->newTestedInstance($generator = new asserter\generator(), $locale = new atoum\locale()))
 			->then
-				->object($asserter->getGenerator())->isIdenticalTo($generator)
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
-				->object($asserter->getAdapter())->isIdenticalTo($adapter)
-				->variable($asserter->getName())->isNull()
+				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
+				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
+				->variable($this->testedInstance->getName())->isNull()
 		;
 	}
 
 	public function test__toString()
 	{
 		$this
-			->if($asserter = new sut(new asserter\generator()))
+			->if($this->newTestedInstance)
 			->then
-				->castToString($asserter)->isEmpty()
-			->if($asserter->setWith($extensionName = uniqid()))
+				->castToString($this->testedInstance)->isEmpty()
+
+			->if($this->testedInstance->setWith($extensionName = uniqid()))
 			->then
-				->castToString($asserter)->isEqualTo($extensionName)
+				->castToString($this->testedInstance)->isEqualTo($extensionName)
 		;
 	}
 
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new sut(new asserter\generator()))
+			->if($this->newTestedInstance)
 			->then
-				->object($asserter->setWith($extensionName = uniqid()))->isIdenticalTo($asserter)
-				->string($asserter->getName())->isEqualTo($extensionName)
-		;
-	}
-
-	public function testSetAdapter()
-	{
-		$this
-			->if($asserter = new sut(new asserter\generator()))
-			->then
-				->object($asserter->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($asserter)
-				->object($asserter->getAdapter())->isIdenticalTo($adapter)
-				->object($asserter->setAdapter())->isIdenticalTo($asserter)
-				->object($asserter->getAdapter())
-					->isNotIdenticalTo($adapter)
-					->isEqualTo(new atoum\adapter())
+				->object($this->testedInstance->setWith($extensionName = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getName())->isEqualTo($extensionName)
 		;
 	}
 
 	public function testReset()
 	{
 		$this
-			->if($asserter = new sut(new asserter\generator()))
+			->if($this->newTestedInstance)
 			->then
-				->object($asserter->reset())->isIdenticalTo($asserter)
-				->variable($asserter->getName())->isNull()
-			->if($asserter->setWith(uniqid()))
+				->object($this->testedInstance->reset())->isTestedInstance
+				->variable($this->testedInstance->getName())->isNull()
+
+			->if($this->testedInstance->setWith(uniqid()))
 			->then
-				->object($asserter->reset())->isIdenticalTo($asserter)
-				->variable($asserter->getName())->isNull()
+				->object($this->testedInstance->reset())->isTestedInstance
+				->variable($this->testedInstance->getName())->isNull()
 		;
 	}
 
 	public function testIsLoaded()
 	{
 		$this
-			->if($asserter = new sut(new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
+
+			->if($this->function->extension_loaded->doesNothing)
 			->then
 				->exception(function() use ($asserter) {
 						$asserter->isLoaded();
@@ -96,9 +84,11 @@ class extension extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Name of PHP extension is undefined')
-			->if($asserter->setAdapter($adapter = new atoum\test\adapter()))
-			->and($adapter->extension_loaded = false)
-			->and($asserter->setWith($extensionName = uniqid()))
+
+			->if(
+				$this->function->extension_loaded = false,
+				$this->testedInstance->setWith($extensionName = uniqid())
+			)
 			->then
 				->exception(function() use ($asserter) {
 						$asserter->isLoaded();
@@ -106,9 +96,10 @@ class extension extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\test\exceptions\skip')
 					->hasMessage('PHP extension \'' . $extensionName . '\' is not loaded')
-			->if($adapter->extension_loaded = true)
+
+			->if($this->function->extension_loaded = true)
 			->then
-				->object($asserter->isLoaded())->isIdenticalTo($asserter)
+				->object($this->testedInstance->isLoaded())->isTestedInstance
 		;
 	}
 }

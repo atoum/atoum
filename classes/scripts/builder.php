@@ -393,64 +393,59 @@ class builder extends atoum\script\configurable
 
 			$revisions = $this->vcs->getNextRevisions();
 
-			if (sizeof($revisions) > 0)
+			while (sizeof($revisions) > 0)
 			{
-				$this->php
-					->reset()
-					->addOption('-d', 'phar.readonly=0')
-					->addOption('-f', $this->workingDirectory . DIRECTORY_SEPARATOR . $this->pharGeneratorScript)
-					->addArgument('-d', $this->destinationDirectory)
-				;
+				$revision = array_shift($revisions);
 
-				while (sizeof($revisions) > 0)
+				$this->vcs->setRevision($revision);
+
+				try
 				{
-					$revision = array_shift($revisions);
-
-					$this->vcs->setRevision($revision);
-
-					try
+					if ($this->checkUnitTests() === true)
 					{
-						if ($this->checkUnitTests() === true)
+						if ($this->checkUnitTests === false)
 						{
-							if ($this->checkUnitTests === false)
-							{
-								$this->vcs
-									->setWorkingDirectory($this->workingDirectory)
-									->exportRepository()
-								;
-							}
+							$this->vcs
+								->setWorkingDirectory($this->workingDirectory)
+								->exportRepository()
+							;
+						}
 
-							if ($this->taggerEngine !== null)
-							{
-								$this->taggerEngine
-									->setSrcDirectory($this->workingDirectory)
-									->setVersion($version !== null ? $version : 'nightly-' . $revision . '-' . $this->adapter->date('YmdHi'))
-									->tagVersion()
-								;
-							}
+						if ($this->taggerEngine !== null)
+						{
+							$this->taggerEngine
+								->setSrcDirectory($this->workingDirectory)
+								->setVersion($version !== null ? $version : 'nightly-' . $revision . '-' . $this->adapter->date('YmdHi'))
+								->tagVersion()
+							;
+						}
 
-							$exitCode = $this->php->run()->getExitCode();
+						$this->php
+							->reset()
+							->addOption('-d', 'phar.readonly=0')
+							->addOption('-f', $this->workingDirectory . DIRECTORY_SEPARATOR . $this->pharGeneratorScript)
+							->addArgument('-d', $this->destinationDirectory)
+						;
 
-							if ($exitCode > 0)
-							{
-								throw new exceptions\runtime('Unable to run ' . $this->php . ': ' . $this->php->getStdErr());
-							}
+						if ($this->php->run()->getExitCode() > 0)
+						{
+							throw new exceptions\runtime('Unable to run ' . $this->php . ': ' . $this->php->getStdErr());
 						}
 					}
-					catch (\exception $exception)
-					{
-						$pharBuilt = false;
-
-						$this->writeErrorInErrorsDirectory($exception->getMessage());
-					}
-
-					if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $revision, \LOCK_EX) === false)
-					{
-						throw new exceptions\runtime('Unable to save last revision in file \'' . $this->revisionFile . '\'');
-					}
-
-					$revisions = $this->vcs->getNextRevisions();
 				}
+				catch (\exception $exception)
+				{
+					$pharBuilt = false;
+
+					$this->writeErrorInErrorsDirectory($exception->getMessage());
+				}
+
+				if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $revision, \LOCK_EX) === false)
+				{
+					throw new exceptions\runtime('Unable to save last revision in file \'' . $this->revisionFile . '\'');
+				}
+
+				$revisions = $this->vcs->getNextRevisions();
 			}
 		}
 

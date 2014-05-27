@@ -38,9 +38,9 @@ class stub extends scripts\runner
 	public function listScripts()
 	{
 		$this->writeMessage($this->locale->_('Available scripts are:') . PHP_EOL);
-		$this->writeMessage(self::padding . 'builder');
-		$this->writeMessage(self::padding . 'tagger');
-		$this->writeMessage(self::padding . 'treemap');
+		$this->writeMessage(self::padding . 'builder' . PHP_EOL);
+		$this->writeMessage(self::padding . 'tagger' . PHP_EOL);
+		$this->writeMessage(self::padding . 'treemap' . PHP_EOL);
 
 		return $this->stopRun();
 	}
@@ -63,10 +63,7 @@ class stub extends scripts\runner
 	{
 		$phar = call_user_func($this->pharFactory, $this->getName());
 
-		$this
-			->writeMessage($this->locale->_('Informations:') . PHP_EOL)
-			->writeLabels($phar->getMetadata())
-		;
+		$this->writeLabels($phar->getMetadata());
 
 		return $this->stopRun();
 	}
@@ -163,7 +160,7 @@ class stub extends scripts\runner
 	public function version()
 	{
 		$this
-			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, \phar::running()) . PHP_EOL)
+			->writeInfo(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, \phar::running()))
 		;
 
 		return $this->stopRun();
@@ -194,12 +191,12 @@ class stub extends scripts\runner
 
 		$this
 			->clearMessage()
-			->writeMessage($this->locale->_('Checking if a new version is available... Done !'))
+			->writeMessage($this->locale->_('Checking if a new version is available... Done!' . PHP_EOL))
 		;
 
 		if (is_array($data) === false || isset($data['version']) === false || isset($data['phar']) === false)
 		{
-			$this->writeMessage($this->locale->_('There is no new version available !'));
+			$this->writeInfo($this->locale->_('There is no new version available!'));
 		}
 		else
 		{
@@ -232,7 +229,7 @@ class stub extends scripts\runner
 
 			$this
 				->clearMessage()
-				->writeMessage(sprintf($this->locale->_('Update to version \'%s\'... Done !'), $data['version']))
+				->writeMessage(sprintf($this->locale->_('Update to version \'%s\'... Done!' . PHP_EOL), $data['version']))
 			;
 
 			@$this->adapter->unlink($tmpFile);
@@ -246,10 +243,10 @@ class stub extends scripts\runner
 
 			$this
 				->clearMessage()
-				->writeMessage(sprintf($this->locale->_('Enable version \'%s\'... Done !'), $data['version']))
+				->writeMessage(sprintf($this->locale->_('Enable version \'%s\'... Done!' . PHP_EOL), $data['version']))
 			;
 
-			$this->writeMessage(sprintf($this->locale->_('Atoum has been updated from version \'%s\' to \'%s\' successfully !'), atoum\version, $data['version']));
+			$this->writeInfo(sprintf($this->locale->_('Atoum has been updated from version \'%s\' to \'%s\' successfully!'), atoum\version, $data['version']));
 		}
 
 		return $this->stopRun();
@@ -279,7 +276,7 @@ class stub extends scripts\runner
 
 		foreach ($versions as $directory => $version)
 		{
-			$this->writeMessage(($directory == $currentDirectory ? '*' : ' ') . ' ' . $version);
+			$this->writeMessage(($directory == $currentDirectory ? '*' : ' ') . ' ' . $version . PHP_EOL);
 		}
 
 		return $this->stopRun();

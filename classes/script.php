@@ -5,6 +5,7 @@ namespace mageekguy\atoum;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\script,
+	mageekguy\atoum\writer,
 	mageekguy\atoum\writers,
 	mageekguy\atoum\exceptions
 ;
@@ -61,7 +62,7 @@ abstract class script
 			$directory = $this->adapter->getcwd();
 		}
 
-		return $directory;
+		return rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 	}
 
 	public function setAdapter(atoum\adapter $adapter = null)
@@ -133,7 +134,17 @@ abstract class script
 
 	public function setInfoWriter(atoum\writer $writer = null)
 	{
-		$this->infoWriter = $writer ?: $this->outputWriter;
+		if ($writer === null)
+		{
+			$writer = new writers\std\out($this->cli);
+			$writer
+				->addDecorator(new writer\decorators\rtrim())
+				->addDecorator(new writer\decorators\eol())
+				->addDecorator(new atoum\cli\clear())
+			;
+		}
+
+		$this->infoWriter = $writer;
 
 		return $this;
 	}
@@ -145,7 +156,18 @@ abstract class script
 
 	public function setWarningWriter(atoum\writer $writer = null)
 	{
-		$this->warningWriter = $writer ?: $this->errorWriter;
+		if ($writer === null)
+		{
+			$writer = new writers\std\err($this->cli);
+			$writer
+				->addDecorator(new writer\decorators\trim())
+				->addDecorator(new writer\decorators\prompt($this->locale->_('Warning: ')))
+				->addDecorator(new writer\decorators\eol())
+				->addDecorator(new atoum\cli\clear())
+			;
+		}
+
+		$this->warningWriter = $writer;
 
 		return $this;
 	}
@@ -157,7 +179,18 @@ abstract class script
 
 	public function setErrorWriter(atoum\writer $writer = null)
 	{
-		$this->errorWriter = $writer ?: new writers\std\err($this->cli);
+		if ($writer === null)
+		{
+			$writer = new writers\std\err($this->cli);
+			$writer
+				->addDecorator(new writer\decorators\trim())
+				->addDecorator(new writer\decorators\prompt($this->locale->_('Error: ')))
+				->addDecorator(new writer\decorators\eol())
+				->addDecorator(new atoum\cli\clear())
+			;
+		}
+
+		$this->errorWriter = $writer;
 
 		return $this;
 	}
@@ -185,6 +218,9 @@ abstract class script
 				->addDecorator($labelColorizer)
 				->addDecorator($valueColorizer)
 				->addDecorator($argumentColorizer)
+				->addDecorator(new writer\decorators\rtrim())
+				->addDecorator(new writer\decorators\eol())
+				->addDecorator(new atoum\cli\clear())
 			;
 		}
 
@@ -274,29 +310,39 @@ abstract class script
 		return trim($this->prompt->ask(rtrim($message)));
 	}
 
-	public function writeMessage($message, $eol = true)
+	public function writeLabel($label, $value, $level = 0)
 	{
-		$message = rtrim($message);
-
-		if ($eol == true)
-		{
-			$message .= PHP_EOL;
-		}
-
-		$this->outputWriter->write($message);
+		static::writeLabelWithWriter($label, $value, $level, $this->helpWriter);
 
 		return $this;
 	}
 
-	public function writeInfo($info, $eol = true)
+	public function writeLabels(array $labels, $level = 1)
 	{
-		$info = rtrim($info);
+		static::writeLabelsWithWriter($labels, $level, $this->helpWriter);
 
-		if ($eol == true)
-		{
-			$info .= PHP_EOL;
-		}
+		return $this;
+	}
 
+	public function clearMessage()
+	{
+		$this->outputWriter->clear();
+
+		return $this;
+	}
+
+	public function writeMessage($message)
+	{
+		$this->outputWriter
+			->removeDecorators()
+			->write($message)
+		;
+
+		return $this;
+	}
+
+	public function writeInfo($info)
+	{
 		$this->infoWriter->write($info);
 
 		return $this;
@@ -304,30 +350,30 @@ abstract class script
 
 	public function writeHelp($message)
 	{
-		$this->helpWriter->write(rtrim($message) . PHP_EOL);
+		$this->helpWriter->write($message);
 
 		return $this;
 	}
 
 	public function writeWarning($warning)
 	{
-		$this->errorWriter->clear()->write(sprintf($this->locale->_('Warning: %s'), trim($warning)) . PHP_EOL);
+		$this->warningWriter->write($warning);
 
 		return $this;
 	}
 
 	public function writeError($message)
 	{
-		$this->errorWriter->clear()->write(sprintf($this->locale->_('Error: %s'), trim($message)) . PHP_EOL);
+		$this->errorWriter->write($message);
 
 		return $this;
 	}
 
-	public function verbose($message, $verbosityLevel = 1, $eol = true)
+	public function verbose($message, $verbosityLevel = 1)
 	{
 		if ($verbosityLevel > 0 && $this->verbosityLevel >= $verbosityLevel)
 		{
-			$this->writeInfo($message, $eol);
+			$this->writeInfo($message);
 		}
 
 		return $this;
@@ -358,27 +404,6 @@ abstract class script
 	public function resetVerbosityLevel()
 	{
 		$this->verbosityLevel = 0;
-
-		return $this;
-	}
-
-	public function clearMessage()
-	{
-		$this->outputWriter->clear();
-
-		return $this;
-	}
-
-	public function writeLabel($label, $value, $level = 0)
-	{
-		static::writeLabelWithWriter($label, $value, $level, $this->outputWriter);
-
-		return $this;
-	}
-
-	public function writeLabels(array $labels, $level = 1)
-	{
-		static::writeLabelsWithWriter($labels, $level, $this->outputWriter);
 
 		return $this;
 	}
@@ -455,7 +480,7 @@ abstract class script
 
 	protected static function writeLabelWithWriter($label, $value, $level, writer $writer)
 	{
-		return $writer->write(($level <= 0 ? '' : str_repeat(self::padding, $level)) . (preg_match('/^ +$/', $label) ? $label : rtrim($label)) . ': ' . trim($value) . PHP_EOL);
+		return $writer->write(($level <= 0 ? '' : str_repeat(self::padding, $level)) . (preg_match('/^ +$/', $label) ? $label : rtrim($label)) . ': ' . trim($value));
 	}
 
 	protected static function writeLabelsWithWriter($labels, $level, writer $writer)

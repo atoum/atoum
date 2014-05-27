@@ -8,47 +8,66 @@ use
 
 class manager
 {
-	const propertyHandler = 1;
-	const methodHandler = 2;
-	const propertyAndMethodHandler = null;
-
-	protected $handlers = array();
+	protected $aliaser = null;
+	protected $propertyHandlers = array();
+	protected $methodHandlers = array();
 	protected $defaultHandler = null;
+
+	public function __construct(assertion\aliaser $aliaser = null)
+	{
+		$this->setAliaser($aliaser);
+	}
+
+	public function __set($event, $handler)
+	{
+		return $this->setHandler($event, $handler);
+	}
 
 	public function __get($event)
 	{
-		return $this->invoke($event, array(), self::propertyHandler);
+		return $this->invokePropertyHandler($event);
 	}
 
 	public function __call($event, array $arguments)
 	{
-		return $this->invoke($event, $arguments, self::methodHandler);
+		return $this->invokeMethodHandler($event, $arguments);
 	}
 
-	public function getHandlers()
+	public function setAliaser(assertion\aliaser $aliaser = null)
 	{
-		return $this->handlers;
+		$this->aliaser = $aliaser ?: new assertion\aliaser();
+
+		return $this;
 	}
 
-	public function setHandler($event, \closure $handler)
+	public function getAliaser()
 	{
-		$this->handlers[$event] = array($handler, self::propertyAndMethodHandler);
+		return $this->aliaser;
+	}
+
+	public function setAlias($alias, $keyword)
+	{
+		$this->aliaser->aliasKeyword($keyword, $alias);
 
 		return $this;
 	}
 
 	public function setMethodHandler($event, \closure $handler)
 	{
-		$this->handlers[$event] = array($handler, self::methodHandler);
-
-		return $this;
+		return $this->setHandlerIn($this->methodHandlers, $event, $handler);
 	}
 
 	public function setPropertyHandler($event, \closure $handler)
 	{
-		$this->handlers[$event] = array($handler, self::propertyHandler);
+		return $this->setHandlerIn($this->propertyHandlers, $event, $handler);
+	}
 
-		return $this;
+	public function setHandler($event, \closure $handler)
+	{
+		return $this
+			->setPropertyHandler($event, $handler)
+			->setMethodHandler($event, $handler)
+		;
 	}
 
 	public function setDefaultHandler(\closure $handler)
@@ -58,25 +77,49 @@ class manager
 		return $this;
 	}
 
-	public function getDefaultHandler()
+	public function invokePropertyHandler($event)
 	{
-		return $this->defaultHandler;
+		return $this->invokeHandlerFrom($this->propertyHandlers, $event);
 	}
 
-	public function invoke($event, array $arguments = array(), $type = null)
+	public function invokeMethodHandler($event, array $arguments = array())
 	{
-		$handlerExists = (isset($this->handlers[$event]) && ($this->handlers[$event][1] === $type || $this->handlers[$event][1] === self::propertyAndMethodHandler));
+		return $this->invokeHandlerFrom($this->methodHandlers, $event, $arguments);
+	}
+
+	private function setHandlerIn(array & $handlers, $event, \closure $handler)
+	{
+		$handlers[strtolower($event)] = $handler;
+
+		return $this;
+	}
+
+	private function invokeHandlerFrom(array $handlers, $event, array $arguments = array())
+	{
+		$handler = null;
+
+		$realEvent = strtolower($event);
+
+		if (isset($handlers[$realEvent]) === false)
+		{
+			$realEvent = $this->aliaser->resolveAlias($event);
+		}
+
+		if (isset($handlers[$realEvent]) === true)
+		{
+			$handler = $handlers[$realEvent];
+		}
 
 		switch (true)
 		{
-			case $handlerExists === false && $this->defaultHandler === null:
-				throw new assertion\manager\exception('There is no handler defined for event \'' . $event . '\'');
+			case $handler === null && $this->defaultHandler === null:
+				throw new assertion\manager\exception('There is no handler defined for \'' . $event . '\'');
 
-			case $handlerExists:
-				return call_user_func_array($this->handlers[$event][0], $arguments);
+			case $handler !== null:
+				return call_user_func_array($handler, $arguments);
 
 			default:
-				return call_user_func_array($this->defaultHandler, array($event, $arguments));
+				return call_user_func_array($this->defaultHandler, array($realEvent, $arguments));
 		}
 	}
 }

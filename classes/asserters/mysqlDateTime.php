@@ -25,7 +25,7 @@ class mysqlDateTime extends asserters\dateTime
 
 			if ($checkType === true)
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not in format Y-m-d H:i:s'), $this));
+				$this->fail($this->_('%s is not in format Y-m-d H:i:s', $this));
 			}
 		}
 

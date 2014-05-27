@@ -18,6 +18,11 @@ class invoker implements \arrayAccess, \countable
 		$this->function = (string) $function;
 	}
 
+	public function __get($keyword)
+	{
+		return $this->{$keyword}();
+	}
+
 	public function __set($keyword, $mixed)
 	{
 		switch ($keyword)
@@ -95,13 +100,20 @@ class invoker implements \arrayAccess, \countable
 
 		static::checkCall($call);
 
+		$closure = $this->bindClosure($closure);
+
+		if ($call === null && sizeof($this->closuresByCall) <= 0)
+		{
+			$call = 1;
+		}
+
 		if ($call === null)
 		{
-			$this->closuresByCall[] = $this->bindClosure($closure);
+			$this->closuresByCall[] = $closure;
 		}
 		else
 		{
-			$this->closuresByCall[$call] = $this->bindClosure($closure);
+			$this->closuresByCall[$call] = $closure;
 		}
 
 		return $this;

@@ -7,13 +7,25 @@ use
 	mageekguy\atoum\php,
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\tools\arguments,
 	mageekguy\atoum\asserters\adapter\call,
 	mageekguy\atoum\asserters\adapter\exceptions
 ;
 
 class adapter extends adapter\call
 {
+	public function __get($property)
+	{
+		switch (strtolower($property))
+		{
+			case 'withanyarguments':
+			case 'withoutanyargument':
+				return $this->{$property}();
+
+			default:
+				return parent::__get($property);
+		}
+	}
+
 	public function call($function)
 	{
 		return $this->setFunction($function);

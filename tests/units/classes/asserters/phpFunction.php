@@ -6,8 +6,7 @@ require __DIR__ . '/../../runner.php';
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\php,
-	mageekguy\atoum\asserters\phpFunction as sut
+	mageekguy\atoum\php
 ;
 
 class phpFunction extends atoum\test
@@ -20,137 +19,188 @@ class phpFunction extends atoum\test
 	public function testSetWithTest()
 	{
 		$this
-			->mockGenerator->orphanize('asserterFail')
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
-			->and($test = $this)
+			->given($asserter = $this->newTestedInstance)
+
+			->if($test = new \mock\atoum\test())
 			->then
-				->exception(function() use ($asserter, $test) { $asserter->setWithTest($test); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Function is undefined')
-			->if($asserter->setWith($function = uniqid()))
+				->object($this->testedInstance->setWithTest($test))->isTestedInstance
+				->object($this->testedInstance->getTest())->isIdenticalTo($test)
+				->variable($this->testedInstance->getAdapter())->isNull
+				->variable($this->testedInstance->getFunction())->isNull
+
+			->if(
+				$this->calling($test)->getTestedClassNamespace = uniqid(),
+				$this->testedInstance->setWith($function = uniqid()),
+				$this->calling($test)->getTestedClassNamespace = uniqid()
+			)
 			->then
-				->object($asserter->disableEvaluationChecking()->setWithTest($this))->isIdenticalTo($asserter)
-				->object($asserter->getAdapter())->isCloneOf(php\mocker::getAdapter())
-				->string($asserter->getCall()->getFunction())->isEqualTo($this->getTestedClassNamespace() . '\\' . $function)
+				->object($this->testedInstance->setWithTest($test))->isTestedInstance
+				->object($this->testedInstance->getTest())->isIdenticalTo($test)
+				->string($this->testedInstance->getFunction())->isEqualTo($test->getTestedClassNamespace() . '\\' . $function)
+				->object($this->testedInstance->getAdapter())->isCloneOf(php\mocker::getAdapter())
 		;
 	}
 
 	public function testSetWith()
 	{
 		$this
-			->mockGenerator->orphanize('asserterFail')
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->given($this->newTestedInstance)
 			->then
-				->object($asserter->disableEvaluationChecking()->setWith($function = uniqid()))->isIdenticalTo($asserter)
-				->object($asserter->getAdapter())->isCloneOf(php\mocker::getAdapter())
-				->string($asserter->getCall()->getFunction())->isEqualTo($function)
+				->object($this->testedInstance->setWith($function = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getFunction())->isEqualTo($function)
+				->object($this->testedInstance->getAdapter())->isCloneOf(php\mocker::getAdapter())
 		;
 	}
 
 	public function testWasCalled()
 	{
 		$this
-			->mockGenerator->orphanize('asserterFail')
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->wasCalled(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
-			->if($asserter->setWith(uniqid()))
+
+				->exception(function() use ($asserter) { $asserter->wasCalled; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Function is undefined')
+
+			->if($this->testedInstance->setWith(uniqid()))
 			->then
-				->object($asserter->wasCalled())->isIdenticalTo($asserter)
-				->variable($asserter->getCall()->getArguments())->isNull()
-			->if($asserter->disableEvaluationChecking()->wasCalledWithArguments(array()))
+				->object($this->testedInstance->wasCalled())->isTestedInstance
+				->variable($this->testedInstance->getArguments())->isNull()
+
+				->object($this->testedInstance->wasCalled)->isTestedInstance
+				->variable($this->testedInstance->getArguments())->isNull()
+
+			->if($this->testedInstance->wasCalledWithArguments(range(1, 5)))
 			->then
-				->object($asserter->wasCalled())->isIdenticalTo($asserter)
-				->variable($asserter->getCall()->getArguments())->isNull()
+				->object($this->testedInstance->wasCalled())->isTestedInstance
+				->object($this->testedInstance->wasCalled)->isTestedInstance
+				->variable($this->testedInstance->getCall()->getArguments())->isNull()
 		;
 	}
 
 	public function testWasCalledWithArguments()
 	{
 		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->wasCalledWithArguments(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
-			->if($this->function->md5 = uniqid())
-			->and($asserter->setWith('md5'))
-			->and($asserter->setWithTest($this))
+
+			->if(
+				$this->function->md5->doesNothing(),
+				$this->testedInstance->setWith('md5')
+			)
 			->then
-				->object($asserter->wasCalledWithArguments($arg1 = '1', $arg2 = '2'))->isIdenticalTo($asserter)
-				->array($asserter->getCall()->getArguments())->isEqualTo(array($arg1, $arg2))
+				->object($this->testedInstance->wasCalledWithArguments($arg1 = '1', $arg2 = '2'))->isTestedInstance
+				->array($this->testedInstance->getCall()->getArguments())->isEqualTo(array($arg1, $arg2))
+
 			->if(eval('\\' . $this->getTestedClassNamespace() . '\md5(\'' . $arg1 . '\', \'' . $arg2 . '\');'))
 			->then
 				->exception(function() use ($asserter) { $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-			->if($asserter->setWith('md5'))
-			->and($asserter->setWithTest($this))
+
+			->if(
+				$this->testedInstance->setWithTest($this),
+				$this->testedInstance->setWith('md5')
+			)
 			->then
-				->object($asserter->once())->isIdenticalTo($asserter)
-			->if(eval('\\' . $this->getTestedClassNamespace() . '\md5(1, 2);'))
-			->if($asserter->setWith('md5'))
-			->and($asserter->setWithTest($this))
+				->object($this->testedInstance->once)->isTestedInstance
+
+			->if(
+				eval('\\' . $this->getTestedClassNamespace() . '\md5(1, 2);'),
+				$this->testedInstance->setWith('md5')
+			)
 			->then
-				->object($asserter->twice())->isIdenticalTo($asserter)
+				->object($this->testedInstance->twice())->isTestedInstance
 		;
 	}
 
 	public function testWasCalledWithIdenticalArguments()
 	{
 		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->wasCalledWithIdenticalArguments(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
-			->if($this->function->md5 = uniqid())
-			->and($asserter->setWith('md5'))
-			->and($asserter->setWithTest($this))
+
+			->if(
+				$this->function->foo->doesNothing(),
+				$this->testedInstance->setWith('foo')
+			)
 			->then
-				->object($asserter->wasCalledWithIdenticalArguments($arg1 = '1', $arg2 = '2'))->isIdenticalTo($asserter)
-				->array($asserter->getCall()->getArguments())->isEqualTo(array($arg1, $arg2))
-			->if(eval('\\' . $this->getTestedClassNamespace() . '\md5(1, 2);'))
+				->object($this->testedInstance->wasCalledWithIdenticalArguments($arg1 = 1, $arg2 = 2))->isTestedInstance
+				->array($this->testedInstance->getArguments())->isEqualTo(array($arg1, $arg2))
+
+			->if(eval('\\' . $this->getTestedClassNamespace() . '\foo(\'1\', \'2\');'))
 			->then
 				->exception(function() use ($asserter) { $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->exception(function() use ($asserter) { $asserter->twice(); })
+
+			->given(
+				$test = new \mock\atoum\test(),
+				$this->calling($test)->getTestedClassNamespace = $this->getTestedClassNamespace()
+			)
+			->if(
+				$this->testedInstance->setWithTest($test),
+				$this->testedInstance->setWith('foo')
+			)
+			->then
+				->object($this->testedInstance->wasCalledWithIdenticalArguments($arg1 = 1, $arg2 = 2))->isTestedInstance
+				->exception(function() use ($asserter) { $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
+
+			->if(
+				eval('\\' . $this->getTestedClassNamespace() . '\foo(1, 2);'),
+				$this->testedInstance->setWithTest($test),
+				$this->testedInstance->setWith('foo')
+			)
+			->then
+				->object($this->testedInstance->wasCalledWithIdenticalArguments($arg1 = 1, $arg2 = 2))->isTestedInstance
+				->object($this->testedInstance->once)->isTestedInstance
 		;
 	}
 
 	public function testWasCalledWithAnyArguments()
 	{
 		$this
-			->mockGenerator->orphanize('asserterFail')
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->wasCalledWithAnyArguments(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
-			->if($asserter->setWith(uniqid()))
-			->and($asserter->disableEvaluationChecking()->wasCalledWithArguments(array()))
+
+			->if(
+				$this->testedInstance
+					->setWith(uniqid())
+					->wasCalledWithArguments(array())
+			)
 			->then
-				->object($asserter->wasCalledWithAnyArguments())->isIdenticalTo($asserter)
-				->variable($asserter->getCall()->getArguments())->isNull()
+				->object($this->testedInstance->wasCalledWithAnyArguments())->isTestedInstance
+				->variable($this->testedInstance->getArguments())->isNull()
 		;
 	}
 
 	public function testWasCalledWithoutAnyArguments()
 	{
 		$this
-			->mockGenerator->orphanize('asserterFail')
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->wasCalledWithoutAnyArgument(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
-			->if($asserter->setWith(uniqid()))
-			->and($asserter->wasCalledWithArguments(array()))
+
+			->if(
+				$this->testedInstance->setWith(uniqid()),
+				$this->testedInstance->wasCalledWithArguments(range(1, 5))
+			)
 			->then
-				->object($asserter->disableEvaluationChecking()->wasCalledWithoutAnyArgument())->isIdenticalTo($asserter)
-				->array($asserter->getCall()->getArguments())->isEmpty()
+				->object($this->testedInstance->wasCalledWithoutAnyArgument())->isTestedInstance
+				->array($this->testedInstance->getArguments())->isEmpty()
 		;
 	}
 }

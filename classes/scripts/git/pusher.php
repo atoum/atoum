@@ -4,21 +4,23 @@ namespace mageekguy\atoum\scripts\git;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\cli,
 	mageekguy\atoum\script,
-	mageekguy\atoum\scripts
+	mageekguy\atoum\scripts,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\cli\commands
 ;
 
 class pusher extends script\configurable
 {
 	const defaultRemote = 'origin';
-	const defaultBranch = 'master';
 	const defaultTagFile = '.tag';
+	const versionPattern = '$Rev: %s $';
 
 	protected $remote = '';
-	protected $branch = '';
 	protected $tagFile = null;
 	protected $workingDirectory = '';
+	protected $taggerEngine = null;
+	protected $git = null;
 
 	public function __construct($name, atoum\adapter $adapter = null)
 	{
@@ -26,10 +28,10 @@ class pusher extends script\configurable
 
 		$this
 			->setRemote()
-			->setBranch()
 			->setTagFile()
 			->setTaggerEngine()
 			->setWorkingDirectory()
+			->setGit()
 		;
 	}
 
@@ -45,18 +47,6 @@ class pusher extends script\configurable
 		return $this->remote;
 	}
 
-	public function setBranch($branch = null)
-	{
-		$this->branch = $branch ?: self::defaultBranch;
-
-		return $this;
-	}
-
-	public function getBranch()
-	{
-		return $this->branch;
-	}
-
 	public function setTagFile($tagFile = null)
 	{
 		if ($tagFile !== null)
@@ -65,7 +55,7 @@ class pusher extends script\configurable
 		}
 		else
 		{
-			$tagFile = $this->getDirectory() . DIRECTORY_SEPARATOR . self::defaultTagFile;
+			$tagFile = $this->getDirectory() . self::defaultTagFile;
 		}
 
 		$this->tagFile = $tagFile;
@@ -102,6 +92,18 @@ class pusher extends script\configurable
 		return $this->workingDirectory;
 	}
 
+	public function setGit(commands\git $git = null)
+	{
+		$this->git = $git ?: new commands\git();
+
+		return $this;
+	}
+
+	public function getGit()
+	{
+		return $this->git;
+	}
+
 	protected function setArgumentHandlers()
 	{
 		parent::setArgumentHandlers()
@@ -119,19 +121,6 @@ class pusher extends script\configurable
 				$this->locale->_('<string> will be used as remote')
 			)
 			->addArgumentHandler(
-				function($script, $argument, $branch) {
-					if (sizeof($branch) != 1)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->setBranch(reset($branch));
-				},
-				array('-ib', '--in-branch'),
-				'<string>',
-				$this->locale->_('<string> will be used as remote branch')
-			)
-			->addArgumentHandler(
 				function($script, $argument, $tagFile) {
 					if (sizeof($tagFile) != 1)
 					{
@@ -140,7 +129,7 @@ class pusher extends script\configurable
 
 					$script->setTagFile(reset($tagFile));
 				},
-				array('-ib', '--in-branch'),
+				array('-tf', '--tag-file'),
 				'<path>',
 				$this->locale->_('File <path> will be used to store last tag')
 			)
@@ -151,88 +140,152 @@ class pusher extends script\configurable
 
 	protected function doRun()
 	{
-		$tag = trim(@file_get_contents($this->tagFile)) ?: 0;
-
-		file_put_contents($this->tagFile, ++$tag);
-
-		$tag = '0.0.' . $tag;
-
-		$this->taggerEngine
-			->setSrcDirectory($this->workingDirectory)
-			->setVersion('$Rev: ' . $tag . ' $')
-			->tagVersion()
-		;
-
-		$git = new cli\command('git');
-
-		$git
-			->addOption('commit')
-			->addOption('-am', '\'Set version to ' . $tag .'.\'')
-			->run()
-		;
-
-		if ($git->getExitCode() !== 0)
+		try
 		{
-			throw new cli\command\exception('Unable to commit \'' . $this->tagFile . '\' in repository: ' . $git->getStderr());
+			$tag = @file_get_contents($this->tagFile) ?: 0;
+			$tag = trim($tag);
+
+			if (@file_put_contents($this->tagFile, ++$tag) === false)
+			{
+				throw new exceptions\runtime('Unable to write in \'' . $this->tagFile . '\'');
+			}
+
+			$this->taggerEngine->setSrcDirectory($this->workingDirectory);
+
+			if ($this->tagStableVersion($tag = '0.0.' . $tag) === true)
+			{
+				if ($this->createGitTag($tag) === true)
+				{
+					if ($this->tagDevelopmentVersion('DEVELOPMENT-' . $tag) === true)
+					{
+						if ($this->pushToRemote($tag) === true)
+						{
+							if ($this->pushTagToRemote($tag) === true)
+							{
+								$this->writeInfo('Tag \'' . $tag . '\' successfully sent to remote \'' . $this->remote . '\'');
+							}
+						}
+					}
+				}
+			}
+
 		}
-
-		$git
-			->reset()
-			->addOption('tag', $tag)
-			->run()
-		;
-
-		if ($git->getExitCode() !== 0)
+		catch (\exception $exception)
 		{
-			throw new cli\command\exception('Unable to apply tag \'' . $tag  . '\': ' . $git->getStderr());
-		}
-
-		$git
-			->reset()
-			->addOption('push')
-			->addOption('--tags')
-			->addOption($this->remote)
-			->addOption($this->branch)
-			->run()
-		;
-
-		if ($git->getExitCode() !== 0)
-		{
-			throw new cli\command\exception('Unable to push tag \'' . $tag  . '\' to \'' . $this->remote . '\' in branch \'' . $this->branch . '\': ' . $git->getStderr());
-		}
-
-		$tag = 'DEVELOPMENT-' . $tag;
-
-		$this->taggerEngine
-			->setVersion('$Rev: ' . $tag . ' $')
-			->tagVersion()
-		;
-
-		$git
-			->reset()
-			->addOption('commit')
-			->addOption('-am', '\'Set version to ' . $tag .'.\'')
-			->run()
-		;
-
-		if ($git->getExitCode() !== 0)
-		{
-			throw new cli\command\exception('Unable to commit tag \'' . $tag  . '\': ' . $git->getStderr());
-		}
-
-		$git
-			->reset()
-			->addOption('push')
-			->addOption($this->remote)
-			->addOption($this->branch)
-			->run()
-		;
-
-		if ($git->getExitCode() !== 0)
-		{
-			throw new cli\command\exception('Unable to push tag \'' . $tag  . '\' to \'' . $this->remote . '\' in branch \'' . $this->branch . '\': ' . $git->getStderr());
+			$this->writeError($exception->getMessage());
 		}
 
 		return $this;
+	}
+
+	private function tagSrcWith($tag)
+	{
+		$this->taggerEngine
+			->setVersion(sprintf(static::versionPattern, $tag))
+			->tagVersion()
+		;
+
+		return $this;
+	}
+
+	private function tagStableVersion($tag)
+	{
+		$this->tagSrcWith($tag);
+
+		try
+		{
+			$this->git->addAllAndCommit('Set version to ' . $tag . '.');
+		}
+		catch (\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			$this->git->checkoutAllFiles();
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private function createGitTag($tag)
+	{
+		try
+		{
+			$this->git->createTag($tag);
+		}
+		catch (\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			$this->git->resetHardTo('HEAD~1');
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private function tagDevelopmentVersion($tag)
+	{
+		$this->tagSrcWith($tag);
+
+		try
+		{
+			$this->git->addAllAndCommit('Set version to ' . $tag . '.');
+		}
+		catch (\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			$this->git->resetHardTo('HEAD~1');
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private function pushToRemote($tag)
+	{
+		try
+		{
+			$this->git->push($this->remote);
+		}
+		catch (\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			$this->git
+				->deleteLocalTag($tag)
+				->resetHardTo('HEAD~2')
+			;
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private function pushTagToRemote($tag)
+	{
+		try
+		{
+			$this->git->pushTag($tag, $this->remote);
+		}
+		catch (\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			$this->git
+				->deleteLocalTag($tag)
+				->resetHardTo('HEAD~2')
+				->forcePush($this->remote)
+			;
+
+			return false;
+		}
+
+		return true;
 	}
 }

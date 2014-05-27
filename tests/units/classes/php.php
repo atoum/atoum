@@ -50,7 +50,7 @@ class php extends atoum\test
 				->castToString($php)->isEqualTo(escapeshellcmd($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' ' . $option2Value . ' -- ' . $argument1))
 			->if($php->addArgument($argument2 = uniqid(), $argument2Value = uniqid()))
 			->then
-				->castToString($php)->isEqualTo(escapeshellcmd($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' ' . $option2Value . ' -- ' . $argument1 . ' ' . $argument2 . ' ' . $argument2Value))
+				->castToString($php)->isEqualTo(escapeshellcmd($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' ' . $option2Value . ' -- ' . $argument1 . ' ' . $argument2 . ' ' . escapeshellarg($argument2Value)))
 		;
 	}
 

@@ -14,16 +14,18 @@ class error extends atoum\asserter
 	protected $type = null;
 	protected $messageIsPattern = false;
 
-	public function __construct(atoum\asserter\generator $generator = null, atoum\test\score $score = null)
+	public function __construct(atoum\asserter\generator $generator = null, atoum\test\score $score = null, atoum\locale $locale = null)
 	{
-		parent::__construct($generator);
+		parent::__construct($generator, null, $locale);
 
 		$this->setScore($score);
 	}
 
 	public function setWithTest(atoum\test $test)
 	{
-		return $this->setScore($test->getScore());
+		$this->setScore($test->getScore());
+
+		return parent::setWithTest($test);
 	}
 
 	public function setWith($message = null, $type = null)
@@ -67,24 +69,22 @@ class error extends atoum\asserter
 		}
 		else
 		{
-			$failReason = '';
-
 			switch (true)
 			{
 				case $this->type === null && $this->message === null:
-					$failReason = $this->getLocale()->_('error does not exist');
+					$failReason = $this->_('error does not exist');
 					break;
 
 				case $this->type === null && $this->message !== null:
-					$failReason = sprintf($this->getLocale()->_('error with message \'%s\' does not exist'), $this->message);
+					$failReason = $this->_('error with message \'%s\' does not exist', $this->message);
 					break;
 
 				case $this->type !== null && $this->message === null:
-					$failReason = sprintf($this->getLocale()->_('error of type %s does not exist'), self::getAsString($this->type));
+					$failReason = $this->_('error of type %s does not exist', self::getAsString($this->type));
 					break;
 
 				default:
-					$failReason = sprintf($this->getLocale()->_('error of type %s with message \'%s\' does not exist'), self::getAsString($this->type), $this->message);
+					$failReason = $this->_('error of type %s with message \'%s\' does not exist', self::getAsString($this->type), $this->message);
 			}
 
 			$this->fail($failReason);
@@ -110,19 +110,19 @@ class error extends atoum\asserter
 			switch (true)
 			{
 				case $this->type === null && $this->message === null:
-					$failReason = $this->getLocale()->_('error exists');
+					$failReason = $this->_('error exists');
 					break;
 
 				case $this->type === null && $this->message !== null:
-					$failReason = sprintf($this->getLocale()->_('error with message \'%s\' exists'), $this->message);
+					$failReason = $this->_('error with message \'%s\' exists', $this->message);
 					break;
 
 				case $this->type !== null && $this->message === null:
-					$failReason = sprintf($this->getLocale()->_('error of type %s exists'), self::getAsString($this->type));
+					$failReason = $this->_('error of type %s exists', self::getAsString($this->type));
 					break;
 
 				default:
-					$failReason = sprintf($this->getLocale()->_('error of type %s with message \'%s\' exists'), self::getAsString($this->type), $this->message);
+					$failReason = $this->_('error of type %s with message \'%s\' exists', self::getAsString($this->type), $this->message);
 			}
 
 			$this->fail($failReason);

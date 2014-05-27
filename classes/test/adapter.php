@@ -92,9 +92,19 @@ class adapter extends atoum\adapter
 		return ($call === null ? $this->calls : $this->calls->get($call, $identical));
 	}
 
+	public function getCallsNumber(adapter\call $call = null, $identical = false)
+	{
+		return sizeof($this->getCalls($call, $identical));
+	}
+
 	public function getCallsEqualTo(adapter\call $call)
 	{
 		return $this->calls->getEqualTo($call);
+	}
+
+	public function getCallsNumberEqualTo(adapter\call $call)
+	{
+		return sizeof($this->calls->getEqualTo($call));
 	}
 
 	public function getCallsIdenticalTo(adapter\call $call)
@@ -191,18 +201,23 @@ class adapter extends atoum\adapter
 		self::$storage = $storage ?: new adapter\storage();
 	}
 
+	protected function buildInvoker($functionName, \closure $factory = null)
+	{
+		if ($factory === null)
+		{
+			$factory = function($functionName) { return new invoker($functionName); };
+		}
+
+		return $factory($functionName);
+	}
+
 	protected function setInvoker($functionName, \closure $factory = null)
 	{
 		$key = static::getKey($functionName);
 
 		if (isset($this->invokers[$key]) === false)
 		{
-			if ($factory === null)
-			{
-				$factory = function($functionName) { return new invoker($functionName); };
-			}
-
-			$this->invokers[$key] = $factory($functionName);
+			$this->invokers[$key] = $this->buildInvoker($functionName, $factory);
 		}
 
 		return $this->invokers[$key];

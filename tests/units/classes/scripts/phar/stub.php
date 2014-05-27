@@ -32,8 +32,11 @@ class stub extends atoum\test
 			->and($stub->setAdapter($adapter = new atoum\test\adapter()))
 			->and($adapter->ini_get = function($name) { return $name === 'phar.readonly' ? 1 : ini_get($name); })
 			->and($stub->setLocale($locale = new mock\locale()))
-			->and($stub->setOutputWriter($stdOut = new mock\writers\std\out()))
-			->and($stdOut->getMockController()->write = function() {})
+			->and($stub->setOutputWriter($outputWriter = new mock\writers\std\out()))
+			->and($this->calling($outputWriter)->clear->doesNothing())
+			->and($this->calling($outputWriter)->write->doesNothing())
+			->and($stub->setInfoWriter($infoWriter = new mock\writers\std\out()))
+			->and($this->calling($infoWriter)->write->doesNothing())
 			->then
 				->exception(function() use ($stub) { $stub->update(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
@@ -79,12 +82,14 @@ class stub extends atoum\test
 				->mock($locale)
 					->call('_')
 						->withArguments('Checking if a new version is available...')->once()
-						->withArguments('Checking if a new version is available... Done !')->once()
-						->withArguments('There is no new version available !')->once()
-				->mock($stdOut)
-					->call('clear')->once()
+						->withArguments('Checking if a new version is available... Done!' . PHP_EOL)->once()
+						->withArguments('There is no new version available!')->once()
+				->mock($outputWriter)
 					->call('write')->withArguments('Checking if a new version is available...')->once()
-					->call('write')->withArguments('Checking if a new version is available... Done !' . PHP_EOL)->once()
+					->call('write')
+						->after($this->mock($outputWriter)->call('clear')->once())
+						->withArguments('Checking if a new version is available... Done!' . PHP_EOL)
+							->once()
 		;
 	}
 }

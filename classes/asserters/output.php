@@ -4,19 +4,21 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\tools,
+	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters
 ;
 
 class output extends asserters\string
 {
-	public function __construct(atoum\asserter\generator $generator = null)
+	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
 	{
-		parent::__construct($generator);
+		parent::__construct($generator, $analyzer, $locale);
 
 		$this->setWith(null);
 	}
 
-	public function setWith($value = null, $label = null, $charlist = null, $checkType = true)
+	public function setWith($value = null, $charlist = null, $checkType = true)
 	{
 		if ($value instanceof \closure)
 		{
@@ -30,6 +32,6 @@ class output extends asserters\string
 			ob_start();
 		}
 
-		return parent::setWith($value, $label, $charlist, $checkType);
+		return parent::setWith($value, $charlist, $checkType);
 	}
 }

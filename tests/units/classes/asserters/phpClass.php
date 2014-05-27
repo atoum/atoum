@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\phpClass as sut
+	mageekguy\atoum\tools\variable
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -26,33 +26,66 @@ class phpClass extends atoum\test
 
 	public function test__construct()
 	{
-		$this->assert
-			->if($asserter = new sut($generator = new asserter\generator()))
+		$this
+			->given($this->newTestedInstance)
 			->then
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
-				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new variable\analyzer())
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
+
+			->if($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer(), $locale = new atoum\locale()))
+			->then
+				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
+				->object($this->testedInstance->getAnalyzer())->isIdenticalTo($analyzer)
+				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
+		;
+	}
+
+	public function test__toString()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->castToString($this->testedInstance)->isEmpty
+
+			->if(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct->doesNothing();
+							$mockController->getName = $class;
+
+							return new \mock\reflectionClass($class, $mockController);
+						}
+					),
+				$this->testedInstance->setWith($class = uniqid())
+			)
+			->then
+				->castToString($this->testedInstance)->isEqualTo($class)
 		;
 	}
 
 	public function testGetClass()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($this->newTestedInstance)
 			->then
-				->variable($asserter->getClass())->isNull()
-			->if($asserter->setWith(__CLASS__))
+				->variable($this->testedInstance->getClass())->isNull()
+
+			->if($this->testedInstance->setWith(__CLASS__))
 			->then
-				->string($asserter->getClass())->isEqualTo(__CLASS__)
+				->string($this->testedInstance->getClass())->isEqualTo(__CLASS__)
 		;
 	}
 
 	public function testSetReflectionClassInjector()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
-				->object($asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))->isIdenticalTo($asserter)
-				->object($asserter->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
+				->object($this->testedInstance->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))->isTestedInstance
+				->object($this->testedInstance->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
+
 				->exception(function() use ($asserter) { $asserter->setReflectionClassInjector(function() {}); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Reflection class injector must take one argument')
@@ -62,14 +95,16 @@ class phpClass extends atoum\test
 	public function testGetReflectionClass()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
-				->object($asserter->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
-				->string($asserter->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
-			->if($asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))
+				->object($this->testedInstance->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
+				->string($this->testedInstance->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
+
+			->if($this->testedInstance->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))
 			->then
-				->object($asserter->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
-				->mock($reflectionClass)->call('__construct')->withArguments($class)->once()
+				->object($this->testedInstance->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
+				->mock($reflectionClass)->call('__construct')->withArguments($class)->once
+
 			->if($asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return uniqid(); }))
 			->then
 				->exception(function() use ($asserter) { $asserter->getReflectionClass(uniqid()); })
@@ -81,242 +116,386 @@ class phpClass extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
-			->and($mockController = new atoum\mock\controller())
-			->and($mockController->__construct = function() { throw new \reflectionException();})
-			->and($asserter->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); }))
-			->and($class = uniqid())
+			->given($asserter = $this->newTestedInstance)
+
+			->if(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct = function() { throw new \reflectionException();};
+
+							return new \mock\reflectionClass($class, $mockController);
+						}
+					)
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $notExists = uniqid()
+			)
 			->then
-				->exception(function() use ($asserter, $class) { $asserter->setWith($class); })
+				->exception(function() use ($asserter, & $class) { $asserter->setWith($class = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Class \'%s\' does not exist'), $class))
-			->if($asserter = new sut($generator = new asserter\generator()))
+					->hasMessage($notExists)
+				->mock($locale)->call('_')->withArguments('Class \'%s\' does not exist', $class)->once
+
+			->if(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct->doesNothing();
+							$mockController->getName = $class;
+
+							return new \mock\reflectionClass($class, $mockController);
+						}
+					)
+			)
 			->then
-				->object($asserter->setWith(__CLASS__))->isIdenticalTo($asserter)
-				->string($asserter->getClass())->isEqualTo(__CLASS__)
+				->object($this->testedInstance->setWith($class = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getClass())->isEqualTo($class)
 		;
 	}
 
 	public function testHasParent()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->hasParent(uniqid()); })
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
-			->if($mockController = new atoum\mock\controller())
-			->and($parent = uniqid())
-			->and($mockController->getName = $class = uniqid())
-			->and($asserter
-				->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
-				->setWith($class)
+
+			->if(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) use (& $parent) {
+							$parentMockController = new atoum\mock\controller();
+							$parentMockController->getName = $parent = uniqid();
+
+							$mockController = new atoum\mock\controller();
+							$mockController->getName = $class;
+							$mockController->getParentClass = new \mock\reflectionClass(uniqid(), $parentMockController);
+
+							return new \mock\reflectionClass($class, $mockController);
+						}
+					)
+					->setWith(uniqid())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $isNotChild = uniqid()
 			)
-			->and($parentMockController = new atoum\mock\controller())
-			->and($parentMockController->getName = uniqid())
-			->and($mockController->getParentClass = $parentClass = new \mock\reflectionClass($parent, $parentMockController))
 			->then
-				->exception(function() use ($asserter, $parent) { $asserter->hasParent($parent); })
+				->exception(function() use ($asserter, & $notParent) { $asserter->hasParent($notParent = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not the parent of class %s'), $parent, $class))
-			->if($parentMockController->getName = $parent)
-			->then
-				->object($asserter->hasParent($parent))->isIdenticalTo($asserter)
-				->object($asserter->hasParent(strtoupper($parent)))->isIdenticalTo($asserter)
+					->hasMessage($isNotChild)
+				->mock($locale)->call('_')->withArguments('%s is not the parent of class %s', $notParent, $asserter)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasParent(uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+			->object($this->testedInstance->hasParent($parent))->isTestedInstance
+			->object($this->testedInstance->hasParent(strtoupper($parent)))->isTestedInstance
 		;
 	}
 
 	public function testHasNoParent()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->hasNoParent(); })
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
-			->if($reflectionClass = new \mock\reflectionClass($className = uniqid()))
-			->and($asserter
-				->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
-				->setWith($class = uniqid())
+
+				->exception(function() use ($asserter) { $asserter->hasNoParent; })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+
+			->if(
+				$reflectionClass = new \mock\reflectionClass($className = uniqid()),
+				$this->calling($reflectionClass)->getName = $className,
+				$this->calling($reflectionClass)->getParentClass = false,
+
+				$asserter
+					->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
+					->setWith($class = uniqid())
 			)
-			->and($reflectionClass->getMockController()->getName = function() use ($className) { return $className; })
-			->and($reflectionClass->getMockController()->getParentClass = function() { return false; })
 			->then
 				->object($asserter->hasNoParent())->isIdenticalTo($asserter)
-			->if($parentClass = new \mock\reflectionClass($parentClassName = uniqid()))
-			->and($parentClass->getMockController()->__toString = function() use ($parentClassName) { return $parentClassName; })
-			->and($reflectionClass->getMockController()->getParentClass = function() use ($parentClass) { return $parentClass; })
+				->object($asserter->hasNoParent)->isIdenticalTo($asserter)
+
+			->if(
+				$this->calling($reflectionClass)->getParentClass = $parentClass = new \mock\reflectionClass(uniqid()),
+				$this->calling($parentClass)->__toString = $parentClassName = uniqid(),
+				$this->testedInstance->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $hasParent = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter) { $asserter->hasNoParent(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('class %s has parent %s'), $className, $parentClass))
+					->hasMessage($hasParent)
+				->mock($locale)->call('_')->withArguments('%s has parent %s', $asserter, $parentClass)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasNoParent($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+				->exception(function() use ($asserter) { $asserter->hasNoParent; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($hasParent)
+				->mock($locale)->call('_')->withArguments('%s has parent %s', $asserter, $parentClass)->twice
 		;
 	}
 
 	public function testIsSubclassOf()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->isSubclassOf(uniqid()); })
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
-			->if($class = uniqid())
-			->and($parentClass = uniqid())
-			->and($mockController = new atoum\mock\controller())
-			->and($mockController->__construct = function() {})
-			->and($mockController->getName = function() use ($class) { return $class; })
-			->and($asserter
-				->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
-				->setWith($class)
-			)
-			->and($mockController->isSubclassOf = false)
-			->then
-				->exception(function() use ($asserter, $parentClass) { $asserter->isSubclassOf($parentClass); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Class %s is not a sub-class of %s'), $class, $parentClass))
-			->if($mockController->isSubclassOf = true)
-			->then
-				->object($asserter->isSubclassOf($parentClass))->isIdenticalTo($asserter)
-		;
-	}
 
-	public function testExtends()
-	{
-		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
-			->then
 				->exception(function() use ($asserter) { $asserter->extends(uniqid()); })
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
-			->if($class = uniqid())
-			->and($parentClass = uniqid())
-			->and($mockController = new atoum\mock\controller())
-			->and($mockController->__construct = function() {})
-			->and($mockController->getName = function() use ($class) { return $class; })
-			->and($asserter
-				->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
-				->setWith($class)
+
+				->exception(function() use ($asserter) { $asserter->exTENDs(uniqid()); })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+
+			->given(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) use (& $reflectionClass) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct = function() {};
+							$mockController->getName = $class;
+
+							return $reflectionClass = new \mock\reflectionClass($class, $mockController);
+						}
+					)
+					->setWith(uniqid())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $isNotSubclass = uniqid()
 			)
-			->and($mockController->isSubclassOf = false)
+
+			->if($this->calling($reflectionClass)->isSubclassOf = false)
 			->then
-				->exception(function() use ($asserter, $parentClass) { $asserter->extends($parentClass); })
+				->exception(function() use ($asserter, & $parentClass) { $asserter->isSubclassOf($parentClass = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Class %s is not a sub-class of %s'), $class, $parentClass))
-			->if($mockController->isSubclassOf = true)
+					->hasMessage($isNotSubclass)
+				->mock($locale)->call('_')->withArguments('%s does not extend %s', $asserter, $parentClass)->once
+
+				->exception(function() use ($asserter, & $parentClass) { $asserter->extends($parentClass = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($isNotSubclass)
+				->mock($locale)->call('_')->withArguments('%s does not extend %s', $asserter, $parentClass)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isSubclassOf(uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->extends(uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+			->if($this->calling($reflectionClass)->isSubclassOf = true)
 			->then
-				->object($asserter->extends($parentClass))->isIdenticalTo($asserter)
+				->object($this->testedInstance->isSubclassOf(uniqid()))->isTestedInstance
+				->object($this->testedInstance->extends(uniqid()))->isTestedInstance
 		;
 	}
 
 	public function testHasInterface()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->hasInterface(uniqid()); })
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
-			->if($class = uniqid())
-			->and($interface = uniqid())
-			->and($mockController = new atoum\mock\controller())
-			->and($mockController->__construct = function() {})
-			->and($mockController->getName = function() use ($class) { return $class; })
-			->and($asserter
-				->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
-				->setWith($class)
-			)
-			->and($mockController->implementsInterface = false)
-			->then
-				->exception(function() use ($asserter, $interface) { $asserter->hasInterface($interface); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Class %s does not implement interface %s'), $class, $interface))
-			->if($mockController->implementsInterface = true)
-			->then
-				->object($asserter->hasInterface($interface))->isIdenticalTo($asserter)
-		;
-	}
 
-	public function testImplements()
-	{
-		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
-			->then
 				->exception(function() use ($asserter) { $asserter->implements(uniqid()); })
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
-			->if($class = uniqid())
-			->and($interface = uniqid())
-			->and($mockController = new atoum\mock\controller())
-			->and($mockController->__construct = function() {})
-			->and($mockController->getName = function() use ($class) { return $class; })
-			->and($asserter
-				->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
-				->setWith($class)
+
+				->exception(function() use ($asserter) { $asserter->imPLEMENts(uniqid()); })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+
+			->given(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) use (& $reflectionClass) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct = function() {};
+							$mockController->getName = $class;
+
+							return $reflectionClass = new \mock\reflectionClass($class, $mockController);
+						}
+					)
+					->setWith(uniqid())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $notImplements = uniqid()
 			)
-			->and($mockController->implementsInterface = false)
+
+			->if($this->calling($reflectionClass)->implementsInterface = false)
 			->then
-				->exception(function() use ($asserter, $interface) { $asserter->implements($interface); })
+				->exception(function() use ($asserter, & $interface) { $asserter->hasInterface($interface = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Class %s does not implement interface %s'), $class, $interface))
-			->if($mockController->implementsInterface = true)
+					->hasMessage($notImplements)
+				->mock($locale)->call('_')->withArguments('%s does not implement %s', $asserter, $interface)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasInterface(uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+				->exception(function() use ($asserter, & $interface) { $asserter->implements($interface = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notImplements)
+				->mock($locale)->call('_')->withArguments('%s does not implement %s', $asserter, $interface)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->implements(uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+			->if($this->calling($reflectionClass)->implementsInterface = true)
 			->then
-				->object($asserter->implements($interface))->isIdenticalTo($asserter)
+				->object($this->testedInstance->hasInterface(uniqid()))->isTestedInstance
+				->object($this->testedInstance->implements(uniqid()))->isTestedInstance
 		;
 	}
 
 	public function testIsAbstract()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->isAbstract(); })
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
-			->if($class = uniqid())
-			->and($mockController = new atoum\mock\controller())
-			->and($mockController->__construct = function() {})
-			->and($mockController->getName = function() use ($class) { return $class; })
-			->and($asserter
-				->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
-				->setWith($class)
+
+				->exception(function() use ($asserter) { $asserter->isAbstract; })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+
+			->given(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) use (& $reflectionClass) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct = function() {};
+							$mockController->getName = $class;
+
+							return $reflectionClass = new \mock\reflectionClass($class, $mockController);
+						}
+					)
+					->setWith(uniqid())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $notAbstract = uniqid()
 			)
-			->and($mockController->isAbstract = false)
+
+			->if($this->calling($reflectionClass)->isAbstract = false)
 			->then
 				->exception(function() use ($asserter) { $asserter->isAbstract(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Class %s is not abstract'), $class))
-			->if($mockController->isAbstract = true)
-			->then
-				->object($asserter->isAbstract())->isIdenticalTo($asserter)
+					->hasMessage($notAbstract)
+				->mock($locale)->call('_')->withArguments('%s is not abstract', $asserter)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isAbstract($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+				->exception(function() use ($asserter) { $asserter->isAbstract; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notAbstract)
+				->mock($locale)->call('_')->withArguments('%s is not abstract', $asserter)->twice
+
+			->if($this->calling($reflectionClass)->isAbstract = true)
+				->object($this->testedInstance->isAbstract())->isTestedInstance
+				->object($this->testedInstance->isAbstract)->isTestedInstance
 		;
 	}
 
 	public function testHasMethod()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->hasMethod(uniqid()); })
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
-			->if($class = uniqid())
-			->and($method = uniqid())
-			->and($reflectionClass = new \mock\reflectionClass($class = uniqid()))
-			->and($reflectionClassController = $reflectionClass->getMockController())
-			->and($reflectionClassController->getName = $class)
-			->and($reflectionClassController->hasMethod = false)
-			->and($asserter
-				->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
-				->setWith($class)
+
+			->given(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) use (& $reflectionClass) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct = function() {};
+							$mockController->getName = $class;
+
+							return $reflectionClass = new \mock\reflectionClass($class, $mockController);
+						}
+					)
+					->setWith(uniqid())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $methodUnknown = uniqid()
+			)
+
+			->if($this->calling($reflectionClass)->hasMethod = false)
+			->then
+				->exception(function() use ($asserter, & $method) { $asserter->hasMethod($method = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($methodUnknown)
+				->mock($locale)->call('_')->withArguments('%s::%s() does not exist', $asserter, $method)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasMethod(uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+			->if($this->calling($reflectionClass)->hasMethod = true)
+			->then
+				->object($this->testedInstance->hasMethod(uniqid()))->isTestedInstance
+		;
+	}
+
+	public function testHasConstant()
+	{
+		$this
+			->if($asserter = $this->newTestedInstance)
+			->then
+				->exception(function() use ($asserter) { $asserter->hasConstant(uniqid()); })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+
+			->given(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) use (& $reflectionClass) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct = function() {};
+							$mockController->getName = $class;
+
+							return $reflectionClass = new \mock\reflectionClass($class, $mockController);
+						}
+					)
+					->setWith(uniqid())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $constantUnknown = uniqid()
+			)
+
+			->if($this->calling($reflectionClass)->hasConstant = false)
+			->then
+				->exception(function() use ($asserter, & $constant) { $asserter->hasConstant($constant = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($constantUnknown)
+				->mock($locale)->call('_')->withArguments('%s::%s does not exist', $asserter, $constant)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasConstant(uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+			->if(
+				$this->calling($reflectionClass)->hasConstant = true,
+				$this->calling($reflectionClass)->getConstant = $constantObject = uniqid(),
+				$this->testedInstance->setGenerator($generator = new \mock\atoum\asserter\generator()),
+				$this->calling($generator)->getAsserterInstance = $asserter = uniqid()
 			)
 			->then
-				->exception(function() use ($asserter, $method) { $asserter->hasMethod($method); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Method %s::%s() does not exist'), $class, $method))
-			->if($reflectionClassController->hasMethod = true)
-			->then
-				->object($asserter->hasMethod(uniqid()))->isIdenticalTo($asserter)
+				->string($this->testedInstance->hasConstant($constant = uniqid()))->isEqualTo($asserter)
+				->mock($generator)->call('getAsserterInstance')->withArguments('constant', array($constantObject))->once
 		;
 	}
 }

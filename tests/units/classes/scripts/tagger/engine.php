@@ -14,7 +14,7 @@ class engine extends atoum\test
 {
 	public function testClassConstants()
 	{
-		$this->string(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)->isEqualTo('/\$Rev: [^ ]+ \$/');
+		$this->string(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)->isEqualTo('/\$Rev: [^ %]+ \$/');
 	}
 
 	public function test__construct()

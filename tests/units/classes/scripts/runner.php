@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\scripts;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\cli,
+	mageekguy\atoum\writer,
 	mageekguy\atoum\mock\stream,
 	mock\mageekguy\atoum as mock,
 	mageekguy\atoum\scripts\runner as testedClass
@@ -394,7 +395,7 @@ class runner extends atoum\test
 			->and($runner->setErrorWriter($stderr))
 			->then
 				->object($runner->addTestAllDirectory(uniqid()))->isIdenticalTo($runner)
-				->mock($stderr)->call('write')->withArguments('Error: --test-all argument is deprecated, please replace call to mageekguy\atoum\scripts\runner::addTestAllDirectory(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead' . PHP_EOL)->once()
+				->mock($stderr)->call('write')->withArguments('--test-all argument is deprecated, please replace call to mageekguy\atoum\scripts\runner::addTestAllDirectory(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead')->once()
 		;
 	}
 
@@ -677,12 +678,11 @@ class runner extends atoum\test
 	public function testInit()
 	{
 		$this
-			->given($runner = new testedClass(uniqid()))
+			->given($runner = new testedClass(__FILE__))
 			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
-			->and($runner->setOutputWriter($outputWriter = new \mock\mageekguy\atoum\writers\std\out()))
+			->and($runner->setInfoWriter($outputWriter = new \mock\mageekguy\atoum\writers\std\out()))
 			->and($runner->setPrompt($prompt = new \mock\mageekguy\atoum\script\prompt()))
 			->and($adapter->copy = true)
-			->and($adapter->getcwd = $currentDirectory = uniqid())
 			->and($adapter->file_exists = false)
 			->and($this->calling($outputWriter)->write = function() {})
 			->then
@@ -692,12 +692,12 @@ class runner extends atoum\test
 						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')->never()
 				->mock($outputWriter)
 					->call('write')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in the current directory' . PHP_EOL)->once()
-						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory' . PHP_EOL)->once()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in the current directory')->once()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory')->once()
 				->adapter($adapter)
 					->call('copy')
-						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
-						->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->once()
+						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
+						->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->once()
 			->if($this->resetAdapter($adapter))
 			->and($this->resetMock($outputWriter))
 			->and($adapter->file_exists = true)
@@ -710,12 +710,12 @@ class runner extends atoum\test
 						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')->once()
 				->mock($outputWriter)
 					->call('write')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in the current directory' . PHP_EOL)->once()
-						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory' . PHP_EOL)->once()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in the current directory')->once()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory')->once()
 				->adapter($adapter)
 					->call('copy')
-						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
-						->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->once()
+						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
+						->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->once()
 			->if($this->resetAdapter($adapter))
 			->and($this->resetMock($outputWriter))
 			->and($this->resetMock($prompt))
@@ -729,12 +729,12 @@ class runner extends atoum\test
 						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')->once()
 				->mock($outputWriter)
 					->call('write')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in the current directory' . PHP_EOL)->never()
-						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory' . PHP_EOL)->never()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in the current directory')->never()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory')->never()
 				->adapter($adapter)
 					->call('copy')
-						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->never()
-						->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->never()
+						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->never()
+						->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->never()
 			->if($this->resetAdapter($adapter))
 			->and($this->resetMock($outputWriter))
 			->and($this->resetMock($prompt))
@@ -752,14 +752,14 @@ class runner extends atoum\test
 						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory' . PHP_EOL)->never()
 				->adapter($adapter)
 					->call('copy')
-						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->never()
-						->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->never()
+						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->never()
+						->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->never()
 			->if($this->calling($prompt)->ask = 'Y')
 			->and($adapter->copy = false)
 			->then
 				->exception(function() use ($runner) { $runner->init(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to write \'' . atoum\directory . '/resources/configurations/runner/atoum.php.dist\' to \'' . $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile . '\'')
+					->hasMessage('Unable to write \'' . atoum\directory . '/resources/configurations/runner/atoum.php.dist\' to \'' . __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile . '\'')
 		;
 	}
 
@@ -770,9 +770,14 @@ class runner extends atoum\test
 			->then
 				->object($runner->setInfoWriter($errorWriter = new atoum\writers\std\err()))->isIdenticalTo($runner)
 				->object($runner->getInfoWriter())->isIdenticalTo($errorWriter)
-			->given($colorizer = new cli\colorizer('0;32'))
-			->and($defaultInfoWriter = new atoum\writers\std\out())
-			->and($defaultInfoWriter->addDecorator($colorizer))
+			->given(
+				$defaultInfoWriter = new atoum\writers\std\out(),
+				$defaultInfoWriter
+					->addDecorator(new writer\decorators\rtrim())
+					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear())
+					->addDecorator(new cli\colorizer('0;32'))
+			)
 			->then
 				->object($runner->setInfoWriter())->isIdenticalTo($runner)
 				->object($runner->getInfoWriter())->isEqualTo($defaultInfoWriter)
@@ -803,10 +808,17 @@ class runner extends atoum\test
 			->then
 				->object($runner->setErrorWriter($errorWriter = new atoum\writers\std\err()))->isIdenticalTo($runner)
 				->object($runner->getErrorWriter())->isIdenticalTo($errorWriter)
-			->given($colorizer = new cli\colorizer('0;31'))
-			->and($colorizer->setPattern('/^([^:]+:)/'))
-			->and($defaultErrorWriter = new atoum\writers\std\err())
-			->and($defaultErrorWriter->addDecorator($colorizer))
+			->given(
+				$colorizer = new cli\colorizer('0;31'),
+				$colorizer->setPattern('/^([^:]+:)/'),
+				$defaultErrorWriter = new atoum\writers\std\err(),
+				$defaultErrorWriter
+					->addDecorator(new writer\decorators\trim())
+					->addDecorator(new writer\decorators\prompt($runner->getLocale()->_('Error: ')))
+					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear())
+					->addDecorator($colorizer)
+			)
 			->then
 				->object($runner->setErrorWriter())->isIdenticalTo($runner)
 				->object($runner->getErrorWriter())->isEqualTo($defaultErrorWriter)
@@ -857,11 +869,8 @@ class runner extends atoum\test
 				->object($script->run())->isIdenticalTo($script)
 				->mock($locale)
 					->call('_')
-						->withArguments('Error: %s')->once()
 						->withArguments('No test found')->once()
-				->mock($errorWriter)
-					->call('clear')->once()
-					->call('write')->withArguments('Error: No test found' . PHP_EOL)->once()
+				->mock($errorWriter)->call('write')->withArguments('No test found')->once()
 		;
 	}
 

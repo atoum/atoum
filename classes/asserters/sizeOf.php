@@ -6,8 +6,8 @@ use mageekguy\atoum\asserters;
 
 class sizeOf extends asserters\integer
 {
-	public function setWith($value, $label = null)
+	public function setWith($value)
 	{
-		return parent::setWith(sizeof($value), $label);
+		return parent::setWith(sizeof($value));
 	}
 }

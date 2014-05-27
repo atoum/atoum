@@ -3,8 +3,7 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\asserters
 ;
 
 class hash extends asserters\string
@@ -33,11 +32,11 @@ class hash extends asserters\string
 	{
 		if (strlen($this->valueIsSet()->value) === $length)
 		{
-			 $this->match('/^[a-fA-F0-9]+$/', sprintf($this->getLocale()->_('%s does not match given pattern'), $this));
+			 $this->match('/^[a-fA-F0-9]+$/', $failMessage ?: $this->_('%s does not match given pattern', $this));
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s should be a string of %d characters'), $this, $length));
+			$this->fail($failMessage ?: $this->_('%s should be a string of %d characters', $this, $length));
 		}
 
 		return $this;

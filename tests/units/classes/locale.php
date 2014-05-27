@@ -12,47 +12,50 @@ class locale extends atoum\test
 {
 	public function test__construct()
 	{
-		$locale = new atoum\locale();
+		$this
+			->given($this->newTestedInstance())
+			->then
+				->variable($this->testedInstance->get())->isNull()
+				->castToString($this->testedInstance)->isEqualTo('unknown')
 
-		$this->assert
-			->variable($locale->get())->isNull()
-		;
-
-		$locale = new atoum\locale($value = uniqid());
-
-		$this->assert
-			->string($locale->get())->isEqualTo($value)
+			->given($this->newTestedInstance($value = uniqid()))
+			->then
+				->string($this->testedInstance->get())->isEqualTo($value)
+				->castToString($this->testedInstance)->isEqualTo($value)
 		;
 	}
 
 	public function testSet()
 	{
-		$locale = new atoum\locale();
-
-		$this->assert
-			->object($locale->set($value = uniqid()))->isIdenticalTo($locale)
-			->string($locale->get())->isEqualTo($value)
+		$this
+			->given($this->newTestedInstance())
+			->then
+				->object($this->testedInstance->set($locale = uniqid()))->isTestedInstance
+				->string($this->testedInstance->get())->isEqualTo($locale)
 		;
 	}
 
 	public function test_()
 	{
-		$locale = new atoum\locale();
-		$string = uniqid();
-
-		$this->assert->string($locale->_($string))->isEqualTo($string);
+		$this
+			->given($this->newTestedInstance())
+			->then
+				->string($this->testedInstance->_($string = uniqid()))->isEqualTo($string)
+				->string($this->testedInstance->_($string = '%s %s %s', $one = uniqid(), $two = uniqid(), $three = uniqid()))->isEqualTo(sprintf($string, $one, $two, $three))
+		;
 	}
 
 	public function test__()
 	{
-		$locale = new atoum\locale();
-		$singular = uniqid();
-		$plural = uniqid();
-
-		$this->assert->string($locale->__($singular, $plural, - rand(1, PHP_INT_MAX)))->isEqualTo($singular);
-
-		$this->assert->string($locale->__($singular, $plural, 1))->isEqualTo($singular);
-
-		$this->assert->string($locale->__($singular, $plural, rand(2, PHP_INT_MAX)))->isEqualTo($plural);
+		$this
+			->given($this->newTestedInstance())
+			->then
+				->string($this->testedInstance->__($singular = 'Singular %s %s %s', $plural = 'Plural %s %s %s', - rand(1, PHP_INT_MAX)))->isEqualTo($singular)
+				->string($this->testedInstance->__($singular, $plural, - rand(1, PHP_INT_MAX)))->isEqualTo($singular)
+				->string($this->testedInstance->__($singular, $plural, 1))->isEqualTo($singular)
+				->string($this->testedInstance->__($singular, $plural, 1, $one = uniqid(), $two = uniqid(), $three = uniqid()))->isEqualTo(sprintf($singular, $one, $two, $three))
+				->string($this->testedInstance->__($singular, $plural, rand(2, PHP_INT_MAX)))->isEqualTo($plural)
+				->string($this->testedInstance->__($singular, $plural, rand(2, PHP_INT_MAX), $one = uniqid(), $two = uniqid(), $three = uniqid()))->isEqualTo(sprintf($plural, $one, $two, $three))
+		;
 	}
 }

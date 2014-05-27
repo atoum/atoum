@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../runner.php';
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\php\mocker as testedClass
+	mageekguy\atoum\php
 ;
 
 function doesSomething() {}
@@ -16,23 +16,26 @@ class mocker extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($php = new testedClass())
+			->given($this->newTestedInstance)
 			->then
-				->string($php->getDefaultNamespace())->isEmpty()
+				->string($this->testedInstance->getDefaultNamespace())->isEmpty()
 		;
 	}
 
 	public function test__set()
 	{
 		$this
-			->if($php = new testedClass())
-			->and($php->{$functionName = __NAMESPACE__ . '\version_compare'} = $returnValue = uniqid())
+			->given($this->newTestedInstance)
+
+			->if($this->testedInstance->{$functionName = __NAMESPACE__ . '\version_compare'} = $returnValue = uniqid())
 			->then
 				->string(version_compare(uniqid(), uniqid()))->isEqualTo($returnValue)
-			->if($php->{$functionName = __NAMESPACE__ . '\version_compare'} = $otherReturnValue = uniqid())
+
+			->if($this->testedInstance->{$functionName = __NAMESPACE__ . '\version_compare'} = $otherReturnValue = uniqid())
 			->then
 				->string(version_compare(uniqid(), uniqid()))->isEqualTo($otherReturnValue)
-			->if($php->{$otherFunctionName = __NAMESPACE__ . '\file_get_contents'} = $fileContents = uniqid())
+
+			->if($this->testedInstance->{$otherFunctionName = __NAMESPACE__ . '\file_get_contents'} = $fileContents = uniqid())
 			->then
 				->string(version_compare(uniqid(), uniqid()))->isEqualTo($otherReturnValue)
 				->string(file_get_contents(uniqid()))->isEqualTo($fileContents)
@@ -42,9 +45,9 @@ class mocker extends atoum\test
 	public function test__get()
 	{
 		$this
-			->if($php = new testedClass())
+			->given($this->newTestedInstance)
 			->then
-				->object($php->{$functionName = __NAMESPACE__ . '\version_compare'})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+				->object($this->testedInstance->{$functionName = __NAMESPACE__ . '\version_compare'})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
 				->boolean(function_exists($functionName))->isTrue()
 		;
 	}
@@ -52,25 +55,28 @@ class mocker extends atoum\test
 	public function test__isset()
 	{
 		$this
-			->if($php = new testedClass())
+			->given($this->newTestedInstance)
 			->then
-				->boolean(isset($php->{$functionName = __NAMESPACE__ . '\version_compare'}))->isFalse()
-			->if($php->generate($functionName))
+				->boolean(isset($this->testedInstance->{$functionName = __NAMESPACE__ . '\version_compare'}))->isFalse()
+
+			->if($this->testedInstance->generate($functionName))
 			->then
-				->boolean(isset($php->{$functionName}))->isTrue()
+				->boolean(isset($this->testedInstance->{$functionName}))->isTrue()
 		;
 	}
 
 	public function test__unset()
 	{
 		$this
-			->if($php = new testedClass())
-			->and($functionName = __NAMESPACE__ . '\version_compare')
-			->when(function() use ($php, $functionName) { unset($php->{$functionName}); })
+			->given($mocker = $this->newTestedInstance)
+
+			->if($functionName = __NAMESPACE__ . '\version_compare')
+			->when(function() use ($mocker, $functionName) { unset($mocker->{$functionName}); })
 			->then
 				->boolean(function_exists($functionName))->isFalse()
-			->and($php->{$functionName} = uniqid())
-			->when(function() use ($php, $functionName) { unset($php->{$functionName}); })
+
+			->if($this->testedInstance->{$functionName} = uniqid())
+			->when(function() use ($mocker, $functionName) { unset($mocker->{$functionName}); })
 			->then
 				->integer(version_compare('5.4.0', '5.3.0'))->isEqualTo(1)
 				->integer(version_compare('5.3.0', '5.4.0'))->isEqualTo(-1)
@@ -80,38 +86,63 @@ class mocker extends atoum\test
 	public function testSetDefaultNamespace()
 	{
 		$this
-			->if($php = new testedClass())
+			->given($this->newTestedInstance)
 			->then
-				->object($php->setDefaultNamespace($defaultNamespace = uniqid()))->isIdenticalTo($php)
-				->string($php->getDefaultNamespace())->isEqualTo($defaultNamespace . '\\')
-				->object($php->setDefaultNamespace($defaultNamespace = uniqid() . '\\'))->isIdenticalTo($php)
-				->string($php->getDefaultNamespace())->isEqualTo($defaultNamespace)
-				->object($php->setDefaultNamespace('\\' . ($defaultNamespace = uniqid())))->isIdenticalTo($php)
-				->string($php->getDefaultNamespace())->isEqualTo($defaultNamespace . '\\')
-				->object($php->setDefaultNamespace('\\' . ($defaultNamespace = uniqid() . '\\')))->isIdenticalTo($php)
-				->string($php->getDefaultNamespace())->isEqualTo($defaultNamespace)
-				->object($php->setDefaultNamespace(''))->isIdenticalTo($php)
-				->string($php->getDefaultNamespace())->isEmpty()
+				->object($this->testedInstance->setDefaultNamespace($defaultNamespace = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getDefaultNamespace())->isEqualTo($defaultNamespace . '\\')
+				->object($this->testedInstance->setDefaultNamespace($defaultNamespace = uniqid() . '\\'))->isTestedInstance
+				->string($this->testedInstance->getDefaultNamespace())->isEqualTo($defaultNamespace)
+				->object($this->testedInstance->setDefaultNamespace('\\' . ($defaultNamespace = uniqid())))->isTestedInstance
+				->string($this->testedInstance->getDefaultNamespace())->isEqualTo($defaultNamespace . '\\')
+				->object($this->testedInstance->setDefaultNamespace('\\' . ($defaultNamespace = uniqid() . '\\')))->isTestedInstance
+				->string($this->testedInstance->getDefaultNamespace())->isEqualTo($defaultNamespace)
+				->object($this->testedInstance->setDefaultNamespace(''))->isTestedInstance
+				->string($this->testedInstance->getDefaultNamespace())->isEmpty()
 		;
 	}
 
 	public function testUseClassNamespace()
 	{
 		$this
-			->if($php = new testedClass())
+			->given($this->newTestedInstance)
 			->then
-				->object($php->useClassNamespace(__CLASS__))->isIdenticalTo($php)
-				->string($php->getDefaultNamespace())->isEqualTo(__NAMESPACE__ . '\\')
+				->object($this->testedInstance->useClassNamespace(__CLASS__))->isTestedInstance
+				->string($this->testedInstance->getDefaultNamespace())->isEqualTo(__NAMESPACE__ . '\\')
+		;
+	}
+
+	public function testResetCalls()
+	{
+		$this
+			->given($this->newTestedInstance)
+
+			->if(
+				$this->mockGenerator
+					->orphanize('__construct')
+					->orphanize('resetCalls'),
+				php\mocker::setAdapter($adapter = new \mock\atoum\test\adapter())
+			)
+			->then
+				->object($this->testedInstance->resetCalls())->isTestedInstance
+				->mock($adapter)->call('resetCalls')->once
+
+				->object($this->testedInstance->resetCalls($functionName = uniqid()))->isTestedInstance
+				->mock($adapter)->call('resetCalls')->withArguments($functionName)->once
+
+			->if($this->testedInstance->setDefaultNamespace($defaultNamespace = uniqid()))
+			->then
+				->object($this->testedInstance->resetCalls($functionName = uniqid()))->isTestedInstance
+				->mock($adapter)->call('resetCalls')->withArguments($defaultNamespace . '\\' . $functionName)->once
 		;
 	}
 
 	public function testSetAdapter()
 	{
 		$this
-			->variable(testedClass::setAdapter($adapter = new atoum\php\mocker\adapter()))->isNull()
-			->object(testedClass::getAdapter())->isIdenticalTo($adapter)
-			->variable(testedClass::setAdapter())->isNull()
-			->object(testedClass::getAdapter())
+			->variable(php\mocker::setAdapter($adapter = new atoum\php\mocker\adapter()))->isNull()
+			->object(php\mocker::getAdapter())->isIdenticalTo($adapter)
+			->variable(php\mocker::setAdapter())->isNull()
+			->object(php\mocker::getAdapter())
 				->isNotIdenticalTo($adapter)
 				->isEqualTo(new atoum\php\mocker\adapter())
 		;
@@ -120,34 +151,38 @@ class mocker extends atoum\test
 	public function testGenerate()
 	{
 		$this
-			->if($php = new testedClass())
+			->given($mocker = $this->newTestedInstance)
 			->then
-				->object($php->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($php)
+				->object($this->testedInstance->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($this->testedInstance)
 				->boolean(function_exists($functionName))->isTrue()
 				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
 				->integer(\version_compare('5.4.0', '5.3.0'))->isEqualTo(1)
 				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
 				->integer(\version_compare('5.3.0', '5.4.0'))->isEqualTo(-1)
-				->exception(function() use ($php) { $php->generate(__NAMESPACE__ . '\doesSomething'); })
+				->exception(function() use ($mocker) { $mocker->generate(__NAMESPACE__ . '\doesSomething'); })
 					->isInstanceof('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Function \'' . __NAMESPACE__ . '\doesSomething\' already exists')
-			->if($php->{$functionName} = $returnValue = uniqid())
+
+			->if($this->testedInstance->{$functionName} = $returnValue = uniqid())
 			->then
 				->string(version_compare(uniqid(), uniqid()))->isEqualTo($returnValue)
-				->object($php->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($php)
+				->object($this->testedInstance->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($this->testedInstance)
 				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
 				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
-				->object($php->generate($unknownFunctionName = __NAMESPACE__ . '\\foo'))->isIdenticalTo($php)
+				->object($this->testedInstance->generate($unknownFunctionName = __NAMESPACE__ . '\\foo'))->isIdenticalTo($this->testedInstance)
 				->variable(foo())->isNull()
-			->if($php->{$unknownFunctionName} = $fooReturnValue = uniqid())
+
+			->if($this->testedInstance->{$unknownFunctionName} = $fooReturnValue = uniqid())
 			->then
 				->string(foo())->isEqualTo($fooReturnValue)
-			->if($php->{$functionName} = $returnValue = uniqid())
-			->when(function() use ($php, $functionName) { unset($php->{$functionName}); })
+
+			->if($this->testedInstance->{$functionName} = $returnValue = uniqid())
+			->when(function() use ($mocker, $functionName) { unset($mocker->{$functionName}); })
 			->then
 				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
 				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
-			->when(function() use ($php, $unknownFunctionName) { unset($php->{$unknownFunctionName}); })
+
+			->when(function() use ($mocker, $unknownFunctionName) { unset($mocker->{$unknownFunctionName}); })
 			->then
 				->variable(foo())->isNull()
 		;

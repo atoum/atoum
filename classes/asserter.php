@@ -5,22 +5,29 @@ namespace mageekguy\atoum;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\tools\variable
 ;
 
-abstract class asserter
+abstract class asserter implements asserter\definition
 {
 	protected $locale = null;
+	protected $analyzer = null;
 	protected $generator = null;
+	protected $test = null;
 
-	public function __construct(asserter\generator $generator = null)
+	public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null, locale $locale = null)
 	{
-		$this->setGenerator($generator);
+		$this
+			->setGenerator($generator)
+			->setAnalyzer($analyzer)
+			->setLocale($locale)
+		;
 	}
 
 	public function __get($asserter)
 	{
-		return $this->generator->__get($asserter);
+		return $this->generator->{$asserter};
 	}
 
 	public function __call($method, $arguments)
@@ -54,9 +61,9 @@ abstract class asserter
 		return $this;
 	}
 
-	public function setLocale(locale $locale)
+	public function setLocale(locale $locale = null)
 	{
-		$this->locale = $locale;
+		$this->locale = $locale ?: new locale();
 
 		return $this;
 	}
@@ -69,7 +76,6 @@ abstract class asserter
 	public function setGenerator(asserter\generator $generator = null)
 	{
 		$this->generator = $generator ?: new asserter\generator();
-		$this->locale = $this->generator->getLocale();
 
 		return $this;
 	}
@@ -79,39 +85,33 @@ abstract class asserter
 		return $this->generator;
 	}
 
-	public function getTypeOf($mixed)
+	public function setAnalyzer(variable\analyzer $analyzer = null)
 	{
-		switch (gettype($mixed))
-		{
-			case 'boolean':
-				return sprintf($this->locale->_('boolean(%s)'), ($mixed == false ? $this->locale->_('false') : $this->locale->_('true')));
+		$this->analyzer = $analyzer ?: new variable\analyzer();
 
-			case 'integer':
-				return sprintf($this->locale->_('integer(%s)'), $mixed);
+		return $this;
+	}
 
-			case 'double':
-				return sprintf($this->locale->_('float(%s)'), $mixed);
+	public function getAnalyzer()
+	{
+		return $this->analyzer;
+	}
 
-			case 'NULL':
-				return $this->locale->_('null');
-
-			case 'object':
-				return sprintf($this->locale->_('object(%s)'), get_class($mixed));
-
-			case 'resource':
-				return sprintf($this->locale->_('resource(%s)'), $mixed);
-
-			case 'string':
-				return sprintf($this->locale->_('string(%s) \'%s\''), strlen($mixed), $mixed);
-
-			case 'array':
-				return sprintf($this->locale->_('array(%s)'), sizeof($mixed));
-		}
+	public function getTest()
+	{
+		return $this->test;
 	}
 
 	public function setWithTest(test $test)
 	{
+		$this->test = $test;
+
 		return $this;
+	}
+
+	public function setWith($mixed)
+	{
+		return $this->reset();
 	}
 
 	public function setWithArguments(array $arguments)
@@ -124,22 +124,33 @@ abstract class asserter
 		return $this;
 	}
 
-	public function setWith($mixed)
-	{
-		return $this->reset();
-	}
-
 	protected function pass()
 	{
-		$this->generator->asserterPass($this);
+		if ($this->test !== null)
+		{
+			$this->test->getScore()->addPass();
+		}
 
 		return $this;
 	}
 
 	protected function fail($reason)
 	{
-		$this->generator->asserterFail($this, $reason);
+		throw new asserter\exception($this, $reason);
+	}
 
-		return $this;
+	protected function getTypeOf($mixed)
+	{
+		return $this->analyzer->getTypeOf($mixed);
+	}
+
+	protected function _($string)
+	{
+		return call_user_func_array(array($this->locale, '_'), func_get_args());
+	}
+
+	protected function __($singular, $plural, $quantity)
+	{
+		return call_user_func_array(array($this->locale, '__'), func_get_args());
 	}
 }

@@ -4,19 +4,58 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\tools,
+	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\tools\diffs
 ;
 
 class variable extends atoum\asserter
 {
+	protected $diff = null;
 	protected $isSet = false;
 	protected $value = null;
 	protected $isSetByReference = false;
 
+	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
+	{
+		parent::__construct($generator, $analyzer, $locale);
+
+		$this->setDiff();
+	}
+
 	public function __toString()
 	{
 		return $this->getTypeOf($this->value);
+	}
+
+	public function __get($property)
+	{
+		switch (strtolower($property))
+		{
+			case 'isnull':
+			case 'isnotnull':
+			case 'isnotfalse':
+			case 'isnottrue':
+			case 'iscallable':
+			case 'isnotcallable':
+				return $this->{$property}();
+
+			default:
+				return parent::__get($property);
+		}
+	}
+
+	public function setDiff(diffs\variable $diff = null)
+	{
+		$this->diff = $diff ?: new diffs\variable();
+
+		return $this;
+	}
+
+	public function getDiff()
+	{
+		return $this->diff;
 	}
 
 	public function wasSet()
@@ -67,21 +106,13 @@ class variable extends atoum\asserter
 
 	public function isEqualTo($value, $failMessage = null)
 	{
-		self::check($value, __FUNCTION__);
-
 		if ($this->valueIsSet()->value == $value)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$diff = new diffs\variable();
-
-			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not equal to %s'), $this, $this->getTypeOf($value))) .
-				PHP_EOL .
-				$diff->setExpected($value)->setActual($this->value)
-			);
+			$this->fail(($failMessage ?: $this->_('%s is not equal to %s', $this, $this->getTypeOf($value))) .  PHP_EOL .  $this->diff($value));
 		}
 
 		return $this;
@@ -89,15 +120,13 @@ class variable extends atoum\asserter
 
 	public function isNotEqualTo($value, $failMessage = null)
 	{
-		self::check($value, __FUNCTION__);
-
 		if ($this->valueIsSet()->value != $value)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is equal to %s'), $this, $this->getTypeOf($value)));
+			$this->fail($failMessage ?: $this->_('%s is equal to %s', $this, $this->getTypeOf($value)));
 		}
 
 		return $this;
@@ -105,21 +134,13 @@ class variable extends atoum\asserter
 
 	public function isIdenticalTo($value, $failMessage = null)
 	{
-		self::check($value, __FUNCTION__);
-
 		if ($this->valueIsSet()->value === $value)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$diff = new diffs\variable();
-
-			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not identical to %s'), $this, $this->getTypeOf($value))) .
-				PHP_EOL .
-				$diff->setExpected($value)->setActual($this->value)
-			);
+			$this->fail($failMessage ?: $this->_('%s is not identical to %s', $this, $this->getTypeOf($value)) .  PHP_EOL .  $this->diff($value));
 		}
 
 		return $this;
@@ -127,15 +148,13 @@ class variable extends atoum\asserter
 
 	public function isNotIdenticalTo($value, $failMessage = null)
 	{
-		self::check($value, __FUNCTION__);
-
 		if ($this->valueIsSet()->value !== $value)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is identical to %s'), $this, $this->getTypeOf($value)));
+			$this->fail($failMessage ?: $this->_('%s is identical to %s', $this, $this->getTypeOf($value)));
 		}
 
 		return $this;
@@ -149,7 +168,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not null'), $this));
+			$this->fail($failMessage ?: $this->_('%s is not null', $this));
 		}
 
 		return $this;
@@ -163,20 +182,10 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is null'), $this));
+			$this->fail($failMessage ?: $this->_('%s is null', $this));
 		}
 
 		return $this;
-	}
-
-	public function isNotFalse($failMessage = null)
-	{
-		return $this->isNotIdenticalTo(false, $failMessage ?: sprintf($this->getLocale()->_('%s is false'), $this));
-	}
-
-	public function isNotTrue($failMessage = null)
-	{
-		return $this->isNotIdenticalTo(true, $failMessage ?: sprintf($this->getLocale()->_('%s is true'), $this));
 	}
 
 	public function isReferenceTo(& $reference, $failMessage = null)
@@ -194,7 +203,7 @@ class variable extends atoum\asserter
 			}
 			else
 			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a reference to %s'), $this, $this->getTypeOf($reference)));
+				$this->fail($failMessage ?: $this->_('%s is not a reference to %s', $this, $this->getTypeOf($reference)));
 			}
 		}
 		else
@@ -210,11 +219,21 @@ class variable extends atoum\asserter
 			}
 			else
 			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a reference to %s'), $this, $this->getTypeOf($reference)));
+				$this->fail($failMessage ?: $this->_('%s is not a reference to %s', $this, $this->getTypeOf($reference)));
 			}
 		}
 
 		return $this;
+	}
+
+	public function isNotFalse($failMessage = null)
+	{
+		return $this->isNotIdenticalTo(false, $failMessage ?: $this->_('%s is false', $this));
+	}
+
+	public function isNotTrue($failMessage = null)
+	{
+		return $this->isNotIdenticalTo(true, $failMessage ?: $this->_('%s is true', $this));
 	}
 
 	public function isCallable($failMessage = null)
@@ -225,7 +244,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not callable'), $this));
+			$this->fail($failMessage ?: $this->_('%s is not callable', $this));
 		}
 
 		return $this;
@@ -239,7 +258,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is callable'), $this));
+			$this->fail($failMessage ?: $this->_('%s is callable', $this));
 		}
 
 		return $this;
@@ -255,5 +274,8 @@ class variable extends atoum\asserter
 		return $this;
 	}
 
-	protected static function check($value, $method) {}
+	protected function diff($expected)
+	{
+		return $this->diff->setExpected($expected)->setActual($this->value);
+	}
 }

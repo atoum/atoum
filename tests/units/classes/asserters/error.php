@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\error as sut
+	mageekguy\atoum\tools\variable
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,116 +20,138 @@ class error extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new sut())
+			->given($this->newTestedInstance)
 			->then
-				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
-				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
-				->object($asserter->getScore())->isInstanceOf('mageekguy\atoum\test\score')
-				->variable($asserter->getMessage())->isNull()
-				->variable($asserter->getType())->isNull()
-			->if($asserter = new sut($generator = new asserter\generator(), $score = new atoum\test\score()))
+				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new variable\analyzer())
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
+				->object($this->testedInstance->getScore())->isInstanceOf('mageekguy\atoum\test\score')
+				->variable($this->testedInstance->getMessage())->isNull()
+				->variable($this->testedInstance->getType())->isNull()
+
+			->given($this->newTestedInstance($generator = new asserter\generator(), $score = new atoum\test\score(), $locale = new atoum\locale()))
 			->then
-				->object($asserter->getGenerator())->isIdenticalTo($generator)
-				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
-				->object($asserter->getScore())->isIdenticalTo($score)
-				->variable($asserter->getMessage())->isNull()
-				->variable($asserter->getType())->isNull()
+				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new variable\analyzer())
+				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
+				->object($this->testedInstance->getScore())->isIdenticalTo($score)
+				->variable($this->testedInstance->getMessage())->isNull()
+				->variable($this->testedInstance->getType())->isNull()
 		;
 	}
 
 	public function testInitWithTest()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($this->newTestedInstance)
 			->then
-				->object($asserter->setWithTest($this))->isIdenticalTo($asserter)
-				->object($asserter->getScore())->isIdenticalTo($this->getScore())
+				->object($this->testedInstance->setWithTest($this))->isTestedInstance
+				->object($this->testedInstance->getScore())->isIdenticalTo($this->getScore())
 		;
 	}
 
 	public function testGetAsString()
 	{
 		$this
-			->string(sut::getAsString(E_ERROR))->isEqualTo('E_ERROR')
-			->string(sut::getAsString(E_WARNING))->isEqualTo('E_WARNING')
-			->string(sut::getAsString(E_PARSE))->isEqualTo('E_PARSE')
-			->string(sut::getAsString(E_NOTICE))->isEqualTo('E_NOTICE')
-			->string(sut::getAsString(E_CORE_ERROR))->isEqualTo('E_CORE_ERROR')
-			->string(sut::getAsString(E_CORE_WARNING))->isEqualTo('E_CORE_WARNING')
-			->string(sut::getAsString(E_COMPILE_ERROR))->isEqualTo('E_COMPILE_ERROR')
-			->string(sut::getAsString(E_COMPILE_WARNING))->isEqualTo('E_COMPILE_WARNING')
-			->string(sut::getAsString(E_USER_ERROR))->isEqualTo('E_USER_ERROR')
-			->string(sut::getAsString(E_USER_WARNING))->isEqualTo('E_USER_WARNING')
-			->string(sut::getAsString(E_USER_NOTICE))->isEqualTo('E_USER_NOTICE')
-			->string(sut::getAsString(E_STRICT))->isEqualTo('E_STRICT')
-			->string(sut::getAsString(E_RECOVERABLE_ERROR))->isEqualTo('E_RECOVERABLE_ERROR')
-			->string(sut::getAsString(E_DEPRECATED))->isEqualTo('E_DEPRECATED')
-			->string(sut::getAsString(E_USER_DEPRECATED))->isEqualTo('E_USER_DEPRECATED')
-			->string(sut::getAsString(E_ALL))->isEqualTo('E_ALL')
-			->string(sut::getAsString('unknown error'))->isEqualTo('UNKNOWN')
+			->string(atoum\asserters\error::getAsString(E_ERROR))->isEqualTo('E_ERROR')
+			->string(atoum\asserters\error::getAsString(E_WARNING))->isEqualTo('E_WARNING')
+			->string(atoum\asserters\error::getAsString(E_PARSE))->isEqualTo('E_PARSE')
+			->string(atoum\asserters\error::getAsString(E_NOTICE))->isEqualTo('E_NOTICE')
+			->string(atoum\asserters\error::getAsString(E_CORE_ERROR))->isEqualTo('E_CORE_ERROR')
+			->string(atoum\asserters\error::getAsString(E_CORE_WARNING))->isEqualTo('E_CORE_WARNING')
+			->string(atoum\asserters\error::getAsString(E_COMPILE_ERROR))->isEqualTo('E_COMPILE_ERROR')
+			->string(atoum\asserters\error::getAsString(E_COMPILE_WARNING))->isEqualTo('E_COMPILE_WARNING')
+			->string(atoum\asserters\error::getAsString(E_USER_ERROR))->isEqualTo('E_USER_ERROR')
+			->string(atoum\asserters\error::getAsString(E_USER_WARNING))->isEqualTo('E_USER_WARNING')
+			->string(atoum\asserters\error::getAsString(E_USER_NOTICE))->isEqualTo('E_USER_NOTICE')
+			->string(atoum\asserters\error::getAsString(E_STRICT))->isEqualTo('E_STRICT')
+			->string(atoum\asserters\error::getAsString(E_RECOVERABLE_ERROR))->isEqualTo('E_RECOVERABLE_ERROR')
+			->string(atoum\asserters\error::getAsString(E_DEPRECATED))->isEqualTo('E_DEPRECATED')
+			->string(atoum\asserters\error::getAsString(E_USER_DEPRECATED))->isEqualTo('E_USER_DEPRECATED')
+			->string(atoum\asserters\error::getAsString(E_ALL))->isEqualTo('E_ALL')
+			->string(atoum\asserters\error::getAsString('unknown error'))->isEqualTo('UNKNOWN')
 		;
 	}
 
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($this->newTestedInstance)
 			->then
-				->object($asserter->setWith(null, null))->isIdenticalTo($asserter)
-				->variable($asserter->getMessage())->isNull()
-				->variable($asserter->getType())->isNull()
-				->object($asserter->setWith($message = uniqid(), null))->isIdenticalTo($asserter)
-				->string($asserter->getMessage())->isEqualTo($message)
-				->variable($asserter->getType())->isNull()
-				->object($asserter->setWith($message = uniqid(), $type = rand(0, PHP_INT_MAX)))->isIdenticalTo($asserter)
-				->string($asserter->getMessage())->isEqualTo($message)
-				->integer($asserter->getType())->isEqualTo($type)
+				->object($this->testedInstance->setWith(null, null))->isTestedInstance
+				->variable($this->testedInstance->getMessage())->isNull()
+				->variable($this->testedInstance->getType())->isNull()
+
+				->object($this->testedInstance->setWith($message = uniqid(), null))->isTestedInstance
+				->string($this->testedInstance->getMessage())->isEqualTo($message)
+				->variable($this->testedInstance->getType())->isNull()
+
+				->object($this->testedInstance->setWith($message = uniqid(), $type = rand(0, PHP_INT_MAX)))->isTestedInstance
+				->string($this->testedInstance->getMessage())->isEqualTo($message)
+				->integer($this->testedInstance->getType())->isEqualTo($type)
 		;
 	}
 
 	public function testExists()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
+
+			->if(
+				$asserter->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $errorNotExists = uniqid()
+			)
 			->then
 				->exception(function() use (& $line, $asserter) { $asserter->exists(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($generator->getLocale()->_('error does not exist'))
+					->hasMessage($errorNotExists)
+				->mock($locale)->call('_')->withArguments('error does not exist')->once
+
 			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(0, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->then
-				->object($asserter->exists())->isIdenticalTo($asserter)
+				->object($asserter->exists())->isTestedInstance
 				->array($asserter->getScore()->getErrors())->isEmpty()
+
 			->if($asserter->setWith($message = uniqid(), null))
 			->then
 				->exception(function() use (& $line, $asserter) { $asserter->exists(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('error with message \'%s\' does not exist'), $message))
+					->hasMessage($errorNotExists)
+				->mock($locale)->call('_')->withArguments('error with message \'%s\' does not exist', $message)->once
+
 			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(0, PHP_INT_MAX), $message, uniqid(), rand(1, PHP_INT_MAX)))
 			->then
-				->object($asserter->exists())->isIdenticalTo($asserter)
+				->object($asserter->exists())->isTestedInstance
 				->array($asserter->getScore()->getErrors())->isEmpty()
+
 			->if($asserter->setWith($message = uniqid(), $type = E_USER_ERROR))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('error of type %s with message \'%s\' does not exist'), sut::getAsString($type), $message))
+					->hasMessage($errorNotExists)
+				->mock($locale)->call('_')->withArguments('error of type %s with message \'%s\' does not exist', atoum\asserters\error::getAsString($type), $message)->once
+
 			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type, $message, uniqid(), rand(1, PHP_INT_MAX)))
 			->then
-				->object($asserter->exists())->isIdenticalTo($asserter)
+				->object($asserter->exists())->isTestedInstance
 				->array($asserter->getScore()->getErrors())->isEmpty()
+
 			->if($asserter->setWith(null, $type = E_USER_ERROR))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('error of type %s does not exist'), sut::getAsString($type)))
+					->hasMessage($errorNotExists)
+				->mock($locale)->call('_')->withArguments('error of type %s does not exist', atoum\asserters\error::getAsString($type))->once
+
 			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type, uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->then
-				->object($asserter->exists())->isIdenticalTo($asserter)
+				->object($asserter->exists())->isTestedInstance
 				->array($asserter->getScore()->getErrors())->isEmpty()
+
 			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(1, PHP_INT_MAX), $message = uniqid() . 'FOO' . uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($asserter->withPattern('/FOO/')->withType(null))
 			->then
-				->object($asserter->exists())->isIdenticalTo($asserter)
+				->object($asserter->exists())->isTestedInstance
 				->array($asserter->getScore()->getErrors())->isEmpty()
 		;
 	}
@@ -137,79 +159,71 @@ class error extends atoum\test
 	public function testWithType()
 	{
 		$this
-			->if($asserter = new sut(new asserter\generator()))
+			->given($this->newTestedInstance)
 			->then
-				->object($asserter->withType($type = rand(1, PHP_INT_MAX)))->isIdenticalTo($asserter)
-				->integer($asserter->getType())->isEqualTo($type)
+				->object($this->testedInstance->withType($type = rand(1, PHP_INT_MAX)))->isTestedInstance
+				->integer($this->testedInstance->getType())->isEqualTo($type)
 		;
 	}
 
 	public function testWithAnyType()
 	{
-
 		$this
-			->if($asserter = new sut(new asserter\generator()))
-			->and($asserter->withType(rand(1, PHP_INT_MAX)))
+			->given($this->newTestedInstance->withType(rand(1, PHP_INT_MAX)))
 			->then
-				->variable($asserter->getType())->isNotNull()
-				->object($asserter->withAnyType())->isIdenticalTo($asserter)
-				->variable($asserter->getType())->isNull()
+				->object($this->testedInstance->withAnyType())->isTestedInstance
+				->variable($this->testedInstance->getType())->isNull()
 		;
 	}
 
 	public function testWithMessage()
 	{
 		$this
-			->if($asserter = new sut(new asserter\generator()))
+			->given($this->newTestedInstance)
 			->then
-				->object($asserter->withMessage($message = uniqid()))->isIdenticalTo($asserter)
-				->string($asserter->getMessage())->isEqualTo($message)
-				->boolean($asserter->messageIsPattern())->isFalse()
+				->object($this->testedInstance->withMessage($message = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getMessage())->isEqualTo($message)
+				->boolean($this->testedInstance->messageIsPattern())->isFalse()
 		;
 	}
 
 	public function testWithPattern()
 	{
 		$this
-			->if($asserter = new sut(new asserter\generator()))
+			->given($this->newTestedInstance)
 			->then
-				->boolean($asserter->messageIsPattern())->isFalse()
-				->object($asserter->withPattern($pattern = uniqid()))->isIdenticalTo($asserter)
-				->string($asserter->getMessage())->isEqualTo($pattern)
-				->boolean($asserter->messageIsPattern())->isTrue()
+				->object($this->testedInstance->withPattern($pattern = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getMessage())->isEqualTo($pattern)
+				->boolean($this->testedInstance->messageIsPattern())->isTrue()
 		;
 	}
 
 	public function testWithAnyMessage()
 	{
 		$this
-			->if($asserter = new sut(new asserter\generator()))
-			->and($asserter->withMessage(uniqid()))
+			->given($this->newTestedInstance->withMessage(uniqid()))
 			->then
-				->variable($asserter->getMessage())->isNotNull()
-				->boolean($asserter->messageIsPattern())->isFalse()
-				->object($asserter->withAnyMessage())->isIdenticalTo($asserter)
-				->variable($asserter->getMessage())->isNull()
-				->boolean($asserter->messageIsPattern())->isFalse()
-			->if($asserter->withPattern(uniqid()))
+				->object($this->testedInstance->withAnyMessage())->isTestedInstance
+				->variable($this->testedInstance->getMessage())->isNull()
+				->boolean($this->testedInstance->messageIsPattern())->isFalse()
+
+			->if($this->testedInstance->withPattern(uniqid()))
 			->then
-				->variable($asserter->getMessage())->isNotNull()
-				->boolean($asserter->messageIsPattern())->isTrue()
-				->object($asserter->withAnyMessage())->isIdenticalTo($asserter)
-				->variable($asserter->getMessage())->isNull()
-				->boolean($asserter->messageIsPattern())->isFalse()
+				->object($this->testedInstance->withAnyMessage())->isTestedInstance
+				->variable($this->testedInstance->getMessage())->isNull()
+				->boolean($this->testedInstance->messageIsPattern())->isFalse()
 		;
 	}
 
 	public function testSetScore()
 	{
 		$this
-			->if($asserter = new sut())
+			->given($this->newTestedInstance)
 			->then
-				->object($asserter->setScore($score = new atoum\test\score()))->isIdenticalTo($asserter)
-				->object($asserter->getScore())->isIdenticalTo($score)
-				->object($asserter->setScore())->isIdenticalTo($asserter)
-				->object($asserter->getScore())
+				->object($this->testedInstance->setScore($score = new atoum\test\score()))->isTestedInstance
+				->object($this->testedInstance->getScore())->isIdenticalTo($score)
+				->object($this->testedInstance->setScore())->isTestedInstance
+				->object($this->testedInstance->getScore())
 					->isNotIdenticalTo($score)
 					->isInstanceOf('mageekguy\atoum\score')
 		;

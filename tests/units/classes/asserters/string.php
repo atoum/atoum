@@ -6,7 +6,7 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\tools\diffs,
-	mageekguy\atoum\asserters\string as sut
+	mageekguy\atoum\tools\variable
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -21,64 +21,79 @@ class string extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new sut())
+			->given($this->newTestedInstance)
 			->then
-				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
-				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
-				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
-				->variable($asserter->getValue())->isNull()
-				->boolean($asserter->wasSet())->isFalse()
-			->if($asserter = new sut($generator = new asserter\generator(), $adapter = new atoum\adapter()))
+				->object($this->testedInstance->getGenerator())->isEqualTo(new asserter\generator())
+				->object($this->testedInstance->getAnalyzer())->isEqualTo(new variable\analyzer())
+				->object($this->testedInstance->getLocale())->isEqualTo(new atoum\locale())
+				->variable($this->testedInstance->getValue())->isNull()
+				->variable($this->testedInstance->getCharlist())->isNull()
+				->boolean($this->testedInstance->wasSet())->isFalse()
+
+			->if($this->newTestedInstance($generator = new asserter\generator(), $analyzer = new variable\analyzer(), $locale = new atoum\locale()))
 			->then
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
-				->object($asserter->getGenerator())->isIdenticalTo($generator)
-				->object($asserter->getAdapter())->isIdenticalTo($adapter)
-				->variable($asserter->getValue())->isNull()
-				->boolean($asserter->wasSet())->isFalse()
+				->object($this->testedInstance->getGenerator())->isIdenticalTo($generator)
+				->object($this->testedInstance->getAnalyzer())->isIdenticalTo($analyzer)
+				->object($this->testedInstance->getLocale())->isIdenticalTo($locale)
+				->variable($this->testedInstance->getValue())->isNull()
+				->variable($this->testedInstance->getCharlist())->isNull()
+				->boolean($this->testedInstance->wasSet())->isFalse()
 		;
 	}
 
 	public function test__toString()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
-			->and($asserter->setWith($value = uniqid()))
-			->then
-				->castToString($asserter)->isEqualTo('string(' . strlen($value) . ') \'' . $value . '\'')
-			->if($asserter->setWith($value = "\010" . uniqid() . "\010", null, $charlist = "\010"))
-			->then
-				->castToString($asserter)->isEqualTo('string(' . strlen($value) . ') \'' . addcslashes($value, "\010") . '\'')
-		;
-	}
+			->given($this->newTestedInstance
+				->setLocale($locale = new \mock\atoum\locale())
+			)
 
-	public function testSetAdapter()
-	{
-		$this
-			->if($asserter = new sut())
+			->if(
+				$this->testedInstance->setWith($value = uniqid()),
+				$this->calling($locale)->_ = $string = uniqid()
+			)
 			->then
-				->object($asserter->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($asserter)
-				->object($asserter->getAdapter())->isIdenticalTo($adapter)
-				->object($asserter->setAdapter())->isIdenticalTo($asserter)
-				->object($asserter->getAdapter())
-					->isNotIdenticalTo($adapter)
-					->isEqualTo(new atoum\adapter())
+				->castToString($this->testedInstance)->isEqualTo($string)
+				->mock($locale)->call('_')->withArguments('string(%s) \'%s\'', strlen($value), addcslashes($value, null))->once
+
+			->if($this->testedInstance->setWith($value = "\010" . uniqid() . "\010", $charlist = "\010"))
+			->then
+				->castToString($this->testedInstance)->isEqualTo($string)
+				->mock($locale)->call('_')->withArguments('string(%s) \'%s\'', strlen($value), addcslashes($value, "\010"))->once
 		;
 	}
 
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance
+				->setLocale($locale = new \mock\atoum\locale())
+				->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+			)
+
+			->if(
+				$this->calling($locale)->_ = $notString = uniqid(),
+				$this->calling($analyzer)->isString = false,
+				$this->calling($analyzer)->getTypeOf = $type = uniqid()
+			)
 			->then
-				->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
+				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not a string'), $asserter->getTypeOf($value)))
+					->hasMessage($notString)
+				->mock($locale)->call('_')->withArguments('%s is not a string', $type)->once
+				->mock($analyzer)->call('getTypeOf')->withArguments($value)->once
 				->integer($asserter->getValue())->isEqualTo($value)
 				->variable($asserter->getCharlist())->isNull()
+
+			->if(
+				$this->calling($analyzer)->isString = true
+			)
+			->then
 				->object($asserter->setWith($value = uniqid()))->isIdenticalTo($asserter)
 				->string($asserter->getValue())->isEqualTo($value)
 				->variable($asserter->getCharlist())->isNull()
-				->object($asserter->setWith($value = uniqid(), null, $charlist = "\010"))->isIdenticalTo($asserter)
+
+				->object($asserter->setWith($value = uniqid(), $charlist = "\010"))->isIdenticalTo($asserter)
 				->string($asserter->getValue())->isEqualTo($value)
 				->string($asserter->getCharlist())->isEqualTo($charlist)
 		;
@@ -87,63 +102,125 @@ class string extends atoum\test
 	public function testIsEqualTo()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->given($asserter = $this->newTestedInstance)
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isEqualTo(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith($firstString = uniqid()))
-			->and($diff = new diffs\variable())
+
+			->if(
+				$asserter
+					->setWith($firstString = uniqid())
+					->setLocale($locale = new \mock\atoum\locale())
+					->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+				$this->calling($locale)->_ = $notEqual = uniqid(),
+				$this->calling($diff)->__toString = $diffValue = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter, & $secondString) { $asserter->isEqualTo($secondString = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($generator->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setExpected($secondString)->setActual($firstString))
-			->object($asserter->isEqualTo($firstString))->isIdenticalTo($asserter)
+					->hasMessage($notEqual . PHP_EOL . $diffValue)
+				->mock($locale)->call('_')->withArguments('strings are not equals')->once
+				->mock($diff)
+					->call('setExpected')->withArguments($secondString)->once
+					->call('setActual')->withArguments($firstString)->once
+
+				->exception(function() use ($asserter, & $secondString, & $failMessage) { $asserter->isEqualTo($secondString = uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage . PHP_EOL . $diffValue)
+				->mock($diff)
+					->call('setExpected')->withArguments($secondString)->once
+					->call('setActual')->withArguments($firstString)->twice
+
+				->object($asserter->isEqualTo($firstString))->isIdenticalTo($asserter)
 		;
 	}
 
 	public function testIsEqualToFileContents()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator(), $adapter = new atoum\test\adapter()))
+			->if($asserter = $this->newTestedInstance)
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isEqualToContentsOfFile(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith($firstString = uniqid()))
-			->and($adapter->file_get_contents = false)
+
+			->if(
+				$asserter
+					->setWith($firstString = uniqid())
+					->setLocale($locale = new \mock\atoum\locale())
+					->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+				$this->calling($locale)->_ = $unableToGetContents = uniqid(),
+				$this->function->file_get_contents = false
+			)
 			->then
 				->exception(function() use ($asserter, & $path) { $asserter->isEqualToContentsOfFile($path = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Unable to get contents of file %s'), $path))
-			->if($adapter->file_get_contents = $fileContents = uniqid())
-			->and($diff = new diffs\variable())
+					->hasMessage($unableToGetContents)
+				->mock($locale)->call('_')->withArguments('Unable to get contents of file %s', $path)->once
+
+			->if(
+				$this->calling($diff)->__toString = $diffValue = uniqid(),
+				$this->function->file_get_contents = $fileContents = uniqid(),
+				$this->calling($locale)->_ = $notEqual = uniqid()
+			)
 			->then
-				->exception(function() use ($asserter, & $path) { $asserter->isEqualToContentsOfFile($path); })
+				->exception(function() use ($asserter, $path) { $asserter->isEqualToContentsOfFile($path); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('string is not equals to contents of file %s'), $path) . PHP_EOL . $diff->setExpected($fileContents)->setActual($firstString))
-			->if($adapter->file_get_contents = $firstString)
+					->hasMessage($notEqual . PHP_EOL . $diffValue)
+				->mock($locale)->call('_')->withArguments('string is not equals to contents of file %s', $path)->once
+				->mock($diff)
+					->call('setExpected')->withArguments($fileContents)->once
+					->call('setActual')->withArguments($firstString)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isEqualToContentsOfFile(uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage . PHP_EOL . $diffValue)
+
+			->if($this->function->file_get_contents = $firstString)
 			->then
-				->object($asserter->isEqualToContentsOfFile(uniqid()))->isIdenticalTo($asserter)
+				->object($asserter->isEqualToContentsOfFile($path))->isIdenticalTo($asserter)
 		;
 	}
 
 	public function testIsEmpty()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith($string = uniqid()))
-			->and($diff = new diffs\variable())
+
+			->if(
+				$asserter
+					->setWith($firstString = uniqid())
+					->setLocale($locale = new \mock\atoum\locale())
+					->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+				$this->calling($locale)->_ = $notEmpty = uniqid(),
+				$this->calling($diff)->__toString = $diffValue = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($generator->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setExpected('')->setActual($string))
+					->hasMessage($notEmpty . PHP_EOL . $diffValue)
+				->mock($locale)->call('_')->withArguments('string is not empty')->once
+				->mock($diff)
+					->call('setExpected')->withArguments('')->once
+					->call('setActual')->withArguments($firstString)->once
+
+				->exception(function() use ($asserter) { $asserter->isEmpty; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notEmpty . PHP_EOL . $diffValue)
+				->mock($locale)->call('_')->withArguments('string is not empty')->twice
+				->mock($diff)
+					->call('setExpected')->withArguments('')->twice
+					->call('setActual')->withArguments($firstString)->twice
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isEmpty($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage . PHP_EOL . $diffValue)
+
 			->if($asserter->setWith(''))
 			->then
 				->object($asserter->isEmpty())->isIdenticalTo($asserter)
@@ -153,18 +230,34 @@ class string extends atoum\test
 	public function testIsNotEmpty()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith(''))
-			->and($diff = new diffs\variable())
+
+			->if(
+				$asserter
+					->setWith('')
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $isEmpty = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotEmpty(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($generator->getLocale()->_('string is empty'))
-			->if($asserter->setWith($string = uniqid()))
+					->hasMessage($isEmpty)
+				->mock($locale)->call('_')->withArguments('string is empty')->once
+
+				->exception(function() use ($asserter) { $asserter->isNotEmpty; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($isEmpty)
+				->mock($locale)->call('_')->withArguments('string is empty')->twice
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isNotEmpty($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+			->if($asserter->setWith(uniqid()))
 			->then
 				->object($asserter->isNotEmpty())->isIdenticalTo($asserter)
 		;
@@ -173,18 +266,28 @@ class string extends atoum\test
 	public function testHasLength()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->hasLength(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith(''))
-			->and($diff = new diffs\variable())
+
+			->if(
+				$asserter
+					->setWith('')
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $hasNotLength = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter, & $requiredLength) { $asserter->hasLength($requiredLength = rand(1, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('length of %s is not %d'), $asserter->getTypeOf(''), $requiredLength))
-				->object($asserter->hasLength(0))->isIdenticalTo($asserter)
+					->hasMessage($hasNotLength)
+				->mock($locale)->call('_')->withArguments('length of %s is not %d', $asserter, $requiredLength)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasLength(rand(1, PHP_INT_MAX), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
 			->if($asserter->setWith($string = uniqid()))
 			->then
 				->object($asserter->hasLength(strlen($string)))->isIdenticalTo($asserter)
@@ -194,18 +297,28 @@ class string extends atoum\test
 	public function testHasLengthGreaterThan()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->hasLengthGreaterThan(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith('Chuck Norris'))
-			->and($diff = new diffs\variable())
+
+			->if(
+				$asserter
+					->setWith('Chuck Norris')
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $lengthNotGreater = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter, & $requiredLength) { $asserter->hasLengthGreaterThan($requiredLength = rand(1, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('length of %s is not greater than %d'), $asserter->getTypeOf('Chuck Norris'), $requiredLength))
-				->object($asserter->hasLengthGreaterThan(0))->isIdenticalTo($asserter)
+					->hasMessage($lengthNotGreater)
+				->mock($locale)->call('_')->withArguments('length of %s is not greater than %d', $asserter, $requiredLength)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasLengthGreaterThan(rand(1, PHP_INT_MAX), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
 			->if($asserter->setWith($string = uniqid()))
 			->then
 				->object($asserter->hasLengthGreaterThan(strlen($string)-1))->isIdenticalTo($asserter)
@@ -215,107 +328,170 @@ class string extends atoum\test
 	public function testHasLengthLessThan()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->hasLengthLessThan(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith('Chuck Norris'))
-			->and($diff = new diffs\variable())
+
+			->if(
+				$asserter
+					->setWith('Chuck Norris')
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $lengthNotLess = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter, & $requiredLength) { $asserter->hasLengthLessThan($requiredLength = 10); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('length of %s is not less than %d'), $asserter->getTypeOf('Chuck Norris'), $requiredLength))
-				->object($asserter->hasLengthLessThan(20))->isIdenticalTo($asserter)
+					->hasMessage($lengthNotLess)
+				->mock($locale)->call('_')->withArguments('length of %s is not less than %d', $asserter, $requiredLength)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->hasLengthLessThan(10, $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
 			->if($asserter->setWith($string = uniqid()))
 			->then
-				->object($asserter->hasLengthLessThan(strlen($string)+1))->isIdenticalTo($asserter)
+				->object($asserter->hasLengthLessThan(strlen($string) + 1))->isIdenticalTo($asserter)
 		;
 	}
 
 	public function testContains()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith($string = __METHOD__))
-			->and($diff = new diffs\variable())
+
+			->if(
+				$asserter
+					->setWith($string = 'Chuck Norris')
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $notContains = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter, & $fragment) { $asserter->contains($fragment = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
-				->object($asserter->contains($string))->isIdenticalTo($asserter)
+					->hasMessage($notContains)
+				->mock($locale)->call('_')->withArguments('%s does not contain %s', $asserter, $fragment)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->contains(uniqid(), $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
 			->if($asserter->setWith(uniqid() . $string . uniqid()))
 			->then
 				->object($asserter->contains($string))->isIdenticalTo($asserter)
+
 				->exception(function() use ($asserter, $string, & $fragment) { $asserter->contains($fragment = strtoupper($string)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
+					->hasMessage($notContains)
+				->mock($locale)->call('_')->withArguments('%s does not contain %s', $asserter, $fragment)->once
 		;
 	}
 
 	public function testNotContains()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->notContains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith($string = 'FreeAgent scans the field'))
+
+			->if(
+				$asserter
+					->setWith($string = 'FreeAgent scans the field')
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $contains = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter, & $fragment) { $asserter->notContains($fragment = 'Agent'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String contains %s'), $fragment))
-				->object($asserter->notContains('coach'))->isIdenticalTo($asserter)
+					->hasMessage($contains)
+				->mock($locale)->call('_')->withArguments('%s contains %s', $asserter, $fragment)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->notContains('Agent', $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+				->object($asserter->notContains('agent'))->isIdenticalTo($asserter)
+				->object($asserter->notContains(uniqid()))->isIdenticalTo($asserter)
 		;
 	}
 
 	public function testStartWith()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->startWith(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith($string = __METHOD__))
-			->and($diff = new diffs\variable())
+
+			->if(
+				$asserter
+					->setWith('FreeAgent scans the field')
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $notStartWith = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter, & $fragment) { $asserter->startWith($fragment = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String does not start with %s'), $fragment))
-				->object($asserter->startWith($string))->isIdenticalTo($asserter)
-			->if($asserter->setWith(uniqid() . $string))
-			->then
-				->exception(function() use ($asserter, $string) { $asserter->startWith($string); })
+					->hasMessage($notStartWith)
+				->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->startWith(uniqid(), $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String does not start with %s'), $string))
-			->if($asserter->setWith($string . uniqid()))
-			->then
-				->object($asserter->startWith($string))->isIdenticalTo($asserter)
-				->exception(function() use ($asserter, $string, & $fragment) { $asserter->startWith($fragment = strtoupper($string)); })
+					->hasMessage($failMessage)
+
+				->exception(function() use ($asserter, & $fragment) { $asserter->startWith($fragment = 'free'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String does not start with %s'), $fragment))
+					->hasMessage($notStartWith)
+				->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
+
+				->exception(function() use ($asserter, & $fragment) { $asserter->startWith($fragment = 'Free' . uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notStartWith)
+				->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
+
+				->exception(function() use ($asserter, & $fragment) { $asserter->startWith('field'); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notStartWith)
+				->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, 'field')->once
+
+				->object($asserter->startWith('Free'))->isIdenticalTo($asserter)
 		;
 	}
 
 	public function testNotStartWith()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->notStartWith(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith($string = __METHOD__))
+
+			->if(
+				$asserter
+					->setWith('FreeAgent scans the field')
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $startWith = uniqid()
+			)
 			->then
-				->exception(function() use ($asserter, & $fragment) { $asserter->notStartWith($fragment = __NAMESPACE__); })
+				->exception(function() use ($asserter, & $fragment) { $asserter->notStartWith($fragment = 'FreeA'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String start with %s'), $fragment))
+					->hasMessage($startWith)
+				->mock($locale)->call('_')->withArguments('%s start with %s', $asserter, $fragment)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->notStartWith('FreeAgent ', $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+				->object($asserter->notStartWith('free'))->isIdenticalTo($asserter)
 				->object($asserter->notStartWith(uniqid()))->isIdenticalTo($asserter)
 		;
 	}
@@ -323,46 +499,68 @@ class string extends atoum\test
 	public function testEndWith()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->endWith(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith($string = __METHOD__))
-			->and($diff = new diffs\variable())
+
+			->if(
+				$asserter
+					->setWith('FreeAgent scans the field')
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $notEndWith = uniqid()
+			)
 			->then
 				->exception(function() use ($asserter, & $fragment) { $asserter->endWith($fragment = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String does not end with %s'), $fragment))
-				->object($asserter->endWith($string))->isIdenticalTo($asserter)
-			->if($asserter->setWith($string . uniqid()))
-			->then
-				->exception(function() use ($asserter, $string) { $asserter->endWith($string); })
+					->hasMessage($notEndWith)
+				->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->endWith(uniqid(), $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String does not end with %s'), $string))
-			->if($asserter->setWith(uniqid() . $string))
-			->then
-				->object($asserter->endWith($string))->isIdenticalTo($asserter)
-				->exception(function() use ($asserter, $string, & $fragment) { $asserter->endWith($fragment = strtoupper($string)); })
+					->hasMessage($failMessage)
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->endWith('FIELd'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String does not end with %s'), $fragment))
+					->hasMessage($notEndWith)
+				->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, 'FIELd')->once
+
+				->exception(function() use ($asserter, & $fragment) { $asserter->endWith($fragment = uniqid() . ' field'); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notEndWith)
+				->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
+
+				->object($asserter->endWith('field'))->isIdenticalTo($asserter)
 		;
 	}
 
 	public function testNotEndWith()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->notEndWith(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith($string = __METHOD__))
-			->and($fragment = __FUNCTION__)
+
+			->if(
+				$asserter
+					->setWith('FreeAgent scans the field')
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $endWith = uniqid()
+			)
 			->then
-				->exception(function() use ($asserter, $fragment) { $asserter->notEndWith($fragment); })
+				->exception(function() use ($asserter, & $fragment) { $asserter->notEndWith($fragment = ' the field'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('String end with %s'), $fragment))
+					->hasMessage($endWith)
+				->mock($locale)->call('_')->withArguments('%s end with %s', $asserter, $fragment)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->notEndWith(' the field', $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+				->object($asserter->notEndWith(' THE FIELD'))->isIdenticalTo($asserter)
 				->object($asserter->notEndWith(uniqid()))->isIdenticalTo($asserter)
 		;
 	}
@@ -370,23 +568,25 @@ class string extends atoum\test
 	public function testLength()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->length; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
+
 			->if($asserter->setWith(''))
 			->then
 				->object($integer = $asserter->length)
 					->isInstanceOf('mageekguy\atoum\asserters\integer')
 				->integer($integer->getValue())
 					->isEqualTo(0)
-			->if($asserter->setWith($str = uniqid()))
+
+			->if($asserter->setWith($string = uniqid()))
 			->then
 				->object($integer = $asserter->length)
 					->isInstanceOf('mageekguy\atoum\asserters\integer')
 				->integer($integer->getValue())
-					->isEqualTo(strlen($str))
+					->isEqualTo(strlen($string))
 		;
 	}
 }

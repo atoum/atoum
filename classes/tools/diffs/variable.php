@@ -9,24 +9,49 @@ use
 
 class variable extends tools\diff
 {
-	public function __construct()
+	protected $analyzer = null;
+
+	public function __construct($expected = null, $actual = null)
 	{
-		$this->expected = null;
-		$this->actual = null;
+		$this->setAnalyzer();
+
+		parent::__construct($expected, $actual);
+	}
+
+	public function setAnalyzer(tools\variable\analyzer $analyzer = null)
+	{
+		$this->analyzer = $analyzer ?: new tools\variable\analyzer();
+
+		return $this;
+	}
+
+	public function getAnalyzer()
+	{
+		return $this->analyzer;
 	}
 
 	public function setExpected($mixed)
 	{
-		return parent::setExpected(self::dumpAsString($mixed));
+		return parent::setExpected($this->analyzer->dump($mixed));
 	}
 
 	public function setActual($mixed)
 	{
-		return parent::setActual(self::dumpAsString($mixed));
+		return parent::setActual($this->analyzer->dump($mixed));
 	}
 
-	public function make()
+	public function make($expected = null, $actual = null)
 	{
+		if ($expected !== null)
+		{
+			$this->setExpected($expected);
+		}
+
+		if ($expected !== null)
+		{
+			$this->setActual($actual);
+		}
+
 		if ($this->expected === null)
 		{
 			throw new exceptions\runtime('Expected is undefined');
@@ -38,14 +63,5 @@ class variable extends tools\diff
 		}
 
 		return parent::make();
-	}
-
-	protected static function dumpAsString($mixed)
-	{
-		ob_start();
-
-		var_dump($mixed);
-
-		return trim(ob_get_clean());
 	}
 }

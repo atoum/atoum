@@ -4,30 +4,22 @@ namespace mageekguy\atoum\asserter;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test\assertion
 ;
 
 class generator
 {
-	const defaultAsserterNamespace = 'mageekguy\atoum\asserters';
-
-	protected $aliases = array();
 	protected $locale = null;
-	protected $adapter = null;
-	protected $asserterNamespace = '';
+	protected $resolver = null;
 
-	public function __construct(atoum\locale $locale = null, atoum\adapter $adapter = null, $asserterNamespace = null)
+	public function __construct(atoum\locale $locale = null, asserter\resolver $resolver = null, assertion\aliaser $aliaser = null)
 	{
 		$this
-			->setAdapter($adapter)
 			->setLocale($locale)
-			->setAsserterNamespace($asserterNamespace)
+			->setResolver($resolver)
 		;
-	}
-
-	public function __set($asserter, $class)
-	{
-		$this->setAlias($asserter, $class);
 	}
 
 	public function __get($property)
@@ -45,16 +37,28 @@ class generator
 		return $this->getAsserterInstance($method, $arguments);
 	}
 
-	public function setAdapter(atoum\adapter $adapter = null)
+	public function setBaseClass($baseClass)
 	{
-		$this->adapter = $adapter ?: new atoum\adapter();
+		$this->resolver->setBaseClass($baseClass);
 
 		return $this;
 	}
 
-	public function getAdapter()
+	public function getBaseClass()
 	{
-		return $this->adapter;
+		return $this->resolver->getBaseClass();
+	}
+
+	public function addNamespace($namespace)
+	{
+		$this->resolver->addNamespace($namespace);
+
+		return $this;
+	}
+
+	public function getNamespaces()
+	{
+		return $this->resolver->getNamespaces();
 	}
 
 	public function setLocale(atoum\locale $locale = null)
@@ -69,67 +73,24 @@ class generator
 		return $this->locale;
 	}
 
-	public function setAsserterNamespace($namespace = null)
+	public function setResolver(asserter\resolver $resolver = null)
 	{
-		$this->asserterNamespace = ($namespace === null ? static::defaultAsserterNamespace : trim($namespace, '\\')) . '\\';
+		$this->resolver = $resolver ?: new asserter\resolver();
 
 		return $this;
 	}
 
-	public function getAsserterNamespace()
+	public function getResolver()
 	{
-		return trim($this->asserterNamespace, '\\');
-	}
-
-	public function setAlias($alias, $asserterClass)
-	{
-		$this->aliases[strtolower($alias)] = $asserterClass;
-
-		return $this;
-	}
-
-	public function getAliases()
-	{
-		return $this->aliases;
-	}
-
-	public function resetAliases()
-	{
-		$this->aliases = array();
-
-		return $this;
-	}
-
-	public function asserterPass(atoum\asserter $asserter)
-	{
-		return $this;
-	}
-
-	public function asserterFail(atoum\asserter $asserter, $reason)
-	{
-		throw new exception($reason);
+		return $this->resolver;
 	}
 
 	public function getAsserterClass($asserter)
 	{
-		$asserter = strtolower($asserter);
-
-		$class = (isset($this->aliases[$asserter]) === false ? $asserter : $this->aliases[$asserter]);
-
-		if (substr($class, 0, 1) != '\\')
-		{
-			$class = $this->asserterNamespace . $class;
-		}
-
-		if ($this->adapter->class_exists($class, true) === false)
-		{
-			$class = null;
-		}
-
-		return $class;
+		return $this->resolver->resolve($asserter);
 	}
 
-	public function getAsserterInstance($asserter, array $arguments = array())
+	public function getAsserterInstance($asserter, array $arguments = array(), atoum\test $test = null)
 	{
 		if (($asserterClass = $this->getAsserterClass($asserter)) === null)
 		{
@@ -138,8 +99,14 @@ class generator
 
 		$asserterInstance = new $asserterClass();
 
+		if ($test !== null)
+		{
+			$asserterInstance->setWithTest($test);
+		}
+
 		return $asserterInstance
 			->setGenerator($this)
+			->setLocale($this->locale)
 			->setWithArguments($arguments)
 		;
 	}

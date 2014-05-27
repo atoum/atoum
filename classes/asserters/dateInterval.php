@@ -21,7 +21,7 @@ class dateInterval extends asserters\object
 			}
 			else
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not an instance of \\dateInterval'), $this));
+				$this->fail($this->_('%s is not an instance of \\dateInterval', $this));
 			}
 		}
 
@@ -43,7 +43,7 @@ class dateInterval extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Interval %s is not greater than %s'), $this, $this->format($interval)));
+			$this->fail($failMessage ?: $this->_('Interval %s is not greater than %s', $this, $this->format($interval)));
 		}
 
 		return $this;
@@ -59,7 +59,7 @@ class dateInterval extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Interval %s is not greater than or equal to %s'), $this, $this->format($interval)));
+			$this->fail($failMessage ?: $this->_('Interval %s is not greater than or equal to %s', $this, $this->format($interval)));
 		}
 
 		return $this;
@@ -75,7 +75,7 @@ class dateInterval extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Interval %s is not less than %s'), $this, $this->format($interval)));
+			$this->fail($failMessage ?: $this->_('Interval %s is not less than %s', $this, $this->format($interval)));
 		}
 
 		return $this;
@@ -91,7 +91,7 @@ class dateInterval extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Interval %s is not less than or equal to %s'), $this, $this->format($interval)));
+			$this->fail($failMessage ?: $this->_('Interval %s is not less than or equal to %s', $this, $this->format($interval)));
 		}
 
 		return $this;
@@ -107,7 +107,7 @@ class dateInterval extends asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Interval %s is not equal to %s'), $this, $this->format($interval)));
+			$this->fail($failMessage ?: $this->_('Interval %s is not equal to %s', $this, $this->format($interval)));
 		}
 
 		return $this;
@@ -115,7 +115,7 @@ class dateInterval extends asserters\object
 
 	public function isZero($failMessage = null)
 	{
-		return $this->isEqualTo(new \dateInterval('P0D'), sprintf($this->getLocale()->_('Interval %s is not equal to zero'), $this));
+		return $this->isEqualTo(new \dateInterval('P0D'), $failMessage ?: $this->_('Interval %s is not equal to zero', $this));
 	}
 
 	protected function valueIsSet($message = 'Interval is undefined')
@@ -145,6 +145,6 @@ class dateInterval extends asserters\object
 
 	protected function format(\dateInterval $interval)
 	{
-		return $interval->format($this->getLocale()->_('%Y/%M/%D %H:%I:%S'));
+		return $interval->format($this->_('%Y/%M/%D %H:%I:%S'));
 	}
 }
