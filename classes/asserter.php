@@ -136,6 +136,11 @@ abstract class asserter implements asserter\definition
 
 	protected function fail($reason)
 	{
+		if (is_string($reason) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Fail message must be a string');
+		}
+
 		throw new asserter\exception($this, $reason);
 	}
 

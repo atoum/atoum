@@ -73,6 +73,11 @@ class extension extends atoum\asserter
 
 	protected function fail($reason)
 	{
+		if (is_string($reason) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Fail message must be a string');
+		}
+
 		throw new test\exceptions\skip($reason);
 	}
 }
