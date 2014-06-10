@@ -11,26 +11,28 @@ a:hover {color: #3d91e7;}
 h1 {font-size: 18px; font-weight: bold; margin: 0.5em 0; color: #fff; float: left;}
 h2 {font-size: 14px; font-weight: bold; margin: 2.5em 0 0.5em 0; color: #fff; float: right;}
 h2 span {font-size: 30px;}
-h3 {font-size: 1.2em; margin: 0.5em 0;}
+h3 {font-size: 1.2em; margin: 1em 0 0.5em 0;}
 #page, #footer {margin: 2em;}
 #footer {text-align: right; color:#74bff9;}
-.summary {margin: 1em 0 0 0; border: solid 1px #ddd;}
-table {width: 100%; border-collapse: collapse; table-layout: fixed;}
+.summary {margin: 1em 0 0 0;}
+table {width: 100%; border-collapse: collapse; table-layout: fixed; box-shadow: 2px 2px 5px gray;}
 th, td {padding: 0.2em; border: solid 1px #eee;}
 th {color: #fff; background: #3d91e7;}
 td.bar {padding: 0.2em;}
 td.date {text-align: right;}
-div.bar {position: relative; width: 100%; height: 30px; padding: 0;}
+div.bar {position: relative; width: 100%; height: 2em; padding: 0;}
 div.bar div.label {position: absolute; top: 0; left: 0; background: none; padding: 6px 0 2px 4px;}
-div.bar div.graph {position: absolute; top: 0; left: 0; background: #8eff9b; height: 30px;}
-div.bar div.background {position: absolute; top: 0; left: 0; width: 100%; background: #ff8c76; height: 30px;}
-li {list-style-type: none; border: solid 1px #eee; border-left: none; border-top: none;}
+div.bar div.label .percent {width:4em; display: inline-block;}
+div.bar div.graph {position: absolute; top: 0; left: 0; background: #8eff9b; height: 100%;}
+div.bar div.background {position: absolute; top: 0; left: 0; width: 100%; background: #ff8c76; height: 100%;}
+li {list-style-type: none; border: solid 1px #fff; box-shadow: 2px 2px 5px gray; margin-bottom: 1px;}
 li.classes, li.methods {margin-left: 4em;}
 table.source th.number {width: 4em;}
 table.source td {overflow: hidden; width: 100%;}
-table.source td.number {width: 4em; text-align: right; background: #ddd;}
+table.source td.number {padding: 0 10px; text-align: right; background: #c4e5ff; font-family: monospace;}
 table.source tr.notCovered td {background: #ff8c76;}
 table.source tr.covered td {background: #8eff9b;}
+table.source pre {font-family: monospace;}
 @media (max-width: 900px) {
     h1 {clear: both;}
     h2 span {font-size: 20px;}

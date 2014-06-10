@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		<div id="header">
-			<h1>Code coverage of <a href="<tpl:relativeRootUrl />"><tpl:projectName /></a>: <tpl:className /></h1>
+			<h1>Code coverage of <a href="<tpl:relativeRootUrl />index.html"><tpl:projectName /></a>: <tpl:className /></h1>
 			<h2>Class code coverage <span><tpl:classCoverageUnavailable>n/a</tpl:classCoverageUnavailable><tpl:classCoverageAvailable><tpl:classCoverageValue />%</tpl:classCoverageAvailable></span></h2>
 		</div>
 		<div id="page">
@@ -26,7 +26,10 @@
 									<div class="bar">
 										<div class="background"></div>
 										<div class="graph" style="width: <tpl:methodCoverageValue />%"></div>
-										<div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span><tpl:methodCoverageValue />%</span></div>
+										<div class="label">
+											<span class="percent"><tpl:methodCoverageValue />%</span>
+											<a href="#<tpl:methodName />"><tpl:methodName /></a>
+										</div>
 									</div>
 								</tpl:methodCoverageAvailable>
 							</li>
