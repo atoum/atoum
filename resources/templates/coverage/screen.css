@@ -22,7 +22,7 @@ td.bar {padding: 0.2em;}
 td.date {text-align: right;}
 div.bar {position: relative; width: 100%; height: 2em; padding: 0;}
 div.bar div.label {position: absolute; top: 0; left: 0; background: none; padding: 6px 0 2px 4px;}
-div.bar div.label .percent {width: 3em; text-align: right; display: inline-block;}
+div.bar div.label .percent {width:4em; display: inline-block;}
 div.bar div.graph {position: absolute; top: 0; left: 0; background: #8eff9b; height: 100%;}
 div.bar div.background {position: absolute; top: 0; left: 0; width: 100%; background: #ff8c76; height: 100%;}
 li {list-style-type: none; border: solid 1px #fff; box-shadow: 2px 2px 5px gray; margin-bottom: 1px;}
