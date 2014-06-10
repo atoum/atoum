@@ -249,7 +249,7 @@ class treemap extends report\fields\runner\coverage\cli
 
 	public function setTreemapUrl($treemapUrl)
 	{
-		$this->treemapUrl = rtrim((string) $treemapUrl, '/') . '/';
+		$this->treemapUrl = (string) $treemapUrl;
 
 		return $this;
 	}

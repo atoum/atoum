@@ -104,7 +104,7 @@ class treemap extends atoum\test
 			->if($treemap = new testedClass(uniqid(), uniqid()))
 			->then
 				->object($treemap->setTreemapUrl($url = uniqid()))->isIdenticalTo($treemap)
-				->string($treemap->getTreemapUrl())->isEqualTo($url . '/')
+				->string($treemap->getTreemapUrl())->isEqualTo($url)
 				->object($treemap->setTreemapUrl($url = (uniqid() . '/')))->isIdenticalTo($treemap)
 				->string($treemap->getTreemapUrl())->isEqualTo($url)
 		;

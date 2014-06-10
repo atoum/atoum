@@ -6,7 +6,6 @@ require_once __DIR__ . '/../../../../../constants.php';
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\locale,
 	mageekguy\atoum\report,
 	mageekguy\atoum\template,
 	mageekguy\atoum\exceptions,
@@ -119,7 +118,7 @@ class html extends report\fields\runner\coverage\cli
 				foreach ($this->coverage->getMethods() as $className => $methods)
 				{
 					$classTemplate->className = $className;
-					$classTemplate->relativeRootUrl = str_repeat('../', substr_count($className, '\\'));
+					$classTemplate->relativeRootUrl = rtrim(str_repeat('../', substr_count($className, '\\')), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
 					$classCoverageValue = $this->coverage->getValueForClass($className);
 
@@ -366,7 +365,7 @@ class html extends report\fields\runner\coverage\cli
 
 	public function setRootUrl($rootUrl)
 	{
-		$this->rootUrl = rtrim((string) $rootUrl, '/') . '/';
+		$this->rootUrl = (string) $rootUrl;
 
 		return $this;
 	}

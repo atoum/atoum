@@ -216,7 +216,7 @@ class html extends atoum\test
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->object($field->getCoverage())->isIdenticalTo($coverage)
-				->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Details of code coverage are available at ' . $rootUrl . '/.' . PHP_EOL)
+				->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Details of code coverage are available at ' . $rootUrl . '.' . PHP_EOL)
 				->mock($coverage)->call('count')->once()
 				->mock($field)
 					->call('cleanDestinationDirectory')->once()
@@ -234,13 +234,13 @@ class html extends atoum\test
 					->call('parseFile')->withArguments($templatesDirectory . DIRECTORY_SEPARATOR . 'class.tpl', null)->once()
 				->mock($indexTemplate)
 					->call('__set')->withArguments('projectName', $projectName)->once()
-					->call('__set')->withArguments('rootUrl', $rootUrl . '/')->once()
+					->call('__set')->withArguments('rootUrl', $rootUrl)->once()
 					->call('__get')->withArguments('coverageAvailable')->once()
 					->call('__get')->withArguments('classCoverage')->once()
 				->mock($coverageAvailableTemplate)
 					->call('build')->withArguments(array('coverageValue' => round($coverageValue * 100, 2)))->once()
 				->mock($classTemplate)
-					->call('__set')->withArguments('rootUrl', $rootUrl . '/')->once()
+					->call('__set')->withArguments('rootUrl', $rootUrl)->once()
 					->call('__set')->withArguments('projectName' , $projectName)->once()
 					->call('__set')->withArguments('className', $className)->once()
 					->call('__get')->withArguments('methods')->once()
@@ -289,7 +289,7 @@ class html extends atoum\test
 					->call('fclose')->withArguments($classResource)->once()
 			->if($indexTemplateController->build->throw = new \exception($errorMessage = uniqid()))
 			->then
-				->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Unable to generate code coverage at ' . $rootUrl . '/: ' . $errorMessage . '.' . PHP_EOL)
+				->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Unable to generate code coverage at ' . $rootUrl . ': ' . $errorMessage . '.' . PHP_EOL)
 		;
 	}
 
@@ -466,9 +466,9 @@ class html extends atoum\test
 			->if($field = new testedClass(uniqid(), uniqid(), uniqid()))
 			->then
 				->object($field->setRootUrl($rootUrl = uniqid()))->isIdenticalTo($field)
-				->string($field->getRootUrl())->isIdenticalTo($rootUrl . '/')
+				->string($field->getRootUrl())->isIdenticalTo($rootUrl)
 				->object($field->setRootUrl($rootUrl = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
-				->string($field->getRootUrl())->isIdenticalTo((string) $rootUrl . '/')
+				->string($field->getRootUrl())->isIdenticalTo((string) $rootUrl)
 				->object($field->setRootUrl(($rootUrl = uniqid()) . '/'))->isIdenticalTo($field)
 				->string($field->getRootUrl())->isIdenticalTo($rootUrl . '/')
 		;
