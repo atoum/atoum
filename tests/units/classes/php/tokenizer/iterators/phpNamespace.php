@@ -14,7 +14,7 @@ class phpNamespace extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass
 				->isSubClassOf('mageekguy\atoum\php\tokenizer\iterator')
 		;
@@ -22,18 +22,17 @@ class phpNamespace extends atoum\test
 
 	public function testAppendClass()
 	{
-		$phpNamespace = new iterators\phpNamespace();
-
-		$phpClass = new iterators\phpClass();
-		$phpClass
-			->append($token1 = new tokenizer\token(uniqid()))
-			->append($token2 = new tokenizer\token(uniqid()))
-		;
-
-		$this->assert
-			->object($phpNamespace->appendClass($phpClass))->isIdenticalTo($phpNamespace)
-			->array($phpNamespace->getClasses())->isEqualTo(array($phpClass))
-			->castToString($phpNamespace)->isEqualTo($token1 . $token2)
+		$this
+			->if(
+				$this->newTestedInstance,
+				$phpClass = new iterators\phpClass(),
+				$phpClass
+					->append($token1 = new tokenizer\token(uniqid()))
+					->append($token2 = new tokenizer\token(uniqid()))
+			)
+			->object($this->testedInstance->appendClass($phpClass))->isTestedInstance
+			->array($this->testedInstance->getClasses())->isEqualTo(array($phpClass))
+			->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
 		;
 	}
 }

@@ -14,7 +14,7 @@ class phpImportation extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass
 				->isSubClassOf('mageekguy\atoum\php\tokenizer\iterator')
 		;

@@ -14,7 +14,7 @@ class phpArgument extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass
 				->isSubClassOf('mageekguy\atoum\php\tokenizer\iterator')
 		;
@@ -22,29 +22,29 @@ class phpArgument extends atoum\test
 
 	public function test__construct()
 	{
-		$iterator = new iterators\phpArgument();
-
-		$this->assert
-			->variable($iterator->getDefaultValue())->isNull()
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->variable($this->testedInstance->getDefaultValue())->isNull()
 		;
 	}
 
 	public function testAppendDefaultValue()
 	{
-		$iterator = new iterators\phpArgument();
-
-		$this->assert
-			->object($iterator->appendDefaultValue($defaultValue = new iterators\phpDefaultValue()))->isIdenticalTo($iterator)
-			->object($iterator->getDefaultValue())->isIdenticalTo($defaultValue)
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->appendDefaultValue($defaultValue = new iterators\phpDefaultValue()))->isTestedInstance
+				->object($this->testedInstance->getDefaultValue())->isIdenticalTo($defaultValue)
 		;
 	}
 
 	public function testGetDefaultValue()
 	{
-		$iterator = new iterators\phpArgument();
-
-		$this->assert
-			->variable($iterator->getDefaultValue())->isNull()
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->variable($this->testedInstance->getDefaultValue())->isNull()
 		;
 	}
 }

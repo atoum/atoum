@@ -14,7 +14,7 @@ class phpClass extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass
 				->isSubClassOf('mageekguy\atoum\php\tokenizer\iterator')
 		;
@@ -22,62 +22,62 @@ class phpClass extends atoum\test
 
 	public function test__construct()
 	{
-		$iterator = new iterators\phpClass();
-
-		$this->assert
-			->array($iterator->getConstants())->isEmpty()
-			->array($iterator->getMethods())->isEmpty()
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->array($this->testedInstance->getConstants())->isEmpty()
+				->array($this->testedInstance->getMethods())->isEmpty()
 		;
 	}
 
 	public function testAppendConstant()
 	{
-		$iterator = new iterators\phpClass();
-
-		$constantIterator = new iterators\phpConstant();
-		$constantIterator
-			->append($token1 = new tokenizer\token(uniqid()))
-			->append($token2 = new tokenizer\token(uniqid()))
-		;
-
-		$this->assert
-			->object($iterator->appendConstant($constantIterator))->isIdenticalTo($iterator)
-			->array($iterator->getConstants())->isEqualTo(array($constantIterator))
-			->castToString($iterator)->isEqualTo($token1 . $token2)
+		$this
+			->if(
+				$this->newTestedInstance,
+				$constantIterator = new iterators\phpConstant(),
+				$constantIterator
+					->append($token1 = new tokenizer\token(uniqid()))
+					->append($token2 = new tokenizer\token(uniqid()))
+			)
+			->then
+				->object($this->testedInstance->appendConstant($constantIterator))->isTestedInstance
+				->array($this->testedInstance->getConstants())->isEqualTo(array($constantIterator))
+				->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
 		;
 	}
 
 	public function testAppendMethod()
 	{
-		$iterator = new iterators\phpClass();
-
-		$methodIterator = new iterators\phpMethod();
-		$methodIterator
-			->append($token1 = new tokenizer\token(uniqid()))
-			->append($token2 = new tokenizer\token(uniqid()))
-		;
-
-		$this->assert
-			->object($iterator->appendMethod($methodIterator))->isIdenticalTo($iterator)
-			->array($iterator->getMethods())->isEqualTo(array($methodIterator))
-			->castToString($iterator)->isEqualTo($token1 . $token2)
+		$this
+			->if(
+				$this->newTestedInstance,
+				$methodIterator = new iterators\phpMethod(),
+				$methodIterator
+					->append($token1 = new tokenizer\token(uniqid()))
+					->append($token2 = new tokenizer\token(uniqid()))
+			)
+			->then
+				->object($this->testedInstance->appendMethod($methodIterator))->isTestedInstance
+				->array($this->testedInstance->getMethods())->isEqualTo(array($methodIterator))
+				->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
 		;
 	}
 
 	public function testAppendProperty()
 	{
-		$iterator = new iterators\phpClass();
-
-		$propertyIterator = new iterators\phpProperty();
-		$propertyIterator
-			->append($token1 = new tokenizer\token(uniqid()))
-			->append($token2 = new tokenizer\token(uniqid()))
-		;
-
-		$this->assert
-			->object($iterator->appendProperty($propertyIterator))->isIdenticalTo($iterator)
-			->array($iterator->getProperties())->isEqualTo(array($propertyIterator))
-			->castToString($iterator)->isEqualTo($token1 . $token2)
+		$this
+			->if(
+				$this->newTestedInstance,
+				$propertyIterator = new iterators\phpProperty(),
+				$propertyIterator
+					->append($token1 = new tokenizer\token(uniqid()))
+					->append($token2 = new tokenizer\token(uniqid()))
+			)
+			->then
+				->object($this->testedInstance->appendProperty($propertyIterator))->isTestedInstance
+				->array($this->testedInstance->getProperties())->isEqualTo(array($propertyIterator))
+				->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
 		;
 	}
 }

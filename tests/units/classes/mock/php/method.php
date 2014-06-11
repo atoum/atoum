@@ -13,78 +13,72 @@ class method extends atoum\test
 {
 	public function test__construct()
 	{
-		$method = new php\method($name = uniqid());
-
-		$this->assert
-			->string($method->getName())->isEqualTo($name)
+		$this
+			->if($this->newTestedInstance($name = uniqid()))
+			->then
+				->string($this->testedInstance->getName())->isEqualTo($name)
 		;
 	}
 
 	public function testReturnReference()
 	{
-		$method = new php\method(uniqid());
-
-		$this->assert
-			->object($method->returnReference())->isIdenticalTo($method)
-		;
-
-		$method = new php\method('__construct');
-
-		$this->assert
-			->exception(function() use ($method) {
-						$method->returnReference();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Constructor can not return a reference')
+		$this
+			->if($this->newTestedInstance(uniqid()))
+			->then
+				->object($this->testedInstance->returnReference())->isTestedInstance
+			->if($method = $this->newTestedInstance('__construct'))
+			->then
+				->exception(function() use ($method) {
+							$method->returnReference();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\logic')
+						->hasMessage('Constructor can not return a reference')
 		;
 	}
 
 	public function testIsConstructor()
 	{
-		$method = new php\method(uniqid());
-
-		$this->assert
-			->boolean($method->isConstructor())->isFalse()
-		;
-
-		$method = new php\method('__construct');
-
-		$this->assert
-			->boolean($method->isConstructor())->isTrue()
+		$this
+			->if($this->newTestedInstance(uniqid()))
+			->then
+				->boolean($this->testedInstance->isConstructor())->isFalse()
+			->if($this->newTestedInstance('__construct'))
+			->then
+				->boolean($this->testedInstance->isConstructor())->isTrue()
 		;
 	}
 
 	public function testAddArgument()
 	{
-		$method = new php\method(uniqid());
-
-		$this->assert
-			->object($method->addArgument(new php\method\argument(uniqid())))->isIdenticalTo($method)
+		$this
+			->if($this->newTestedInstance(uniqid()))
+			->then
+				->object($this->testedInstance->addArgument(new php\method\argument(uniqid())))->isTestedInstance
 		;
 	}
 
 	public function test__toString()
 	{
-		$method = new php\method($name = uniqid());
-
-		$this->assert
-			->castToString($method)->isEqualTo('public function ' . $name . '()')
-			->castToString($method->returnReference())->isEqualTo('public function & ' . $name . '()')
-			->castToString($method->addArgument($argument1 = new php\method\argument(uniqid())))->isEqualTo('public function & ' . $name . '(' . $argument1 . ')')
-			->castToString($method->addArgument($argument2 = new php\method\argument(uniqid())))->isEqualTo('public function & ' . $name . '(' . $argument1 . ', ' . $argument2 . ')')
+		$this
+			->if($this->newTestedInstance($name = uniqid()))
+			->then
+				->castToString($this->testedInstance)->isEqualTo('public function ' . $name . '()')
+				->castToString($this->testedInstance->returnReference())->isEqualTo('public function & ' . $name . '()')
+				->castToString($this->testedInstance->addArgument($argument1 = new php\method\argument(uniqid())))->isEqualTo('public function & ' . $name . '(' . $argument1 . ')')
+				->castToString($this->testedInstance->addArgument($argument2 = new php\method\argument(uniqid())))->isEqualTo('public function & ' . $name . '(' . $argument1 . ', ' . $argument2 . ')')
 		;
 	}
 
 	public function testGetArgumentsAsString()
 	{
-		$method = new php\method($name = uniqid());
-
-		$this->assert
-			->string($method->getArgumentsAsString())->isEmpty()
-			->string($method->addArgument($argument1 = new php\method\argument(uniqid()))->getArgumentsAsString())->isEqualTo((string) $argument1)
-			->string($method->addArgument($argument2 = new php\method\argument(uniqid()))->getArgumentsAsString())->isEqualTo($argument1 . ', ' . $argument2)
-			->string($method->addArgument($argument3 = new php\method\argument(uniqid()))->getArgumentsAsString())->isEqualTo($argument1 . ', ' . $argument2 . ', ' . $argument3)
+		$this
+			->if($this->newTestedInstance($name = uniqid()))
+			->then
+				->string($this->testedInstance->getArgumentsAsString())->isEmpty()
+				->string($this->testedInstance->addArgument($argument1 = new php\method\argument(uniqid()))->getArgumentsAsString())->isEqualTo((string) $argument1)
+				->string($this->testedInstance->addArgument($argument2 = new php\method\argument(uniqid()))->getArgumentsAsString())->isEqualTo($argument1 . ', ' . $argument2)
+				->string($this->testedInstance->addArgument($argument3 = new php\method\argument(uniqid()))->getArgumentsAsString())->isEqualTo($argument1 . ', ' . $argument2 . ', ' . $argument3)
 		;
 	}
 }
