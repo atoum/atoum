@@ -15,8 +15,8 @@ class runtime extends atoum\test
 	{
 		$this
 			->testedClass
-				->isSubclassOf('runtimeException')
-				->hasInterface('mageekguy\atoum\exception')
+				->extends('runtimeException')
+				->implements('mageekguy\atoum\exception')
 		;
 	}
 }

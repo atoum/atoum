@@ -15,8 +15,8 @@ class logic extends atoum\test
 	{
 		$this
 			->testedClass
-				->isSubclassOf('logicException')
-				->hasInterface('mageekguy\atoum\exception')
+				->extends('logicException')
+				->implements('mageekguy\atoum\exception')
 		;
 	}
 }

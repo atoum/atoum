@@ -15,9 +15,9 @@ class unexpectedValue extends atoum\test
 	{
 		$this
 			->testedClass
-				->isSubclassOf('runtimeException')
-				->isSubclassOf('unexpectedValueException')
-				->hasInterface('mageekguy\atoum\exception')
+				->extends('runtimeException')
+				->extends('unexpectedValueException')
+				->implements('mageekguy\atoum\exception')
 		;
 	}
 }

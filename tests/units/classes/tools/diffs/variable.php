@@ -53,60 +53,46 @@ class variable extends atoum\test
 
 	public function testSetExpected()
 	{
-		$diff = new tools\diffs\variable();
-
 		$this
-			->object($diff->setExpected($variable = uniqid()))->isIdenticalTo($diff)
-			->string($diff->getExpected())->isEqualTo(self::dumpAsString($variable))
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setExpected($variable = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getExpected())->isEqualTo(self::dumpAsString($variable))
 		;
 	}
 
 	public function testSetActual()
 	{
-		$diff = new tools\diffs\variable();
-
 		$this
-			->object($diff->setActual($variable = uniqid()))->isIdenticalTo($diff)
-			->string($diff->getActual())->isEqualTo(self::dumpAsString($variable))
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setActual($variable = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getActual())->isEqualTo(self::dumpAsString($variable))
 		;
 	}
 
 	public function testMake()
 	{
-		$diff = new tools\diffs\variable();
-
-		$exception = null;
-
-		try
-		{
-			$diff->make();
-		}
-		catch (\exception $exception) {}
-
 		$this
-			->exception($exception)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Expected is undefined')
-		;
-
-		$diff->setExpected($reference = uniqid());
-
-		try
-		{
-			$diff->make();
-		}
-		catch (\exception $exception) {}
-
-		$this
-			->exception($exception)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Actual is undefined')
-		;
-
-		$diff->setActual($reference);
-
-		$this
-			->array($diff->make())->isEqualTo(array(self::dumpAsString($reference)))
+			->if($diff = $this->newTestedInstance)
+			->then
+				->exception(function() use ($diff) {
+						$diff->make();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Expected is undefined')
+			->if($diff->setExpected($reference = uniqid()))
+			->then
+				->exception(function() use ($diff) {
+						$diff->make();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Actual is undefined')
+			->if($diff->setActual($reference))
+			->then
+				->array($diff->make())->isEqualTo(array(self::dumpAsString($reference)))
 		;
 	}
 
