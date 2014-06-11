@@ -95,7 +95,7 @@ class cli extends atoum\test
 
 	public function testSetErrorPrompt()
 	{
-		$this->assert
+		$this
 			->if($field = new runner\errors\cli())
 			->then
 				->object($field->setErrorPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
@@ -109,7 +109,7 @@ class cli extends atoum\test
 
 	public function testSetErrorColorizer()
 	{
-		$this->assert
+		$this
 			->if($field = new runner\errors\cli())
 			->then
 				->object($field->setErrorColorizer($colorizer = new colorizer()))->isIdenticalTo($field)

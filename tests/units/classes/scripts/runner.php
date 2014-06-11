@@ -22,7 +22,7 @@ class runner extends atoum\test
 
 	public function testClassConstants()
 	{
-		$this->assert
+		$this
 			->string(testedClass::defaultConfigFile)->isEqualTo('.atoum.php')
 			->string(testedClass::defaultBootstrapFile)->isEqualTo('.bootstrap.atoum.php')
 		;

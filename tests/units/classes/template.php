@@ -12,122 +12,100 @@ class template extends atoum\test
 {
 	public function test__construct()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->string($template->getData())->isEmpty()
-		;
-
-		$template = new atoum\template($data = uniqid());
-
-		$this->assert
-			->string($template->getData())->isEqualTo($data)
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->string($this->testedInstance->getData())->isEmpty()
+			->if($this->newTestedInstance($data = uniqid()))
+			->then
+				->string($this->testedInstance->getData())->isEqualTo($data)
 		;
 	}
 
 	public function test__toString()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->string($template->getData())->isEmpty()
-			->boolean($template->hasChildren())->isFalse()
-			->variable($template->getId())->isNull()
-			->variable($template->getTag())->isNull()
-		;
-
-		$template = new atoum\template($data = uniqid());
-
-		$this->assert
-			->string($template->getData())->isEqualTo($data)
-			->boolean($template->hasChildren())->isFalse()
-			->variable($template->getId())->isNull()
-			->variable($template->getTag())->isNull()
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->string($this->testedInstance->getData())->isEmpty()
+				->boolean($this->testedInstance->hasChildren())->isFalse()
+				->variable($this->testedInstance->getId())->isNull()
+				->variable($this->testedInstance->getTag())->isNull()
+			->if($this->newTestedInstance($data = uniqid()))
+			->then
+				->string($this->testedInstance->getData())->isEqualTo($data)
+				->boolean($this->testedInstance->hasChildren())->isFalse()
+				->variable($this->testedInstance->getId())->isNull()
+				->variable($this->testedInstance->getTag())->isNull()
 		;
 	}
 
 	public function test__get()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->object($iterator = $template->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isZero()
-		;
-
-		$template->addChild($childTag = new atoum\template\tag(uniqid()));
-
-		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(1)
-			->object($iterator->current())->isIdenticalTo($childTag)
-		;
-
-		$template->addChild($otherChildTag = new atoum\template\tag($childTag->getTag()));
-
-		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(2)
-			->object($iterator->current())->isIdenticalTo($childTag)
-			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
-		;
-
-		$template->addChild($anotherChildTag = new atoum\template\tag(uniqid()));
-
-		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(2)
-			->object($iterator->current())->isIdenticalTo($childTag)
-			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
-			->object($iterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(1)
-			->object($iterator->current())->isIdenticalTo($anotherChildTag)
-		;
-
-		$childTag->addChild($littleChildTag  = new atoum\template\tag($childTag->getTag()));
-
-		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(3)
-			->object($iterator->current())->isIdenticalTo($childTag)
-			->object($iterator->next()->current())->isIdenticalTo($littleChildTag)
-			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
-			->object($iterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(1)
-			->object($iterator->current())->isIdenticalTo($anotherChildTag)
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->object($iterator = $this->testedInstance->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isZero()
+			->if($this->testedInstance->addChild($childTag = new atoum\template\tag(uniqid())))
+			->then
+				->object($iterator = $this->testedInstance->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(1)
+				->object($iterator->current())->isIdenticalTo($childTag)
+			->if($this->testedInstance->addChild($otherChildTag = new atoum\template\tag($childTag->getTag())))
+			->then
+				->object($iterator = $this->testedInstance->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(2)
+				->object($iterator->current())->isIdenticalTo($childTag)
+				->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
+			->if($this->testedInstance->addChild($anotherChildTag = new atoum\template\tag(uniqid())))
+			->then
+				->object($iterator = $this->testedInstance->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(2)
+				->object($iterator->current())->isIdenticalTo($childTag)
+				->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
+				->object($iterator = $this->testedInstance->{$anotherChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(1)
+				->object($iterator->current())->isIdenticalTo($anotherChildTag)
+			->if($childTag->addChild($littleChildTag  = new atoum\template\tag($childTag->getTag())))
+			->then
+				->object($iterator = $this->testedInstance->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(3)
+				->object($iterator->current())->isIdenticalTo($childTag)
+				->object($iterator->next()->current())->isIdenticalTo($littleChildTag)
+				->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
+				->object($iterator = $this->testedInstance->{$anotherChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(1)
+				->object($iterator->current())->isIdenticalTo($anotherChildTag)
 		;
 	}
 
 	public function test__set()
 	{
-		$template = new atoum\template();
-
-		$template
-			->addChild($tag  = new atoum\template\tag(uniqid()))
-			->{$tag->getTag()} = $data = uniqid()
-		;
-
-		$this->assert
-			->string($tag->getData())->isEqualTo($data)
-		;
-
-		$tag->addChild($childTag  = new atoum\template\tag($tag->getTag()));
-
-		$template->{$tag->getTag()} = $data;
-
-		$this->assert
-			->string($tag->getData())->isEqualTo($data)
-			->string($childTag->getData())->isEqualTo($data)
-		;
-
-		$tag->addChild($otherChildTag = new atoum\template\tag(uniqid()));
-
-		$template->{$otherChildTag->getTag()} = $otherData = uniqid();
-
-		$this->assert
-			->string($tag->getData())->isEqualTo($data)
-			->string($childTag->getData())->isEqualTo($data)
-			->string($otherChildTag->getData())->isEqualTo($otherData)
+		$this
+			->if(
+				$this->newTestedInstance,
+				$this->testedInstance
+					->addChild($tag  = new atoum\template\tag(uniqid()))
+					->{$tag->getTag()} = $data = uniqid()
+			)
+			->then
+				->string($tag->getData())->isEqualTo($data)
+			->if(
+				$tag->addChild($childTag  = new atoum\template\tag($tag->getTag())),
+				$this->testedInstance->{$tag->getTag()} = $data
+			)
+			->then
+				->string($tag->getData())->isEqualTo($data)
+				->string($childTag->getData())->isEqualTo($data)
+			->if(
+				$tag->addChild($otherChildTag = new atoum\template\tag(uniqid())),
+				$this->testedInstance->{$otherChildTag->getTag()} = $otherData = uniqid()
+			)
+			->then
+				->string($tag->getData())->isEqualTo($data)
+				->string($childTag->getData())->isEqualTo($data)
+				->string($otherChildTag->getData())->isEqualTo($otherData)
 		;
 	}
 

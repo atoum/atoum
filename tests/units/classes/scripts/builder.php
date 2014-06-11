@@ -154,7 +154,7 @@ class builder extends atoum\test
 
 	public function testSetTaggerEngine()
 	{
-		$this->assert
+		$this
 			->if($builder = new testedClass(uniqid()))
 			->then
 				->object($builder->setTaggerEngine($taggerEngine = new atoum\scripts\tagger\engine()))->isIdenticalTo($builder)
@@ -216,7 +216,7 @@ class builder extends atoum\test
 
 	public function testSetDestinationDirectory()
 	{
-		$this->assert
+		$this
 			->if($builder = new testedClass(uniqid()))
 			->then
 				->object($builder->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($builder)

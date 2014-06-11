@@ -3,8 +3,7 @@
 namespace mageekguy\atoum\tests\units;
 
 use
-	mageekguy\atoum,
-	mock\mageekguy\atoum\reader as testedClass
+	mageekguy\atoum
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -19,22 +18,22 @@ class reader extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($reader = new testedClass())
+			->if($this->newTestedInstance)
 			->then
-				->object($reader->getAdapter())->isEqualTo(new atoum\adapter())
-			->if($reader = new testedClass($adapter = new atoum\adapter()))
+				->object($this->testedInstance->getAdapter())->isEqualTo(new atoum\adapter())
+			->if($this->newTestedInstance($adapter = new atoum\adapter()))
 			->then
-				->object($reader->getAdapter())->isIdenticalTo($adapter)
+				->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 
 	public function testSetAdapter()
 	{
-		$writer = new \mock\mageekguy\atoum\writer();
-
-		$this->assert
-			->object($writer->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($writer)
-			->object($writer->getAdapter())->isIdenticalTo($adapter)
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->setAdapter($adapter = new atoum\adapter()))->isTestedInstance
+				->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 }

@@ -17,7 +17,7 @@ class controller extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass->isSubclassOf('mageekguy\atoum\test\adapter')
 		;
 	}

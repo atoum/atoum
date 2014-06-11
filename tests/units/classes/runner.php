@@ -15,7 +15,7 @@ class runner extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass
 				->hasInterface('mageekguy\atoum\observable')
 			->string(atoum\runner::atoumVersionConstant)->isEqualTo('mageekguy\atoum\version')

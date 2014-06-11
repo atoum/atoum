@@ -11,15 +11,13 @@ require_once __DIR__ . '/../../../runner.php';
 
 class unexpectedValue extends atoum\test
 {
-	public function test__construct()
+	public function testClass()
 	{
-		$unexpectedValueException = new runtime\unexpectedValue();
-
-		$this->assert
-			->object($unexpectedValueException)
-				->isInstanceOf('runtimeException')
-				->isInstanceOf('unexpectedValueException')
-				->isInstanceOf('mageekguy\atoum\exception')
+		$this
+			->testedClass
+				->isSubclassOf('runtimeException')
+				->isSubclassOf('unexpectedValueException')
+				->hasInterface('mageekguy\atoum\exception')
 		;
 	}
 }
