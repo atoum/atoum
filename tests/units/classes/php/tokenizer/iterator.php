@@ -577,7 +577,7 @@ class iterator extends atoum\test
 				->integer($otherInnerIterator->key())->isZero()
 				->object($otherInnerIterator->current())->isIdenticalTo($token3)
 				->exception(function() use ($iterator, $innerIterator) {
-						$this->testedInstance->append($innerIterator);
+						$iterator->append($innerIterator);
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')

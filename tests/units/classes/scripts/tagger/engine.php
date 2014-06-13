@@ -173,7 +173,7 @@ class engine extends atoum\test
 			)
 			->then
 				->exception(function() use ($tagger) {
-						$this->testedInstance->tagVersion(uniqid());
+						$tagger->tagVersion(uniqid());
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -203,7 +203,7 @@ class engine extends atoum\test
 			->if($adapter->resetCalls()->file_get_contents[2] = false)
 			->then
 				->exception(function() use ($tagger) {
-						$this->testedInstance->tagVersion(uniqid());
+						$tagger->tagVersion(uniqid());
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
@@ -215,7 +215,7 @@ class engine extends atoum\test
 			)
 			->then
 				->exception(function() use ($tagger) {
-						$this->testedInstance->tagVersion(uniqid());
+						$tagger->tagVersion(uniqid());
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
