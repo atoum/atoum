@@ -310,7 +310,7 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter, & $size) { $asserter->hasSize($size = rand(1, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($badSize)
-				->mock($locale)->call('_')->withArguments('%s has not size %d', $asserter, $size)->once
+				->mock($locale)->call('_')->withArguments('%s has size %d, expected size %d', $asserter, 0, $size)->once
 
 				->exception(function() use ($asserter, & $failMessage) { $asserter->hasSize(rand(1, PHP_INT_MAX), $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')

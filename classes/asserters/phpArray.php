@@ -190,7 +190,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 		}
 		else
 		{
-			$this->fail($failMessage ?: $this->_('%s has not size %d', $this, $size));
+			$this->fail($failMessage ?: $this->_('%s has size %d, expected size %d', $this, sizeof($this->valueIsSet()->value), $size));
 		}
 
 		return $this;

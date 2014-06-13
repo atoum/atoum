@@ -88,7 +88,7 @@ class string extends asserters\variable
 
 	public function isEqualTo($value, $failMessage = null)
 	{
-		return parent::isEqualTo($value, $failMessage ?: $this->_('strings are not equals'));
+		return parent::isEqualTo($value, $failMessage ?: $this->_('strings are not equal'));
 	}
 
 	public function isEqualToContentsOfFile($path, $failMessage = null)
@@ -103,7 +103,7 @@ class string extends asserters\variable
 		}
 		else
 		{
-			return parent::isEqualTo($fileContents, $failMessage ?: $this->_('string is not equals to contents of file %s', $path));
+			return parent::isEqualTo($fileContents, $failMessage ?: $this->_('string is not equal to contents of file %s', $path));
 		}
 	}
 

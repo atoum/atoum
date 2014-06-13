@@ -102,7 +102,7 @@ class stream extends atoum\test
 				->exception(function() use ($asserter) { $asserter->isWrited(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($streamNotWrited)
-				->mock($locale)->call('_')->withArguments('stream %s is not writed', $streamController)->once
+				->mock($locale)->call('_')->withArguments('stream %s is not written', $streamController)->once
 
 				->exception(function() use ($asserter, & $failMessage) { $asserter->isWrited($failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -120,7 +120,7 @@ class stream extends atoum\test
 				->exception(function() use ($asserter) { $asserter->isWrited(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($streamNotWrited)
-				->mock($locale)->call('_')->withArguments('stream %s is not writed', $streamController)->once
+				->mock($locale)->call('_')->withArguments('stream %s is not written', $streamController)->once
 
 				->exception(function() use ($asserter, & $failMessage) { $asserter->isWrited($failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')

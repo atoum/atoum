@@ -120,7 +120,7 @@ class string extends atoum\test
 				->exception(function() use ($asserter, & $secondString) { $asserter->isEqualTo($secondString = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notEqual . PHP_EOL . $diffValue)
-				->mock($locale)->call('_')->withArguments('strings are not equals')->once
+				->mock($locale)->call('_')->withArguments('strings are not equal')->once
 				->mock($diff)
 					->call('setExpected')->withArguments($secondString)->once
 					->call('setActual')->withArguments($firstString)->once
@@ -168,7 +168,7 @@ class string extends atoum\test
 				->exception(function() use ($asserter, $path) { $asserter->isEqualToContentsOfFile($path); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notEqual . PHP_EOL . $diffValue)
-				->mock($locale)->call('_')->withArguments('string is not equals to contents of file %s', $path)->once
+				->mock($locale)->call('_')->withArguments('string is not equal to contents of file %s', $path)->once
 				->mock($diff)
 					->call('setExpected')->withArguments($fileContents)->once
 					->call('setActual')->withArguments($firstString)->once
