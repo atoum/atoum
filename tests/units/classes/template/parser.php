@@ -285,51 +285,41 @@ class parser extends atoum\test
                     ->hasMessage('Tag \'' . $tag . '\' must be closed')
                     ->hasErrorLine(strlen($eols) + 1)
                     ->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
-		;
-
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
-		$secondTag = '</' . template\parser::defaultNamespace . ':' . ($notOpenTag = uniqid()) . '  ' . "\t" . '    >';
-
-		$adapter->file_get_contents = $firstTag . $secondTag;
-
-		$this->assert
-			->parserException(function() use ($parser) {
-					$parser->checkFile(uniqid());
-				}
-			)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('mageekguy\atoum\template\parser\exception')
-				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
-				->hasErrorLine(1)
-				->hasErrorOffset(strlen($firstTag) + 1)
-		;
-
-		$adapter->file_get_contents = $eols . $firstTag . $secondTag;
-
-		$this->assert
-			->parserException(function() use ($parser) {
-					$parser->checkFile(uniqid());
-				}
-			)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('mageekguy\atoum\template\parser\exception')
-				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
-				->hasErrorLine(strlen($eols) + 1)
-				->hasErrorOffset(strlen($firstTag) + 1)
-		;
-
-		$adapter->file_get_contents = $eols . $spaces . $firstTag . $secondTag;
-
-		$this->assert
-			->parserException(function() use ($parser, $firstTag, $secondTag, $eols, $spaces) {
-					$parser->checkFile($eols . $spaces . $firstTag . $secondTag);
-				}
-			)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('mageekguy\atoum\template\parser\exception')
-				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
-				->hasErrorLine(strlen($eols) + 1)
-				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
+			->if($firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>')
+			->and($secondTag = '</' . template\parser::defaultNamespace . ':' . ($notOpenTag = uniqid()) . '  ' . "\t" . '    >')
+			->and($adapter->file_get_contents = $firstTag . $secondTag)
+			->then
+				->parserException(function() use ($parser) {
+						$parser->checkFile(uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('mageekguy\atoum\template\parser\exception')
+					->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+					->hasErrorLine(1)
+					->hasErrorOffset(strlen($firstTag) + 1)
+			->if($adapter->file_get_contents = $eols . $firstTag . $secondTag)
+			->then
+				->parserException(function() use ($parser) {
+						$parser->checkFile(uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('mageekguy\atoum\template\parser\exception')
+					->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+					->hasErrorLine(strlen($eols) + 1)
+					->hasErrorOffset(strlen($firstTag) + 1)
+			->if($adapter->file_get_contents = $eols . $spaces . $firstTag . $secondTag)
+			->then
+				->parserException(function() use ($parser, $firstTag, $secondTag, $eols, $spaces) {
+						$parser->checkFile($eols . $spaces . $firstTag . $secondTag);
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('mageekguy\atoum\template\parser\exception')
+					->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+					->hasErrorLine(strlen($eols) + 1)
+					->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
 		;
 	}
 
@@ -434,153 +424,119 @@ class parser extends atoum\test
 
 	public function testParseFile()
 	{
-		$parser = new template\parser(null, $adapter = new test\adapter());
-
-		$adapter->file_get_contents = false;
-
-		$this->assert
-			->exception(function() use ($parser, & $path) {
-					$parser->parseFile($path = uniqid());
-				}
-			)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to get contents from file \'' . $path . '\'')
-		;
-
-		$adapter->file_get_contents = '';
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
-			->array($root->getChildren())->isEmpty()
-		;
-
-		$adapter->file_get_contents = $string = uniqid();
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
-			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
-			->string($root->getChild(0)->getData())->isEqualTo($string)
-		;
-
-		$adapter->file_get_contents = $string = uniqid() . "\n" . uniqid() . "\n";
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
-			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
-			->string($root->getChild(0)->getData())->isEqualTo($string)
-		;
-
-		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' />';
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
-			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
-			->string($root->getChild(0)->getTag())->isEqualTo($tag)
-			->variable($root->getChild(0)->getId())->isNull()
-			->string($root->getChild(0)->getData())->isEmpty()
-			->integer($root->getChild(0)->getLine())->isEqualTo(1)
-			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
-		;
-
-		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>';
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
-			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
-			->string($root->getChild(0)->getTag())->isEqualTo($tag)
-			->variable($root->getChild(0)->getId())->isNull()
-			->string($root->getChild(0)->getData())->isEmpty()
-			->integer($root->getChild(0)->getLine())->isEqualTo(1)
-			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
-		;
-
-		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '" />';
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
-			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
-			->string($root->getChild(0)->getTag())->isEqualTo($tag)
-			->string($root->getChild(0)->getId())->isEqualTo($id)
-			->string($root->getChild(0)->getData())->isEmpty()
-			->integer($root->getChild(0)->getLine())->isEqualTo(1)
-			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
-		;
-
-		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '"/>';
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
-			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
-			->string($root->getChild(0)->getTag())->isEqualTo($tag)
-			->string($root->getChild(0)->getId())->isEqualTo($id)
-			->string($root->getChild(0)->getData())->isEmpty()
-			->integer($root->getChild(0)->getLine())->isEqualTo(1)
-			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
-		;
-
-		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>';
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
-			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
-			->string($root->getChild(0)->getTag())->isEqualTo($tag)
-			->variable($root->getChild(0)->getId())->isNull()
-			->string($root->getChild(0)->getData())->isEmpty()
-			->integer($root->getChild(0)->getLine())->isEqualTo(1)
-			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
-		;
-
-		$adapter->file_get_contents = ($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid());
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
-			->array($root->getChildren())->hasSize(3)
-			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
-			->string($root->getChild(0)->getData())->isEqualTo($string1)
-			->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
-			->variable($root->getChild(1)->getId())->isNull()
-			->string($root->getChild(1)->getData())->isEmpty()
-			->integer($root->getChild(1)->getLine())->isEqualTo(1)
-			->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
-			->object($root->getChild(2))->isInstanceOf('mageekguy\atoum\template\data')
-			->string($root->getChild(2)->getData())->isEqualTo($string2)
-		;
-
-		$adapter->file_get_contents = ($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '">' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid());
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
-			->array($root->getChildren())->hasSize(3)
-			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
-			->string($root->getChild(0)->getData())->isEqualTo($string1)
-			->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
-			->string($root->getChild(1)->getId())->isEqualTo($id)
-			->string($root->getChild(1)->getData())->isEmpty()
-			->integer($root->getChild(1)->getLine())->isEqualTo(1)
-			->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
-			->object($root->getChild(2))->isInstanceOf('mageekguy\atoum\template\data')
-			->string($root->getChild(2)->getData())->isEqualTo($string2)
-		;
-
-		$adapter->file_get_contents = ($string = str_repeat("\n", 6)) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>';
-
-		$this->assert
-			->object($root = $parser->parseFile(uniqid()))
-			->array($root->getChildren())->hasSize(2)
-			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
-			->string($root->getChild(0)->getData())->isEqualTo($string)
-			->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
-			->variable($root->getChild(1)->getId())->isNull()
-			->string($root->getChild(1)->getData())->isEmpty()
-			->integer($root->getChild(1)->getLine())->isEqualTo(7)
-			->integer($root->getChild(1)->getOffset())->isEqualTo(1)
+		$this
+			->if($parser = new template\parser(null, $adapter = new test\adapter()))
+			->and($adapter->file_get_contents = false)
+			->then
+				->exception(function() use ($parser, & $path) {
+						$parser->parseFile($path = uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to get contents from file \'' . $path . '\'')
+			->if($adapter->file_get_contents = '')
+			->then
+				->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
+				->array($root->getChildren())->isEmpty()
+			->if($adapter->file_get_contents = $string = uniqid())
+			->then
+				->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
+				->array($root->getChildren())->hasSize(1)
+				->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
+				->string($root->getChild(0)->getData())->isEqualTo($string)
+			->if($adapter->file_get_contents = $string = uniqid() . "\n" . uniqid() . "\n")
+			->then
+				->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
+				->array($root->getChildren())->hasSize(1)
+				->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
+				->string($root->getChild(0)->getData())->isEqualTo($string)
+			->if($adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' />')
+			->then
+				->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
+				->array($root->getChildren())->hasSize(1)
+				->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
+				->string($root->getChild(0)->getTag())->isEqualTo($tag)
+				->variable($root->getChild(0)->getId())->isNull()
+				->string($root->getChild(0)->getData())->isEmpty()
+				->integer($root->getChild(0)->getLine())->isEqualTo(1)
+				->integer($root->getChild(0)->getOffset())->isEqualTo(1)
+			->if($adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>')
+			->then
+				->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
+				->array($root->getChildren())->hasSize(1)
+				->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
+				->string($root->getChild(0)->getTag())->isEqualTo($tag)
+				->variable($root->getChild(0)->getId())->isNull()
+				->string($root->getChild(0)->getData())->isEmpty()
+				->integer($root->getChild(0)->getLine())->isEqualTo(1)
+				->integer($root->getChild(0)->getOffset())->isEqualTo(1)
+			->if($adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '" />')
+			->then
+				->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
+				->array($root->getChildren())->hasSize(1)
+				->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
+				->string($root->getChild(0)->getTag())->isEqualTo($tag)
+				->string($root->getChild(0)->getId())->isEqualTo($id)
+				->string($root->getChild(0)->getData())->isEmpty()
+				->integer($root->getChild(0)->getLine())->isEqualTo(1)
+				->integer($root->getChild(0)->getOffset())->isEqualTo(1)
+			->if($adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '"/>')
+			->then
+				->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
+				->array($root->getChildren())->hasSize(1)
+				->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
+				->string($root->getChild(0)->getTag())->isEqualTo($tag)
+				->string($root->getChild(0)->getId())->isEqualTo($id)
+				->string($root->getChild(0)->getData())->isEmpty()
+				->integer($root->getChild(0)->getLine())->isEqualTo(1)
+				->integer($root->getChild(0)->getOffset())->isEqualTo(1)
+			->if($adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>')
+			->then
+				->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
+				->array($root->getChildren())->hasSize(1)
+				->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
+				->string($root->getChild(0)->getTag())->isEqualTo($tag)
+				->variable($root->getChild(0)->getId())->isNull()
+				->string($root->getChild(0)->getData())->isEmpty()
+				->integer($root->getChild(0)->getLine())->isEqualTo(1)
+				->integer($root->getChild(0)->getOffset())->isEqualTo(1)
+			->if($adapter->file_get_contents = ($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid()))
+			->then
+				->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
+				->array($root->getChildren())->hasSize(3)
+				->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
+				->string($root->getChild(0)->getData())->isEqualTo($string1)
+				->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
+				->variable($root->getChild(1)->getId())->isNull()
+				->string($root->getChild(1)->getData())->isEmpty()
+				->integer($root->getChild(1)->getLine())->isEqualTo(1)
+				->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
+				->object($root->getChild(2))->isInstanceOf('mageekguy\atoum\template\data')
+				->string($root->getChild(2)->getData())->isEqualTo($string2)
+			->if($adapter->file_get_contents = ($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '">' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid()))
+			->then
+				->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
+				->array($root->getChildren())->hasSize(3)
+				->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
+				->string($root->getChild(0)->getData())->isEqualTo($string1)
+				->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
+				->string($root->getChild(1)->getId())->isEqualTo($id)
+				->string($root->getChild(1)->getData())->isEmpty()
+				->integer($root->getChild(1)->getLine())->isEqualTo(1)
+				->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
+				->object($root->getChild(2))->isInstanceOf('mageekguy\atoum\template\data')
+				->string($root->getChild(2)->getData())->isEqualTo($string2)
+			->if($adapter->file_get_contents = ($string = str_repeat("\n", 6)) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>')
+			->then
+				->object($root = $parser->parseFile(uniqid()))
+				->array($root->getChildren())->hasSize(2)
+				->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
+				->string($root->getChild(0)->getData())->isEqualTo($string)
+				->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
+				->variable($root->getChild(1)->getId())->isNull()
+				->string($root->getChild(1)->getData())->isEmpty()
+				->integer($root->getChild(1)->getLine())->isEqualTo(7)
+				->integer($root->getChild(1)->getOffset())->isEqualTo(1)
 		;
 	}
 }

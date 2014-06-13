@@ -32,14 +32,14 @@ class svn extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($svn = new vcs\svn())
+			->if($this->newTestedInstance)
 			->then
-				->object($svn->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-				->variable($svn->getRepositoryUrl())->isNull()
-			->if($svn = new vcs\svn($adapter = new atoum\adapter()))
+				->object($this->testedInstance->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->variable($this->testedInstance->getRepositoryUrl())->isNull()
+			->if($this->newTestedInstance($adapter = new atoum\adapter()))
 			->then
-				->object($svn->getAdapter())->isIdenticalTo($adapter)
-				->variable($svn->getRepositoryUrl())->isNull()
+				->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
+				->variable($this->testedInstance->getRepositoryUrl())->isNull()
 		;
 	}
 
@@ -48,10 +48,10 @@ class svn extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->extension_loaded = true)
-			->and($svn = new vcs\svn($adapter))
+			->and($this->newTestedInstance($adapter))
 			->then
-				->object($svn->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($svn)
-				->object($svn->getAdapter())->isIdenticalTo($adapter)
+				->object($this->testedInstance->setAdapter($adapter = new atoum\adapter()))->isTestedInstance
+				->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 
@@ -60,12 +60,12 @@ class svn extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->extension_loaded = true)
-			->and($svn = new vcs\svn($adapter))
+			->and($this->newTestedInstance($adapter))
 			->then
-				->object($svn->setRepositoryUrl($url = uniqid()))->isIdenticalTo($svn)
-				->string($svn->getRepositoryUrl())->isEqualTo($url)
-				->object($svn->setRepositoryUrl($url = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($svn)
-				->string($svn->getRepositoryUrl())->isEqualTo((string) $url)
+				->object($this->testedInstance->setRepositoryUrl($url = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getRepositoryUrl())->isEqualTo($url)
+				->object($this->testedInstance->setRepositoryUrl($url = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isTestedInstance
+				->string($this->testedInstance->getRepositoryUrl())->isEqualTo((string) $url)
 		;
 	}
 
@@ -74,12 +74,12 @@ class svn extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->extension_loaded = true)
-			->and($svn = new vcs\svn($adapter))
+			->and($this->newTestedInstance($adapter))
 			->then
-				->object($svn->setRevision($revisionNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($svn)
-				->integer($svn->getRevision())->isEqualTo($revisionNumber)
-				->object($svn->setRevision($revisionNumber = uniqid()))->isIdenticalTo($svn)
-				->integer($svn->getRevision())->isEqualTo((int) $revisionNumber)
+				->object($this->testedInstance->setRevision($revisionNumber = rand(1, PHP_INT_MAX)))->isTestedInstance
+				->integer($this->testedInstance->getRevision())->isEqualTo($revisionNumber)
+				->object($this->testedInstance->setRevision($revisionNumber = uniqid()))->isTestedInstance
+				->integer($this->testedInstance->getRevision())->isEqualTo((int) $revisionNumber)
 		;
 	}
 
@@ -88,237 +88,221 @@ class svn extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->extension_loaded = true)
-			->and($svn = new vcs\svn($adapter))
+			->and($this->newTestedInstance($adapter))
 			->then
-				->object($svn->setUsername($username = uniqid()))->isIdenticalTo($svn)
-				->string($svn->getUsername())->isEqualTo($username)
-				->object($svn->setUsername($username = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($svn)
-				->string($svn->getUsername())->isEqualTo((string) $username)
+				->object($this->testedInstance->setUsername($username = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getUsername())->isEqualTo($username)
+				->object($this->testedInstance->setUsername($username = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isTestedInstance
+				->string($this->testedInstance->getUsername())->isEqualTo((string) $username)
 		;
 	}
 
 	public function testSetPassword()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new vcs\svn($adapter);
-
-		$this->assert
-			->object($svn->setPassword($password = uniqid()))->isIdenticalTo($svn)
-			->string($svn->getPassword())->isEqualTo($password)
-			->object($svn->setPassword($password = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($svn)
-			->string($svn->getPassword())->isEqualTo((string) $password)
+		$this
+			->if(
+				$adapter = new atoum\test\adapter(),
+				$adapter->extension_loaded = true,
+				$this->newTestedInstance($adapter)
+			)
+			->then
+				->object($this->testedInstance->setPassword($password = uniqid()))->isTestedInstance
+				->string($this->testedInstance->getPassword())->isEqualTo($password)
+				->object($this->testedInstance->setPassword($password = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isTestedInstance
+				->string($this->testedInstance->getPassword())->isEqualTo((string) $password)
 		;
 	}
 
 	public function testGetWorkingDirectoryIterator()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new vcs\svn($adapter);
-
-		$svn->setWorkingDirectory(__DIR__);
-
-		$this->assert
-			->object($recursiveIteratorIterator = $svn->getWorkingDirectoryIterator())->isInstanceOf('recursiveIteratorIterator')
-			->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('recursiveDirectoryIterator')
-			->string($recursiveDirectoryIterator->current()->getPathInfo()->getPathname())->isEqualTo(__DIR__)
+		$this
+			->if(
+				$adapter = new atoum\test\adapter(),
+				$adapter->extension_loaded = true,
+				$this->newTestedInstance($adapter),
+				$this->testedInstance->setWorkingDirectory(__DIR__)
+			)
+			->then
+				->object($recursiveIteratorIterator = $this->testedInstance->getWorkingDirectoryIterator())->isInstanceOf('recursiveIteratorIterator')
+				->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('recursiveDirectoryIterator')
+				->string($recursiveDirectoryIterator->current()->getPathInfo()->getPathname())->isEqualTo(__DIR__)
 		;
 	}
 
 	public function testGetNextRevisions()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new vcs\svn($adapter);
-
-		$adapter->svn_auth_set_parameter = function() {};
-
-		$this->assert
-			->exception(function() use ($svn) {
-						$svn->getNextRevisions();
-					}
+		$this
+			->if(
+				$adapter = new atoum\test\adapter(),
+				$adapter->extension_loaded = true,
+				$adapter->svn_auth_set_parameter = function() {},
+				$svn = $this->newTestedInstance($adapter)
+			)
+			->then
+				->exception(function() use ($svn) {
+							$svn->getNextRevisions();
+						}
+					)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to get logs, repository url is undefined')
+				->adapter($adapter)
+					->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->never()
+					->call('svn_log')->never()
+			->if(
+				$this->testedInstance->setRepositoryUrl($repositoryUrl = uniqid()),
+				$adapter->svn_auth_set_parameter = function() {},
+				$adapter->svn_log = array(),
+				$adapter->resetCalls()
+			)
+			->then
+				->array($this->testedInstance->getNextRevisions())->isEmpty()
+				->adapter($adapter)
+					->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+					->call('svn_log')->withArguments($repositoryUrl, 1, SVN_REVISION_HEAD)->once()
+			->if(
+				$this->testedInstance->setRevision($revision = rand(1, PHP_INT_MAX)),
+				$adapter->resetCalls()
+			)
+			->then
+				->array($this->testedInstance->getNextRevisions())->isEmpty()
+				->adapter($adapter)
+					->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+					->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
+			->if(
+				$adapter->resetCalls(),
+				$adapter->svn_log = array(uniqid() => uniqid())
+			)
+			->then
+				->array($this->testedInstance->getNextRevisions())->isEmpty()
+				->adapter($adapter)
+					->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
+			->if(
+				$adapter->resetCalls(),
+				$adapter->svn_log = array(
+					array('rev' => $revision1 = uniqid()),
+					array('rev' => $revision2 = uniqid()),
+					array('rev' => $revision3 = uniqid())
 				)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to get logs, repository url is undefined')
-			->adapter($adapter)
-				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->never()
-				->call('svn_log')->never()
-		;
-
-		$svn->setRepositoryUrl($repositoryUrl = uniqid());
-
-		$adapter->svn_auth_set_parameter = function() {};
-		$adapter->svn_log = array();
-		$adapter->resetCalls();
-
-		$this->assert
-			->array($svn->getNextRevisions())->isEmpty()
-			->adapter($adapter)
-				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
-				->call('svn_log')->withArguments($repositoryUrl, 1, SVN_REVISION_HEAD)->once()
-		;
-
-		$svn->setRevision($revision = rand(1, PHP_INT_MAX));
-
-		$adapter->resetCalls();
-
-		$this->assert
-			->array($svn->getNextRevisions())->isEmpty()
-			->adapter($adapter)
-				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
-				->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
-		;
-
-		$adapter->resetCalls();
-
-		$adapter->svn_log = array(uniqid() => uniqid());
-
-		$this->assert
-			->array($svn->getNextRevisions())->isEmpty()
-			->adapter($adapter)->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
-		;
-
-		$adapter->resetCalls();
-
-		$adapter->svn_log = array(
-			array('rev' => $revision1 = uniqid()),
-			array('rev' => $revision2 = uniqid()),
-			array('rev' => $revision3 = uniqid())
-		);
-
-		$this->assert
-			->array($svn->getNextRevisions())->isEqualTo(array($revision1, $revision2, $revision3))
-			->adapter($adapter)->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
+			)
+			->then
+				->array($this->testedInstance->getNextRevisions())->isEqualTo(array($revision1, $revision2, $revision3))
+				->adapter($adapter)->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
 		;
 	}
 
 	public function testSetExportDirectory()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
-
-		$this->assert
-			->object($svn->setWorkingDirectory($workingDirectory = uniqid()))->isIdenticalTo($svn)
-			->string($svn->getWorkingDirectory())->isEqualTo($workingDirectory)
-			->object($svn->setWorkingDirectory($workingDirectory = rand(1, PHP_INT_MAX)))->isIdenticalTo($svn)
-			->string($svn->getWorkingDirectory())->isIdenticalTo((string) $workingDirectory)
+		$this
+			->if(
+				$adapter = new atoum\test\adapter(),
+				$adapter->extension_loaded = true,
+				$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter)
+			)
+			->then
+				->object($svn->setWorkingDirectory($workingDirectory = uniqid()))->isIdenticalTo($svn)
+				->string($svn->getWorkingDirectory())->isEqualTo($workingDirectory)
+				->object($svn->setWorkingDirectory($workingDirectory = rand(1, PHP_INT_MAX)))->isIdenticalTo($svn)
+				->string($svn->getWorkingDirectory())->isIdenticalTo((string) $workingDirectory)
 		;
 	}
 
 	public function testExportRepository()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
-
-		$svn->getMockController()->cleanWorkingDirectory = $svn;
-
-		$this->assert
-			->exception(function() use ($svn) {
-						$svn->exportRepository(uniqid());
-					}
-				)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to export repository, repository url is undefined')
-			->adapter($adapter)
-				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->never()
-				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->never()
-				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->never()
-				->call('svn_checkout')->never()
-		;
-
-		$svn
-			->setRepositoryUrl($repositoryUrl = uniqid())
-			->setWorkingDirectory($workingDirectory = __DIR__)
-		;
-
-		$adapter->resetCalls();
-		$adapter->svn_checkout = false;
-		$adapter->svn_auth_set_parameter = function() {};
-
-		$this->assert
-			->exception(function() use ($svn) {
-						$svn->exportRepository();
-					}
-				)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
-			->adapter($adapter)
-				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
-				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->never()
-				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->never()
-				->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
-			->mock($svn)
-				->call('cleanWorkingDirectory')->once()
-		;
-
-		$svn
-			->setUsername(uniqid())
-			->getMockController()->resetCalls()
-		;
-
-		$adapter->resetCalls();
-
-		$this->assert
-			->exception(function() use ($svn) {
-						$svn->exportRepository();
-					}
-				)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
-			->adapter($adapter)
-				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
-				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->once()
-				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->never()
-				->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
-			->mock($svn)
-				->call('cleanWorkingDirectory')->once()
-		;
-
-		$svn
-			->setPassword(uniqid())
-			->getMockController()->resetCalls()
-		;
-
-		$adapter->resetCalls();
-
-		$this->assert
-			->exception(function() use ($svn) {
-						$svn->exportRepository();
-					}
-				)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
-			->adapter($adapter)
-				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
-				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->once()
-				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->once()
-				->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
-			->mock($svn)
-				->call('cleanWorkingDirectory')->once()
-		;
-
-		$svn->getMockController()->resetCalls();
-
-		$adapter->svn_checkout = true;
-		$adapter->resetCalls();
-
-		$this->assert
-			->object($svn->exportRepository())->isIdenticalTo($svn)
-			->adapter($adapter)
-				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
-				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->once()
-				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->once()
-				->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
-			->mock($svn)
-				->call('cleanWorkingDirectory')->once()
+		$this
+			->if(
+				$adapter = new atoum\test\adapter(),
+				$adapter->extension_loaded = true,
+				$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter),
+				$svn->getMockController()->cleanWorkingDirectory = $svn
+			)
+			->then
+				->exception(function() use ($svn) {
+							$svn->exportRepository(uniqid());
+						}
+					)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to export repository, repository url is undefined')
+				->adapter($adapter)
+					->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->never()
+					->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->never()
+					->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->never()
+					->call('svn_checkout')->never()
+			->if(
+				$svn
+					->setRepositoryUrl($repositoryUrl = uniqid())
+					->setWorkingDirectory($workingDirectory = __DIR__),
+				$adapter->resetCalls(),
+				$adapter->svn_checkout = false,
+				$adapter->svn_auth_set_parameter = function() {}
+			)
+			->then
+				->exception(function() use ($svn) {
+							$svn->exportRepository();
+						}
+					)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
+				->adapter($adapter)
+					->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+					->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->never()
+					->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->never()
+					->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
+				->mock($svn)
+					->call('cleanWorkingDirectory')->once()
+			->if(
+				$svn
+					->setUsername(uniqid())
+					->getMockController()->resetCalls(),
+				$adapter->resetCalls()
+			)
+			->then
+				->exception(function() use ($svn) {
+							$svn->exportRepository();
+						}
+					)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
+				->adapter($adapter)
+					->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+					->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->once()
+					->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->never()
+					->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
+				->mock($svn)
+					->call('cleanWorkingDirectory')->once()
+			->if(
+				$svn
+					->setPassword(uniqid())
+					->getMockController()->resetCalls(),
+				$adapter->resetCalls()
+			)
+			->then
+				->exception(function() use ($svn) {
+							$svn->exportRepository();
+						}
+					)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
+				->adapter($adapter)
+					->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+					->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->once()
+					->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->once()
+					->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
+				->mock($svn)
+					->call('cleanWorkingDirectory')->once()
+			->if(
+				$svn->getMockController()->resetCalls(),
+				$adapter->svn_checkout = true,
+				$adapter->resetCalls()
+			)
+			->then
+				->object($svn->exportRepository())->isIdenticalTo($svn)
+				->adapter($adapter)
+					->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+					->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->once()
+					->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->once()
+					->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
+				->mock($svn)
+					->call('cleanWorkingDirectory')->once()
 		;
 	}
 
