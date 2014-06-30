@@ -1,17 +1,34 @@
 <?php
 
-namespace mageekguy\atoum;
-
-use mageekguy\atoum\scripts;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\scripts
+;
 
 require_once __DIR__ . '/../classes/autoloader.php';
 
-if (defined(__NAMESPACE__ . '\scripts\coverage') === false)
+$coverage = new scripts\coverage(__FILE__);
+
+set_error_handler(
+	function($error, $message, $file, $line) use ($coverage) {
+		if (error_reporting() !== 0)
+		{
+            $coverage->writeError($message);
+
+			exit($error);
+		}
+	}
+);
+
+try
 {
-	define(__NAMESPACE__ . '\scripts\coverage', defined('atoum\scripts\coverage') === false ? __FILE__ : \atoum\scripts\coverage);
+    $coverage->run();
+}
+catch (\exception $exception)
+{
+    $coverage->writeError($exception->getMessage());
+
+	exit($exception->getCode());
 }
 
-if (scripts\coverage::autorunMustBeEnabled() === true)
-{
-	scripts\coverage::enableAutorun(constant(__NAMESPACE__ . '\scripts\coverage'));
-}
+exit(0);
