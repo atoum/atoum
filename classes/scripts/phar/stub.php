@@ -41,6 +41,7 @@ class stub extends scripts\runner
 		$this->writeMessage(self::padding . 'builder' . PHP_EOL);
 		$this->writeMessage(self::padding . 'tagger' . PHP_EOL);
 		$this->writeMessage(self::padding . 'treemap' . PHP_EOL);
+		$this->writeMessage(self::padding . 'coverage' . PHP_EOL);
 
 		return $this->stopRun();
 	}
