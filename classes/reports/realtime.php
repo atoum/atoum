@@ -29,6 +29,11 @@ abstract class realtime extends atoum\report
 		return $this->doAddWriter($writer);
 	}
 
+	public function isOverridableBy(report $report)
+	{
+		return ($report instanceof self) === false;
+	}
+
 	protected function write($event)
 	{
 		foreach ($this->writers as $writer)

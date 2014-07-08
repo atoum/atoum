@@ -13,6 +13,7 @@ class parser implements \iteratorAggregate
 	protected $handlers = array();
 	protected $defaultHandler = null;
 	protected $priorities = array();
+	protected $superglobals = null;
 
 	public function __construct(atoum\superglobals $superglobals = null)
 	{

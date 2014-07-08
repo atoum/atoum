@@ -106,6 +106,11 @@ class report implements observer
 		return $this;
 	}
 
+	public function isOverridableBy(report $report)
+	{
+		return $report !== $this;
+	}
+
 	protected function doAddWriter($writer)
 	{
 		$this->writers[] = $writer;

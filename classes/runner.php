@@ -615,7 +615,6 @@ class runner implements observable
 	{
 		if ($this->reportSet === null)
 		{
-
 			$this->removeReports()->addReport($report);
 
 			$this->reportSet = $report;
@@ -626,7 +625,7 @@ class runner implements observable
 
 	public function addReport(atoum\report $report)
 	{
-		if ($this->reportSet === null)
+		if ($this->reportSet === null || $this->reportSet->isOverridableBy($report))
 		{
 			$this->reports->attach($report);
 
