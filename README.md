@@ -70,7 +70,7 @@ namespace vendor\project\tests\units;
 
 require_once 'path/to/mageekguy.atoum.phar';
 
-include 'path/to/project/classes/helloWorld.php';
+include_once 'path/to/project/classes/helloWorld.php';
 
 use \mageekguy\atoum;
 use \vendor\project;
