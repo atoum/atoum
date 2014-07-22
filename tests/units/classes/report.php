@@ -100,4 +100,15 @@ class report extends atoum\test
 				->array($report->getFields())->isEmpty()
 		;
 	}
+
+	public function testIsOverridableBy()
+	{
+		$this
+			->if($report = new testedClass())
+			->and($otherReport = new testedClass())
+			->then
+				->boolean($report->isOverridableBy($report))->isFalse
+				->boolean($report->isOverridableBy($otherReport))->isTrue
+		;
+	}
 }

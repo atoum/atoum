@@ -161,11 +161,12 @@ class clover extends atoum\reports\asynchronous
 					{
 						$coveredLines++;
 						$file->appendChild($this->makeLineElement($document, $lineNumber));
-					}
-					else
-					{
-						$file->appendChild($this->makeLineElement($document, $lineNumber, 0));
-					}
+					} else {
+                        if ($cover !== -2)
+                        {
+                            $file->appendChild($this->makeLineElement($document, $lineNumber, 0));
+                        }
+                    }
 				}
 
 				if ($coveredLines === $totalLines)
