@@ -84,7 +84,7 @@ class parser implements \iteratorAggregate
 				{
 					case isset($priorities[$arg1]) === false:
 					case isset($priorities[$arg2]) === false:
-						return - PHP_INT_MAX;
+						return PHP_INT_MAX;
 
 					default:
 						return ($priorities[$arg1] > $priorities[$arg2] ? -1 : ($priorities[$arg1] == $priorities[$arg2] ? 0 : 1));
