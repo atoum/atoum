@@ -904,7 +904,8 @@ class runner extends atoum\script\configurable
 					},
 					array('-ulr', '--use-light-report'),
 					null,
-					$this->locale->_('Use "light" CLI report')
+					$this->locale->_('Use "light" CLI report'),
+					PHP_INT_MAX
 				)
 			->addArgumentHandler(
 					function($script, $argument, $values) {
@@ -920,7 +921,8 @@ class runner extends atoum\script\configurable
 					},
 					array('-utr', '--use-tap-report'),
 					null,
-					$this->locale->_('Use TAP report')
+					$this->locale->_('Use TAP report'),
+					PHP_INT_MAX
 				)
 			->addArgumentHandler(
 					function($script, $argument, $values) {

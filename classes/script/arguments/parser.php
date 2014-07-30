@@ -92,9 +92,9 @@ class parser implements \iteratorAggregate
 			}
 		);
 
-		foreach ($values as $argument => $values)
+		foreach ($values as $argument => $value)
 		{
-			$this->triggerHandlers($argument, $values, $script);
+			$this->triggerHandlers($argument, $value, $script);
 		}
 
 		return $this;
