@@ -46,11 +46,6 @@ class generator
 		return $this->adapter;
 	}
 
-	public function getMethod()
-	{
-		return new generator\method($this);
-	}
-
 	public function setReflectionClassFactory(\closure $factory = null)
 	{
 		$this->reflectionClassFactory = $factory ?: function($class) { return new \reflectionClass($class); };

@@ -53,15 +53,6 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testGetMethod()
-	{
-		$this
-			->if($generator = new testedClass())
-			->then
-				->object($generator->getMethod())->isEqualTo(new mock\generator\method($generator))
-		;
-	}
-
 	public function testSetDefaultNamespace()
 	{
 		$this
