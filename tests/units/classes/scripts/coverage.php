@@ -175,6 +175,11 @@ class coverage extends atoum\test
 							'Use clover report'
 						),
 						array(
+							array('-uxr', '--use-xunit-report'),
+							null,
+							'Use xUnit report'
+						),
+						array(
 							array('--debug'),
 							null,
 							'Enable debug mode'
@@ -346,6 +351,11 @@ class coverage extends atoum\test
 							array('-ucr', '--use-clover-report'),
 							null,
 							'Use clover report'
+						),
+						array(
+							array('-uxr', '--use-xunit-report'),
+							null,
+							'Use xUnit report'
 						),
 						array(
 							array('--debug'),
