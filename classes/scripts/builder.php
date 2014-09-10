@@ -15,6 +15,8 @@ class builder extends atoum\script\configurable
 	const defaultUnitTestRunnerScript = 'scripts/runner.php';
 	const defaultPharGeneratorScript = 'scripts/phar/generator.php';
 
+	private   $lockResource = null;
+
 	protected $php = null;
 	protected $vcs = null;
 	protected $taggerEngine = null;
@@ -293,12 +295,12 @@ class builder extends atoum\script\configurable
 
 			if ($this->reportTitle !== null)
 			{
-				$this->php->addArgument('-drt', sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()));
+				$this->php->addArgument('-drt',  sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()));
 			}
 
 			foreach ($this->runnerConfigurationFiles as $runnerConfigurationFile)
 			{
-				$this->php->addArgument('-c', $runnerConfigurationFile);
+				$this->php->addArgument('-c',  $runnerConfigurationFile);
 			}
 
 			try
@@ -658,36 +660,68 @@ class builder extends atoum\script\configurable
 		;
 	}
 
-	protected function doRun()
+	final protected function lock()
 	{
 		$runFile = $this->getRunFile();
+		$pid = trim(
+			@$this->adapter->file_get_contents($runFile)
+		);
 
-		$pid = trim(@$this->adapter->file_get_contents($runFile));
+		$pid_exists = is_numeric($pid);
 
-		if (is_numeric($pid) === false || $this->adapter->posix_kill($pid, 0) === false)
+		if ($pid_exists !== false && $this->adapter->function_exists('posix_kill'))
 		{
-			if ($this->pharCreationEnabled === true)
+			$pid_exists = $this->adapter->posix_kill($pid, 0);
+		}
+
+		if ($pid_exists !== false)
+		{
+			throw new exceptions\runtime(sprintf($this->locale->_('A process has locked run file \'%s\''), $runFile));
+		}
+
+		$this->lockResource = @$this->adapter->fopen($runFile, 'w+');
+
+		if ($this->lockResource === false)
+		{
+			throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $runFile));
+		}
+
+		if ($this->adapter->flock($this->lockResource, \LOCK_EX | \LOCK_NB) === false)
+		{
+			throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $runFile));
+		}
+
+		$this->adapter->fwrite($this->lockResource, $this->adapter->getmypid());
+
+		return true;
+	}
+
+	final protected function unlock()
+	{
+		if ($this->lockResource !== null)
+		{
+			$this->adapter->fclose($this->lockResource);
+
+			@$this->adapter->unlink($this->getRunFile());
+		}
+	}
+
+	protected function doRun()
+	{
+		if ($this->pharCreationEnabled === true && $this->lock())
+		{
+			try
 			{
-				$runFileResource = @$this->adapter->fopen($runFile, 'w+');
-
-				if ($runFileResource === false)
-				{
-					throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $runFile));
-				}
-
-				if ($this->adapter->flock($runFileResource, \LOCK_EX | \LOCK_NB) === false)
-				{
-					throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $runFile));
-				}
-
-				$this->adapter->fwrite($runFileResource, $this->adapter->getmypid());
-
 				$this->createPhar($this->version);
-
-				$this->adapter->fclose($runFileResource);
-
-				@$this->adapter->unlink($runFile);
 			}
+			catch (\Exception $exception)
+			{
+				$this->unlock();
+
+				throw $exception;
+			}
+
+			$this->unlock();
 		}
 
 		return $this;
