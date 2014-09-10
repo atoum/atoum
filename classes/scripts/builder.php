@@ -658,40 +658,80 @@ class builder extends atoum\script\configurable
 		;
 	}
 
+	protected function lock() {
+	
+		$runFile = $this->getRunFile();
+
+		$pid = trim(@$this->adapter->file_get_contents($runFile));
+		
+		$pid_exists = is_numeric($pid);
+
+		if ($pid_exists !== false && function_exists('posix_kill')) {
+			$pid_exists = $this->adapter->posix_kill($pid, 0);
+		}
+		
+		if ($pid_exists === false)
+		{
+				
+			$runFileResource = @$this->adapter->fopen($runFile, 'w+');
+
+			if ($runFileResource === false)
+			{
+				throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $runFile));
+			}
+
+			if ($this->adapter->flock($runFileResource, \LOCK_EX | \LOCK_NB) === false)
+			{
+				throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $runFile));
+			}
+			
+			$this->adapter->fwrite($runFileResource, $this->adapter->getmypid());
+			
+			return $runFileResource;
+			
+		} else {
+			throw new exceptions\runtime(sprintf($this->locale->_('A process has locked run file \'%s\''), $runFile));
+		}
+		
+		return false;
+	}
+	
+	protected function unlock($runFileResource) {
+	
+		$this->adapter->fclose($runFileResource);
+
+		@$this->adapter->unlink(
+			$this->getRunFile()
+		);
+		
+	}
+	
 	protected function doRun()
 	{
 		$alreadyRun = false;
 
-		$runFile = $this->getRunFile();
-
-		$pid = trim(@$this->adapter->file_get_contents($runFile));
-
-		if (is_numeric($pid) === false || $this->adapter->posix_kill($pid, 0) === false)
+		if ($this->pharCreationEnabled === true)
 		{
-			if ($this->pharCreationEnabled === true)
-			{
-				$runFileResource = @$this->adapter->fopen($runFile, 'w+');
+			$runFileResource = $this->lock();
+			
+			if ($runFileResource !== false) {
 
-				if ($runFileResource === false)
-				{
-					throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $runFile));
+				try {
+				
+					$this->createPhar($this->version);
+					
+				} catch (\Exception $e) {
+				
+					$this->unlock($runFileResource);
+					throw $e;
+					
 				}
-
-				if ($this->adapter->flock($runFileResource, \LOCK_EX | \LOCK_NB) === false)
-				{
-					throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $runFile));
-				}
-
-				$this->adapter->fwrite($runFileResource, $this->adapter->getmypid());
-
-				$this->createPhar($this->version);
-
-				$this->adapter->fclose($runFileResource);
-
-				@$this->adapter->unlink($runFile);
+				
+				$this->unlock($runFileResource);
+				
 			}
 		}
-
+		
 		return $this;
 	}
 
