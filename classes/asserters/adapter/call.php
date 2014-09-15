@@ -214,7 +214,7 @@ abstract class call extends atoum\asserter
 		{
 			if ($failMessage === null)
 			{
-				$failMessage = $this->__('%s is called %d time instead of %d', '%s is called %d times instead of %d', $callsNumber, $this->call, $callsNumber, $number);
+				$failMessage = $this->__('%s is called %d time instead of %d', '%s is called %d times instead of %d', $callsNumber, (string) $this->call, $callsNumber, $number);
 
 				if (sizeof($this->beforeCalls) > 0)
 				{
@@ -408,7 +408,7 @@ abstract class call extends atoum\asserter
 
 	protected function getCalls($call)
 	{
-		return $this->adapter->getCalls($call);
+		return $this->adapter->getCalls($call, $this->identicalCall);
 	}
 
 	protected function getCallsAsString()
