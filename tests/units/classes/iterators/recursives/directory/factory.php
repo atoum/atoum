@@ -14,7 +14,7 @@ class factory extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->implements('iteratorAggregate');
+		$this->testedClass->hasMethod('getIterator');
 	}
 
 	public function test__construct()
