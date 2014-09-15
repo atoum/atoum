@@ -22,4 +22,4 @@ before_script:
   - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s?/path/to/sources/directory?classes? .atoum.php || true"
   - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s/YouCoverallsProjectToken/$COVERALLS_REPO_TOKEN/ .atoum.php || true"
 script:
-  - php ./scripts/runner.php --test-it
+  - php ./scripts/runner.php --test-it -p php -ulr
