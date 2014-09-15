@@ -529,7 +529,7 @@ class runner implements observable
 
 	public function addTest($path)
 	{
-		if ($this->canAddTest === true)
+		if ($this->canAddTest === true && $this->adapter->is_file($path) === true)
 		{
 			$path = (string) $path;
 

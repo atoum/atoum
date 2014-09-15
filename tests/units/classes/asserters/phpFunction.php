@@ -185,6 +185,7 @@ class phpFunction extends atoum\test
 		;
 	}
 
+	/** @hhvm 2.4 */
 	public function testWasCalledWithoutAnyArguments()
 	{
 		$this

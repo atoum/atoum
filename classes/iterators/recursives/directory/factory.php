@@ -10,6 +10,7 @@ use
 
 class factory implements \iteratorAggregate
 {
+	protected $iteratorFactory = null;
 	protected $dotFilterFactory = null;
 	protected $acceptDots = false;
 	protected $extensionFilterFactory = null;
@@ -60,7 +61,7 @@ class factory implements \iteratorAggregate
 		return $this->extensionFilterFactory;
 	}
 
-	public function getIterator($path)
+	public function getIterator($path = null)
 	{
 		$iterator = call_user_func($this->iteratorFactory, $path);
 

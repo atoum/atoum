@@ -52,7 +52,7 @@ class concurrent extends test\engine
 		return true;
 	}
 
-	public function run(atoum\test $test)
+	public function run(atoum\test $test, $testWriterFactory = null)
 	{
 		$currentTestMethod = $test->getCurrentMethod();
 
@@ -135,10 +135,15 @@ class concurrent extends test\engine
 				$this->php->XDEBUG_CONFIG = $xdebugConfig;
 			}
 
+            $testWriterFactory = $testWriterFactory ?: function() {
+                return new atoum\writers\file(tempnam(sys_get_temp_dir(), 'test') . '.php');
+            };
+
 			$this->php
 				->reset()
 				->setBinaryPath($phpPath)
-				->run($phpCode)
+                ->addOption($testWriterFactory()->write($phpCode)->getFilename())
+                ->run()
 			;
 		}
 

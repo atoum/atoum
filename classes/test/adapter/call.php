@@ -111,7 +111,11 @@ class call
 					return ($a == $b ? 0 : -1);
 				};
 
-				return (sizeof($this->arguments) == sizeof(array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback)));
+				$keyCallback = function($a, $b) {
+					return ($a == $b ? 0 : ($a < $b ? -1 : 1));
+				};
+
+				return (sizeof($this->arguments) == sizeof(array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $keyCallback)));
 
 			default:
 				return false;
@@ -128,7 +132,11 @@ class call
 				return ($a === $b ? 0 : -1);
 			};
 
-			$isIdentical = ($this->arguments === array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback));
+			$keyCallback = function($a, $b) {
+				return ($a == $b ? 0 : ($a < $b ? -1 : 1));
+			};
+
+			$isIdentical = ($this->arguments === array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $keyCallback));
 		}
 
 		return $isIdentical;

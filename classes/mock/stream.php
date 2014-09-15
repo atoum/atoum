@@ -46,7 +46,7 @@ class stream
 			$name = $protocol . static::protocolSeparator . $name;
 		}
 
-		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, get_called_class(), 0) === false)
+		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, get_called_class()) === false)
 		{
 			throw new runtime('Unable to register ' . $protocol . ' stream');
 		}

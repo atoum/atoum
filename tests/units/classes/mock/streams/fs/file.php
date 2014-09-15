@@ -10,6 +10,7 @@ use
 
 require_once __DIR__ . '/../../../../runner.php';
 
+/** @hhvm 2.4.0 */
 class file extends atoum\test
 {
 	public function testClass()
