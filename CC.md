@@ -177,7 +177,7 @@ This is a good example:
 # So, if a bootstrap file is defined in a default config file, it will be available when arguments on CLI will be parsed
 
 // see http://www.floating-point-gui.de/errors/comparison/ for more informations
-``
+```
 
 Currently, atoum does not support PHPDoc.
 
