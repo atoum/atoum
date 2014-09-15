@@ -56,8 +56,8 @@ class coverage extends atoum\test
 						),
 						array(
 							array('--init'),
-							null,
-							'Create configuration and bootstrap files in the current directory'
+							'<path/to/directory>',
+							sprintf($this->testedInstance->getLocale()->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)'), $this->testedInstance->getDirectory())
 						),
 						array(
 							array('-p', '--php'),
@@ -224,8 +224,8 @@ class coverage extends atoum\test
 						),
 						array(
 							array('--init'),
-							null,
-							'Create configuration and bootstrap files in the current directory'
+							'<path/to/directory>',
+							sprintf($this->testedInstance->getLocale()->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)'), $this->testedInstance->getDirectory())
 						),
 						array(
 							array('-p', '--php'),

@@ -66,8 +66,8 @@ class runner extends atoum\test
 						),
 						array(
 							array('--init'),
-							null,
-							'Create configuration and bootstrap files in the current directory'
+							'<path/to/directory>',
+							sprintf($runner->getLocale()->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)'), $runner->getDirectory())
 						),
 						array(
 							array('-p', '--php'),
@@ -223,8 +223,8 @@ class runner extends atoum\test
 						),
 						array(
 							array('--init'),
-							null,
-							'Create configuration and bootstrap files in the current directory'
+							'<path/to/directory>',
+							sprintf($runner->getLocale()->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)'), $runner->getDirectory())
 						),
 						array(
 							array('-p', '--php'),
@@ -689,15 +689,30 @@ class runner extends atoum\test
 				->object($runner->init())->isIdenticalTo($runner)
 				->mock($prompt)
 					->call('ask')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')->never()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' already exists in ' . $runner->getDirectory() . ', type \'Y\' to overwrite it...')->never()
 				->mock($outputWriter)
 					->call('write')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in the current directory')->once()
-						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory')->once()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in ' . $runner->getDirectory())->once()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in ' . $runner->getDirectory())->once()
 				->adapter($adapter)
 					->call('copy')
 						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
 						->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->once()
+			->if($this->resetAdapter($adapter))
+			->and($this->resetMock($outputWriter))
+			->then
+				->object($runner->init($directory = uniqid()))->isIdenticalTo($runner)
+				->mock($prompt)
+					->call('ask')
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' already exists in ' . $directory . ', type \'Y\' to overwrite it...')->never()
+				->mock($outputWriter)
+					->call('write')
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in ' . $directory . DIRECTORY_SEPARATOR)->once()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in ' . $directory . DIRECTORY_SEPARATOR)->once()
+				->adapter($adapter)
+					->call('copy')
+						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', $directory . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
+						->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', $directory . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->once()
 			->if($this->resetAdapter($adapter))
 			->and($this->resetMock($outputWriter))
 			->and($adapter->file_exists = true)
@@ -706,12 +721,12 @@ class runner extends atoum\test
 				->object($runner->init())->isIdenticalTo($runner)
 				->mock($prompt)
 					->call('ask')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')->once()
-						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')->once()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' already exists in ' . $runner->getDirectory() . ', type \'Y\' to overwrite it...')->once()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' already exists in ' . $runner->getDirectory() . ', type \'Y\' to overwrite it...')->once()
 				->mock($outputWriter)
 					->call('write')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in the current directory')->once()
-						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory')->once()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in ' . $runner->getDirectory())->once()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in ' . $runner->getDirectory())->once()
 				->adapter($adapter)
 					->call('copy')
 						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
@@ -725,12 +740,12 @@ class runner extends atoum\test
 				->object($runner->init())->isIdenticalTo($runner)
 				->mock($prompt)
 					->call('ask')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')->once()
-						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')->once()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' already exists in ' . $runner->getDirectory() . ', type \'Y\' to overwrite it...')->once()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' already exists in ' . $runner->getDirectory() . ', type \'Y\' to overwrite it...')->once()
 				->mock($outputWriter)
 					->call('write')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in the current directory')->never()
-						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory')->never()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in ' . $runner->getDirectory())->never()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in ' . $runner->getDirectory())->never()
 				->adapter($adapter)
 					->call('copy')
 						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->never()
@@ -744,12 +759,12 @@ class runner extends atoum\test
 				->object($runner->init())->isIdenticalTo($runner)
 				->mock($prompt)
 					->call('ask')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')->once()
-						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')->once()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' already exists in ' . $runner->getDirectory() . ', type \'Y\' to overwrite it...')->once()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' already exists in ' . $runner->getDirectory() . ', type \'Y\' to overwrite it...')->once()
 				->mock($outputWriter)
 					->call('write')
-						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in the current directory' . PHP_EOL)->never()
-						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in the current directory' . PHP_EOL)->never()
+						->withArguments('Default configuration file \'' . testedClass::defaultConfigFile . '\' was successfully created in ' . $runner->getDirectory() . PHP_EOL)->never()
+						->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in ' . $runner->getDirectory() . PHP_EOL)->never()
 				->adapter($adapter)
 					->call('copy')
 						->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->never()
