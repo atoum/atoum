@@ -660,7 +660,7 @@ class builder extends atoum\script\configurable
 		;
 	}
 
-	protected function lock() {
+	final protected function lock() {
 	
 		$runFile = $this->getRunFile();
 		$pid     = trim(
@@ -699,7 +699,7 @@ class builder extends atoum\script\configurable
 		return false;
 	}
 	
-	protected function unlock() {
+	final protected function unlock() {
 	
 		if ($this->lockResource === null) return;
 		
