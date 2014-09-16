@@ -15,6 +15,8 @@ class builder extends atoum\script\configurable
 	const defaultUnitTestRunnerScript = 'scripts/runner.php';
 	const defaultPharGeneratorScript = 'scripts/phar/generator.php';
 
+	private   $lockResource = null;
+	
 	protected $php = null;
 	protected $vcs = null;
 	protected $taggerEngine = null;
@@ -661,8 +663,9 @@ class builder extends atoum\script\configurable
 	protected function lock() {
 	
 		$runFile = $this->getRunFile();
-
-		$pid = trim(@$this->adapter->file_get_contents($runFile));
+		$pid     = trim(
+			@$this->adapter->file_get_contents($runFile)
+		);
 		
 		$pid_exists = is_numeric($pid);
 
@@ -670,24 +673,24 @@ class builder extends atoum\script\configurable
 			$pid_exists = $this->adapter->posix_kill($pid, 0);
 		}
 		
-		if ($pid_exists === false)
-		{
+		if ($pid_exists === false) {
 				
-			$runFileResource = @$this->adapter->fopen($runFile, 'w+');
+			$this->lockResource = @$this->adapter->fopen($runFile, 'w+');
 
-			if ($runFileResource === false)
-			{
+			if ($this->lockResource === false) {
 				throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $runFile));
 			}
 
-			if ($this->adapter->flock($runFileResource, \LOCK_EX | \LOCK_NB) === false)
-			{
+			if ($this->adapter->flock($this->lockResource, \LOCK_EX | \LOCK_NB) === false) {
 				throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $runFile));
 			}
 			
-			$this->adapter->fwrite($runFileResource, $this->adapter->getmypid());
+			$this->adapter->fwrite(
+				$this->lockResource,
+				$this->adapter->getmypid()
+			);
 			
-			return $runFileResource;
+			return true;
 			
 		} else {
 			throw new exceptions\runtime(sprintf($this->locale->_('A process has locked run file \'%s\''), $runFile));
@@ -696,9 +699,11 @@ class builder extends atoum\script\configurable
 		return false;
 	}
 	
-	protected function unlock($runFileResource) {
+	protected function unlock() {
 	
-		$this->adapter->fclose($runFileResource);
+		if ($this->lockResource === null) return;
+		
+		$this->adapter->fclose($this->lockResource);
 
 		@$this->adapter->unlink(
 			$this->getRunFile()
@@ -712,23 +717,17 @@ class builder extends atoum\script\configurable
 
 		if ($this->pharCreationEnabled === true)
 		{
-			$runFileResource = $this->lock();
-			
-			if ($runFileResource !== false) {
+			if ($this->lock()) {
 
 				try {
-				
 					$this->createPhar($this->version);
-					
 				} catch (\Exception $e) {
-				
-					$this->unlock($runFileResource);
+					$this->unlock();
 					throw $e;
-					
 				}
 				
-				$this->unlock($runFileResource);
-				
+				$this->unlock();
+
 			}
 		}
 		
