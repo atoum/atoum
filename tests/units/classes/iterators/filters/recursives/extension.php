@@ -27,7 +27,7 @@ class extension extends atoum\test
 				->array($filter->getAcceptedExtensions())->isEqualTo($acceptedExtensions)
 			->if($filter = new recursives\extension(__DIR__, $acceptedExtensions))
 			->then
-				->object($filter->getInnerIterator())->isEqualTo(new \recursiveDirectoryIterator(__DIR__ ))
+				->object($filter->getInnerIterator())->isInstanceOf('recursiveDirectoryIterator')
 				->string($filter->getInnerIterator()->getPath())->isEqualTo(__DIR__)
 			->if($filter = new recursives\extension($path = uniqid(), $acceptedExtensions, function($path) use (& $innerIterator) { return ($innerIterator = new \mock\recursiveDirectoryIterator($path)); }))
 			->then
