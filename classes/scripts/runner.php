@@ -455,28 +455,33 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
-	public function init()
+	public function init($directory = null)
 	{
 		$resourceDirectory = static::getResourcesDirectory();
 		$currentDirectory = $this->getDirectory();
 
+		if ($directory !== null)
+		{
+			$currentDirectory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+		}
+
 		$defaultConfigFile = $currentDirectory . static::defaultConfigFile;
 
-		if ($this->adapter->file_exists($defaultConfigFile) === false || $this->prompt($this->locale->_('Default configuration file \'' . static::defaultConfigFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')) === 'Y')
+		if ($this->adapter->file_exists($defaultConfigFile) === false || $this->prompt($this->locale->_('Default configuration file \'' . static::defaultConfigFile . '\' already exists in ' . $currentDirectory . ', type \'Y\' to overwrite it...')) === 'Y')
 		{
 			$this
 				->copy($resourceDirectory . '/configurations/runner/atoum.php.dist', $defaultConfigFile)
-				->writeInfo($this->locale->_('Default configuration file \'' . static::defaultConfigFile . '\' was successfully created in the current directory'))
+				->writeInfo($this->locale->_('Default configuration file \'' . static::defaultConfigFile . '\' was successfully created in ' . $currentDirectory))
 			;
 		}
 
 		$bootstrapFile = $currentDirectory . static::defaultBootstrapFile;
 
-		if ($this->adapter->file_exists($bootstrapFile) == false || $this->prompt($this->locale->_('Default bootstrap file \'' . static::defaultBootstrapFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')) === 'Y')
+		if ($this->adapter->file_exists($bootstrapFile) == false || $this->prompt($this->locale->_('Default bootstrap file \'' . static::defaultBootstrapFile . '\' already exists in ' . $currentDirectory . ', type \'Y\' to overwrite it...')) === 'Y')
 		{
 			$this
 				->copy($resourceDirectory . '/configurations/runner/bootstrap.php.dist', $bootstrapFile)
-				->writeInfo($this->locale->_('Default bootstrap file \'' . static::defaultBootstrapFile . '\' was successfully created in the current directory'))
+				->writeInfo($this->locale->_('Default bootstrap file \'' . static::defaultBootstrapFile . '\' was successfully created in ' . $currentDirectory))
 			;
 		}
 
@@ -599,16 +604,16 @@ class runner extends atoum\script\configurable
 				)
 			->addArgumentHandler(
 					function($script, $argument, $values) {
-						if (sizeof($values) !== 0)
+						if (sizeof($values) === 0)
 						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							$values = array(getcwd());
 						}
 
-						$script->init();
+						$script->init(current($values));
 					},
 					array('--init'),
-					null,
-					$this->locale->_('Create configuration and bootstrap files in the current directory')
+					'<path/to/directory>',
+					sprintf($this->locale->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)'), $this->getDirectory())
 				)
 			->addArgumentHandler(
 					function($script, $argument, $path) {
