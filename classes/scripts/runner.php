@@ -51,7 +51,6 @@ class runner extends atoum\script\configurable
 			$this->infoWriter->addDecorator(new cli\colorizer('0;32'));
 		}
 
-
 		return $this;
 	}
 
@@ -455,6 +454,44 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
+	public function doNotfailIfVoidMethods()
+	{
+		$this->runner->doNotfailIfVoidMethods();
+
+		return $this;
+	}
+
+	public function failIfVoidMethods()
+	{
+		$this->runner->failIfVoidMethods();
+
+		return $this;
+	}
+
+	public function shouldFailIfVoidMethods()
+	{
+		return $this->runner->shouldFailIfVoidMethods();
+	}
+
+	public function doNotfailIfSkippedMethods()
+	{
+		$this->runner->doNotfailIfSkippedMethods();
+
+		return $this;
+	}
+
+	public function failIfSkippedMethods()
+	{
+		$this->runner->failIfSkippedMethods();
+
+		return $this;
+	}
+
+	public function shouldFailIfSkippedMethods()
+	{
+		return $this->runner->shouldFailIfSkippedMethods();
+	}
+
 	public function init($directory = null)
 	{
 		$resourceDirectory = static::getResourcesDirectory();
@@ -541,7 +578,19 @@ class runner extends atoum\script\configurable
 						{
 							$score = $autorunner->run()->getRunner()->getScore();
 
-							exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
+							$isSuccess = $score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0;
+
+							if ($autorunner->shouldFailIfVoidMethods() && $score->getVoidMethodNumber() > 0)
+							{
+								$isSuccess = false;
+							}
+
+							if ($autorunner->shouldFailIfSkippedMethods() && $score->getSkippedMethodNumber() > 0)
+							{
+								$isSuccess = false;
+							}
+
+							exit($isSuccess ? 0 : 1);
 						}
 						catch (\exception $exception)
 						{
@@ -954,6 +1003,22 @@ class runner extends atoum\script\configurable
 					array('-xc', '--xdebug-config'),
 					null,
 					$this->locale->_('Set XDEBUG_CONFIG variable')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						$script->failIfVoidMethods();
+					},
+					array('-fivm', '--fail-if-void-methods'),
+					null,
+					$this->locale->_('Make the test suite fail if there is at least one void test method')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						$script->failIfSkippedMethods();
+					},
+					array('-fism', '--fail-if-skipped-methods'),
+					null,
+					$this->locale->_('Make the test suite fail if there is at least one skipped test method')
 				)
 		;
 

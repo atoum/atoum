@@ -180,6 +180,16 @@ class coverage extends atoum\test
 							'Set XDEBUG_CONFIG variable'
 						),
 						array(
+							array('-fivm', '--fail-if-void-methods'),
+							null,
+							'Make the test suite fail if there is at least one void test method'
+						),
+						array(
+							array('-fism', '--fail-if-skipped-methods'),
+							null,
+							'Make the test suite fail if there is at least one skipped test method'
+						),
+						array(
 							array('-fmt', '--format'),
 							'<xml|clover|html|treemap>',
 							'Coverage report format'
@@ -346,6 +356,16 @@ class coverage extends atoum\test
 							array('-xc', '--xdebug-config'),
 							null,
 							'Set XDEBUG_CONFIG variable'
+						),
+						array(
+							array('-fivm', '--fail-if-void-methods'),
+							null,
+							'Make the test suite fail if there is at least one void test method'
+						),
+						array(
+							array('-fism', '--fail-if-skipped-methods'),
+							null,
+							'Make the test suite fail if there is at least one skipped test method'
 						),
 						array(
 							array('-fmt', '--format'),

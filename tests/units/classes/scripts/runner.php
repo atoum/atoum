@@ -188,6 +188,16 @@ class runner extends atoum\test
 							array('-xc', '--xdebug-config'),
 							null,
 							'Set XDEBUG_CONFIG variable'
+						),
+						array(
+							array('-fivm', '--fail-if-void-methods'),
+							null,
+							'Make the test suite fail if there is at least one void test method'
+						),
+						array(
+							array('-fism', '--fail-if-skipped-methods'),
+							null,
+							'Make the test suite fail if there is at least one skipped test method'
 						)
 					)
 				)
@@ -345,6 +355,16 @@ class runner extends atoum\test
 							array('-xc', '--xdebug-config'),
 							null,
 							'Set XDEBUG_CONFIG variable'
+						),
+						array(
+							array('-fivm', '--fail-if-void-methods'),
+							null,
+							'Make the test suite fail if there is at least one void test method'
+						),
+						array(
+							array('-fism', '--fail-if-skipped-methods'),
+							null,
+							'Make the test suite fail if there is at least one skipped test method'
 						)
 					)
 				)
@@ -646,6 +666,84 @@ class runner extends atoum\test
 			->then
 				->object($script->setXdebugConfig($xdebugConfig = uniqid()))->isIdenticalTo($script)
 				->mock($runner)->call('setXdebugConfig')->withArguments($xdebugConfig)->once()
+		;
+	}
+
+	public function testFailIfVoidMethods()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->object($script->failIfVoidMethods())->isIdenticalTo($script)
+				->mock($runner)->call('failIfVoidMethods')->once()
+		;
+	}
+
+	public function testDoNotFailIfVoidMethods()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->object($script->doNotFailIfVoidMethods())->isIdenticalTo($script)
+				->mock($runner)->call('doNotFailIfVoidMethods')->once()
+		;
+	}
+
+	public function testShouldFailIfVoidMethods()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->boolean($script->shouldFailIfVoidMethods())->isFalse()
+				->mock($runner)->call('shouldFailIfVoidMethods')->once()
+			->if($this->calling($runner)->shouldFailIfVoidMethods = true)
+			->then
+				->boolean($script->shouldFailIfVoidMethods())->isTrue()
+			->if($this->calling($runner)->shouldFailIfVoidMethods = false)
+			->then
+				->boolean($script->shouldFailIfVoidMethods())->isFalse()
+		;
+	}
+
+	public function testFailIfSkippedMethods()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->object($script->failIfSkippedMethods())->isIdenticalTo($script)
+				->mock($runner)->call('failIfSkippedMethods')->once()
+		;
+	}
+
+	public function testDoNotFailIfSkippedMethods()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->object($script->doNotFailIfSkippedMethods())->isIdenticalTo($script)
+				->mock($runner)->call('doNotFailIfSkippedMethods')->once()
+		;
+	}
+
+	public function testShouldFailIfSkippedMethods()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->boolean($script->shouldFailIfSkippedMethods())->isFalse()
+				->mock($runner)->call('shouldFailIfSkippedMethods')->once()
+			->if($this->calling($runner)->shouldFailIfSkippedMethods = true)
+			->then
+				->boolean($script->shouldFailIfSkippedMethods())->isTrue()
+			->if($this->calling($runner)->shouldFailIfSkippedMethods = false)
+			->then
+				->boolean($script->shouldFailIfSkippedMethods())->isFalse()
 		;
 	}
 
