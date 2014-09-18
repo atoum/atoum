@@ -262,6 +262,20 @@ class coverage extends atoum\test
 		;
 	}
 
+	public function testResetExcludedMethods()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->object($coverage->resetExcludedMethods())->isIdenticalTo($coverage)
+				->array($coverage->getExcludedMethods())->isEmpty()
+			->if($coverage->excludeMethod(uniqid()))
+			->then
+				->object($coverage->resetExcludedMethods())->isIdenticalTo($coverage)
+				->array($coverage->getExcludedMethods())->isEmpty()
+		;
+	}
+
 	public function testResetExcludedClasses()
 	{
 		$this
@@ -1241,6 +1255,20 @@ class coverage extends atoum\test
 		;
 	}
 
+	public function testExcludeMethod()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->object($coverage->excludeMethod($method = uniqid()))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedMethods())->isEqualTo(array($method))
+				->object($coverage->excludeMethod($otherClass = rand(1, PHP_INT_MAX)))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedMethods())->isEqualTo(array($method, (string) $otherClass))
+				->object($coverage->excludeMethod($method))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedMethods())->isEqualTo(array($method, (string) $otherClass))
+		;
+	}
+
 	public function testExcludeClass()
 	{
 		$this
@@ -1284,6 +1312,22 @@ class coverage extends atoum\test
 				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory, (string) $otherDirectory))
 				->object($coverage->excludeDirectory(($anotherDirectory = (DIRECTORY_SEPARATOR . uniqid())) . DIRECTORY_SEPARATOR))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory, (string) $otherDirectory, $anotherDirectory))
+		;
+	}
+
+	public function testIsInExcludedMethods()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->boolean($coverage->isInExcludedMethods(uniqid()))->isFalse()
+			->if($coverage->excludeMethod($method = uniqid()))
+			->then
+				->boolean($coverage->isInExcludedMethods(uniqid()))->isFalse()
+				->boolean($coverage->isInExcludedMethods($method))->isTrue()
+			->if($coverage->excludeMethod('/.+/'))
+			->then
+				->boolean($coverage->isInExcludedMethods(uniqid()))->isTrue()
 		;
 	}
 

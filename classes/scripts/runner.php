@@ -376,6 +376,18 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
+	public function excludeMethodsFromCoverage(array $methods)
+	{
+		$coverage = $this->runner->getCoverage();
+
+		foreach ($methods as $method)
+		{
+			$coverage->excludeMethod($method);
+		}
+
+		return $this;
+	}
+
 	public function addTest($testPath)
 	{
 		$this->runner->addTest($testPath);
@@ -718,6 +730,19 @@ class runner extends atoum\script\configurable
 					array('-nccfc', '--no-code-coverage-for-classes'),
 					'<class>...',
 					$this->locale->_('Disable code coverage for classes <class>')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $classes) {
+						if (sizeof($classes) <= 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$script->excludeMethodsFromCoverage($classes);
+					},
+					array('-nccfm', '--no-code-coverage-for-methods'),
+					'<method>...',
+					$this->locale->_('Disable code coverage for methods <method>')
 				)
 			->addArgumentHandler(
 					function($script, $argument, $files) {
