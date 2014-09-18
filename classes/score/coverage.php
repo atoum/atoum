@@ -14,6 +14,7 @@ class coverage implements \countable, \serializable
 	protected $reflectionClassFactory = null;
 	protected $classes = array();
 	protected $methods = array();
+	protected $excludedMethods = array();
 	protected $excludedClasses = array();
 	protected $excludedNamespaces = array();
 	protected $excludedDirectories = array();
@@ -95,6 +96,14 @@ class coverage implements \countable, \serializable
 		return $this;
 	}
 
+	public function resetExcludedMethods()
+	{
+		$this->excludedMethods = array();
+
+		return $this;
+	}
+
+
 	public function resetExcludedClasses()
 	{
 		$this->excludedClasses = array();
@@ -138,7 +147,7 @@ class coverage implements \countable, \serializable
 
 					foreach ($reflectedClass->getMethods() as $method)
 					{
-						if ($method->isAbstract() === false)
+						if ($method->isAbstract() === false && $this->isInExcludedMethods($method->getName()) === false)
 						{
 							$declaringClass = $this->getDeclaringClass($method);
 
@@ -378,6 +387,23 @@ class coverage implements \countable, \serializable
 		return (isset($class[$method]) === false ? array() : $class[$method]);
 	}
 
+	public function excludeMethod($method)
+	{
+		$method = (string) $method;
+
+		if (in_array($method, $this->excludedMethods) === false)
+		{
+			$this->excludedMethods[] = $method;
+		}
+
+		return $this;
+	}
+
+	public function getExcludedMethods()
+	{
+		return $this->excludedMethods;
+	}
+
 	public function excludeClass($class)
 	{
 		$class = (string) $class;
@@ -432,6 +458,26 @@ class coverage implements \countable, \serializable
 	public function count()
 	{
 		return sizeof($this->methods);
+	}
+
+	public function isInExcludedMethods($method)
+	{
+		foreach ($this->excludedMethods as $pattern)
+		{
+			$matches = @preg_match($pattern, $method);
+
+			if (false === $matches && $pattern === $method)
+			{
+				return true;
+			}
+
+			if ($matches > 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public function isInExcludedClasses($class)

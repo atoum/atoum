@@ -100,6 +100,11 @@ class coverage extends atoum\test
 							'Disable code coverage for classes <class>'
 						),
 						array(
+							array('-nccfm', '--no-code-coverage-for-methods'),
+							'<method>...',
+							'Disable code coverage for methods <method>'
+						),
+						array(
 							array('-f', '--files'),
 							'<file>...',
 							'Execute all unit test files <file>'
@@ -266,6 +271,11 @@ class coverage extends atoum\test
 							array('-nccfc', '--no-code-coverage-for-classes'),
 							'<class>...',
 							'Disable code coverage for classes <class>'
+						),
+						array(
+							array('-nccfm', '--no-code-coverage-for-methods'),
+							'<method>...',
+							'Disable code coverage for methods <method>'
 						),
 						array(
 							array('-f', '--files'),

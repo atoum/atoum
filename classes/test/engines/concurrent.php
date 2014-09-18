@@ -101,6 +101,11 @@ class concurrent extends test\engine
 			{
 				$phpCode .= '$coverage = $test->getCoverage();';
 
+				foreach ($this->test->getCoverage()->getExcludedMethods() as $excludedMethod)
+				{
+					$phpCode .= '$coverage->excludeMethod(\'' . $excludedMethod . '\');';
+				}
+
 				foreach ($this->test->getCoverage()->getExcludedClasses() as $excludedClass)
 				{
 					$phpCode .= '$coverage->excludeClass(\'' . $excludedClass . '\');';
