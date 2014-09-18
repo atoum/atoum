@@ -741,7 +741,7 @@ class runner extends atoum\script\configurable
 						$script->excludeMethodsFromCoverage($classes);
 					},
 					array('-nccfm', '--no-code-coverage-for-methods'),
-					'<class>...',
+					'<method>...',
 					$this->locale->_('Disable code coverage for methods <method>')
 				)
 			->addArgumentHandler(

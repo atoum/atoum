@@ -101,7 +101,7 @@ class coverage extends atoum\test
 						),
 						array(
 							array('-nccfm', '--no-code-coverage-for-methods'),
-							'<class>...',
+							'<method>...',
 							'Disable code coverage for methods <method>'
 						),
 						array(
@@ -274,7 +274,7 @@ class coverage extends atoum\test
 						),
 						array(
 							array('-nccfm', '--no-code-coverage-for-methods'),
-							'<class>...',
+							'<method>...',
 							'Disable code coverage for methods <method>'
 						),
 						array(
