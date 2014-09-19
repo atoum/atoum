@@ -38,6 +38,8 @@ class runner implements observable
 	protected $testDirectoryIterator = null;
 	protected $debugMode = false;
 	protected $xdebugConfig = null;
+	protected $failIfVoidMethods = false;
+	protected $failIfSkippedMethods = false;
 
 	private $start = null;
 	private $stop = null;
@@ -330,6 +332,44 @@ class runner implements observable
 	public function codeCoverageIsEnabled()
 	{
 		return $this->codeCoverage;
+	}
+
+	public function doNotfailIfVoidMethods()
+	{
+		$this->failIfVoidMethods = false;
+
+		return $this;
+	}
+
+	public function failIfVoidMethods()
+	{
+		$this->failIfVoidMethods = true;
+
+		return $this;
+	}
+
+	public function shouldFailIfVoidMethods()
+	{
+		return $this->failIfVoidMethods;
+	}
+
+	public function doNotfailIfSkippedMethods()
+	{
+		$this->failIfSkippedMethods = false;
+
+		return $this;
+	}
+
+	public function failIfSkippedMethods()
+	{
+		$this->failIfSkippedMethods = true;
+
+		return $this;
+	}
+
+	public function shouldFailIfSkippedMethods()
+	{
+		return $this->failIfSkippedMethods;
 	}
 
 	public function addObserver(atoum\observer $observer)

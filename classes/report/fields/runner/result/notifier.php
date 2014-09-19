@@ -21,14 +21,13 @@ abstract class notifier extends result
 	public function __toString()
 	{
 		$string = $this->notify();
+
 		return $string == '' ? '' : trim($string) . PHP_EOL;
 	}
 
 	public function notify()
 	{
-		$success = ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->uncompletedMethodNumber === 0);
-
-		if ($success === true)
+		if ($this->success === true)
 		{
 			$title = 'Success!';
 			$message = sprintf(
@@ -56,7 +55,7 @@ abstract class notifier extends result
 			);
 		}
 
-		return $this->send($title, $message, $success);
+		return $this->send($title, $message, $this->success);
 	}
 
 	public function setAdapter(atoum\adapter $adapter = null)

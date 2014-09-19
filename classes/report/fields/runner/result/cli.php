@@ -4,14 +4,15 @@ namespace mageekguy\atoum\report\fields\runner\result;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\locale,
 	mageekguy\atoum\cli\prompt,
 	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields
+	mageekguy\atoum\report\fields,
+	mageekguy\atoum\observable
 ;
 
 class cli extends fields\runner\result
 {
+	protected $observable = null;
 	protected $prompt = null;
 	protected $successColorizer = null;
 	protected $failureColorizer = null;
@@ -35,7 +36,7 @@ class cli extends fields\runner\result
 		{
 			$string .= $this->locale->_('No test running.');
 		}
-		else if ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->uncompletedMethodNumber === 0)
+		else if ($this->success)
 		{
 			$string .= $this->successColorizer->colorize(
 					sprintf(
@@ -104,5 +105,17 @@ class cli extends fields\runner\result
 	public function getFailureColorizer()
 	{
 		return $this->failureColorizer;
+	}
+
+	public function handleEvent($event, observable $observable)
+	{
+		if (parent::handleEvent($event, $observable) === false)
+		{
+			return false;
+		}
+
+		$this->observable = $observable;
+
+		return true;
 	}
 }

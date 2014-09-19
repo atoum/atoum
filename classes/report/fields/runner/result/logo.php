@@ -13,7 +13,7 @@ class logo extends cli
 {
 	public function __toString()
 	{
-		if ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->uncompletedMethodNumber === 0)
+		if ($this->success)
 		{
 			return "
               \033[48;5;16m  \033[0m                                 \033[48;5;16m  \033[0m

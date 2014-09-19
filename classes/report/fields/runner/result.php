@@ -10,6 +10,7 @@ use
 
 abstract class result extends report\field
 {
+	protected $success = false;
 	protected $testNumber = null;
 	protected $testMethodNumber = null;
 	protected $assertionNumber = null;
@@ -89,6 +90,17 @@ abstract class result extends report\field
 			$this->voidMethodNumber = $score->getVoidMethodNumber();
 			$this->uncompletedMethodNumber = $score->getUncompletedMethodNumber();
 			$this->skippedMethodNumber = $score->getSkippedMethodNumber();
+			$this->success = ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->uncompletedMethodNumber === 0);
+
+			if ($observable->shouldFailIfVoidMethods() && $this->voidMethodNumber > 0)
+			{
+				$this->success = false;
+			}
+
+			if ($observable->shouldFailIfSkippedMethods() && $this->skippedMethodNumber > 0)
+			{
+				$this->success = false;
+			}
 
 			return true;
 		}
