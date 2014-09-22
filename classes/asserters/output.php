@@ -23,7 +23,7 @@ class output extends asserters\string
 		if ($value instanceof \closure)
 		{
 			ob_start();
-			$value();
+			$value($this->getTest());
 			$value = ob_get_clean();
 		}
 		else if ($value === null && ob_get_level() > 0)
