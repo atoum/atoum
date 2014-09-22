@@ -37,7 +37,7 @@ class exception extends asserters\object
 
 			try
 			{
-				$value();
+				$value($this->getTest());
 			}
 			catch (\exception $exception) {}
 		}
