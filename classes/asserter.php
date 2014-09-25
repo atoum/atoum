@@ -103,7 +103,7 @@ abstract class asserter implements asserter\definition
 	}
 
 	public function setWithTest(test $test)
-    {
+	{
 		$this->test = $test;
 
 		return $this;

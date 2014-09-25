@@ -411,21 +411,21 @@ class tap extends atoum\test
 			->if($score = new \mock\atoum\test\score())
 			->and($test = new \mock\mageekguy\atoum\test())
 			->and($this->calling($test)->getScore = $score)
-            ->and($this->calling($test)->getPath = $file = uniqid())
-            ->and($this->calling($test)->getClass = $class = uniqid())
+			->and($this->calling($test)->getPath = $file = uniqid())
+			->and($this->calling($test)->getClass = $class = uniqid())
 			->and($this->calling($test)->getCurrentMethod[1] = $method = uniqid())
 			->and($this->calling($test)->getCurrentMethod[2] = $otherMethod = uniqid())
 			->and($this->calling($score)->getLastUncompleteMethod[1] = array(
-                    'file' => $file,
-                    'class' => $class,
+					'file' => $file,
+					'class' => $class,
 					'method' => $method,
 					'exitCode' => rand(1, PHP_INT_MAX),
 					'output' => $output = uniqid()
 				)
 			)
 			->and($this->calling($score)->getLastUncompleteMethod[2] = $this->calling($score)->getLastUncompleteMethod[3] = array(
-                    'file' => $file,
-                    'class' => $class,
+					'file' => $file,
+					'class' => $class,
 					'method' => $otherMethod,
 					'exitCode' => rand(1, PHP_INT_MAX),
 					'output' => $otherOutput = uniqid()

@@ -38,12 +38,12 @@ class stream extends atoum\asserter
 		}
 
 		return $this;
-  }
+	}
 
-  public function isWrited($failMessage = null)
-  {
-    return $this->isWritten($failMessage);
-  }
+	public function isWrited($failMessage = null)
+	{
+		return $this->isWritten($failMessage);
+	}
 
 	public function isWritten($failMessage = null)
 	{

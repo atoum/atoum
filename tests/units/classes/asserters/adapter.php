@@ -226,7 +226,7 @@ class adapter extends atoum\test
 					->hasMessage('Call is undefined')
 
 			->if(
-                $this->testedInstance
+				$this->testedInstance
 					->call(uniqid())
 					->setCall($call = new \mock\atoum\test\adapter\call())
 					->setLocale($locale = new \mock\atoum\locale()),
@@ -321,7 +321,7 @@ class adapter extends atoum\test
 					->hasMessage('Call is undefined')
 
 			->if(
-                $this->testedInstance
+				$this->testedInstance
 					->call(uniqid())
 					->setCall($call = new \mock\atoum\test\adapter\call())
 					->setLocale($locale = new \mock\atoum\locale()),
@@ -442,7 +442,7 @@ class adapter extends atoum\test
 					->hasMessage('Call is undefined')
 
 			->if(
-                $this->testedInstance
+				$this->testedInstance
 					->call(uniqid())
 					->setCall($call = new \mock\atoum\test\adapter\call())
 					->setLocale($locale = new \mock\atoum\locale()),
@@ -563,7 +563,7 @@ class adapter extends atoum\test
 					->hasMessage('Call is undefined')
 
 			->if(
-                $this->testedInstance
+				$this->testedInstance
 					->call(uniqid())
 					->setCall($call = new \mock\atoum\test\adapter\call())
 					->setLocale($locale = new \mock\atoum\locale()),
@@ -616,7 +616,7 @@ class adapter extends atoum\test
 					->hasMessage('Call is undefined')
 
 			->if(
-                $this->testedInstance
+				$this->testedInstance
 					->call(uniqid())
 					->setCall($call = new \mock\atoum\test\adapter\call())
 					->setLocale($locale = new \mock\atoum\locale()),
@@ -681,7 +681,7 @@ class adapter extends atoum\test
 					->hasMessage('Call is undefined')
 
 			->if(
-                $this->testedInstance
+				$this->testedInstance
 					->call(uniqid())
 					->setCall($call = new \mock\atoum\test\adapter\call())
 					->setLocale($locale = new \mock\atoum\locale()),
