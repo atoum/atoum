@@ -18,6 +18,7 @@ class generator
 	protected $overloadedMethods = array();
 	protected $orphanizedMethods = array();
 	protected $shuntParentClassCalls = false;
+	protected $allowUndefinedMethodsInInterface = true;
 
 	private $defaultNamespace = null;
 
@@ -201,6 +202,13 @@ class generator
 			default:
 				return true;
 		}
+	}
+
+	public function disallowUndefinedMethodInInterface()
+	{
+		$this->allowUndefinedMethodsInInterface = false;
+
+		return $this;
 	}
 
 	protected function generateClassMethodCode(\reflectionClass $class)
@@ -454,8 +462,11 @@ class generator
 			$mockedMethodNames[] = '__construct';
 		}
 
-		$mockedMethods .= self::generate__call();
-		$mockedMethodNames[] = '__call';
+		if ($this->allowUndefinedMethodsInInterface === true)
+		{
+			$mockedMethods .= self::generate__call();
+			$mockedMethodNames[] = '__call';
+		}
 
 		$mockedMethods .= self::generateGetMockedMethod($mockedMethodNames);
 
