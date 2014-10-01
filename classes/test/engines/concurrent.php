@@ -117,6 +117,11 @@ class concurrent extends test\engine
 				}
 			}
 
+			if ($this->test->getMockGenerator()->undefinedMethodInInterfaceAreAllowed() === false)
+			{
+				$phpCode .= '$test->getMockGenerator()->disallowUndefinedMethodInInterface();';
+			}
+
 			$phpCode .=
 				'ob_end_clean();' .
 				'mageekguy\atoum\scripts\runner::disableAutorun();' .

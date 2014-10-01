@@ -211,6 +211,18 @@ class generator
 		return $this;
 	}
 
+	public function allowUndefinedMethodInInterface()
+	{
+		$this->allowUndefinedMethodsInInterface = true;
+
+		return $this;
+	}
+
+	public function undefinedMethodInInterfaceAreAllowed()
+	{
+		return $this->allowUndefinedMethodsInInterface === true;
+	}
+
 	protected function generateClassMethodCode(\reflectionClass $class)
 	{
 		$mockedMethods = '';
