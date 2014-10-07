@@ -177,6 +177,34 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testDisallowUndefinedMethodInInterface()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->disallowUndefinedMethodInInterface())->isIdenticalTo($runner)
+				->boolean($runner->undefinedMethodInInterfaceAreAllowed())->isFalse()
+				->object($runner->disallowUndefinedMethodInInterface())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isFalse()
+		;
+	}
+
+	public function testAllowUndefinedMethodInInterface()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->allowUndefinedMethodInInterface())->isIdenticalTo($runner)
+				->boolean($runner->undefinedMethodInInterfaceAreAllowed())->isTrue()
+				->object($runner->allowUndefinedMethodInInterface())->isIdenticalTo($runner)
+				->boolean($runner->undefinedMethodInInterfaceAreAllowed())->isTrue()
+			->if($runner->disallowUndefinedMethodInInterface())
+			->then
+				->object($runner->allowUndefinedMethodInInterface())->isIdenticalTo($runner)
+				->boolean($runner->undefinedMethodInInterfaceAreAllowed())->isTrue()
+		;
+	}
+
 	public function testSetXdebugConfig()
 	{
 		$this
@@ -438,6 +466,37 @@ class runner extends atoum\test
 				->boolean($runner->codeCoverageIsEnabled())->isTrue()
 				->object($runner->disableCodeCoverage())->isIdenticalTo($runner)
 				->boolean($runner->codeCoverageIsEnabled())->isFalse()
+		;
+	}
+
+	public function testSetTestFactory()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->variable($runner->getTestFactory())->isCallable
+				->object($runner->setTestFactory())->isIdenticalTo($runner)
+				->object($runner->getTestFactory())->isCallable
+			->if($factory = function() {})
+			->then
+				->object($runner->setTestFactory($factory))->isIdenticalTo($runner)
+				->object($runner->getTestFactory())->isCallable
+			->given($test = new \mock\mageekguy\atoum\test())
+			->and($generator = new \mock\mageekguy\atoum\test\mock\generator($test))
+			->and($test->setMockGenerator($generator))
+			->if($runner->disallowUndefinedMethodInInterface())
+			->and($runner->setTestFactory(function() use ($test) { return $test; }))
+			->and($factory = $runner->getTestFactory())
+			->then
+				->object($factory('mock\mageekguy\atoum\test'))->isIdenticalTo($test)
+				->mock($generator)
+					->call('disallowUndefinedMethodInInterface')->once
+			->if($this->resetMock($generator))
+			->if($runner->allowUndefinedMethodInInterface())
+			->then
+				->object($factory('mock\mageekguy\atoum\test'))->isIdenticalTo($test)
+				->mock($generator)
+					->call('disallowUndefinedMethodInInterface')->never
 		;
 	}
 

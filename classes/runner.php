@@ -40,6 +40,7 @@ class runner implements observable
 	protected $xdebugConfig = null;
 	protected $failIfVoidMethods = false;
 	protected $failIfSkippedMethods = false;
+	protected $disallowUndefinedMethodInInterface = false;
 
 	private $start = null;
 	private $stop = null;
@@ -176,6 +177,25 @@ class runner implements observable
 	public function debugModeIsEnabled()
 	{
 		return $this->debugMode;
+	}
+
+	public function disallowUndefinedMethodInInterface()
+	{
+		$this->disallowUndefinedMethodInInterface = true;
+
+		return $this;
+	}
+
+	public function allowUndefinedMethodInInterface()
+	{
+		$this->disallowUndefinedMethodInInterface = false;
+
+		return $this;
+	}
+
+	public function undefinedMethodInInterfaceAreAllowed()
+	{
+		return $this->disallowUndefinedMethodInInterface === false;
 	}
 
 	public function setXdebugConfig($value)
@@ -423,8 +443,21 @@ class runner implements observable
 
 	public function setTestFactory($testFactory = null)
 	{
-		$this->testFactory = $testFactory ?: function($testClass) {
+		$testFactory = $testFactory ?: function($testClass) {
 			return new $testClass();
+		};
+
+		$runner = $this;
+
+		$this->testFactory = function($testClass) use ($testFactory, $runner) {
+			$test = call_user_func($testFactory, $testClass);
+
+			if ($runner->undefinedMethodInInterfaceAreAllowed() === false)
+			{
+				$test->getMockGenerator()->disallowUndefinedMethodInInterface();
+			}
+
+			return $test;
 		};
 
 		return $this;
