@@ -713,20 +713,17 @@ class builder extends atoum\script\configurable
 	
 	protected function doRun()
 	{
-		if ($this->pharCreationEnabled === true)
+		if ($this->pharCreationEnabled === true && $this->lock())
 		{
-			if ($this->lock()) 
-			{
-				try {
-					$this->createPhar($this->version);
-				} catch (\Exception $e) {
-					$this->unlock();
-					throw $e;
-				}
-				
-				$this->unlock();
+                        try {
+                                $this->createPhar($this->version);
+                        } catch (\Exception $e) {
+                                $this->unlock();
+                                throw $e;
+                        }
 
-			}
+                        $this->unlock();
+
 		}
 
 		return $this;
