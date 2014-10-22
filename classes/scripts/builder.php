@@ -669,7 +669,7 @@ class builder extends atoum\script\configurable
 		
 		$pid_exists = is_numeric($pid);
 
-		if ($pid_exists !== false && function_exists('posix_kill'))
+		if ($pid_exists !== false && $this->adapter->function_exists('posix_kill'))
 		{
 			$pid_exists = $this->adapter->posix_kill($pid, 0);
 		}
