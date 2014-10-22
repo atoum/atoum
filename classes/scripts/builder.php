@@ -713,8 +713,6 @@ class builder extends atoum\script\configurable
 	
 	protected function doRun()
 	{
-		$alreadyRun = false;
-
 		if ($this->pharCreationEnabled === true)
 		{
 			if ($this->lock()) 
