@@ -621,6 +621,43 @@ class builder extends atoum\test
 		;
 	}
 
+        public function testLockRedmond()
+	{
+		$this
+			->if($adapterRedmond = new atoum\test\adapter())
+			->and($adapterRedmond->file_get_contents = '1')
+                        ->and($adapterRedmond->function_exists = false)
+			->and($builder = new \mock\mageekguy\atoum\scripts\builder(uniqid(), $adapterRedmond))
+			->and($builder->setRunFile($runFile = uniqid()))
+			->and($this->calling($builder)->createPhar = function() {})
+			->then
+                                ->exception(function() use ($builder) {
+							$builder->run();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage(sprintf('A process has locked run file \'%s\'', $runFile))
+		;
+	}
+        
+        public function testLockPosix()
+	{
+		$this
+			->if($adapterPosix = new \mock\mageekguy\atoum\test\adapter())
+			->and($adapterPosix->file_get_contents = '1')
+                        ->and($adapterPosix->function_exists = true)
+                        ->and($adapterPosix->posix_kill = false)
+			->and($builder = new \mock\mageekguy\atoum\scripts\builder(uniqid(), $adapterPosix))
+			->and($builder->setRunFile($runFile = uniqid()))
+			->and($this->calling($builder)->createPhar = function() {})
+                        ->and($this->calling($builder)->createPhar = function() {})
+			->then
+                                ->object($builder->run())->isIdenticalTo($builder)
+				->mock($builder)->call('createPhar')->once()
+                                ->mock($adapterPosix)->call('posix_kill')->once()
+		;
+	}
+        
 	public function testWriteInErrorDirectory()
 	{
 		$this
