@@ -429,7 +429,7 @@ class generator
 						$hasConstructor = true;
 					}
 
-					$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . PHP_EOL;
+					$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method, $isConstructor) . ')' . PHP_EOL;
 					$methodCode .= "\t" . '{' . PHP_EOL;
 					$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
 
@@ -538,7 +538,7 @@ class generator
 		return $parameters;
 	}
 
-	protected function getParametersSignature(\reflectionMethod $method)
+	protected function getParametersSignature(\reflectionMethod $method, $forceMockController = false)
 	{
 		$parameters = array();
 
@@ -562,7 +562,7 @@ class generator
 			$parameters[] = $parameterCode;
 		}
 
-		if ($method->isConstructor() === true)
+		if ($method->isConstructor() || $forceMockController)
 		{
 			$parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
 		}
