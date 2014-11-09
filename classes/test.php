@@ -337,7 +337,7 @@ abstract class test implements observable, \countable
 		$test = $this;
 
 		$this->assertionManager
-			->setHandler('when', function($mixed) use ($test) { if ($mixed instanceof \closure) { $mixed(); } return $test; })
+			->setHandler('when', function($mixed) use ($test) { if ($mixed instanceof \closure) { $mixed($test); } return $test; })
 			->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test; })
 			->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); })
 			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $test; })

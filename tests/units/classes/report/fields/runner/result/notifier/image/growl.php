@@ -204,21 +204,21 @@ class growl extends atoum\test
 					->call('__')->withArguments('%s exception', '%s exceptions', $exceptionNumber)->once()
 				->adapter($adapter)
 					->call('system')->withArguments(sprintf('growlnotify --title %s --name atoum --message %s --image %s --url \'\'', escapeshellarg('Failure!'), escapeshellarg($failureString), escapeshellarg($image)))->once()
-            ->if($field->setCallbackUrl($url = uniqid()))
-            ->then
-                ->castToString($field)->isEmpty()
-                ->adapter($adapter)
-                    ->call('system')->withArguments(sprintf('growlnotify --title %s --name atoum --message %s --image %s --url %s', escapeshellarg('Failure!'), escapeshellarg($failureString), escapeshellarg($image), escapeshellarg($url)))->once()
+			->if($field->setCallbackUrl($url = uniqid()))
+			->then
+				->castToString($field)->isEmpty()
+				->adapter($adapter)
+					->call('system')->withArguments(sprintf('growlnotify --title %s --name atoum --message %s --image %s --url %s', escapeshellarg('Failure!'), escapeshellarg($failureString), escapeshellarg($image), escapeshellarg($url)))->once()
 		;
 	}
 
-    public function testSetCallbackUrl()
-    {
-        $this
-            ->and($field = new testedClass())
-            ->then
-                ->object($field->setCallbackUrl(uniqid()))->isIdenticalTo($field)
-        ;
+	public function testSetCallbackUrl()
+	{
+		$this
+			->and($field = new testedClass())
+			->then
+				->object($field->setCallbackUrl(uniqid()))->isIdenticalTo($field)
+		;
 
-    }
+	}
 }

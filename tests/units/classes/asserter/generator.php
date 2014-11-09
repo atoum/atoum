@@ -30,26 +30,26 @@ class generator extends atoum\test
 	public function test__get()
 	{
 		$this
-			->given($generator = $this->newTestedInstance)
+			->given($this->newTestedInstance)
 			->then
-				->exception(function() use ($generator, & $asserter) { $generator->{$asserter = uniqid()}; })
+				->exception(function($test) use (& $asserter) { $test->testedInstance->{$asserter = uniqid()}; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Asserter \'' . $asserter . '\' does not exist')
 
-				->object($generator->variable)->isInstanceOf('mageekguy\atoum\asserters\variable')
+				->object($this->testedInstance->variable)->isInstanceOf('mageekguy\atoum\asserters\variable')
 		;
 	}
 
 	public function test__call()
 	{
 		$this
-			->given($generator = $this->newTestedInstance)
+			->given($this->newTestedInstance)
 			->then
-				->exception(function() use ($generator, & $asserter) { $generator->{$asserter = uniqid()}(); })
+				->exception(function($test) use (& $asserter) { $test->testedInstance->{$asserter = uniqid()}(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Asserter \'' . $asserter . '\' does not exist')
 
-				->object($asserter = $generator->variable($variable = uniqid()))->isInstanceOf('mageekguy\atoum\asserters\variable')
+				->object($asserter = $this->testedInstance->variable($variable = uniqid()))->isInstanceOf('mageekguy\atoum\asserters\variable')
 				->string($asserter->getValue())->isEqualTo($variable)
 		;
 	}

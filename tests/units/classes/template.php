@@ -501,7 +501,7 @@ class template extends atoum\test
 				->object($otherChildTemplate->getParent())->isTestedInstance
 				->array($this->testedInstance->getChildren())->isIdenticalTo(array($childTemplate, $otherChildTemplate))
 			->if(
-				$template = $this->newTestedInstance,
+				$this->newTestedInstance,
 				$templateWithId = new atoum\template\tag(uniqid()),
 				$templateWithId->setId($id = uniqid()),
 				$templateWithSameId = clone $templateWithId
@@ -512,8 +512,8 @@ class template extends atoum\test
 				->array($this->testedInstance->getChildren())->isIdenticalTo(array($templateWithId))
 				->object($this->testedInstance->addChild($templateWithId))->isTestedInstance
 				->array($this->testedInstance->getChildren())->isIdenticalTo(array($templateWithId))
-				->exception(function() use ($template, $templateWithSameId) {
-							$template->addChild($templateWithSameId);
+				->exception(function($test) use ($templateWithSameId) {
+							$test->testedInstance->addChild($templateWithSameId);
 						}
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')

@@ -249,7 +249,7 @@ class score extends atoum\test
 					)
 				)
 				->integer($score->getErrorNumber())->isEqualTo(3)
-				->object($score->addError($file, $class, $method, $line + 1, $type, ("   \t    \t" . $messageWithWhitespace = 'message with withespace' . "      \t    " . PHP_EOL), $errorFile, $errorLine))->isIdenticalTo($score)
+				->object($score->addError($file, $class, $method, $line + 1, $type, ("   \t	\t" . $messageWithWhitespace = 'message with withespace' . "	  \t	" . PHP_EOL), $errorFile, $errorLine))->isIdenticalTo($score)
 				->array($score->getErrors())->isEqualTo(array(
 						array(
 							'case' => null,
@@ -547,7 +547,7 @@ class score extends atoum\test
 				->object($score->addUncompletedMethod($file = uniqid(), $class = uniqid(), $method = uniqid(), $exitCode = rand(1, PHP_INT_MAX), $output = uniqid()))->isIdenticalTo($score)
 				->array($score->getUncompletedMethods())->isEqualTo(array(
 						array(
-                            'file' => $file,
+							'file' => $file,
 							'class' => $class,
 							'method' => $method,
 							'exitCode' => $exitCode,
@@ -558,14 +558,14 @@ class score extends atoum\test
 				->object($score->addUncompletedMethod($otherFile = uniqid(), $otherClass = uniqid(), $otherMethod = uniqid(), $otherExitCode = rand(1, PHP_INT_MAX), $otherOutput = uniqid()))->isIdenticalTo($score)
 				->array($score->getUncompletedMethods())->isEqualTo(array(
 						array(
-                            'file' => $file,
+							'file' => $file,
 							'class' => $class,
 							'method' => $method,
 							'exitCode' => $exitCode,
 							'output' => $output,
 						),
 						array(
-                            'file' => $otherFile,
+							'file' => $otherFile,
 							'class' => $otherClass,
 							'method' => $otherMethod,
 							'exitCode' => $otherExitCode,
@@ -849,8 +849,8 @@ class score extends atoum\test
 			->if($score->addUncompletedMethod($file = uniqid(), $class = uniqid(), $method = uniqid(), $exitCode = rand(1, PHP_INT_MAX), $output = uniqid()))
 			->then
 				->array($score->getLastUncompleteMethod())->isEqualTo(array(
-                        'file' => $file,
-                        'class' => $class,
+						'file' => $file,
+						'class' => $class,
 						'method' => $method,
 						'exitCode' => $exitCode,
 						'output' => $output,
@@ -859,8 +859,8 @@ class score extends atoum\test
 			->if($score->addUncompletedMethod($otherFile = uniqid(), $otherClass = uniqid(), $otherMethod = uniqid(), $otherExitCode = rand(1, PHP_INT_MAX), $otherOutput = uniqid()))
 			->then
 				->array($score->getLastUncompleteMethod())->isEqualTo(array(
-                        'file' => $otherFile,
-                        'class' => $otherClass,
+						'file' => $otherFile,
+						'class' => $otherClass,
 						'method' => $otherMethod,
 						'exitCode' => $otherExitCode,
 						'output' => $otherOutput,

@@ -197,21 +197,21 @@ class terminal extends atoum\test
 					->call('__')->withArguments('%s exception', '%s exceptions', $exceptionNumber)->once()
 				->adapter($adapter)
 					->call('system')->withArguments(sprintf('terminal-notifier -title %s -message %s -execute \'\'', escapeshellarg('Failure!'), escapeshellarg($failureString)))->once()
-            ->if($field->setCallbackCommand($command = uniqid()))
-            ->then
-                ->castToString($field)->isEmpty()
-                ->adapter($adapter)
-                    ->call('system')->withArguments(sprintf('terminal-notifier -title %s -message %s -execute %s', escapeshellarg('Failure!'), escapeshellarg($failureString), escapeshellarg($command)))->once()
+			->if($field->setCallbackCommand($command = uniqid()))
+			->then
+				->castToString($field)->isEmpty()
+				->adapter($adapter)
+					->call('system')->withArguments(sprintf('terminal-notifier -title %s -message %s -execute %s', escapeshellarg('Failure!'), escapeshellarg($failureString), escapeshellarg($command)))->once()
 		;
 	}
 
-    public function testSetCallbackCommand()
-    {
-        $this
-            ->and($field = new testedClass())
-            ->then
-                ->object($field->setCallbackCommand(uniqid()))->isIdenticalTo($field)
-        ;
+	public function testSetCallbackCommand()
+	{
+		$this
+			->and($field = new testedClass())
+			->then
+				->object($field->setCallbackCommand(uniqid()))->isIdenticalTo($field)
+		;
 
-    }
+	}
 }
