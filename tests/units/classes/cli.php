@@ -126,7 +126,7 @@ class cli extends atoum\test
 	{
 		$this
 			->if($adapter = new atoum\test\adapter())
-            ->and(atoum\cli::forceTerminal())
+			->and(atoum\cli::forceTerminal())
 			->and($adapter->defined = function($constant) {
 					switch ($constant)
 					{

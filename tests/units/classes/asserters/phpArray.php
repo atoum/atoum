@@ -478,7 +478,7 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter, & $failMessage) { $asserter->atKey(0)->contains(uniqid(), $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
-        ;
+		;
 	}
 
 	public function testStrictlyContains()
@@ -578,7 +578,7 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter, $isInArray, & $failMessage) { $asserter->atKey(2)->notContains($isInArray, $failMessage = 'FAIL'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
-        ;
+		;
 	}
 
 	public function testStrictlyNotContains()
