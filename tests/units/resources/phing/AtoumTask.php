@@ -305,7 +305,7 @@ namespace tests\units
 				->then
 					->object($field = $task->configureCoverageTreemapField($path = uniqid()))->isInstanceOf('\\mageekguy\\atoum\\report\\fields\\runner\\coverage\\treemap')
 					->string($field->getDestinationDirectory())->isEqualTo($path)
-					->string($field->getTreemapUrl())->isEqualTo('file://' . $path . '/index.html/')
+					->string($field->getTreemapUrl())->isEqualTo('file://' . $path . '/index.html')
 				->if($field = $task->configureCoverageTreemapField($path = uniqid(), $url = uniqid()))
 				->then
 					->string($field->getHtmlReportBaseUrl())->isEqualTo($url)
