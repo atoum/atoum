@@ -49,7 +49,7 @@
 	{
 		"classmap": [ "classes/" ]
 	},
-    "suggest": {
-        "ext-mbstring": "Provides support for UTF-8 strings"
-    }
+	"suggest": {
+		"ext-mbstring": "Provides support for UTF-8 strings"
+	}
 }
