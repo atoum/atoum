@@ -715,15 +715,14 @@ class builder extends atoum\script\configurable
 	{
 		if ($this->pharCreationEnabled === true && $this->lock())
 		{
-                        try {
-                                $this->createPhar($this->version);
-                        } catch (\Exception $e) {
-                                $this->unlock();
-                                throw $e;
-                        }
+				try {
+						$this->createPhar($this->version);
+				} catch (\Exception $e) {
+						$this->unlock();
+						throw $e;
+				}
 
-                        $this->unlock();
-
+				$this->unlock();
 		}
 
 		return $this;
