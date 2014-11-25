@@ -116,11 +116,20 @@ class pusher extends atoum
 				$this->calling($infoWriter)->write = $infoWriter
 			)
 
+			->assert('Pusher should write error if tag file is not readable')
+			->if(
+				$this->calling($errorWriter)->write = $errorWriter,
+				$this->function->file_get_contents = false
+			)
+			->then
+				->object($pusher->run())->isIdenticalTo($pusher)
+				->mock($errorWriter)->call('write')->withArguments('Unable to read \'' . $pusher->getTagFile() . '\'')->once()
+
 			->assert('Pusher should write error if tag file is not writable')
 			->if(
 				$this->calling($errorWriter)->write = $errorWriter,
 				$this->function->file_put_contents = false,
-				$this->function->file_get_contents = false
+				$this->function->file_get_contents = '0.0.0'
 			)
 			->then
 				->object($pusher->run())->isIdenticalTo($pusher)
@@ -141,7 +150,7 @@ class pusher extends atoum
 			)
 			->then
 				->object($pusher->run())->isIdenticalTo($pusher)
-				->function('file_put_contents')->wasCalledWithArguments($pusher->getTagFile(), 1)->once()
+				->function('file_put_contents')->wasCalledWithArguments($pusher->getTagFile(), '0.0.1')->once()
 				->mock($taggerEngine)
 					->call('tagVersion')
 						->before($this->mock($git)
@@ -175,8 +184,24 @@ class pusher extends atoum
 						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev:' . ' DEVELOPMENT-0.0.1 $')->once()) // Don't remove concatenation operator to avoid tagger replace the string.
 							->once()
 
+			->if($pusher->tagPatchVersion())
+			->then
+				->object($pusher->run())->isIdenticalTo($pusher)
+				->function('file_put_contents')->wasCalledWithArguments($pusher->getTagFile(), '0.0.1')->twice()
+
+			->if($pusher->tagMinorVersion())
+			->then
+				->object($pusher->run())->isIdenticalTo($pusher)
+				->function('file_put_contents')->wasCalledWithArguments($pusher->getTagFile(), '0.1.0')->once()
+
+			->if($pusher->tagMajorVersion())
+			->then
+				->object($pusher->run())->isIdenticalTo($pusher)
+				->function('file_put_contents')->wasCalledWithArguments($pusher->getTagFile(), '1.0.0')->once()
+
 			->assert('Pusher should write error if pushing tag failed and should try to reset repository')
 			->if(
+				$pusher->tagPatchVersion(),
 				$this->calling($git)->pushTag->throw = $exception = new \exception(uniqid())
 			)
 			->then
