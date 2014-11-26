@@ -16,7 +16,7 @@ class builder extends atoum\script\configurable
 	const defaultPharGeneratorScript = 'scripts/phar/generator.php';
 
 	private   $lockResource = null;
-	
+
 	protected $php = null;
 	protected $vcs = null;
 	protected $taggerEngine = null;
@@ -666,14 +666,14 @@ class builder extends atoum\script\configurable
 		$pid = trim(
 			@$this->adapter->file_get_contents($runFile)
 		);
-		
+
 		$pid_exists = is_numeric($pid);
 
 		if ($pid_exists !== false && $this->adapter->function_exists('posix_kill'))
 		{
 			$pid_exists = $this->adapter->posix_kill($pid, 0);
 		}
-		
+
 		if ($pid_exists !== false)
 		{
 			throw new exceptions\runtime(sprintf($this->locale->_('A process has locked run file \'%s\''), $runFile));
@@ -690,7 +690,7 @@ class builder extends atoum\script\configurable
 		{
 			throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $runFile));
 		}
-		
+
 		$this->adapter->fwrite(
 			$this->lockResource,
 			$this->adapter->getmypid()
@@ -698,7 +698,7 @@ class builder extends atoum\script\configurable
 
 		return true;
 	}
-	
+
 	final protected function unlock()
 	{
 		if ($this->lockResource !== null)
@@ -710,7 +710,7 @@ class builder extends atoum\script\configurable
 			);
 		}
 	}
-	
+
 	protected function doRun()
 	{
 		if ($this->pharCreationEnabled === true && $this->lock())
