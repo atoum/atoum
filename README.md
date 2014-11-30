@@ -337,5 +337,5 @@ When you are done updating or disabling [XDebug](http://xdebug.org/), run `php m
 
 Looking for a roadmap?
 
-- [Here is](https://github.com/atoum/atoum/issues?labels=In+progress&page=1&state=open) the close futur,
-- [And there](https://github.com/atoum/atoum/issues?labels=Todo&page=1&state=open) what could come after.
+- [Here is](https://github.com/atoum/atoum/labels/In%20progress) the work in progress,
+- [And there](https://github.com/atoum/atoum/milestones/*) what will come in next releases.
