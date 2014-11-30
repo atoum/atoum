@@ -88,7 +88,7 @@ class git
 	{
 		$this->command
 			->reset()
-			->addOption('push ' . ($remote ?: 'origin') . ' ' . ($branch ?: 'master'))
+			->addOption('push ' . ($remote ?: 'origin') . ' ' . ($branch ?: $this->getCurrentBranch()))
 		;
 
 		return $this->run();
@@ -98,7 +98,7 @@ class git
 	{
 		$this->command
 			->reset()
-			->addOption('push --force ' . ($remote ?: 'origin') . ' ' . ($branch ?: 'master'))
+			->addOption('push --force ' . ($remote ?: 'origin') . ' ' . ($branch ?: $this->getCurrentBranch()))
 		;
 
 		return $this->run();
@@ -132,5 +132,19 @@ class git
 		}
 
 		return $this;
+	}
+
+	public function getCurrentBranch()
+	{
+		$this->command
+			->reset()
+			->addOption('rev-parse --abbrev-ref HEAD')
+		;
+
+		$branch = trim($this->run()->command->getStdout()) ?: 'master';
+
+		$this->command->reset();
+
+		return $branch;
 	}
 }
