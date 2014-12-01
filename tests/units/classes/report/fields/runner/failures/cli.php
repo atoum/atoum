@@ -302,9 +302,9 @@ class cli extends atoum\test
 			->then
 				->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
 					$class . '::' . $method . '():' . PHP_EOL .
-					sprintf('In file %s on line %d in case \'%s\', %s failed for data set #%s of data provider %s: %s', $file, $line, $case, $asserter, $dataSetKey, $dataSetProvider, $fail) . PHP_EOL .
+					sprintf('In file %s on line %d in case \'%s\', %s failed for data set [%s] of data provider %s: %s', $file, $line, $case, $asserter, $dataSetKey, $dataSetProvider, $fail) . PHP_EOL .
 					$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-					sprintf('In file %s on line %d in case \'%s\', %s failed for data set #%s of data provider %s: %s', $otherFile, $otherLine, $otherCase, $otherAsserter, $otherDataSetKey, $otherDataSetProvider, $otherFail) . PHP_EOL
+					sprintf('In file %s on line %d in case \'%s\', %s failed for data set [%s] of data provider %s: %s', $otherFile, $otherLine, $otherCase, $otherAsserter, $otherDataSetKey, $otherDataSetProvider, $otherFail) . PHP_EOL
 				)
 				->castToString($customField)->isEqualTo(
 					$titlePrompt .
@@ -319,7 +319,7 @@ class cli extends atoum\test
 						$methodColorizer->colorize($class . '::' . $method . '()')
 					) .
 					PHP_EOL .
-					sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed for data set #%s of data provider %s: %s'), $file, $line, $case, $asserter, $dataSetKey, $dataSetProvider, $fail) .
+					sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed for data set [%s] of data provider %s: %s'), $file, $line, $case, $asserter, $dataSetKey, $dataSetProvider, $fail) .
 					PHP_EOL .
 					$methodPrompt .
 					sprintf(
@@ -327,7 +327,7 @@ class cli extends atoum\test
 						$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
 					) .
 					PHP_EOL .
-					sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed for data set #%s of data provider %s: %s'), $otherFile, $otherLine, $otherCase, $otherAsserter, $otherDataSetKey, $otherDataSetProvider, $otherFail) .
+					sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed for data set [%s] of data provider %s: %s'), $otherFile, $otherLine, $otherCase, $otherAsserter, $otherDataSetKey, $otherDataSetProvider, $otherFail) .
 					PHP_EOL
 				)
 		;
