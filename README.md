@@ -3,7 +3,7 @@
 ## A simple, modern and intuitive unit testing framework for PHP!
 
 Just like SimpleTest or PHPUnit, *atoum* is a unit testing framework specific to the [PHP](http://www.php.net) language.  
-However, it has been designed from the start with the following ideas in mind :
+However, it has been designed from the start with the following ideas in mind:
 
 * Can be implemented *rapidly* ;
 * *Simplify* test development ;
@@ -20,11 +20,11 @@ It can also generate unit test execution reports in the Xunit format, which make
 *atoum* also generates code coverage reports, in order to make it possible to supervise unit tests.  
 Finally, even though it is developed mainly on UNIX, it can also work on Windows.  
 
-## Why atoum ?
+## Why atoum?
 
-* *atoum* is really [easy to install](http://docs.atoum.org/en/chapter1.html#Download-Install) : clone it [from github](https://github.com/atoum/atoum), download [its PHAR](http://downloads.atoum.org/) or simply [use composer](https://packagist.org/packages/atoum/atoum);
-* *atoum* provides a high level of security during test execution by isolating each test method in its own PHP process. Of course, this feature is available out of the box, no need to install any additional extension;
-* *atoum* runs tests in a parallelized environment making the suite run as fast as possible by taking advantage of today's multi-core CPUs;
+* *atoum* is really [easy to install](http://docs.atoum.org/en/chapter1.html#Download-Install): clone it [from github](https://github.com/atoum/atoum), download [its PHAR](http://downloads.atoum.org/) or simply [use composer](https://packagist.org/packages/atoum/atoum),
+* *atoum* provides a high level of security during test execution by isolating each test method in its own PHP process. Of course, this feature is available out of the box, no need to install any additional extension,
+* *atoum* runs tests in a parallelized environment making the suite run as fast as possible by taking advantage of today's multi-core CPUs,
 * *atoum* provides a [full-featured set of natural and expressive assertions](http://docs.atoum.org/en/chapter2.html#Asserters) making tests as readable as possible. Here is an example:
 
 ``` php
@@ -36,7 +36,7 @@ $this
 ;
 ```
 
-* *atoum* supports a BDD like syntax with a lot of structural keywords:
+* *atoum* supports a BDD-like syntax with a lot of structural keywords:
 
 ``` php
 <?php
@@ -95,10 +95,10 @@ $this
 ;
 ```
 
-* *atoum* is able to produce several reports like TAP, clover, xUnit to be easily integrated with Jenkins or any other continuous integration tool;
-* *atoum* supports [data providers](http://docs.atoum.org/fr/chapitre2.html#Fournisseurs-de-donnees-data-provider);
-* *atoum* tests support autorun : just include the *atoum* runner and launch your test using `php path/to/test/file.php`;
-* *atoum*'s [configuration file](http://docs.atoum.org/en/chapter3.html#Configuration-files) is exclusively written in PHP (no XML, Yaml or any other format) giving you the best flexibility:
+* *atoum* is able to produce several reports like TAP, clover, xUnit to be easily integrated with Jenkins or any other continuous integration tool,
+* *atoum* supports [data providers](http://docs.atoum.org/fr/chapitre2.html#Fournisseurs-de-donnees-data-provider),
+* *atoum* tests support autorun: just include the *atoum* runner and launch your test using `php path/to/test/file.php`,
+* *atoum*'s [configuration file](http://docs.atoum.org/en/chapter3.html#Configuration-files) is exclusively written in PHP (no XML, YAML or any other format) giving you the best flexibility:
 
 ``` php
 <?php
@@ -118,32 +118,32 @@ $testGenerator
 $runner->setTestGenerator($testGenerator);
 ```
 
-* *atoum* provides an automatic test generator
-* *atoum* provides a [loop mode](http://docs.atoum.org/en/chapter3.html#l-loop) to easily retrigger failed tests;
+* *atoum* provides an automatic test template generator,
+* *atoum* provides a [loop mode](http://docs.atoum.org/en/chapter3.html#l-loop) to easily retrigger failed tests,
 * *atoum* is full of other interesting features that you will discover over the time.
 
 ## Prerequisites to use *atoum*
 
 *atoum* absolutely requires *PHP 5.3.3* or later to work.
-On UNIX, in order to check whether you have the right PHP version, you just need to run the following command in your terminal :
+On UNIX, in order to check whether you have the right PHP version, you just need to run the following command in your terminal:
 
 	# php -v | grep -oi 'php 5\.\(3\.\([3-9]\|[1-9][0-9]\{1,\}\)\|[4-9]\.[0-9]\+\)'
 
 If `PHP 5.3.x` or equivalent gets displayed, then you have the right PHP version installed.
 Should you want to use *atoum* using its PHAR archive, you also need [PHP](http://www.php.net) to be able to access the `phar` module, which is normally available by default.  
-On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
+On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal:
 
 	# php -m | grep -i phar
 
 If `Phar` or equivalent gets displayed, then the module is properly installed.  
 Generating reports in the Xunit format requires the `xml` module.  
-On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
+On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal:
 
 	# php -m | grep -i xml
 
 If `Xml` or equivalent gets displayed, then the module is properly installed.  
 Should you wish to monitor the coverage rate of your code by the unit tests, the [Xdebug](http://xdebug.org/) 2.2 module will be required.  
-On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
+On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal:
 
 	# php -v | grep -oi 'xdebug v2.2.[0-9]*'
 
@@ -151,19 +151,19 @@ If `Xdebug v2.2.x` or equivalent gets displayed, then the module is properly ins
 
 ## A unit testing framework that can be made operational in 5 minutes!
 
-### Step 1 : Install *atoum*
+### Step 1: Install *atoum*
 
 You just have to download [its PHAR archive](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) and store it where you wish, for example under `/path/to/project/tests/mageekguy.atoum.phar`.  
 This PHAR archive contains the latest development version to pass the totality of *atoum*'s unit tests.  
 *atoum*'s source code is also available via [the github repository](https://github.com/atoum/atoum).  
 To check if *atoum* works correctly with your configuration, you can execute all its unit tests.  
-To do that, you just need to run the following command in your terminal :
+To do that, you just need to run the following command in your terminal:
 
 	# php mageekguy.atoum.phar --test-it
 
-### Step 2 : Write your tests
+### Step 2: Write your tests
 
-Using your preferred text editor, create the file `path/to/project/tests/units/helloWorld.php` and add the following code :
+Using your preferred text editor, create the file `path/to/project/tests/units/helloWorld.php` and add the following code:
 
 ``` php
 <?php
@@ -189,20 +189,20 @@ class helloWorld extends atoum\test
 }
 ```
 
-### Step 3 : Run your test with the commandline
+### Step 3: Run your test with the commandline
 
-Launch your terminal and run the following command :
+Launch your terminal and run the following command:
 
 	# php path/to/test/file[enter]
 
-You should get the following result, or something equivalent :
+You should get the following result, or something equivalent:
 
 	> atoum version XXX by Frédéric Hardy.
 	Error: Unattended exception: Tested class 'vendor\project\helloWorld' does not exist for test class 'vendor\project\tests\units\helloWorld'
 
-### Step 4 : Write the class corresponding to your test
+### Step 4: Write the class corresponding to your test
 
-Using again your preferred text editor, create the file `path/to/project/classes/helloWorld.php` and add the following code :
+Using again your preferred text editor, create the file `path/to/project/classes/helloWorld.php` and add the following code:
 
 ``` php
 <?php
@@ -218,13 +218,13 @@ class helloWorld
 }
 ```
 
-### Step 5 : Run your test once more
+### Step 5: Run your test once more
 
-In the same terminal, run the following command once again :
+In the same terminal, run the following command once again:
 
 	# php path/to/test/file[enter]
 
-You should get the following result, or something equivalent :
+You should get the following result, or something equivalent:
 
 	> atoum version 288 by Frédéric Hardy.
 	> Run vendor\project\tests\units\helloWorld...
@@ -237,7 +237,7 @@ You should get the following result, or something equivalent :
 	> Running duration: 0.08 second.
 	> Success (1 test, 1 method, 2 assertions, 0 error, 0 exception)!
 
-### Step 6 : Complete your tests and restart the cycle from Step 3
+### Step 6: Complete your tests and restart the cycle from Step 3
 
 ``` php
 <?php
@@ -269,7 +269,7 @@ class helloWorld extends atoum\test
 
 [*atoum*'s documentation](http://docs.atoum.org) is still being written.  
 Any help to improve it will be appreciated.
-However, if you want to further explore immediately *atoum*'s possibilities, we recommend :
+However, if you want to further explore immediately *atoum*'s possibilities, we recommend:
 
 * Running in your terminal, either the command `php mageekguy.atoum.phar -h`, or the command `php scripts/runner.php -h` ;
 * Exploring the contents of the `configurations` directory in *atoum*'s source, as it contains configuration file samples ;
@@ -285,22 +285,22 @@ However, if you want to further explore immediately *atoum*'s possibilities, we 
 
 In this case, the first thing you will want to do is confirm whether you have the latest version of the archive.  
 You just need to [download](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) it again.  
-If it still doesn't work, run the following command in a terminal window :
+If it still doesn't work, run the following command in a terminal window:
 
 	# php -n mageekguy.atoum.phar -v
 
 If you get *atoum*'s version number, then the problem is coming from your PHP configuration.  
 In most cases, the cause would be within extensions, that might be incompatible with the PHAR format, or that would prevent executing PHAR archives as a security measure.  
-The `ioncube` extension for instance seems incompatible with PHAR archives, and you must therefore deactivate it if you are using it, by commenting the following line out of your `php.ini`, by prefixing it with the `;` character :
+The `ioncube` extension for instance seems incompatible with PHAR archives, and you must therefore deactivate it if you are using it, by commenting the following line out of your `php.ini`, by prefixing it with the `;` character:
 
 	zend_extension = /path/to/ioncube_loader*.*
 
-The `suhosin` extension prevents executing PHAR archives, therefore its default configuration must be modified in order to be able to use *atoum*, by adding the following line in your `php.ini` file :
+The `suhosin` extension prevents executing PHAR archives, therefore its default configuration must be modified in order to be able to use *atoum*, by adding the following line in your `php.ini` file:
 
 	suhosin.executor.include.whitelist="phar"
 
 Finally, if running *atoum* causes the screen to display characters looking like `???%`, this would be because the `detect_unicode` directive inside your `php.ini` file is set to 1.  
-To fix the problem, you just need to set it to 0 by editing your `php.ini` file or by running *atoum* with the following command :
+To fix the problem, you just need to set it to 0 by editing your `php.ini` file or by running *atoum* with the following command:
 
 	# php -d detect_unicode=0 mageekguy.atoum.phar [options]
 
@@ -315,7 +315,7 @@ To fix this problem, you just need to include the archive by using only `include
 ### APC seems not work with *atoum*
 [APC](http://fr.php.net/manual/en/apc.configuration.php)  is a free, open, and robust framework for caching and optimizing PHP intermediate code distributed under the form of a PHP extension.  
 When testing classes that use APC, you may get some failure message showing that `apc_fetch` function is unable to retrieve a value.  
-As all PHP extension, APC has some configuration options to enable it :
+As all PHP extension, APC has some configuration options to enable it:
 
 * `apc.enabled` whether to enable or disable APC ;
 * `apc.enable_cli`, whether to enable or disable APC for PHP CLI ;
