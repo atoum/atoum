@@ -17,6 +17,7 @@ class phpClass extends atoum\asserter
 		switch (strtolower($property))
 		{
 			case 'isabstract':
+			case 'isfinal':
 			case 'hasnoparent':
 				return $this->{$property}();
 
@@ -170,6 +171,20 @@ class phpClass extends atoum\asserter
 		else
 		{
 			$this->fail($failMessage ?: $this->_('%s is not abstract', $this));
+		}
+
+		return $this;
+	}
+
+	public function isFinal($failMessage = null)
+	{
+		if ($this->classIsSet()->class->isFinal() === true)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage ?: $this->_('%s is not final', $this));
 		}
 
 		return $this;
