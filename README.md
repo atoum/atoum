@@ -20,11 +20,11 @@ It can also generate unit test execution reports in the Xunit format, which make
 *atoum* also generates code coverage reports, in order to make it possible to supervise unit tests.  
 Finally, even though it is developed mainly on UNIX, it can also work on Windows.  
 
-## Why atoum ?
+## Why atoum?
 
-* *atoum* is really [easy to install](http://docs.atoum.org/en/chapter1.html#Download-Install) : clone it [from github](https://github.com/atoum/atoum), download [its PHAR](http://downloads.atoum.org/) or simply [use composer](https://packagist.org/packages/atoum/atoum);
-* *atoum* provides a high level of security during test execution by isolating each test method in its own PHP process. Of course, this feature is available out of the box, no need to install any additional extension;
-* *atoum* runs tests in a parallelized environment making the suite run as fast as possible by taking advantage of today's multi-core CPUs;
+* *atoum* is really [easy to install](http://docs.atoum.org/en/chapter1.html#Download-Install): clone it [from github](https://github.com/atoum/atoum), download [its PHAR](http://downloads.atoum.org/) or simply [use composer](https://packagist.org/packages/atoum/atoum),
+* *atoum* provides a high level of security during test execution by isolating each test method in its own PHP process. Of course, this feature is available out of the box, no need to install any additional extension,
+* *atoum* runs tests in a parallelized environment making the suite run as fast as possible by taking advantage of today's multi-core CPUs,
 * *atoum* provides a [full-featured set of natural and expressive assertions](http://docs.atoum.org/en/chapter2.html#Asserters) making tests as readable as possible. Here is an example:
 
 ``` php
@@ -36,7 +36,7 @@ $this
 ;
 ```
 
-* *atoum* supports a BDD like syntax with a lot of structural keywords:
+* *atoum* supports a BDD-like syntax with a lot of structural keywords:
 
 ``` php
 <?php
@@ -95,10 +95,10 @@ $this
 ;
 ```
 
-* *atoum* is able to produce several reports like TAP, clover, xUnit to be easily integrated with Jenkins or any other continuous integration tool;
-* *atoum* supports [data providers](http://docs.atoum.org/fr/chapitre2.html#Fournisseurs-de-donnees-data-provider);
-* *atoum* tests support autorun : just include the *atoum* runner and launch your test using `php path/to/test/file.php`;
-* *atoum*'s [configuration file](http://docs.atoum.org/en/chapter3.html#Configuration-files) is exclusively written in PHP (no XML, Yaml or any other format) giving you the best flexibility:
+* *atoum* is able to produce several reports like TAP, clover, xUnit to be easily integrated with Jenkins or any other continuous integration tool,
+* *atoum* supports [data providers](http://docs.atoum.org/fr/chapitre2.html#Fournisseurs-de-donnees-data-provider),
+* *atoum* tests support autorun: just include the *atoum* runner and launch your test using `php path/to/test/file.php`,
+* *atoum*'s [configuration file](http://docs.atoum.org/en/chapter3.html#Configuration-files) is exclusively written in PHP (no XML, YAML or any other format) giving you the best flexibility:
 
 ``` php
 <?php
@@ -118,8 +118,8 @@ $testGenerator
 $runner->setTestGenerator($testGenerator);
 ```
 
-* *atoum* provides an automatic test generator
-* *atoum* provides a [loop mode](http://docs.atoum.org/en/chapter3.html#l-loop) to easily retrigger failed tests;
+* *atoum* provides an automatic test template generator,
+* *atoum* provides a [loop mode](http://docs.atoum.org/en/chapter3.html#l-loop) to easily retrigger failed tests,
 * *atoum* is full of other interesting features that you will discover over the time.
 
 ## Prerequisites to use *atoum*
