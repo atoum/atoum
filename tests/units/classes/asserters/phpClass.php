@@ -411,6 +411,52 @@ class phpClass extends atoum\test
 		;
 	}
 
+	public function testIsFinal()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+			->then
+				->exception(function() use ($asserter) { $asserter->isFinal(); })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+
+			->given(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) use (& $reflectionClass) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct = function() {};
+							$mockController->getName = $class;
+
+							return $reflectionClass = new \mock\reflectionClass($class, $mockController);
+						}
+					)
+					->setWith(uniqid())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $notFinal = uniqid()
+			)
+
+			->if($this->calling($reflectionClass)->isFinal = false)
+			->then
+				->exception(function() use ($asserter) { $asserter->isFinal(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notFinal)
+				->mock($locale)->call('_')->withArguments('%s is not final', $asserter)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isFinal($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+				->exception(function() use ($asserter) { $asserter->isFinal; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notFinal)
+				->mock($locale)->call('_')->withArguments('%s is not final', $asserter)->twice
+
+			->if($this->calling($reflectionClass)->isFinal = true)
+				->object($this->testedInstance->isFinal())->isTestedInstance
+				->object($this->testedInstance->isFinal)->isTestedInstance
+		;
+	}
+
 	public function testHasMethod()
 	{
 		$this
