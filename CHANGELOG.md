@@ -1,3 +1,7 @@
+# `dev-master`
+
+* #367 Add the `phpClass::isFinal` method and the `phpClass::isFinal` property (mageekguy)
+
 # 1.0.0
 
 * Allow/Disallow mocking undefined methods
