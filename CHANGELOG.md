@@ -1,6 +1,6 @@
 # `dev-master`
 
-* #367 Add the `phpClass::isFinal` method and the `phpClass::isFinal` property (mageekguy)
+* #367 Add the `isFinal` assertion on the `phpClass`/`class`/`testedClass` asserters (@mageekguy)
 
 # 1.0.0
 
