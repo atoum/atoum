@@ -51,5 +51,10 @@
 	},
 	"suggest": {
 		"ext-mbstring": "Provides support for UTF-8 strings"
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "1.x-dev"
+		}
 	}
 }
