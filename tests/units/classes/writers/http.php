@@ -99,10 +99,15 @@ class http extends atoum\test
 			->and($adapter->file_get_contents = '')
 			->and($report = new \mock\mageekguy\atoum\reports\asynchronous())
 			->and($writer = new \mock\mageekguy\atoum\writers\http($adapter))
-			->and($writer->setUrl(uniqid()))
+			->and($writer->setUrl($url = uniqid()))
 			->then
 				->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)
 				->mock($writer)->call('write')->withArguments($report->__toString())->once()
+			->if($adapter->file_get_contents = false)
+			->then
+				->exception(function() use ($writer, $report) { $writer->writeAsynchronousReport($report); })
+					->isInstanceOf('mageekguy\atoum\writers\http\exception')
+					->hasMessage('Unable to write coverage report to ' . $url)
 		;
 	}
 
