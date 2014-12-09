@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 1.1.0
+
 * #377 Hide error when publishing report to coveralls.io fails (@jubianchi)
 * #368 Improve dataset key reporting in case of failure (@mageekguy)
 * #376 Add branch-alias (@stephpy, @hywan)
