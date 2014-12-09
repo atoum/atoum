@@ -103,7 +103,10 @@ class http extends atoum\writer implements writers\asynchronous
 			)
 		));
 
-		$this->adapter->file_get_contents($this->url, false, $context);
+		if (@$this->adapter->file_get_contents($this->url, false, $context) === false)
+		{
+			throw new atoum\writers\http\exception('Unable to write coverage report to ' . $this->url);
+		}
 
 		return $this;
 	}

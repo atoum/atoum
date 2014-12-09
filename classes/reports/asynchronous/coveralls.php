@@ -103,7 +103,14 @@ class coveralls extends atoum\reports\asynchronous
 	{
 		$this->score = ($event !== atoum\runner::runStop ? null : $observable->getScore());
 
-		return parent::handleEvent($event, $observable);
+		try
+		{
+			return parent::handleEvent($event, $observable);
+		}
+		catch(atoum\writers\http\exception $exception)
+		{
+			return $this;
+		}
 	}
 
 	public function build($event)
