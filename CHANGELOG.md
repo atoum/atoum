@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #368 Improve dataset key reporting in case of failure (@mageekguy)
 * #376 Add branch-alias (@stephpy, @hywan)
 * #367 Add the `isFinal` assertion on the `phpClass`/`class`/`testedClass` asserters (@mageekguy)
 
