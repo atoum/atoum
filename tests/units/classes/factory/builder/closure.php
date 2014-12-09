@@ -52,19 +52,6 @@ class classWithConstructorWithOptionalArguments
 	public function __construct($a = null, $b = null) {}
 }
 
-if (PHP_VERSION_ID >= 50600)
-{
-	class classWithConstructorWithVariadicArgument
-	{
-		public $variadicArguments;
-
-		public function __construct(...$a)
-		{
-			$this->variadicArguments = $a;
-		}
-	}
-}
-
 class closure extends atoum
 {
 	public function testClass()
@@ -157,11 +144,6 @@ class closure extends atoum
 				->string($instance->reference)->isNotEmpty
 				->string($instance->reference)->isEqualTo($reference)
 				->array($instance->array)->isEqualTo($array)
-
-				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructorWithVariadicArgument'), $instance))->isTestedInstance
-				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
-				->object($builtInstance = $factory('a', 'b', 'c'))->isInstanceOf(__NAMESPACE__ . '\classWithConstructorWithVariadicArgument')
-				->array($builtInstance->variadicArguments)->isEqualTo(array('a', 'b', 'c'))
 		;
 	}
 
@@ -170,6 +152,16 @@ class closure extends atoum
 	 */
 	public function testBuildWithVariadicArguments()
 	{
+		eval('namespace ' . __NAMESPACE__ . ' { class classWithConstructorWithVariadicArgument
+		{
+			public $variadicArguments;
+
+			public function __construct(...$a)
+			{
+				$this->variadicArguments = $a;
+			}
+		} }');
+
 		$this
 			->given($this->newTestedInstance)
 			->then
