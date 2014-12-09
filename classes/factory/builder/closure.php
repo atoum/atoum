@@ -32,13 +32,19 @@ class closure implements factory\builder
 					{
 						$closureParameters[$position] = ($parameter->isPassedByReference() === false ? '' : '& ') . $constructorParameters[$position] = '$' . $parameter->getName();
 
+						if (method_exists($parameter, 'isVariadic') && $parameter->isVariadic())
+						{
+							$closureParameters[$position] = '...' . $closureParameters[$position];
+							$constructorParameters[$position] = '...' . $constructorParameters[$position];
+						}
+
 						switch (true)
 						{
 							case $parameter->isDefaultValueAvailable():
 								$defaultValue = var_export($parameter->getDefaultValue(), true);
 								break;
 
-							case $parameter->isOptional():
+							case $parameter->isOptional() && (method_exists($parameter, 'isVariadic') === false || $parameter->isVariadic() === false):
 								$defaultValue = 'null';
 								break;
 

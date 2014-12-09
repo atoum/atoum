@@ -52,6 +52,16 @@ class classWithConstructorWithOptionalArguments
 	public function __construct($a = null, $b = null) {}
 }
 
+class classWithConstructorWithVariadicArgument
+{
+	public $variadicArguments;
+
+	public function __construct(...$a)
+	{
+		$this->variadicArguments = $a;
+	}
+}
+
 class closure extends atoum
 {
 	public function testClass()
@@ -144,6 +154,26 @@ class closure extends atoum
 				->string($instance->reference)->isNotEmpty
 				->string($instance->reference)->isEqualTo($reference)
 				->array($instance->array)->isEqualTo($array)
+
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructorWithVariadicArgument'), $instance))->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
+				->object($builtInstance = $factory('a', 'b', 'c'))->isInstanceOf(__NAMESPACE__ . '\classWithConstructorWithVariadicArgument')
+				->array($builtInstance->variadicArguments)->isEqualTo(array('a', 'b', 'c'))
+		;
+	}
+
+	/**
+	 * @php ≥ 5.6
+	 */
+	public function testBuildWithVariadicArguments()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructorWithVariadicArgument'), $instance))->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
+				->object($builtInstance = $factory('a', 'b', 'c'))->isInstanceOf(__NAMESPACE__ . '\classWithConstructorWithVariadicArgument')
+				->array($builtInstance->variadicArguments)->isEqualTo(array('a', 'b', 'c'))
 		;
 	}
 
