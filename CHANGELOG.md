@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #377 Hide error when publishing report to coveralls.io fails (@jubianchi)
 * #368 Improve dataset key reporting in case of failure (@mageekguy)
 * #376 Add branch-alias (@stephpy, @hywan)
 * #367 Add the `isFinal` assertion on the `phpClass`/`class`/`testedClass` asserters (@mageekguy)
