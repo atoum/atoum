@@ -52,13 +52,16 @@ class classWithConstructorWithOptionalArguments
 	public function __construct($a = null, $b = null) {}
 }
 
-class classWithConstructorWithVariadicArgument
+if (PHP_VERSION_ID >= 50600)
 {
-	public $variadicArguments;
-
-	public function __construct(...$a)
+	class classWithConstructorWithVariadicArgument
 	{
-		$this->variadicArguments = $a;
+		public $variadicArguments;
+
+		public function __construct(...$a)
+		{
+			$this->variadicArguments = $a;
+		}
 	}
 }
 
@@ -163,7 +166,7 @@ class closure extends atoum
 	}
 
 	/**
-	 * @php ≥ 5.6
+	 * @php >= 5.6
 	 */
 	public function testBuildWithVariadicArguments()
 	{
