@@ -21,7 +21,7 @@ class generator extends atoum\test
 
 	public function testClassConstants()
 	{
-		$this->string(phar\generator::phar)->isEqualTo('mageekguy.atoum.phar');
+		$this->string(phar\generator::phar)->isEqualTo('atoum.phar');
 	}
 
 	public function test__construct()
