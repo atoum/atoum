@@ -111,14 +111,21 @@ class dateInterval extends atoum\test
 				->exception(function() use ($asserter) { $asserter->isZero(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Interval is undefined')
+				->exception(function() use ($asserter) { $asserter->isZero; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Interval is undefined')
 
 			->if($asserter->setWith(new \DateInterval('P0Y')))
 			->then
 				->object($asserter->isZero())->isIdenticalTo($asserter)
+				->object($asserter->isZero)->isIdenticalTo($asserter)
 
 			->if($asserter->setWith($interval = new \DateInterval('P1Y')))
 			->then
 				->exception(function() use ($asserter) { $asserter->isZero(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage('Interval ' . $asserter . ' is not equal to zero')
+				->exception(function() use ($asserter) { $asserter->isZero; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not equal to zero')
 		;
