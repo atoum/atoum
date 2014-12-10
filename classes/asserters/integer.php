@@ -13,13 +13,9 @@ class integer extends asserters\variable
 	{
 		$assertion = null;
 
-		if (is_numeric($method) === true)
+		switch ($method)
 		{
-			$assertion = 'isEqualTo';
-		}
-		else switch ($method)
-		{
-			case '=<':
+			case '<=':
 				$assertion = 'isLessThanOrEqualTo';
 				break;
 
@@ -44,11 +40,7 @@ class integer extends asserters\variable
 
 	public function __get($property)
 	{
-		if (is_numeric($property) === true)
-		{
-			return $this->isEqualTo($property);
-		}
-		else switch (strtolower($property))
+		switch (strtolower($property))
 		{
 			case 'iszero':
 				return $this->isZero();

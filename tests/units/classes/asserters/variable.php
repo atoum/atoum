@@ -155,6 +155,7 @@ class variable extends atoum\test
 			->then
 				->object($asserter->isEqualTo($value))->isIdenticalTo($asserter)
 				->object($asserter->isEqualTo((string) $value))->isIdenticalTo($asserter)
+				->object($asserter->{'=='}($value))->isIdenticalTo($asserter)
 
 			->if(
 				$this->calling($locale)->_ = $localizedMessage = uniqid(),
@@ -188,6 +189,7 @@ class variable extends atoum\test
 			->if($asserter->setWith($value = uniqid()))
 			->then
 				->object($asserter->isNotEqualTo(uniqid()))->isIdenticalTo($asserter)
+				->object($asserter->{'!='}(uniqid()))->isIdenticalTo($asserter)
 
 			->if(
 				$this->calling($locale)->_ = $localizedMessage = uniqid(),
@@ -218,6 +220,7 @@ class variable extends atoum\test
 			->if($asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)))
 			->then
 				->object($asserter->isIdenticalTo($value))->isIdenticalTo($asserter)
+				->object($asserter->{'==='}($value))->isIdenticalTo($asserter)
 
 			->if(
 				$this->calling($locale)->_ = $localizedMessage = uniqid(),
@@ -260,6 +263,7 @@ class variable extends atoum\test
 			->then
 				->object($asserter->isNotIdenticalTo((string) $value))->isIdenticalTo($asserter)
 				->object($asserter->isNotIdenticalTo(uniqid()))->isIdenticalTo($asserter)
+				->object($asserter->{'!=='}(uniqid()))->isIdenticalTo($asserter)
 
 			->if(
 				$this->calling($locale)->_ = $localizedMessage = uniqid(),
