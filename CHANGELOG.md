@@ -1,5 +1,7 @@
 # `dev-master`
 
+* #379 Fix `newTestedInstance` assertion when constructor contains a variable-length argument (@mageekguy)
+
 # 1.1.0
 
 * #377 Hide error when publishing report to coveralls.io fails (@jubianchi)
