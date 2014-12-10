@@ -106,10 +106,19 @@ class error extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($errorNotExists)
 				->mock($locale)->call('_')->withArguments('error does not exist')->once
+				->exception(function() use (& $line, $asserter) { $asserter->exists; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($errorNotExists)
+				->mock($locale)->call('_')->withArguments('error does not exist')->twice
 
 			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(0, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->then
 				->object($asserter->exists())->isTestedInstance
+				->array($asserter->getScore()->getErrors())->isEmpty()
+
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(0, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->object($asserter->exists)->isTestedInstance
 				->array($asserter->getScore()->getErrors())->isEmpty()
 
 			->if($asserter->setWith($message = uniqid(), null))
@@ -156,6 +165,95 @@ class error extends atoum\test
 		;
 	}
 
+	public function testNotExists()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+
+			->if(
+				$asserter->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $errorExists = uniqid()
+			)
+			->then
+				->object($asserter->notExists())->isTestedInstance
+				->object($asserter->notExists)->isTestedInstance
+				->array($asserter->getScore()->getErrors())->isEmpty()
+
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(0, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->exception(function() use (& $line, $asserter) { $asserter->notExists(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($errorExists)
+				->mock($locale)->call('_')->withArguments('error exists')->once
+				->exception(function() use (& $line, $asserter) { $asserter->notExists; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($errorExists)
+				->mock($locale)->call('_')->withArguments('error exists')->twice
+
+			->if($asserter->setWith($message = uniqid(), null))
+			->then
+				->exception(function() use (& $line, $asserter) { $asserter->exists(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($errorExists)
+				->mock($locale)->call('_')->withArguments('error with message \'%s\' does not exist', $message)->once
+
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(0, PHP_INT_MAX), $message, uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->exception(function() use (& $line, $asserter) { $asserter->notExists(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($errorExists)
+				->mock($locale)->call('_')->withArguments('error with message \'%s\' exists')->once
+				->exception(function() use (& $line, $asserter) { $asserter->notExists; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($errorExists)
+				->mock($locale)->call('_')->withArguments('error with message \'%s\' exists')->twice
+				->array($asserter->getScore()->getErrors())->isNotEmpty()
+
+			->if($asserter->setWith($message = uniqid(), $type = E_USER_ERROR))
+			->then
+				->object($asserter->notExists())->isTestedInstance
+				->object($asserter->notExists)->isTestedInstance
+				->array($asserter->getScore()->getErrors())->isNotEmpty()
+
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type, $message, uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->notExists(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($errorExists)
+				->mock($locale)->call('_')->withArguments('error of type %s with message \'%s\' exists', atoum\asserters\error::getAsString($type), $message)->once
+
+			->if($asserter->setWith(null, $type = E_USER_ERROR))
+			->then
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->notExists(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($errorExists)
+				->mock($locale)->call('_')->withArguments('error of type %s exists', atoum\asserters\error::getAsString($type))->once
+
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type, uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->exception(function() use (& $line, $asserter) { $asserter->notExists(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($errorExists)
+				->mock($locale)->call('_')->withArguments('error of type %s with message \'%s\' exists')->once
+				->array($asserter->getScore()->getErrors())->isNotEmpty()
+
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type, uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->exception(function() use (& $line, $asserter) { $asserter->notExists; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($errorExists)
+				->mock($locale)->call('_')->withArguments('error of type %s with message \'%s\' exists')->once
+				->array($asserter->getScore()->getErrors())->isNotEmpty()
+
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(1, PHP_INT_MAX), $message = uniqid() . 'FOO' . uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->and($asserter->withPattern('/FOO/')->withType(null))
+			->then
+				->object($asserter->exists())->isTestedInstance
+				->array($asserter->getScore()->getErrors())->isNotEmpty()
+		;
+	}
+
+
 	public function testWithType()
 	{
 		$this
@@ -172,6 +270,10 @@ class error extends atoum\test
 			->given($this->newTestedInstance->withType(rand(1, PHP_INT_MAX)))
 			->then
 				->object($this->testedInstance->withAnyType())->isTestedInstance
+				->variable($this->testedInstance->getType())->isNull()
+			->given($this->newTestedInstance->withType(rand(1, PHP_INT_MAX)))
+			->then
+				->object($this->testedInstance->withAnyType)->isTestedInstance
 				->variable($this->testedInstance->getType())->isNull()
 		;
 	}
@@ -204,6 +306,12 @@ class error extends atoum\test
 			->given($this->newTestedInstance->withMessage(uniqid()))
 			->then
 				->object($this->testedInstance->withAnyMessage())->isTestedInstance
+				->variable($this->testedInstance->getMessage())->isNull()
+				->boolean($this->testedInstance->messageIsPattern())->isFalse()
+
+			->given($this->newTestedInstance->withMessage(uniqid()))
+			->then
+				->object($this->testedInstance->withAnyMessage)->isTestedInstance
 				->variable($this->testedInstance->getMessage())->isNull()
 				->boolean($this->testedInstance->messageIsPattern())->isFalse()
 
