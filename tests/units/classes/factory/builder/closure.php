@@ -147,6 +147,31 @@ class closure extends atoum
 		;
 	}
 
+	/**
+	 * @php >= 5.6
+	 */
+	public function testBuildWithVariadicArguments()
+	{
+		eval('namespace ' . __NAMESPACE__ . ' { class classWithConstructorWithVariadicArgument
+		{
+			public $variadicArguments;
+
+			public function __construct(...$a)
+			{
+				$this->variadicArguments = $a;
+			}
+		} }');
+
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructorWithVariadicArgument'), $instance))->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
+				->object($builtInstance = $factory('a', 'b', 'c'))->isInstanceOf(__NAMESPACE__ . '\classWithConstructorWithVariadicArgument')
+				->array($builtInstance->variadicArguments)->isEqualTo(array('a', 'b', 'c'))
+		;
+	}
+
 	public function testAddToAssertionManager()
 	{
 		$this
