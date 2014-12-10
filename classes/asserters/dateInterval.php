@@ -14,15 +14,15 @@ class dateInterval extends asserters\object
 		return (static::isDateInterval($this->value) === false ? parent::__toString() : $this->format($this->value));
 	}
 
-	public function __get($property)
+	public function __get($asserter)
 	{
-		switch (strtolower($property))
+		switch (strtolower($asserter))
 		{
 			case 'iszero':
-				return $this->isZero();
+				return $this->{$asserter}();
 
 			default:
-				return parent::__get($property);
+				return parent::__get($asserter);
 		}
 	}
 
