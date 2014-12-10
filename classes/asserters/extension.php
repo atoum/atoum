@@ -23,6 +23,18 @@ class extension extends atoum\asserter
 		return (string) $this->name;
 	}
 
+	public function __get($asserter)
+	{
+		switch (strtolower($asserter))
+		{
+			case 'isloaded':
+				return $this->{$asserter}();
+
+			default:
+				return parent::__get($asserter);
+		}
+	}
+
 	public function setWith($name)
 	{
 		$this->name = $name;
@@ -73,11 +85,13 @@ class extension extends atoum\asserter
 
 	protected function fail($reason)
 	{
-		if (is_string($reason) === false)
+		try
 		{
-			throw new exceptions\logic\invalidArgument('Fail message must be a string');
+			parent::fail($reason);
 		}
-
-		throw new test\exceptions\skip($reason);
+		catch (asserter\exception $exception)
+		{
+			throw new test\exceptions\skip($reason);
+		}
 	}
 }
