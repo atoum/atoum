@@ -1,7 +1,8 @@
 # `dev-master`
 
+* #385 Rename the PHAR to `atoum.phar` (@hywan)
 * #392 Fix broken links in `CHANGELOG.md` (@evert)
-* #391 Add dates in `CHANGELOG.md` (@Hywan)
+* #391 Add dates in `CHANGELOG.md` (@hywan)
 * #379 Fix `newTestedInstance` assertion when constructor contains a variable-length argument (@mageekguy)
 
 # 1.1.0 (9th December 2014)
