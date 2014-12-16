@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #391 Add dates in `CHANGELOG.md` (@Hywan)
 * #379 Fix `newTestedInstance` assertion when constructor contains a variable-length argument (@mageekguy)
 
 # 1.1.0 (9th December 2014)
