@@ -1,15 +1,16 @@
 # `dev-master`
 
+* #391 Add dates in `CHANGELOG.md` (@Hywan)
 * #379 Fix `newTestedInstance` assertion when constructor contains a variable-length argument (@mageekguy)
 
-# 1.1.0
+# 1.1.0 (9th December 2014)
 
 * #377 Hide error when publishing report to coveralls.io fails (@jubianchi)
 * #368 Improve dataset key reporting in case of failure (@mageekguy)
 * #376 Add branch-alias (@stephpy, @hywan)
 * #367 Add the `isFinal` assertion on the `phpClass`/`class`/`testedClass` asserters (@mageekguy)
 
-# 1.0.0
+# 1.0.0 (1st December 2014)
 
 * Allow/Disallow mocking undefined methods
 * Pass test instance as first parameters of closures in `exception`, `when`, `output`
@@ -28,4 +29,4 @@
 * Change test method prefix using `@methodPrefix` on test classes
 * Add `CHANGELOG.md`
 
-# 0.0.1
+# 0.0.1 (5th November 2013)
