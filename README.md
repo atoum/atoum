@@ -25,7 +25,7 @@ Finally, even though it is developed mainly on UNIX, it can also work on Windows
 * *atoum* is really [easy to install](http://docs.atoum.org/en/chapter1.html#Download-Install): clone it [from github](https://github.com/atoum/atoum), download [its PHAR](http://downloads.atoum.org/) or simply [use composer](https://packagist.org/packages/atoum/atoum),
 * *atoum* provides a high level of security during test execution by isolating each test method in its own PHP process. Of course, this feature is available out of the box, no need to install any additional extension,
 * *atoum* runs tests in a parallelized environment making the suite run as fast as possible by taking advantage of today's multi-core CPUs,
-* *atoum* provides a [full-featured set of natural and expressive assertions](http://docs.atoum.org/en/chapter2.html#Asserters) making tests as readable as possible. Here is an example:
+* *atoum* provides a [full-featured set of natural and expressive assertions](http://docs.atoum.org/en/latest/chapter2.html#asserters) making tests as readable as possible. Here is an example:
 
 ``` php
 <?php
@@ -49,7 +49,7 @@ $this
 ;
 ```
 
-* *atoum* provides a dead simple, yet very powerful, [mock engine](http://docs.atoum.org/en/chapter2.html#mock):
+* *atoum* provides a dead simple, yet very powerful, [mock engine](http://docs.atoum.org/en/latest/chapter2.html#mock):
 
 ``` php
 <?php
