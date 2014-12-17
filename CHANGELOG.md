@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #392 Fix broken links in `CHANGELOG.md` (@evert)
 * #391 Add dates in `CHANGELOG.md` (@Hywan)
 * #379 Fix `newTestedInstance` assertion when constructor contains a variable-length argument (@mageekguy)
 
