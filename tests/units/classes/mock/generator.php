@@ -962,6 +962,7 @@ class generator extends atoum\test
 			->and($reflectionParameterController->isPassedByReference = false)
 			->and($reflectionParameterController->isDefaultValueAvailable = false)
 			->and($reflectionParameterController->isOptional = false)
+			->and(PHP_VERSION_ID < 50600 ?: $reflectionParameterController->isVariadic = false)
 			->and($reflectionParameter = new \mock\reflectionParameter(null, null))
 			->and($reflectionMethodController = new mock\controller())
 			->and($reflectionMethodController->__construct = function() {})
@@ -1462,6 +1463,7 @@ class generator extends atoum\test
 			->and($this->calling($a)->isPassedByReference = false)
 			->and($this->calling($a)->isDefaultValueAvailable = false)
 			->and($this->calling($a)->isOptional = false)
+			->and(PHP_VERSION_ID >= 50600 and $this->calling($a)->isVariadic = false)
 			->and($b = new \mock\reflectionParameter())
 			->and($this->calling($b)->getName = 'b')
 			->and($this->calling($b)->isArray = false)
@@ -1470,6 +1472,7 @@ class generator extends atoum\test
 			->and($this->calling($b)->isPassedByReference = false)
 			->and($this->calling($b)->isDefaultValueAvailable = false)
 			->and($this->calling($b)->isOptional = false)
+			->and(PHP_VERSION_ID >= 50600 and $this->calling($b)->isVariadic = false)
 			->and($c = new \mock\reflectionParameter())
 			->and($this->calling($c)->getName = 'c')
 			->and($this->calling($c)->isArray = false)
@@ -1478,6 +1481,7 @@ class generator extends atoum\test
 			->and($this->calling($c)->isPassedByReference = false)
 			->and($this->calling($c)->isDefaultValueAvailable = false)
 			->and($this->calling($c)->isOptional = false)
+			->and(PHP_VERSION_ID >= 50600 and $this->calling($c)->isVariadic = false)
 			->and->mockGenerator->orphanize('__construct')
 			->and($constructor = new \mock\reflectionMethod())
 			->and($this->calling($constructor)->getName = '__construct')
@@ -1551,6 +1555,7 @@ class generator extends atoum\test
 			->and($parameterController1->isPassedByReference = false)
 			->and($parameterController1->isDefaultValueAvailable = false)
 			->and($parameterController1->isOptional = false)
+			->and(PHP_VERSION_ID >= 50600 and $parameterController1->isVariadic = false)
 			->and($parameter1 = new \mock\reflectionParameter(null, null))
 			->and($parameterController2 = new mock\controller())
 			->and($parameterController2->__construct = function() {})
@@ -1561,6 +1566,7 @@ class generator extends atoum\test
 			->and($parameterController2->isPassedByReference = true)
 			->and($parameterController2->isDefaultValueAvailable = false)
 			->and($parameterController2->isOptional = false)
+			->and(PHP_VERSION_ID >= 50600 and $parameterController2->isVariadic = false)
 			->and($parameter2 = new \mock\reflectionParameter(null, null))
 			->and($publicMethodController = new mock\controller())
 			->and($publicMethodController->__construct = function() {})
@@ -1663,6 +1669,7 @@ class generator extends atoum\test
 			->and($reflectionParameterController->isPassedByReference = false)
 			->and($reflectionParameterController->isDefaultValueAvailable = false)
 			->and($reflectionParameterController->isOptional = false)
+			->and(PHP_VERSION_ID >= 50600 and $reflectionParameterController->isVariadic = false)
 			->and($reflectionParameter = new \mock\reflectionParameter(null, null))
 			->and($reflectionMethodController = new mock\controller())
 			->and($reflectionMethodController->__construct = function() {})
@@ -1724,6 +1731,78 @@ class generator extends atoum\test
 					'}' . PHP_EOL .
 					'}'
 			)
+		;
+	}
+
+	/** @php 5.6 */
+	public function testGetMockedClassCodeForClassWithVariadicArguments()
+	{
+		$this
+			->if($generator = new testedClass())
+			->and($reflectionParameterController = new mock\controller())
+			->and($reflectionParameterController->__construct = function() {})
+			->and($reflectionParameterController->isArray = false)
+			->and($reflectionParameterController->isCallable = false)
+			->and($reflectionParameterController->getName = 'variadic')
+			->and($reflectionParameterController->isPassedByReference = false)
+			->and($reflectionParameterController->isDefaultValueAvailable = false)
+			->and($reflectionParameterController->isOptional = false)
+			->and($reflectionParameterController->isVariadic = true)
+			->and($reflectionParameterController->getClass = null)
+			->and($reflectionParameter = new \mock\reflectionParameter(null, null))
+			->and($reflectionMethodController = new mock\controller())
+			->and($reflectionMethodController->__construct = function() {})
+			->and($reflectionMethodController->getName = '__construct')
+			->and($reflectionMethodController->isConstructor = true)
+			->and($reflectionMethodController->getParameters = array($reflectionParameter))
+			->and($reflectionMethodController->isPublic = true)
+			->and($reflectionMethodController->isProtected = false)
+			->and($reflectionMethodController->isPrivate = false)
+			->and($reflectionMethodController->isFinal = false)
+			->and($reflectionMethodController->isStatic = false)
+			->and($reflectionMethodController->isAbstract = false)
+			->and($reflectionMethodController->returnsReference = false)
+			->and($reflectionMethod = new \mock\reflectionMethod(null, null))
+			->and($reflectionClassController = new mock\controller())
+			->and($reflectionClassController->__construct = function() {})
+			->and($reflectionClassController->getName = function() use (& $realClass) { return $realClass; })
+			->and($reflectionClassController->isFinal = false)
+			->and($reflectionClassController->isInterface = false)
+			->and($reflectionClassController->getMethods = array($reflectionMethod))
+			->and($reflectionClassController->getConstructor = $reflectionMethod)
+			->and($reflectionClassController->isAbstract = false)
+			->and($reflectionClass = new \mock\reflectionClass(null))
+			->and($generator->setReflectionClassFactory(function() use ($reflectionClass) { return $reflectionClass; }))
+			->and($adapter = new atoum\test\adapter())
+			->and($adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); })
+			->and($generator->setAdapter($adapter))
+			->then
+				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+					'namespace mock {' . PHP_EOL .
+						'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+						'{' . PHP_EOL .
+						$this->getMockControllerMethods() .
+						"\t" . 'public function __construct(... $variadic)' . PHP_EOL .
+						"\t" . '{' . PHP_EOL .
+						"\t\t" . '$arguments = func_get_args();' . PHP_EOL .
+						"\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+						"\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
+						"\t\t" . '{' . PHP_EOL .
+						"\t\t\t" . '$this->getMockController()->invoke(\'__construct\', $arguments);' . PHP_EOL .
+						"\t\t" . '}' . PHP_EOL .
+						"\t\t" . 'else' . PHP_EOL .
+						"\t\t" . '{' . PHP_EOL .
+						"\t\t\t" . '$this->getMockController()->addCall(\'__construct\', $arguments);' . PHP_EOL .
+						"\t\t\t" . 'call_user_func_array(\'parent::__construct\', $arguments);' . PHP_EOL .
+						"\t\t" . '}' . PHP_EOL .
+						"\t" . '}' . PHP_EOL .
+						"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+						"\t" . '{' . PHP_EOL .
+						"\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+						"\t" . '}' . PHP_EOL .
+						'}' . PHP_EOL .
+						'}'
+				)
 		;
 	}
 

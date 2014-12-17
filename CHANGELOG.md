@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #393 Mock generator now handles variadic arguments in method. (@jubianchi)
 * #398 Replace broken documentation links (@jubianchi)
 * #396 Rename `match` to `matches` on the string asserter (@hywan)
 * #385 Rename the PHAR to `atoum.phar` (@hywan)
