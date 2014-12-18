@@ -156,8 +156,6 @@ class generator
 			throw new exceptions\logic('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
 		}
 
-		$code = '';
-
 		if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false)
 		{
 			$code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);
@@ -276,7 +274,12 @@ class generator
 			$mockedMethods .= PHP_EOL;
 			$mockedMethods .= "\t" . '{' . PHP_EOL;
 
-			if (self::hasVariadic($constructor) === false)
+			if (self::hasVariadic($constructor) === true)
+			{
+				$mockedMethods .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;				
+			}
+			else
 			{
 				$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ', -1));' . PHP_EOL;
 				$mockedMethods .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
@@ -286,12 +289,7 @@ class generator
 				$mockedMethods .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
 				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
 				$mockedMethods .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-			}
-			else
-			{
-				$mockedMethods .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '}' . PHP_EOL;	
 			}
 
 			if ($constructor->isAbstract() === true || $this->isShunted('__construct') === true || $this->isShunted($className) === true)
@@ -346,7 +344,15 @@ class generator
 				}
 
 				$mockedMethods .= PHP_EOL . "\t" . '{' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . '));' . PHP_EOL;
+
+				if (self::hasVariadic($method) === true)
+				{
+					$mockedMethods .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
+				}
+				else
+				{
+					$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . '));' . PHP_EOL;
+				}
 
 				if ($this->isShunted($methodName) === true || $method->isAbstract() === true)
 				{
@@ -444,7 +450,12 @@ class generator
 
 					if ($isConstructor === true)
 					{
-						if (self::hasVariadic($method) === false)
+						if (self::hasVariadic($method) === true)
+						{
+							$methodCode .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
+							$methodCode .= "\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
+						}
+						else
 						{
 							$methodCode .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
@@ -453,12 +464,7 @@ class generator
 							$methodCode .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
 							$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
-							$methodCode .= "\t\t" . '}' . PHP_EOL;
-						}
-						else
-						{
-							$methodCode .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
-							$methodCode .= "\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
+							$methodCode .= "\t\t" . '}' . PHP_EOL;							
 						}
 					}
 
