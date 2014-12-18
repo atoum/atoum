@@ -1530,8 +1530,10 @@ class generator extends atoum\test
 		;
 	}
 
-	/** @php >= 5.4 */
-	/** @php < 5.6 */
+	/**
+	 * @php >= 5.4
+	 * @php < 5.6
+	 */
 	public function testGetMockedClassCodeWithOrphanizedMethod()
 	{
 		$this
@@ -1710,8 +1712,10 @@ class generator extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
-	/** @php < 5.6 */
+	/**
+	 * @php 5.4
+	 * @php < 5.6
+	 */
 	public function testGetMockedClassCodeWithProtectedAbstractMethod()
 	{
 		$this
@@ -1939,8 +1943,10 @@ class generator extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
-	/** @php < 5.6 */
+	/**
+	 * @php 5.4
+	 * @php < 5.6
+	 */
 	public function testGetMockedClassCodeForClassWithCallableTypeHint()
 	{
 		$this
