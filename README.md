@@ -153,13 +153,13 @@ If `Xdebug v2.2.x` or equivalent gets displayed, then the module is properly ins
 
 ### Step 1: Install *atoum*
 
-You just have to download [its PHAR archive](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) and store it where you wish, for example under `/path/to/project/tests/mageekguy.atoum.phar`.  
+You just have to download [its PHAR archive](http://downloads.atoum.org/nightly/atoum.phar) and store it where you wish, for example under `/path/to/project/tests/atoum.phar`.  
 This PHAR archive contains the latest development version to pass the totality of *atoum*'s unit tests.  
 *atoum*'s source code is also available via [the github repository](https://github.com/atoum/atoum).  
 To check if *atoum* works correctly with your configuration, you can execute all its unit tests.  
 To do that, you just need to run the following command in your terminal:
 
-	# php mageekguy.atoum.phar --test-it
+	# php atoum.phar --test-it
 
 ### Step 2: Write your tests
 
@@ -170,7 +170,7 @@ Using your preferred text editor, create the file `path/to/project/tests/units/h
 
 namespace vendor\project\tests\units;
 
-require_once 'path/to/mageekguy.atoum.phar';
+require_once 'path/to/atoum.phar';
 
 include_once 'path/to/project/classes/helloWorld.php';
 
@@ -244,7 +244,7 @@ You should get the following result, or something equivalent:
 
 namespace vendor\project\tests\units;
 
-require_once 'path/to/mageekguy.atoum.phar';
+require_once 'path/to/atoum.phar';
 
 include_once 'path/to/project/classes/helloWorld.php';
 
@@ -271,7 +271,7 @@ class helloWorld extends atoum\test
 Any help to improve it will be appreciated.
 However, if you want to further explore immediately *atoum*'s possibilities, we recommend:
 
-* Running in your terminal, either the command `php mageekguy.atoum.phar -h`, or the command `php scripts/runner.php -h` ;
+* Running in your terminal, either the command `php atoum.phar -h`, or the command `php scripts/runner.php -h` ;
 * Exploring the contents of the `configurations` directory in *atoum*'s source, as it contains configuration file samples ;
 * Exploring the contents of the `tests/unit/classes` directory in *atoum*'s source, as it contains all of the unit tests ;
 * Read the [conference slides](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) about it, available online ;
@@ -284,10 +284,10 @@ However, if you want to further explore immediately *atoum*'s possibilities, we 
 ### *atoum*'s PHAR archive seems to not be working
 
 In this case, the first thing you will want to do is confirm whether you have the latest version of the archive.  
-You just need to [download](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) it again.  
+You just need to [download](http://downloads.atoum.org/nightly/atoum.phar) it again.  
 If it still doesn't work, run the following command in a terminal window:
 
-	# php -n mageekguy.atoum.phar -v
+	# php -n atoum.phar -v
 
 If you get *atoum*'s version number, then the problem is coming from your PHP configuration.  
 In most cases, the cause would be within extensions, that might be incompatible with the PHAR format, or that would prevent executing PHAR archives as a security measure.  
@@ -302,12 +302,12 @@ The `suhosin` extension prevents executing PHAR archives, therefore its default 
 Finally, if running *atoum* causes the screen to display characters looking like `???%`, this would be because the `detect_unicode` directive inside your `php.ini` file is set to 1.  
 To fix the problem, you just need to set it to 0 by editing your `php.ini` file or by running *atoum* with the following command:
 
-	# php -d detect_unicode=0 mageekguy.atoum.phar [options]
+	# php -d detect_unicode=0 atoum.phar [options]
 
 If these three operations do not allow *atoum* to work, we suggest you send an e-mail to the address *support[AT]atoum(DOT)org*, describing in detail your configuration and your problem.  
 You can also ask for help from the *atoum* development staff on the IRC channel *##atoum* on the *freenode* network.
 
-### Error: Constant __COMPILER_HALT_OFFSET__ already defined /path/to/mageekguy.atoum.phar
+### Error: Constant __COMPILER_HALT_OFFSET__ already defined /path/to/atoum.phar
 
 This error comes from the fact the *atoum* PHAR archive is included in more than one place within your code using `include` or `require`.  
 To fix this problem, you just need to include the archive by using only `include_once` or `require_once`, in order to ensure it is not included several times.
@@ -329,7 +329,7 @@ To check the current version of [XDebug](http://xdebug.org/), you can run `php -
 To fix this issue, you have to update [XDebug](http://xdebug.org/) to the latest [stable version](http://xdebug.org/download.php).  
 If you can't update [XDebug](http://xdebug.org/) on your system, you can still disable the extension to avoid getting segfaults.  
 To be sure that [XDebug](http://xdebug.org/) has been succefully updated or disabled, you can run `php -v`.  
-When you are done updating or disabling [XDebug](http://xdebug.org/), run `php mageekguy.atoum.phar --test-it` to be sure that all the segfaults have gone and that *atoum* is working.
+When you are done updating or disabling [XDebug](http://xdebug.org/), run `php atoum.phar --test-it` to be sure that all the segfaults have gone and that *atoum* is working.
 
 ---
 

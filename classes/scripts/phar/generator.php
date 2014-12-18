@@ -12,7 +12,7 @@ use
 
 class generator extends atoum\script
 {
-	const phar = 'mageekguy.atoum.phar';
+	const phar = 'atoum.phar';
 
 	protected $originDirectory = null;
 	protected $destinationDirectory = null;

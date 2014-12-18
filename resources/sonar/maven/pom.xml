@@ -24,7 +24,7 @@
 
         <sonar.atoum.skip>false</sonar.atoum.skip>
         <sonar.atoum.coverage.skip>false</sonar.atoum.coverage.skip>
-        <sonar.atoum.commandLine>mageekguy.atoum.phar</sonar.atoum.commandLine>
+        <sonar.atoum.commandLine>atoum.phar</sonar.atoum.commandLine>
         <sonar.atoum.commandLineArgument></sonar.atoum.commandLineArgument>
         <!-- Change this path to your atoum configuration file -->
         <sonar.atoum.configuration>${basedir}/.atoum.php</sonar.atoum.configuration>

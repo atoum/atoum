@@ -12,7 +12,7 @@ if (extension_loaded('phar') === false)
 	throw new \runtimeException('Phar extension is mandatory to use this PHAR');
 }
 
-define(__NAMESPACE__ . '\phar\name', 'mageekguy.atoum.phar');
+define(__NAMESPACE__ . '\phar\name', 'atoum.phar');
 
 \phar::mapPhar(atoum\phar\name);
 
