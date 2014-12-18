@@ -44,7 +44,7 @@ class stream extends test
 			->if($adapter->stream_get_wrappers = array(testedClass::defaultProtocol))
 			->then
 				->object($streamController = testedClass::get())->isInstanceOf('mageekguy\atoum\mock\stream\controller')
-				->string($streamController->getPath())->match('#^' . testedClass::defaultProtocol . '://\w+$#')
+				->string($streamController->getPath())->matches('#^' . testedClass::defaultProtocol . '://\w+$#')
 				->adapter($adapter)
 					->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
 				->object(testedClass::get($stream))->isIdenticalTo($streamController = testedClass::get($stream))
@@ -76,11 +76,11 @@ class stream extends test
 			->and($adapter->stream_wrapper_register = true)
 			->and($stream = testedClass::get())
 			->then
-				->string($stream . '\\' . uniqid())->match('#^' . $stream . preg_quote('\\') . '[^' . preg_quote('\\') . ']+$#')
+				->string($stream . '\\' . uniqid())->matches('#^' . $stream . preg_quote('\\') . '[^' . preg_quote('\\') . ']+$#')
 				->object($subStream = testedClass::getSubStream($stream))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
-				->castToString($subStream)->match('#^' . $stream . preg_quote(DIRECTORY_SEPARATOR) . '[^' . preg_quote(DIRECTORY_SEPARATOR) . ']+$#')
+				->castToString($subStream)->matches('#^' . $stream . preg_quote(DIRECTORY_SEPARATOR) . '[^' . preg_quote(DIRECTORY_SEPARATOR) . ']+$#')
 				->object($subStream = testedClass::getSubStream($stream, $basename = uniqid()))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
-				->castToString($subStream)->match('#^' . $stream . preg_quote(DIRECTORY_SEPARATOR) . $basename . '$#')
+				->castToString($subStream)->matches('#^' . $stream . preg_quote(DIRECTORY_SEPARATOR) . $basename . '$#')
 		;
 	}
 

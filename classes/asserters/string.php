@@ -74,6 +74,11 @@ class string extends asserters\variable
 
 	public function match($pattern, $failMessage = null)
 	{
+		return $this->matches($pattern, $failMessage = null);
+	}
+
+	public function matches($pattern, $failMessage = null)
+	{
 		if (preg_match($pattern, $this->valueIsSet()->value) === 1)
 		{
 			$this->pass();

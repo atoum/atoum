@@ -32,7 +32,7 @@ class hash extends asserters\string
 	{
 		if (strlen($this->valueIsSet()->value) === $length)
 		{
-			 $this->match('/^[a-fA-F0-9]+$/', $failMessage ?: $this->_('%s does not match given pattern', $this));
+			 $this->matches('/^[a-fA-F0-9]+$/', $failMessage ?: $this->_('%s does not match given pattern', $this));
 		}
 		else
 		{
