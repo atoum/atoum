@@ -569,7 +569,7 @@ class generator
 
 		foreach ($method->getParameters() as $parameter)
 		{
-			$parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . (self::isVariadic($parameter) == false ? '' : '... ') . '$' . $parameter->getName();
+			$parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? (self::isVariadic($parameter) == false ? '' : '... ') : '& ') . '$' . $parameter->getName();
 
 			switch (true)
 			{
