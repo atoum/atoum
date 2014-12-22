@@ -383,6 +383,7 @@ abstract class test implements observable, \countable
 			->setHandler('then', $returnTest)
 			->setHandler('given', $returnTest)
 			->setMethodHandler('define', $returnTest)
+			->setMethodHandler('let', $returnTest)
 		;
 
 		$returnMockController = function(mock\aggregator $mock) { return $mock->getMockController(); };
