@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #396 Rename `match` to `matches` on the string asserter (@hywan)
 * #385 Rename the PHAR to `atoum.phar` (@hywan)
 * #392 Fix broken links in `README.md` (@evert)
 * #391 Add dates in `CHANGELOG.md` (@hywan)
