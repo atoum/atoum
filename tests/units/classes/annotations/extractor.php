@@ -14,18 +14,18 @@ class extractor extends atoum\test
 	public function testSpace()
 	{
 		$this
-			->string(self::space())->match('/ {1,10}/')
-			->string(self::space(5))->match('/ {1,5}/')
-			->string(self::space(5, 3))->match('/ {3,5}/')
+			->string(self::space())->matches('/ {1,10}/')
+			->string(self::space(5))->matches('/ {1,5}/')
+			->string(self::space(5, 3))->matches('/ {3,5}/')
 		;
 	}
 
 	public function testStar()
 	{
 		$this
-			->string(self::star())->match('/\*{2,10}/')
-			->string(self::star(5))->match('/\*{2,5}/')
-			->string(self::star(5, 3))->match('/\*{3,5}/')
+			->string(self::star())->matches('/\*{2,10}/')
+			->string(self::star(5))->matches('/\*{2,5}/')
+			->string(self::star(5, 3))->matches('/\*{3,5}/')
 		;
 	}
 
