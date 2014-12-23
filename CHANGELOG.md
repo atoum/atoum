@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #401 Use new Travis container infrastructure (@jubianchi)
 * #398 Replace broken documentation links (@jubianchi)
 * #396 Rename `match` to `matches` on the string asserter (@hywan)
 * #385 Rename the PHAR to `atoum.phar` (@hywan)
