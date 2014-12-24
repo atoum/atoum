@@ -66,7 +66,7 @@ class autoloader
 
 	public function unregister()
 	{
-		if (spl_autoload_unregister(array($this, 'getClass')) === false)
+		if (spl_autoload_unregister(array($this, 'requireClass')) === false)
 		{
 			throw new \runtimeException('Unable to unregister');
 		}

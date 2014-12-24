@@ -251,6 +251,16 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testSetMockAutoloader()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setMockAutoloader($mockAutoloader = new atoum\autoloader\mock()))->isIdenticalTo($test)
+					->object($test->getMockAutoloader())->isIdenticalTo($mockAutoloader)
+			;
+		}
+
 		public function testGetAsserterGenerator()
 		{
 			$this
