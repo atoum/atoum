@@ -8,6 +8,21 @@ use
 
 class hash extends asserters\string
 {
+	public function __get($asserter)
+	{
+		switch (strtolower($asserter))
+		{
+			case 'issha1':
+			case 'issha256':
+			case 'issha512':
+			case 'ismd5':
+				return $this->{$asserter}();
+
+			default:
+				return parent::__get($asserter);
+		}
+	}
+
 	public function isSha1($failMessage = null)
 	{
 		return $this->isHash(40, $failMessage);

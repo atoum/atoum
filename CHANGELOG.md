@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #387 Support assertion without parenthesis on `dateInterval`, `error`, `extension` and `hash` asserters (@jubianchi)
 * #401 Use new Travis container infrastructure (@jubianchi)
 * #405 Add the Santa report and an example configuration file. (@jubianchi)
 * #393 Mock generator now handles variadic arguments in method. (@jubianchi)

@@ -9,6 +9,23 @@ use
 
 class dateInterval extends asserters\object
 {
+	public function __toString()
+	{
+		return (static::isDateInterval($this->value) === false ? parent::__toString() : $this->format($this->value));
+	}
+
+	public function __get($asserter)
+	{
+		switch (strtolower($asserter))
+		{
+			case 'iszero':
+				return $this->{$asserter}();
+
+			default:
+				return parent::__get($asserter);
+		}
+	}
+
 	public function setWith($value, $checkType = true)
 	{
 		parent::setWith($value, false);
@@ -26,11 +43,6 @@ class dateInterval extends asserters\object
 		}
 
 		return $this;
-	}
-
-	public function __toString()
-	{
-		return (static::isDateInterval($this->value) === false ? parent::__toString() : $this->format($this->value));
 	}
 
 	public function isGreaterThan(\dateInterval $interval, $failMessage = null)
