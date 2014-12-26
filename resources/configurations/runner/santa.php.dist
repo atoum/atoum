@@ -1,0 +1,21 @@
+<?php
+
+/*
+Sample atoum configuration file to use the Santa report
+Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/runner.php -c path/to/this/file -f path/to/test/file" to use it.
+*/
+
+use \mageekguy\atoum;
+
+/*
+Write all on stdout.
+*/
+$stdOutWriter = new atoum\writers\std\out();
+
+/*
+Generate a Santa report.
+*/
+$santaReport = new atoum\reports\realtime\santa();
+$santaReport->addWriter($stdOutWriter);
+
+$runner->addReport($cliReport);
