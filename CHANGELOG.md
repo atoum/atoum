@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #401 Use new Travis container infrastructure (@jubianchi)
 * #405 Add the Santa report and an example configuration file. (@jubianchi)
 * #393 Mock generator now handles variadic arguments in method. (@jubianchi)
 * #398 Replace broken documentation links (@jubianchi)
