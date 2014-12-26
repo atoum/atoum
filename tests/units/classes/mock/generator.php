@@ -2153,6 +2153,10 @@ class generator extends atoum\test
 						"\t" . '{' . PHP_EOL .
 						"\t\t" . '$arguments = func_get_args();' . PHP_EOL .
 						"\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+						"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
+						"\t\t" . '{' . PHP_EOL .
+						"\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+						"\t\t" . '}' . PHP_EOL .
 						"\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
 						"\t\t" . '{' . PHP_EOL .
 						"\t\t\t" . '$this->getMockController()->invoke(\'__construct\', $arguments);' . PHP_EOL .
@@ -2172,7 +2176,7 @@ class generator extends atoum\test
 				)
 		;
 	}
-	
+
 	/** @php 5.6 */
 	public function testGetMockedClassCodeForClassWithOnlyVariadicArgumentsInMethod()
 	{
