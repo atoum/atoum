@@ -277,7 +277,7 @@ class generator
 			if (self::hasVariadic($constructor) === true)
 			{
 				$mockedMethods .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;				
+				$mockedMethods .= "\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
 			}
 			else
 			{
@@ -286,11 +286,12 @@ class generator
 				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
 				$mockedMethods .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
 				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-				$mockedMethods .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-				$mockedMethods .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '}' . PHP_EOL;	
 			}
+
+			$mockedMethods .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
+			$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+			$mockedMethods .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
+			$mockedMethods .= "\t\t" . '}' . PHP_EOL;
 
 			if ($constructor->isAbstract() === true || $this->isShunted('__construct') === true || $this->isShunted($className) === true)
 			{
@@ -446,13 +447,20 @@ class generator
 
 					$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method, $isConstructor) . ')' . PHP_EOL;
 					$methodCode .= "\t" . '{' . PHP_EOL;
-					$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
+
+					if (self::hasVariadic($method) === true)
+					{
+						$methodCode .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
+					}
+					else
+					{
+						$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
+					}
 
 					if ($isConstructor === true)
 					{
 						if (self::hasVariadic($method) === true)
 						{
-							$methodCode .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
 							$methodCode .= "\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
 						}
 						else
@@ -461,11 +469,12 @@ class generator
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
 							$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
-							$methodCode .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
-							$methodCode .= "\t\t" . '{' . PHP_EOL;
-							$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
-							$methodCode .= "\t\t" . '}' . PHP_EOL;							
 						}
+
+						$methodCode .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
+						$methodCode .= "\t\t" . '{' . PHP_EOL;
+						$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
+						$methodCode .= "\t\t" . '}' . PHP_EOL;
 					}
 
 					$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
