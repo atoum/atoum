@@ -40,6 +40,7 @@ abstract class test implements observable, \countable
 	private $locale = null;
 	private $adapter = null;
 	private $mockGenerator = null;
+	private $mockAutoloader = null;
 	private $factoryBuilder = null;
 	private $reflectionMethodFactory = null;
 	private $asserterGenerator = null;
@@ -89,6 +90,7 @@ abstract class test implements observable, \countable
 			->setAdapter($adapter)
 			->setPhpMocker()
 			->setMockGenerator()
+			->setMockAutoloader()
 			->setAsserterGenerator($asserterGenerator)
 			->setAssertionManager($assertionManager)
 			->setTestAdapterStorage()
@@ -291,6 +293,18 @@ abstract class test implements observable, \countable
 	public function getMockGenerator()
 	{
 		return $this->mockGenerator;
+	}
+
+	public function setMockAutoloader(atoum\autoloader\mock $autoloader = null)
+	{
+		$this->mockAutoloader = $autoloader ?: new atoum\autoloader\mock();
+
+		return $this;
+	}
+
+	public function getMockAutoloader()
+	{
+		return $this->mockAutoloader;
 	}
 
 	public function setFactoryBuilder(factory\builder $factoryBuilder = null)
@@ -1045,22 +1059,7 @@ abstract class test implements observable, \countable
 	{
 		if ($this->methodIsIgnored($testMethod, $tags) === false)
 		{
-			$mockGenerator = $this->getMockGenerator();
-			$mockNamespacePattern = '/^' . preg_quote($mockGenerator->getDefaultNamespace()) . '\\\/i';
-
-			$mockAutoloader = function($class) use ($mockGenerator, $mockNamespacePattern) {
-				$mockedClass = preg_replace($mockNamespacePattern, '', $class);
-
-				if ($mockedClass !== $class)
-				{
-					$mockGenerator->generate($mockedClass);
-				}
-			};
-
-			if (spl_autoload_register($mockAutoloader, true, true) === false)
-			{
-				throw new exceptions\runtime('Unable to register mock autoloader');
-			}
+			$this->mockAutoloader->setMockGenerator($this->mockGenerator)->register();
 
 			set_error_handler(array($this, 'errorHandler'));
 
@@ -1103,7 +1102,7 @@ abstract class test implements observable, \countable
 
 					if ($testedClass->isAbstract() === true)
 					{
-						$testedClass = new \reflectionClass($testedClassName = $mockGenerator->getDefaultNamespace() . '\\' . $testedClassName);
+						$testedClass = new \reflectionClass($testedClassName = $this->mockGenerator->getDefaultNamespace() . '\\' . $testedClassName);
 					}
 
 					$this->factoryBuilder->build($testedClass, $instance)
@@ -1264,10 +1263,7 @@ abstract class test implements observable, \countable
 			ini_restore('log_errors');
 			ini_restore('log_errors_max_len');
 
-			if (spl_autoload_unregister($mockAutoloader) === false)
-			{
-				throw new \runtimeException('Unable to unregister mock autoloader');
-			}
+			$this->mockAutoloader->unregister();
 		}
 
 		return $this;
