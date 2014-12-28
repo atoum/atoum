@@ -261,14 +261,16 @@ class calls extends atoum\test
 			->if($calls = new testedClass())
 			->when(function() use ($calls) { unset($calls[uniqid()]); })
 			->then
-				->sizeof($calls)->isZero()
+				->sizeof($calls)->isZero
 			->if($calls[] = $call = new adapter\call(uniqid()))
 			->when(function() use ($calls) { unset($calls[uniqid()]); })
 			->then
 				->boolean(isset($calls[$call->getFunction()]))->isTrue()
+				->sizeof($calls)->isEqualTo(1)
 			->when(function() use ($calls, $call) { unset($calls[$call->getFunction()]); })
 			->then
 				->boolean(isset($calls[$call->getFunction()]))->isFalse()
+				->sizeof($calls)->isZero
 		;
 	}
 
