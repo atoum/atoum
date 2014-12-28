@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #408 Extract mock autoloader (@jubianchi)
 * #403 Fix a bug when setting the default mock namespace (@hywan)
 * #387 Support assertion without parenthesis on `dateInterval`, `error`, `extension` and `hash` asserters (@jubianchi)
 * #401 Use new Travis container infrastructure (@jubianchi)
