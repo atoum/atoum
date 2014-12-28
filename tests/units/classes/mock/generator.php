@@ -59,13 +59,13 @@ class generator extends atoum\test
 			->if($generator = new testedClass())
 			->then
 				->object($generator->setDefaultNamespace($namespace = uniqid()))->isIdenticalTo($generator)
-				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
+				->string($generator->getDefaultNamespace())->isEqualTo($namespace)
 				->object($generator->setDefaultNamespace('\\' . $namespace))->isIdenticalTo($generator)
-				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
+				->string($generator->getDefaultNamespace())->isEqualTo($namespace)
 				->object($generator->setDefaultNamespace('\\' . $namespace . '\\'))->isIdenticalTo($generator)
-				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
+				->string($generator->getDefaultNamespace())->isEqualTo($namespace)
 				->object($generator->setDefaultNamespace($namespace . '\\'))->isIdenticalTo($generator)
-				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
+				->string($generator->getDefaultNamespace())->isEqualTo($namespace)
 		;
 	}
 

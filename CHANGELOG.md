@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #403 Fix a bug when setting the default mock namespace (@hywan)
 * #387 Support assertion without parenthesis on `dateInterval`, `error`, `extension` and `hash` asserters (@jubianchi)
 * #401 Use new Travis container infrastructure (@jubianchi)
 * #405 Add the Santa report and an example configuration file (@jubianchi)

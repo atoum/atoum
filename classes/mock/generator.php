@@ -61,7 +61,7 @@ class generator
 
 	public function setDefaultNamespace($namespace)
 	{
-		$this->defaultNamespace = '\\' . trim($namespace, '\\');
+		$this->defaultNamespace = trim($namespace, '\\');
 
 		return $this;
 	}
