@@ -7,7 +7,7 @@
 * #387 Support assertion without parenthesis on `dateInterval`, `error`, `extension` and `hash` asserters (@jubianchi)
 * #401 Use new Travis container infrastructure (@jubianchi)
 * #405 Add the Santa report and an example configuration file (@jubianchi)
-* #393 Mock generator now handles variadic arguments in method (@jubianchi)
+* #394 Mock generator now handles variadic arguments in method (@jubianchi)
 * #398 Replace broken documentation links (@jubianchi)
 * #396 Rename `match` to `matches` on the string asserter (@hywan)
 * #385 Rename the PHAR to `atoum.phar` (@hywan)
