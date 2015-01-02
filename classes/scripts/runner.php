@@ -205,8 +205,6 @@ class runner extends atoum\script\configurable
 		catch (atoum\exception $exception)
 		{
 			$this->writeError($exception->getMessage());
-
-			exit(2);
 		}
 
 		return $this;
@@ -581,7 +579,7 @@ class runner extends atoum\script\configurable
 								{
 									$autorunner->writeError($message . ' in ' . $file . ' at line ' . $line, $error);
 
-									exit($error);
+									exit(3);
 								}
 							}
 						);
@@ -608,7 +606,7 @@ class runner extends atoum\script\configurable
 						{
 							$autorunner->writeError($exception->getMessage());
 
-							exit($exception->getCode());
+							exit(2);
 						}
 					}
 				}
