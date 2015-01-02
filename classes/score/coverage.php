@@ -103,7 +103,6 @@ class coverage implements \countable, \serializable
 		return $this;
 	}
 
-
 	public function resetExcludedClasses()
 	{
 		$this->excludedClasses = array();
