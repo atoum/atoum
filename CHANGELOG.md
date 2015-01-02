@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #414 Remove useless blank line (@mageekguy)
 * #412 Use semantics dates in `CHANGELOG.md` (@hywan)
 
 # 1.2.0 - 2014-12-28
