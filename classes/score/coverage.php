@@ -192,23 +192,23 @@ class coverage implements \countable, \serializable
 		{
 			$reflectedClass = call_user_func($this->reflectionClassFactory, $class);
 
-			if (isset($this->classes[$class]) === false)
+			if ($this->isExcluded($reflectedClass) === false)
 			{
-				if ($this->isExcluded($reflectedClass) === false)
+				if (isset($this->classes[$class]) === false)
 				{
 					$this->classes[$class] = $classes[$class];
 				}
-			}
 
-			foreach ($methods as $method => $lines)
-			{
-				if (isset($this->methods[$class][$method]) === true || $this->isExcluded($this->getDeclaringClass($reflectedClass->getMethod($method))) === false)
+				foreach ($methods as $method => $lines)
 				{
-					foreach ($lines as $line => $call)
+					if (isset($this->methods[$class][$method]) === true || $this->isExcluded($this->getDeclaringClass($reflectedClass->getMethod($method))) === false)
 					{
-						if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
+						foreach ($lines as $line => $call)
 						{
-							$this->methods[$class][$method][$line] = $call;
+							if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
+							{
+								$this->methods[$class][$method][$line] = $call;
+							}
 						}
 					}
 				}
