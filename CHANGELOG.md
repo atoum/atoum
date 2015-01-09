@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 1.2.1 - 2015-01-09
+
 * #413 Fix a bug in the exit code management (@mageekguy)
 * #412 Use semantics dates in `CHANGELOG.md` (@hywan)
 
