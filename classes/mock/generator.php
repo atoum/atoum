@@ -361,13 +361,15 @@ class generator
 					$mockedMethods .= "\t\t" . '{' . PHP_EOL;
 					$mockedMethods .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {};' . PHP_EOL;
 					$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-					$mockedMethods .=	"\t\t" . 'return $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+					$mockedMethods .= "\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+					$mockedMethods .= "\t\t" . 'return $return;' . PHP_EOL;
 				}
 				else
 				{
 					$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL;
 					$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-					$mockedMethods .= "\t\t\t" . 'return $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+					$mockedMethods .= "\t\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+					$mockedMethods .= "\t\t\t" . 'return $return;' . PHP_EOL;
 					$mockedMethods .= "\t\t" . '}' . PHP_EOL;
 					$mockedMethods .= "\t\t" . 'else' . PHP_EOL;
 					$mockedMethods .= "\t\t" . '{' . PHP_EOL;
@@ -381,7 +383,8 @@ class generator
 
 					if ($this->shuntParentClassCalls === false)
 					{
-						$mockedMethods .= "\t\t\t" . 'return call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
+						$mockedMethods .= "\t\t\t" . '$return = call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
+						$mockedMethods .= "\t\t\t" . 'return $return;' . PHP_EOL;
 					}
 
 					$mockedMethods .= "\t\t" . '}' . PHP_EOL;
@@ -481,7 +484,15 @@ class generator
 					$methodCode .= "\t\t" . '{' . PHP_EOL;
 					$methodCode .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {};' . PHP_EOL;
 					$methodCode .= "\t\t" . '}' . PHP_EOL;
-					$methodCode .= "\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+					if ($isConstructor === true)
+					{
+						$methodCode .= "\t\t" . '$this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+					}
+					else
+					{
+						$methodCode .= "\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+						$methodCode .= "\t\t" . 'return $return;' . PHP_EOL;
+					}
 					$methodCode .= "\t" . '}' . PHP_EOL;
 					break;
 
@@ -712,7 +723,8 @@ class generator
 			"\t" . '{' . PHP_EOL .
 			"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
 			"\t\t" . '{' . PHP_EOL .
-			"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+			"\t\t\t" . '$return = $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+			"\t\t\t" . 'return $return;' . PHP_EOL .
 			"\t\t" . '}' . PHP_EOL .
 			"\t\t" . 'else' . PHP_EOL .
 			"\t\t" . '{' . PHP_EOL .
