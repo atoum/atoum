@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #406 Fix a bug in the HTML coverage with stylesheet URLs (@jubianchi)
 * #418 Fix a bug when a method returns a reference (@hywan)
 
 # 1.2.1 - 2015-01-09
