@@ -193,7 +193,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -433,7 +434,8 @@ class generator extends atoum\test
 					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0));' . PHP_EOL .
 					"\t\t" . 'if (isset($this->getMockController()->' . $otherMethod . ') === true)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . 'return $this->getMockController()->invoke(\'' . $otherMethod . '\', $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke(\'' . $otherMethod . '\', $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -828,7 +830,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -874,13 +877,15 @@ class generator extends atoum\test
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->getIterator = function() {};' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->getMockController()->invoke(\'getIterator\', $arguments);' . PHP_EOL .
+					"\t\t" . '$return = $this->getMockController()->invoke(\'getIterator\', $arguments);' . PHP_EOL .
+					"\t\t" . 'return $return;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -1013,7 +1018,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -1093,7 +1099,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -1166,7 +1173,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -1200,7 +1208,8 @@ class generator extends atoum\test
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->getIterator = function() {};' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->getMockController()->invoke(\'getIterator\', $arguments);' . PHP_EOL .
+					"\t\t" . '$return = $this->getMockController()->invoke(\'getIterator\', $arguments);' . PHP_EOL .
+					"\t\t" . 'return $return;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
@@ -1221,7 +1230,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -1294,12 +1304,14 @@ class generator extends atoum\test
 					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0));' . PHP_EOL .
 					"\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . 'return $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL .
-					"\t\t\t" . 'return call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
@@ -1369,7 +1381,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . 'return $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke($methodName, $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -1807,7 +1820,8 @@ class generator extends atoum\test
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->' . $publicMethodName . ' = function() {};' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->getMockController()->invoke(\'' . $publicMethodName . '\', $arguments);' . PHP_EOL .
+					"\t\t" . '$return = $this->getMockController()->invoke(\'' . $publicMethodName . '\', $arguments);' . PHP_EOL .
+					"\t\t" . 'return $return;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'protected function ' . $protectedMethodName . '()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
@@ -1816,7 +1830,8 @@ class generator extends atoum\test
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->' . $protectedMethodName . ' = function() {};' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->getMockController()->invoke(\'' . $protectedMethodName . '\', $arguments);' . PHP_EOL .
+					"\t\t" . '$return = $this->getMockController()->invoke(\'' . $protectedMethodName . '\', $arguments);' . PHP_EOL .
+					"\t\t" . 'return $return;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
@@ -1922,7 +1937,8 @@ class generator extends atoum\test
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->' . $publicMethodName . ' = function() {};' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->getMockController()->invoke(\'' . $publicMethodName . '\', $arguments);' . PHP_EOL .
+					"\t\t" . '$return = $this->getMockController()->invoke(\'' . $publicMethodName . '\', $arguments);' . PHP_EOL .
+					"\t\t" . 'return $return;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'protected function ' . $protectedMethodName . '()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
@@ -1931,7 +1947,8 @@ class generator extends atoum\test
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->' . $protectedMethodName . ' = function() {};' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->getMockController()->invoke(\'' . $protectedMethodName . '\', $arguments);' . PHP_EOL .
+					"\t\t" . '$return = $this->getMockController()->invoke(\'' . $protectedMethodName . '\', $arguments);' . PHP_EOL .
+					"\t\t" . 'return $return;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
@@ -2245,12 +2262,14 @@ class generator extends atoum\test
 						"\t\t" . '$arguments = func_get_args();' . PHP_EOL .
 						"\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL .
 						"\t\t" . '{' . PHP_EOL .
-						"\t\t\t" . 'return $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL .
+						"\t\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL .
+						"\t\t\t" . 'return $return;' . PHP_EOL .
 						"\t\t" . '}' . PHP_EOL .
 						"\t\t" . 'else' . PHP_EOL .
 						"\t\t" . '{' . PHP_EOL .
 						"\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL .
-						"\t\t\t" . 'return call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL .
+						"\t\t\t" . '$return = call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL .
+						"\t\t\t" . 'return $return;' . PHP_EOL .
 						"\t\t" . '}' . PHP_EOL .
 						"\t" . '}' . PHP_EOL .
 						"\t" . 'public static function getMockedMethods()' . PHP_EOL .

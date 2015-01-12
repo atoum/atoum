@@ -1,5 +1,7 @@
 # `dev-master`
 
+* #418 Fix a bug when a method returns a reference (@hywan)
+
 # 1.2.1 - 2015-01-09
 
 * #413 Fix a bug in the exit code management (@mageekguy)
