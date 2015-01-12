@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 1.2.2 - 2015-01-12
+
 * #415 Fix a bug in the coverage report with excluded classes (@mageekguy)
 * #406 Fix a bug in the HTML coverage with stylesheet URLs (@jubianchi)
 * #418 Fix a bug when a mocked method returns a reference (@hywan)
