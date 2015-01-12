@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #415 Fix a bug in the coverage report with excluded classes (@mageekguy)
 * #406 Fix a bug in the HTML coverage with stylesheet URLs (@jubianchi)
 * #418 Fix a bug when a method returns a reference (@hywan)
 
