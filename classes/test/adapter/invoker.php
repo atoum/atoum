@@ -152,7 +152,7 @@ class invoker implements \arrayAccess, \countable
 		return $this;
 	}
 
-	public function offsetSet($call = null, $mixed)
+	public function offsetSet($call = null, $mixed = null)
 	{
 		if ($mixed instanceof \closure === false)
 		{
