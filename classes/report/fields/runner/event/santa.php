@@ -78,7 +78,8 @@ class santa extends cli
 		{
 			$string .= $this->clear();
 
-			for ($row = 0; $row < count($this->sprite); $row++)
+            $count = count($this->sprite);
+			for ($row = 0; $row < $count; $row++)
 			{
 				$string .= $this->getSnow() . $this->sprite[$row] . $this->getSnow() . PHP_EOL;
 			}
