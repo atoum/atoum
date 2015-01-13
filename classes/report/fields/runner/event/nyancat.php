@@ -80,7 +80,8 @@ class nyancat extends cli
 
 			$string .= $this->clear();
 
-			for ($row = 0; $row < count($cat); $row++)
+            $count = count($cat);
+			for ($row = 0; $row < $count; $row++)
 			{
 				$string .= $this->getRainbowRow() . $this->catColorizer->colorize($cat[$row]) . PHP_EOL;
 			}
@@ -103,7 +104,8 @@ class nyancat extends cli
 	{
 		$string = '';
 
-		for ($column = 0; $column < count($this->rainbowColorizers); $column++)
+        $count = count($this->rainbowColorizers);
+		for ($column = 0; $column < $count; $column++)
 		{
 			$string .= $this->getColorizer($column - $this->offset)->colorize($this->curve);
 		}
