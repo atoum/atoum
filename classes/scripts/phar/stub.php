@@ -264,7 +264,7 @@ class stub extends scripts\runner
 
 		$versions = unserialize(file_get_contents($currentPhar['versions']));
 
-		if (is_array($versions) === false || sizeof($versions) <= 0 || isset($versions['current']) === false)
+		if (is_array($versions) === false || count($versions) <= 0 || isset($versions['current']) === false)
 		{
 			throw new exceptions\runtime('Unable to list available versions in PHAR, the versions\'s file is invalid');
 		}
@@ -372,7 +372,7 @@ class stub extends scripts\runner
 			parent::setArgumentHandlers()
 			->addArgumentHandler(
 				function($script, $argument, $values) {
-					if (sizeof($values) !== 0)
+					if (count($values) !== 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -385,7 +385,7 @@ class stub extends scripts\runner
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {
-					if (sizeof($values) !== 0)
+					if (count($values) !== 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -398,7 +398,7 @@ class stub extends scripts\runner
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {
-					if (sizeof($values) !== 1)
+					if (count($values) !== 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -411,7 +411,7 @@ class stub extends scripts\runner
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {
-					if (sizeof($values) !== 1)
+					if (count($values) !== 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -424,7 +424,7 @@ class stub extends scripts\runner
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values, $position) {
-					if ($position !== 1 || sizeof($values) !== 1)
+					if ($position !== 1 || count($values) !== 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -442,7 +442,7 @@ class stub extends scripts\runner
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {
-					if (sizeof($values) > 0)
+					if (count($values) > 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -455,7 +455,7 @@ class stub extends scripts\runner
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {
-					if (sizeof($values) > 0)
+					if (count($values) > 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -468,7 +468,7 @@ class stub extends scripts\runner
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {
-					if (sizeof($values) > 0)
+					if (count($values) > 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -481,7 +481,7 @@ class stub extends scripts\runner
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {
-					if (sizeof($values) != 1)
+					if (count($values) != 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -494,7 +494,7 @@ class stub extends scripts\runner
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {
-					if (sizeof($values) != 1)
+					if (count($values) != 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}

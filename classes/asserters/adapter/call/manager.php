@@ -31,7 +31,7 @@ class manager
 
 	public function check()
 	{
-		if (sizeof($this->calls) > 0)
+		if (count($this->calls) > 0)
 		{
 			$this->calls->rewind();
 

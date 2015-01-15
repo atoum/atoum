@@ -221,7 +221,7 @@ class coverage implements \countable, \serializable
 	{
 		$value = null;
 
-		if (sizeof($this) > 0)
+		if (count($this) > 0)
 		{
 			$totalLines = 0;
 			$coveredLines = 0;
@@ -456,7 +456,7 @@ class coverage implements \countable, \serializable
 
 	public function count()
 	{
-		return sizeof($this->methods);
+		return count($this->methods);
 	}
 
 	public function isInExcludedMethods($method)
@@ -516,13 +516,13 @@ class coverage implements \countable, \serializable
 
 		$traits = ($this->adapter->method_exists($declaringClass, 'getTraits') === false ? array() : $declaringClass->getTraits());
 
-		if (sizeof($traits) > 0)
+		if (count($traits) > 0)
 		{
 			$methodFileName = $method->getFileName();
 
 			if ($methodFileName !== $declaringClass->getFileName() || $method->getStartLine() < $declaringClass->getStartLine() || $method->getEndLine() > $declaringClass->getEndLine())
 			{
-				if (sizeof($traits) > 0)
+				if (count($traits) > 0)
 				{
 					$methodName = $method->getName();
 

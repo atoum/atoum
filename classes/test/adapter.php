@@ -94,7 +94,7 @@ class adapter extends atoum\adapter
 
 	public function getCallsNumber(adapter\call $call = null, $identical = false)
 	{
-		return sizeof($this->getCalls($call, $identical));
+		return count($this->getCalls($call, $identical));
 	}
 
 	public function getCallsEqualTo(adapter\call $call)
@@ -104,7 +104,7 @@ class adapter extends atoum\adapter
 
 	public function getCallsNumberEqualTo(adapter\call $call)
 	{
-		return sizeof($this->calls->getEqualTo($call));
+		return count($this->calls->getEqualTo($call));
 	}
 
 	public function getCallsIdenticalTo(adapter\call $call)
@@ -134,7 +134,7 @@ class adapter extends atoum\adapter
 
 	public function getCallNumber(adapter\call $call = null, $identical = false)
 	{
-		return sizeof($this->getCalls($call, $identical));
+		return count($this->getCalls($call, $identical));
 	}
 
 	public function getTimeline(adapter\call $call = null, $identical = false)
@@ -184,7 +184,7 @@ class adapter extends atoum\adapter
 			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not invokable by an adapter');
 		}
 
-		$call = sizeof($this->addCall($functionName, $arguments)->getCallsEqualTo(new adapter\call($functionName)));
+		$call = count($this->addCall($functionName, $arguments)->getCallsEqualTo(new adapter\call($functionName)));
 
 		try
 		{

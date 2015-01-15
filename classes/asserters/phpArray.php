@@ -184,13 +184,13 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function hasSize($size, $failMessage = null)
 	{
-		if (sizeof($this->valueIsSet()->value) == $size)
+		if (count($this->valueIsSet()->value) == $size)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage ?: $this->_('%s has size %d, expected size %d', $this, sizeof($this->valueIsSet()->value), $size));
+			$this->fail($failMessage ?: $this->_('%s has size %d, expected size %d', $this, count($this->valueIsSet()->value), $size));
 		}
 
 		return $this;
@@ -198,7 +198,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function isEmpty($failMessage = null)
 	{
-		if (sizeof($this->valueIsSet()->value) == 0)
+		if (count($this->valueIsSet()->value) == 0)
 		{
 			$this->pass();
 		}
@@ -212,7 +212,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function isNotEmpty($failMessage = null)
 	{
-		if (sizeof($this->valueIsSet()->value) > 0)
+		if (count($this->valueIsSet()->value) > 0)
 		{
 			$this->pass();
 		}
@@ -253,7 +253,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function hasKeys(array $keys, $failMessage = null)
 	{
-		if (sizeof($undefinedKeys = array_diff($keys, array_keys($this->valueIsSet()->value))) <= 0)
+		if (count($undefinedKeys = array_diff($keys, array_keys($this->valueIsSet()->value))) <= 0)
 		{
 			$this->pass();
 		}
@@ -269,7 +269,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 	{
 		$this->valueIsSet();
 
-		if (sizeof($definedKeys = array_intersect($keys, array_keys($this->value))) <= 0)
+		if (count($definedKeys = array_intersect($keys, array_keys($this->value))) <= 0)
 		{
 			$this->pass();
 		}
@@ -503,7 +503,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 			$unknownValues[] = $value;
 		}
 
-		if (sizeof($unknownValues) <= 0)
+		if (count($unknownValues) <= 0)
 		{
 			$this->pass();
 		}
@@ -538,7 +538,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 			$knownValues[] = $value;
 		}
 
-		if (sizeof($knownValues) <= 0)
+		if (count($knownValues) <= 0)
 		{
 			$this->pass();
 		}
@@ -574,7 +574,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	protected function getSizeAsserter()
 	{
-		return $this->generator->__call('integer', array(sizeof($this->valueIsSet()->value)));
+		return $this->generator->__call('integer', array(count($this->valueIsSet()->value)));
 	}
 
 	protected function callAssertion($method, array $arguments)

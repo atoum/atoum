@@ -42,7 +42,7 @@ class command
 			}
 		}
 
-		if (sizeof($this->arguments) > 0)
+		if (count($this->arguments) > 0)
 		{
 			$command .= ' --';
 
@@ -224,7 +224,7 @@ class command
 			$pipes[0] = array('pipe', 'r');
 		}
 
-		$this->processus = @call_user_func_array(array($this->adapter, 'proc_open'), array((string) $this, $pipes, & $this->streams, null, sizeof($this->env) <= 0 ? null : $this->env));
+		$this->processus = @call_user_func_array(array($this->adapter, 'proc_open'), array((string) $this, $pipes, & $this->streams, null, count($this->env) <= 0 ? null : $this->env));
 
 		if ($this->processus === false)
 		{

@@ -37,7 +37,7 @@ class cli extends runner\failures
 		{
 			$fails = $this->runner->getScore()->getFailAssertions();
 
-			$numberOfFails = sizeof($fails);
+			$numberOfFails = count($fails);
 
 			if ($numberOfFails > 0)
 			{

@@ -204,7 +204,7 @@ class iterator extends iterator\value
 			$this->key = 0;
 		}
 
-		$size = sizeof($value);
+		$size = count($value);
 
 		if ($size > 0)
 		{
@@ -264,7 +264,7 @@ class iterator extends iterator\value
 
 	public function seek($key)
 	{
-		if ($key > sizeof($this) / 2)
+		if ($key > count($this) / 2)
 		{
 			$this->end();
 		}

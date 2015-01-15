@@ -103,15 +103,15 @@ class call
 			case $call->arguments === null:
 				return false;
 
-			case sizeof($this->arguments) <= 0:
+			case count($this->arguments) <= 0:
 				return $this->arguments == $call->arguments;
 
-			case sizeof($this->arguments) <= sizeof($call->arguments):
+			case count($this->arguments) <= count($call->arguments):
 				$callback = function($a, $b) {
 					return ($a == $b ? 0 : -1);
 				};
 
-				return (sizeof($this->arguments) == sizeof(array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback)));
+				return (count($this->arguments) == count(array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback)));
 
 			default:
 				return false;

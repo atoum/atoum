@@ -216,7 +216,7 @@ abstract class call extends atoum\asserter
 			{
 				$failMessage = $this->__('%s is called %d time instead of %d', '%s is called %d times instead of %d', $callsNumber, $this->call, $callsNumber, $number);
 
-				if (sizeof($this->beforeCalls) > 0)
+				if (count($this->beforeCalls) > 0)
 				{
 					$beforeCalls = array();
 
@@ -228,7 +228,7 @@ abstract class call extends atoum\asserter
 					$failMessage = $this->_('%s before %s', $failMessage, join(', ', $beforeCalls));
 				}
 
-				if (sizeof($this->afterCalls) > 0)
+				if (count($this->afterCalls) > 0)
 				{
 					$afterCalls = array();
 
@@ -288,7 +288,7 @@ abstract class call extends atoum\asserter
 	{
 		$calls = $this->callIsSet()->adapter->getCalls($this->call, $this->identicalCall);
 
-		if (sizeof($calls) > 0 && (sizeof($this->beforeCalls) > 0 || sizeof($this->afterCalls) > 0))
+		if (count($calls) > 0 && (count($this->beforeCalls) > 0 || count($this->afterCalls) > 0))
 		{
 			foreach ($this->beforeCalls as $asserter)
 			{
@@ -339,7 +339,7 @@ abstract class call extends atoum\asserter
 			}
 		}
 
-		return sizeof($calls);
+		return count($calls);
 	}
 
 	protected function setFunction($function)
@@ -415,11 +415,11 @@ abstract class call extends atoum\asserter
 	{
 		$string = '';
 
-		if (sizeof($this->beforeCalls) <= 0 && sizeof($this->afterCalls) <= 0)
+		if (count($this->beforeCalls) <= 0 && count($this->afterCalls) <= 0)
 		{
 			$calls = $this->adapter->getCallsEqualTo($this->call->unsetArguments());
 
-			$string = (sizeof($calls) <= 0 ? '' : PHP_EOL . rtrim($calls));
+			$string = (count($calls) <= 0 ? '' : PHP_EOL . rtrim($calls));
 		}
 
 		return $string;

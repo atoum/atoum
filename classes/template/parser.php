@@ -166,7 +166,7 @@ class parser
 			$currentTag->addChild(new data($string));
 		}
 
-		if (sizeof($stack) > 0)
+		if (count($stack) > 0)
 		{
 			throw new parser\exception('Tag \'' . $currentTag->getTag() . '\' must be closed', $line, $offset + strlen($string));
 		}

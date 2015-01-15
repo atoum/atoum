@@ -123,10 +123,10 @@ class xunit extends atoum\reports\asynchronous
 
 				$testSuite->setAttribute('name', $clname);
 				$testSuite->setAttribute('package', $package);
-				$testSuite->setAttribute('tests', sizeof($class['durations']) + ($fails = sizeof($class['fails'])) + ($errors = sizeof($class['excepts']) + sizeof($class['errors']) + sizeof($class['uncomplete'])) + sizeof($class['skipped']));
+				$testSuite->setAttribute('tests', count($class['durations']) + ($fails = count($class['fails'])) + ($errors = count($class['excepts']) + count($class['errors']) + count($class['uncomplete'])) + count($class['skipped']));
 				$testSuite->setAttribute('failures', $fails);
 				$testSuite->setAttribute('errors', $errors);
-				$testSuite->setAttribute('skipped', sizeof($class['skipped']));
+				$testSuite->setAttribute('skipped', count($class['skipped']));
 
 				$time = 0;
 				foreach ($class['durations'] as $duration)

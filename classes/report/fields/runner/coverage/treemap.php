@@ -46,7 +46,7 @@ class treemap extends report\fields\runner\coverage\cli
 	{
 		$string = '';
 
-		if (sizeof($this->coverage) > 0)
+		if (count($this->coverage) > 0)
 		{
 			try
 			{
@@ -84,7 +84,7 @@ class treemap extends report\fields\runner\coverage\cli
 
 						if ($childFound === false)
 						{
-							$key = sizeof($node['children']);
+							$key = count($node['children']);
 							$node['children'][] = array(
 								'name' => $namespace,
 								'fullname' => $node['fullname'] . ($node['fullname'] == '' ? '' : '\\') . $namespace,

@@ -41,7 +41,7 @@ class cli extends report\fields\runner\errors
 		{
 			$errors = $this->runner->getScore()->getErrors();
 
-			$sizeOfErrors = sizeof($errors);
+			$sizeOfErrors = count($errors);
 
 			if ($sizeOfErrors > 0)
 			{

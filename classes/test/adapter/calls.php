@@ -348,7 +348,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		$calls = new static();
 
 		$calls->calls[self::getKey($call)] = $array;
-		$calls->size = sizeof($array);
+		$calls->size = count($array);
 
 		return $calls;
 	}

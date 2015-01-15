@@ -18,7 +18,7 @@ class phing extends report\fields\runner\tests\coverage\cli
 	{
 		$string = '';
 
-		if ($this->coverage !== null && sizeof($this->coverage) > 0)
+		if ($this->coverage !== null && count($this->coverage) > 0)
 		{
 			$string .= $this->titlePrompt .
 				sprintf(

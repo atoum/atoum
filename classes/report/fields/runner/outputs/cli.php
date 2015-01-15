@@ -41,7 +41,7 @@ class cli extends outputs
 		{
 			$outputs = $this->runner->getScore()->getOutputs();
 
-			$sizeOfOutputs = sizeof($outputs);
+			$sizeOfOutputs = count($outputs);
 
 			if ($sizeOfOutputs > 0)
 			{

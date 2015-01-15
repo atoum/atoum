@@ -12,7 +12,7 @@ class decorator
 	{
 		$string = '';
 
-		$sizeOfCalls = sizeof($calls);
+		$sizeOfCalls = count($calls);
 
 		if ($sizeOfCalls > 0)
 		{
