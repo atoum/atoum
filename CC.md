@@ -109,7 +109,7 @@ In the case of a block of related assignments, more space should not be used to 
 This is a bad practice in the sense of this coding convention:
 
 ```php
-$short				 = foo($bar);
+$short         = foo($bar);
 $long_variable = foo($baz);
 ```
 
@@ -144,6 +144,8 @@ $array = array(
 	'foo' => 'bar'
 );
 ```
+
+To get lenght of an array, use `sizeof` instead of `count` (no technical reason about that, it's just the current convention).
 
 # Quotes
 
