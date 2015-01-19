@@ -1091,6 +1091,8 @@ abstract class test implements observable, \countable
 				{
 					ob_start();
 
+					$this->beforeTestMethod($this->currentMethod);
+
 					try
 					{
 						$testedClass = new \reflectionClass($testedClassName = $this->getTestedClassName());
@@ -1133,8 +1135,6 @@ abstract class test implements observable, \countable
 					mock\controller::setLinker($this->mockControllerLinker);
 
 					$this->testAdapterStorage->add(php\mocker::getAdapter());
-
-					$this->beforeTestMethod($this->currentMethod);
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
