@@ -1,5 +1,7 @@
 # `dev-master`
 
+* #420 `atoum\test::beforeTestMethod` is called before the tested class is loaded (@mageekguy)
+
 # 1.2.2 - 2015-01-12
 
 * #415 Fix a bug in the coverage report with excluded classes (@mageekguy)
