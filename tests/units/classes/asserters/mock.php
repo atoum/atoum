@@ -207,6 +207,40 @@ class mock extends atoum\test
 		;
 	}
 
+	public function testReceive()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+			->then
+				->exception(function() use ($asserter) { $asserter->receive(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+
+			->given(
+				$asserter->setManager($manager = new \mock\atoum\asserters\adapter\call\manager()),
+				$mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()),
+				$this->calling($mockController)->getMockClass = $mockClass = uniqid()
+			)
+			->if($asserter->setWith($mock))
+			->then
+				->object($asserter->receive($function = uniqid()))->isIdenticalTo($asserter)
+				->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
+				->integer($asserter->getLastAssertionLine())->isEqualTo(__LINE__ - 2)
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, null, new decorators\addClass($mockClass)))
+				->array($asserter->getBefore())->isEmpty
+				->array($asserter->getAfter())->isEmpty
+				->mock($manager)->receive('add')->withArguments($asserter)->once
+
+				->object($asserter->receive($otherFunction = uniqid()))->isIdenticalTo($asserter)
+				->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
+				->integer($asserter->getLastAssertionLine())->isEqualTo(__LINE__ - 2)
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($otherFunction, null, new decorators\addClass($mockClass)))
+				->array($asserter->getBefore())->isEmpty
+				->array($asserter->getAfter())->isEmpty
+				->mock($manager)->receive('add')->withArguments($asserter)->twice
+		;
+	}
+
 	public function testWithArguments()
 	{
 		$this
