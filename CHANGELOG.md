@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #427 `atoum\asserters\mock::receive` is an alias to `atoum\asserters\mock::call` (@mageekguy)
 * #420 `atoum\test::beforeTestMethod` is called before the tested class is loaded (@mageekguy)
 
 # 1.2.2 - 2015-01-12
