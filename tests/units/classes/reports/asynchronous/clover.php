@@ -23,7 +23,7 @@ class clover extends atoum\test
 		$this->testedClass->extends('mageekguy\atoum\reports\asynchronous');
 	}
 
-	/*public function testClassConstants()
+	public function testClassConstants()
 	{
 		$this
 			->string(testedClass::defaultTitle)->isEqualTo('atoum code coverage')
@@ -53,7 +53,7 @@ class clover extends atoum\test
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('libxml PHP extension is mandatory for clover report')
 		;
-	}*/
+	}
 
 	public function testHandleEvent()
 	{
@@ -141,7 +141,7 @@ class clover extends atoum\test
 		;
 	}
 
-	/*public function testGetTitle()
+	public function testGetTitle()
 	{
 		$this
 			->if($report = new testedClass())
@@ -183,5 +183,5 @@ class clover extends atoum\test
 				->object($report->setPackage($package = uniqid()))->isIdenticalTo($report)
 				->string($report->getPackage())->isEqualTo($package)
 		;
-	}*/
+	}
 }
