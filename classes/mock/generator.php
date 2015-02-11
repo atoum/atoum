@@ -20,6 +20,7 @@ class generator
 	protected $shuntParentClassCalls = false;
 	protected $allowUndefinedMethodsInInterface = true;
 	protected $allIsInterface = false;
+	protected $testedClass = '';
 
 	private $defaultNamespace = null;
 
@@ -140,6 +141,13 @@ class generator
 		return $this;
 	}
 
+	public function testedClassIs($testedClass)
+	{
+		$this->testedClass = strtolower($testedClass);
+
+		return $this;
+	}
+
 	public function getMockedClassCode($class, $mockNamespace = null, $mockClass = null)
 	{
 		if (trim($class, '\\') == '' || rtrim($class, '\\') != $class)
@@ -180,6 +188,10 @@ class generator
 			$code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : $this->generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);
 		}
 
+		$this->shuntedMethods = $this->overloadedMethods = $this->orphanizedMethods = array();
+
+		$this->unshuntParentClassCalls();
+
 		return $code;
 	}
 
@@ -187,9 +199,7 @@ class generator
 	{
 		eval($this->getMockedClassCode($class, $mockNamespace, $mockClass));
 
-		$this->shuntedMethods = $this->overloadedMethods = $this->orphanizedMethods = array();
-
-		return $this->unshuntParentClassCalls();
+		return $this;
 	}
 
 	public function methodIsMockable(\reflectionMethod $method)
@@ -231,7 +241,11 @@ class generator
 
 	protected function generateClassMethodCode(\reflectionClass $class)
 	{
-		if ($this->allIsInterface)
+		$mockedMethods = '';
+		$mockedMethodNames = array();
+		$className = $class->getName();
+
+		if ($this->allIsInterface && strtolower($className) != $this->testedClass)
 		{
 			foreach ($class->getMethods() as $method)
 			{
@@ -241,10 +255,6 @@ class generator
 				}
 			}
 		}
-
-		$mockedMethods = '';
-		$mockedMethodNames = array();
-		$className = $class->getName();
 
 		$constructor = $class->getConstructor();
 

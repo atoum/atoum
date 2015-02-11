@@ -102,6 +102,15 @@ class generator extends atoum\test
 		;
 	}
 
+	function testTestedClassIs()
+	{
+		$this
+			->if($generator = new testedClass())
+			->then
+				->object($generator->testedClassIs(uniqid()))->isIdenticalTo($generator)
+		;
+	}
+
 	public function testOverload()
 	{
 		$this
@@ -731,8 +740,54 @@ class generator extends atoum\test
 					'}' . PHP_EOL .
 					'}'
 				)
+
+			->if($generator->testedClassIs($realClass))
+			->then
+				->string($generator->getMockedClassCode($realClass))->isEqualTo(
+					'namespace mock {' . PHP_EOL .
+					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'{' . PHP_EOL .
+					$this->getMockControllerMethods() .
+					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->invoke(\'__construct\', func_get_args());' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function foo()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0));' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->foo) === true)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$return = $this->getMockController()->invoke(\'foo\', $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'else' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->addCall(\'foo\', $arguments);' . PHP_EOL .
+					"\t\t\t" . '$return = call_user_func_array(\'parent::foo\', $arguments);' . PHP_EOL .
+					"\t\t\t" . 'return $return;' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct', 'foo'), true) . ';' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					'}' . PHP_EOL .
+					'}'
+				)
 		;
 	}
+
 	public function testGetMockedClassCodeWithCloneMethod()
 	{
 		$this
