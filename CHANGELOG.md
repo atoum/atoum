@@ -1,5 +1,6 @@
 # `dev-master`
 
+* #430 Add `atoum\mock\generator::allIsInterface()` to definitely disable all parent classes' behaviors in mocks (@mageekguy)
 * #427 `atoum\asserters\mock::receive` is an alias to `atoum\asserters\mock::call` (@mageekguy)
 * #420 `atoum\test::beforeTestMethod` is called before the tested class is loaded (@mageekguy)
 
