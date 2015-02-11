@@ -19,6 +19,7 @@ class generator
 	protected $orphanizedMethods = array();
 	protected $shuntParentClassCalls = false;
 	protected $allowUndefinedMethodsInInterface = true;
+	protected $allIsInterface = false;
 
 	private $defaultNamespace = null;
 
@@ -132,6 +133,13 @@ class generator
 		return (in_array($method, $this->orphanizedMethods) === true);
 	}
 
+	public function allIsInterface()
+	{
+		$this->allIsInterface = true;
+
+		return $this;
+	}
+
 	public function getMockedClassCode($class, $mockNamespace = null, $mockClass = null)
 	{
 		if (trim($class, '\\') == '' || rtrim($class, '\\') != $class)
@@ -223,6 +231,17 @@ class generator
 
 	protected function generateClassMethodCode(\reflectionClass $class)
 	{
+		if ($this->allIsInterface)
+		{
+			foreach ($class->getMethods() as $method)
+			{
+				if ($this->methodIsMockable($method) === true)
+				{
+					$this->orphanize($method->getName());
+				}
+			}
+		}
+
 		$mockedMethods = '';
 		$mockedMethodNames = array();
 		$className = $class->getName();
@@ -484,6 +503,7 @@ class generator
 					$methodCode .= "\t\t" . '{' . PHP_EOL;
 					$methodCode .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {};' . PHP_EOL;
 					$methodCode .= "\t\t" . '}' . PHP_EOL;
+
 					if ($isConstructor === true)
 					{
 						$methodCode .= "\t\t" . '$this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
