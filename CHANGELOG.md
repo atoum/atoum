@@ -35,7 +35,6 @@
 * [#430](https://github.com/atoum/atoum/pull/430) Add `atoum\mock\generator::allIsInterface()` to definitely disable all parent classes' behaviors in mocks (@mageekguy)
 * [#427](https://github.com/atoum/atoum/pull/427) `atoum\asserters\mock::receive` is an alias to `atoum\asserters\mock::call` (@mageekguy)
 
-
 # 1.2.2 - 2015-01-12
 
 * #415 Fix a bug in the coverage report with excluded classes (@mageekguy)
