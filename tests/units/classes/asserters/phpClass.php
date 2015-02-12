@@ -411,6 +411,7 @@ class phpClass extends atoum\test
 		;
 	}
 
+	/** @php 5.4 */
 	public function testIsTrait()
 	{
 		$this
