@@ -470,6 +470,10 @@ class phpClass extends atoum\test
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
 
+				->exception(function() use ($asserter) { $asserter->isFinal; })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+
 			->given(
 				$this->testedInstance
 					->setReflectionClassInjector(function($class) use (& $reflectionClass) {
