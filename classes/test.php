@@ -1093,6 +1093,8 @@ abstract class test implements observable, \countable
 
 					$this->beforeTestMethod($this->currentMethod);
 
+					$this->mockGenerator->testedClassIs($this->getTestedClassName());
+
 					try
 					{
 						$testedClass = new \reflectionClass($testedClassName = $this->getTestedClassName());
