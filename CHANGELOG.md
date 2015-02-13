@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#435](https://github.com/atoum/atoum/pull/435) Partially revert BC break introduced in [#420](https://github.com/atoum/atoum/pull/420) ([@mageekguy](https://github.com/mageekguy))
+
 # 2.0.0 - 2015-02-13
 
 ## BC break updates
