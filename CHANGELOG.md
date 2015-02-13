@@ -1,9 +1,15 @@
 # `dev-master`
 
-* #431 Tested class should not be mock as an interface. (@mageekguy)
-* #430 Add `atoum\mock\generator::allIsInterface()` to definitely disable all parent classes' behaviors in mocks (@mageekguy)
-* #427 `atoum\asserters\mock::receive` is an alias to `atoum\asserters\mock::call` (@mageekguy)
-* #420 `atoum\test::beforeTestMethod` is called before the tested class is loaded (@mageekguy)
+# 2.0.0 - 2015-02-13
+
+## BC break updates
+* [#420](https://github.com/atoum/atoum/pull/420) `atoum\test::beforeTestMethod` is called before the tested class is loaded (@mageekguy)
+
+## Other updates
+* [#431](https://github.com/atoum/atoum/pull/431) Tested class should not be mock as an interface. (@mageekguy)
+* [#430](https://github.com/atoum/atoum/pull/430) Add `atoum\mock\generator::allIsInterface()` to definitely disable all parent classes' behaviors in mocks (@mageekguy)
+* [#427](https://github.com/atoum/atoum/pull/427) `atoum\asserters\mock::receive` is an alias to `atoum\asserters\mock::call` (@mageekguy)
+
 
 # 1.2.2 - 2015-01-12
 
