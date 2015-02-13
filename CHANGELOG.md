@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 1.3.0 - 2015-02-13
+
 * #431 Tested class should not be mock as an interface. (@mageekguy)
 * #430 Add `atoum\mock\generator::allIsInterface()` to definitely disable all parent classes' behaviors in mocks (@mageekguy)
 * #427 `atoum\asserters\mock::receive` is an alias to `atoum\asserters\mock::call` (@mageekguy)
