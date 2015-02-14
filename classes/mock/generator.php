@@ -18,7 +18,7 @@ class generator
 	protected $overloadedMethods = array();
 	protected $orphanizedMethods = array();
 	protected $shuntParentClassCalls = false;
-	protected $allowUndefinedMethodsInInterface = true;
+	protected $allowUndefinedMethodsUsage = true;
 	protected $allIsInterface = false;
 	protected $testedClass = '';
 
@@ -220,23 +220,23 @@ class generator
 		}
 	}
 
-	public function disallowUndefinedMethodInInterface()
+	public function disallowUndefinedMethodUsage()
 	{
-		$this->allowUndefinedMethodsInInterface = false;
+		$this->allowUndefinedMethodsUsage = false;
 
 		return $this;
 	}
 
-	public function allowUndefinedMethodInInterface()
+	public function allowUndefinedMethodUsage()
 	{
-		$this->allowUndefinedMethodsInInterface = true;
+		$this->allowUndefinedMethodsUsage = true;
 
 		return $this;
 	}
 
-	public function undefinedMethodInInterfaceAreAllowed()
+	public function undefinedMethodUsageIsAllowed()
 	{
-		return $this->allowUndefinedMethodsInInterface === true;
+		return $this->allowUndefinedMethodsUsage === true;
 	}
 
 	protected function generateClassMethodCode(\reflectionClass $class)
@@ -423,7 +423,7 @@ class generator
 			}
 		}
 
-		if ($class->isAbstract() === true && in_array('__call', $mockedMethodNames) === false)
+		if ($class->isAbstract() && $this->allowUndefinedMethodsUsage === true && in_array('__call', $mockedMethodNames) === false)
 		{
 			$mockedMethods .= self::generate__call();
 			$mockedMethodNames[] = '__call';
@@ -547,7 +547,7 @@ class generator
 			$mockedMethodNames[] = '__construct';
 		}
 
-		if ($this->allowUndefinedMethodsInInterface === true)
+		if ($this->allowUndefinedMethodsUsage === true)
 		{
 			$mockedMethods .= self::generate__call();
 			$mockedMethodNames[] = '__call';

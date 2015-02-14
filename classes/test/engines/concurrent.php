@@ -122,9 +122,9 @@ class concurrent extends test\engine
 				}
 			}
 
-			if ($this->test->getMockGenerator()->undefinedMethodInInterfaceAreAllowed() === false)
+			if ($this->test->getMockGenerator()->undefinedMethodUsageIsAllowed() === false)
 			{
-				$phpCode .= '$test->getMockGenerator()->disallowUndefinedMethodInInterface();';
+				$phpCode .= '$test->getMockGenerator()->disallowUndefinedMethodUsage();';
 			}
 
 			foreach ($test->getExtensions() as $extension)

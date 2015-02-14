@@ -177,31 +177,31 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testDisallowUndefinedMethodInInterface()
+	public function testDisallowUsageOfUndefinedMethodInMock()
 	{
 		$this
 			->if($runner = new testedClass())
 			->then
-				->object($runner->disallowUndefinedMethodInInterface())->isIdenticalTo($runner)
-				->boolean($runner->undefinedMethodInInterfaceAreAllowed())->isFalse()
-				->object($runner->disallowUndefinedMethodInInterface())->isIdenticalTo($runner)
+				->object($runner->disallowUsageOfUndefinedMethodInMock())->isIdenticalTo($runner)
+				->boolean($runner->usageOfUndefinedMethodInMockAreAllowed())->isFalse()
+				->object($runner->disallowUsageOfUndefinedMethodInMock())->isIdenticalTo($runner)
 				->boolean($runner->debugModeIsEnabled())->isFalse()
 		;
 	}
 
-	public function testAllowUndefinedMethodInInterface()
+	public function testAllowUsageOfUndefinedMethodInMock()
 	{
 		$this
 			->if($runner = new testedClass())
 			->then
-				->object($runner->allowUndefinedMethodInInterface())->isIdenticalTo($runner)
-				->boolean($runner->undefinedMethodInInterfaceAreAllowed())->isTrue()
-				->object($runner->allowUndefinedMethodInInterface())->isIdenticalTo($runner)
-				->boolean($runner->undefinedMethodInInterfaceAreAllowed())->isTrue()
-			->if($runner->disallowUndefinedMethodInInterface())
+				->object($runner->allowUsageOfUndefinedMethodInMock())->isIdenticalTo($runner)
+				->boolean($runner->usageOfUndefinedMethodInMockAreAllowed())->isTrue()
+				->object($runner->allowUsageOfUndefinedMethodInMock())->isIdenticalTo($runner)
+				->boolean($runner->usageOfUndefinedMethodInMockAreAllowed())->isTrue()
+			->if($runner->disallowUsageOfUndefinedMethodInMock())
 			->then
-				->object($runner->allowUndefinedMethodInInterface())->isIdenticalTo($runner)
-				->boolean($runner->undefinedMethodInInterfaceAreAllowed())->isTrue()
+				->object($runner->allowUsageOfUndefinedMethodInMock())->isIdenticalTo($runner)
+				->boolean($runner->usageOfUndefinedMethodInMockAreAllowed())->isTrue()
 		;
 	}
 
@@ -554,19 +554,19 @@ class runner extends atoum\test
 			->given($test = new \mock\mageekguy\atoum\test())
 			->and($generator = new \mock\mageekguy\atoum\test\mock\generator($test))
 			->and($test->setMockGenerator($generator))
-			->if($runner->disallowUndefinedMethodInInterface())
+			->if($runner->disallowUsageOfUndefinedMethodInMock())
 			->and($runner->setTestFactory(function() use ($test) { return $test; }))
 			->and($factory = $runner->getTestFactory())
 			->then
 				->object($factory('mock\mageekguy\atoum\test'))->isIdenticalTo($test)
 				->mock($generator)
-					->call('disallowUndefinedMethodInInterface')->once
+					->call('disallowUndefinedMethodUsage')->once
 			->if($this->resetMock($generator))
-			->if($runner->allowUndefinedMethodInInterface())
+			->if($runner->allowUsageOfUndefinedMethodInMock())
 			->then
 				->object($factory('mock\mageekguy\atoum\test'))->isIdenticalTo($test)
 				->mock($generator)
-					->call('disallowUndefinedMethodInInterface')->never
+					->call('disallowUndefinedMethodUsage')->never
 		;
 	}
 

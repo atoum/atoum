@@ -40,7 +40,7 @@ class runner implements observable
 	protected $xdebugConfig = null;
 	protected $failIfVoidMethods = false;
 	protected $failIfSkippedMethods = false;
-	protected $disallowUndefinedMethodInInterface = false;
+	protected $disallowUsageOfUndefinedMethodInMock = false;
 	protected $extensions = null;
 
 	private $start = null;
@@ -181,23 +181,23 @@ class runner implements observable
 		return $this->debugMode;
 	}
 
-	public function disallowUndefinedMethodInInterface()
+	public function disallowUsageOfUndefinedMethodInMock()
 	{
-		$this->disallowUndefinedMethodInInterface = true;
+		$this->disallowUsageOfUndefinedMethodInMock = true;
 
 		return $this;
 	}
 
-	public function allowUndefinedMethodInInterface()
+	public function allowUsageOfUndefinedMethodInMock()
 	{
-		$this->disallowUndefinedMethodInInterface = false;
+		$this->disallowUsageOfUndefinedMethodInMock = false;
 
 		return $this;
 	}
 
-	public function undefinedMethodInInterfaceAreAllowed()
+	public function usageOfUndefinedMethodInMockAreAllowed()
 	{
-		return $this->disallowUndefinedMethodInInterface === false;
+		return $this->disallowUsageOfUndefinedMethodInMock === false;
 	}
 
 	public function setXdebugConfig($value)
@@ -454,9 +454,9 @@ class runner implements observable
 		$this->testFactory = function($testClass) use ($testFactory, $runner) {
 			$test = call_user_func($testFactory, $testClass);
 
-			if ($runner->undefinedMethodInInterfaceAreAllowed() === false)
+			if ($runner->usageOfUndefinedMethodInMockAreAllowed() === false)
 			{
-				$test->getMockGenerator()->disallowUndefinedMethodInInterface();
+				$test->getMockGenerator()->disallowUndefinedMethodUsage();
 			}
 
 			return $test;

@@ -158,12 +158,12 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testDisallowUndefinedMethodInInterface()
+	public function testDisallowUndefinedMethodUsage()
 	{
 		$this
 			->if($generator = new testedClass())
 			->then
-				->object($generator->disallowUndefinedMethodInInterface())->isIdenticalTo($generator)
+				->object($generator->disallowUndefinedMethodUsage())->isIdenticalTo($generator)
 		;
 	}
 
@@ -1059,7 +1059,7 @@ class generator extends atoum\test
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); })
 			->and($generator->setAdapter($adapter))
-			->and($generator->disallowUndefinedMethodInInterface())
+			->and($generator->disallowUndefinedMethodUsage())
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
