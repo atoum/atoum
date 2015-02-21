@@ -195,7 +195,21 @@ class autoloader
 	{
 		$class = strtolower($class);
 
-		$realClass = $this->resolveNamespaceAlias($this->resolveClassAlias($class));
+		if (static::exists($class) === false && ($path = $this->getPath($class)) !== null)
+		{
+			$realClass = $class;
+
+			require $path;
+		}
+		else
+		{
+			$realClass = $this->resolveNamespaceAlias($this->resolveClassAlias($class));
+
+			if (static::exists($realClass) === false && ($path = $this->getPath($realClass)) !== null)
+			{
+				require $path;
+			}
+		}
 
 		if (static::exists($realClass) === false && ($path = $this->getPath($realClass)) !== null)
 		{

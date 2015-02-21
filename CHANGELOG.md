@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#437](https://github.com/atoum/atoum/pull/437) Autoloader should not try to resolve alias if requested class exists ([@jubianchi](https://github.com/jubianchi))
 * Generalize method call checking in mock ([@mageekguy](https://github.com/mageekguy))
 * [#435](https://github.com/atoum/atoum/pull/435) Partially revert BC break introduced in [#420](https://github.com/atoum/atoum/pull/420) ([@mageekguy](https://github.com/mageekguy))
 
