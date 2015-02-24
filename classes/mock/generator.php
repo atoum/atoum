@@ -220,6 +220,11 @@ class generator
 		}
 	}
 
+	public function disallowUndefinedMethodInInterface()
+	{
+		return $this->disallowUndefinedMethodUsage();
+	}
+
 	public function disallowUndefinedMethodUsage()
 	{
 		$this->allowUndefinedMethodsUsage = false;
@@ -227,11 +232,21 @@ class generator
 		return $this;
 	}
 
+	public function allowUndefinedMethodInInterface()
+	{
+		return $this->allowUndefinedMethodUsage();
+	}
+
 	public function allowUndefinedMethodUsage()
 	{
 		$this->allowUndefinedMethodsUsage = true;
 
 		return $this;
+	}
+
+	public function undefinedMethodInInterfaceAreAllowed()
+	{
+		return $this->undefinedMethodUsageIsAllowed();
 	}
 
 	public function undefinedMethodUsageIsAllowed()

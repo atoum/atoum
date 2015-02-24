@@ -181,6 +181,11 @@ class runner implements observable
 		return $this->debugMode;
 	}
 
+	public function disallowUndefinedMethodInInterface()
+	{
+		return $this->disallowUsageOfUndefinedMethodInMock();
+	}
+
 	public function disallowUsageOfUndefinedMethodInMock()
 	{
 		$this->disallowUsageOfUndefinedMethodInMock = true;
@@ -188,11 +193,21 @@ class runner implements observable
 		return $this;
 	}
 
+	public function allowUndefinedMethodInInterface()
+	{
+		return $this->allowUsageOfUndefinedMethodInMock();
+	}
+
 	public function allowUsageOfUndefinedMethodInMock()
 	{
 		$this->disallowUsageOfUndefinedMethodInMock = false;
 
 		return $this;
+	}
+
+	public function undefinedMethodInInterfaceAreAllowed()
+	{
+		return $this->usageOfUndefinedMethodInMockAreAllowed();
 	}
 
 	public function usageOfUndefinedMethodInMockAreAllowed()
