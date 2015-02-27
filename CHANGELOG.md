@@ -1,8 +1,12 @@
 # `dev-master`
 
-* [#437](https://github.com/atoum/atoum/pull/437) Autoloader should not try to resolve alias if requested class exists ([@jubianchi](https://github.com/jubianchi))
-* Generalize method call checking in mock ([@mageekguy](https://github.com/mageekguy))
-* [#435](https://github.com/atoum/atoum/pull/435) Partially revert BC break introduced in [#420](https://github.com/atoum/atoum/pull/420) ([@mageekguy](https://github.com/mageekguy))
+# 2.0.1 - 2015-02-27
+
+* [#440](https://github.com/atoum/atoum/pull/440) `--configurations` option should be handled first ([@jubianchi][jubianchi])
+* [#439](https://github.com/atoum/atoum/pull/439) Since atoum is 2.*, branch-alias must follow ([@hywan][hywan])
+* [#437](https://github.com/atoum/atoum/pull/437) Autoloader should not try to resolve alias if requested class exists ([@jubianchi][jubianchi])
+* Generalize method call checking in mock ([@mageekguy][mageekguy])
+* [#435](https://github.com/atoum/atoum/pull/435) Partially revert BC break introduced in [#420](https://github.com/atoum/atoum/pull/420) ([@mageekguy][mageekguy])
 
 # 2.0.0 - 2015-02-13
 
@@ -68,3 +72,7 @@
 * Add `CHANGELOG.md`
 
 # 0.0.1 - 2013-11-05
+
+[mageekguy]: https://github.com/mageekguy
+[jubianchi]: https://github.com/jubianchi
+[hywan]: https://github.com/hywan
