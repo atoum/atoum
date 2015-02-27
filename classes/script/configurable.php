@@ -157,7 +157,7 @@ abstract class configurable extends atoum\script
 					array('-c', '--configurations'),
 					'<file>...',
 					$this->locale->_('Use all configuration files <file>'),
-					1
+					PHP_INT_MAX
 				)
 		;
 
