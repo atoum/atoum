@@ -84,33 +84,37 @@ class extension extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Name of PHP extension is undefined')
-                ->exception(function() use ($asserter) {
+				->exception(function() use ($asserter) {
 						$asserter->isLoaded;
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Name of PHP extension is undefined')
 
-
+			->given(
+				$extensionName = uniqid(),
+				$extension = new \mock\mageekguy\atoum\php\extension($extensionName),
+				$this->calling($extension)->isLoaded = false
+			)
 			->if(
-				$this->function->extension_loaded = false,
-				$this->testedInstance->setWith($extensionName = uniqid())
+				$this->testedInstance->setPhpExtensionFactory(function() use ($extension) { return $extension; }),
+				$this->testedInstance->setWith($extensionName)
 			)
 			->then
 				->exception(function() use ($asserter) {
 						$asserter->isLoaded();
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\test\exceptions\skip')
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage('PHP extension \'' . $extensionName . '\' is not loaded')
-                ->exception(function() use ($asserter) {
+				->exception(function() use ($asserter) {
 						$asserter->isLoaded;
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\test\exceptions\skip')
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage('PHP extension \'' . $extensionName . '\' is not loaded')
 
-			->if($this->function->extension_loaded = true)
+			->if($this->calling($extension)->isLoaded = true)
 			->then
 				->object($this->testedInstance->isLoaded())->isTestedInstance
 				->object($this->testedInstance->isLoaded)->isTestedInstance

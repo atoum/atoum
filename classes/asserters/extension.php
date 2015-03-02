@@ -12,10 +12,13 @@ use
 class extension extends atoum\asserter
 {
 	protected $name = null;
+	protected $phpExtensionFactory = null;
 
-	public function __construct(asserter\generator $generator = null, atoum\locale $locale = null)
+	public function __construct(asserter\generator $generator = null, atoum\locale $locale = null, \closure $phpExtensionFactory = null)
 	{
 		parent::__construct($generator, null, $locale);
+
+		$this->setPhpExtensionFactory($phpExtensionFactory);
 	}
 
 	public function __toString()
@@ -56,11 +59,15 @@ class extension extends atoum\asserter
 
 	public function isLoaded($failMessage = null)
 	{
-		if (extension_loaded($this->valueIsSet()->name) === true)
+		$extension = call_user_func($this->phpExtensionFactory, $this->valueIsSet()->name);
+
+		try
 		{
+			$extension->requireExtension();
+
 			$this->pass();
 		}
-		else
+		catch (atoum\php\exception $exception)
 		{
 			$this->fail($failMessage ?: $this->_('PHP extension \'%s\' is not loaded', $this));
 		}
@@ -83,15 +90,12 @@ class extension extends atoum\asserter
 		return $this;
 	}
 
-	protected function fail($reason)
+	public function setPhpExtensionFactory(\closure $factory = null)
 	{
-		try
-		{
-			parent::fail($reason);
-		}
-		catch (asserter\exception $exception)
-		{
-			throw new test\exceptions\skip($reason);
-		}
+		$this->phpExtensionFactory = $factory ?: function($extensionName) {
+			return new atoum\php\extension($extensionName);
+		};
+
+		return $this;
 	}
 }
