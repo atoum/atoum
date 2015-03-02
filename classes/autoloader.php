@@ -203,11 +203,20 @@ class autoloader
 		}
 		else
 		{
-			$realClass = $this->resolveNamespaceAlias($this->resolveClassAlias($class));
+			$realClass = $this->resolveClassAlias($class);
 
 			if (static::exists($realClass) === false && ($path = $this->getPath($realClass)) !== null)
 			{
 				require $path;
+			}
+			else
+			{
+				$realClass = $this->resolveNamespaceAlias($realClass);
+
+				if (static::exists($realClass) === false && ($path = $this->getPath($realClass)) !== null)
+				{
+					require $path;
+				}
 			}
 		}
 
