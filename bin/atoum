@@ -4,5 +4,3 @@
 define('mageekguy\atoum\scripts\runner', getcwd() . DIRECTORY_SEPARATOR . basename(__FILE__));
 
 require_once __DIR__ . '/../scripts/runner.php';
-
-?>
