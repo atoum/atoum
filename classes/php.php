@@ -9,7 +9,7 @@ use
 
 class php extends cli\command
 {
-	public function setBinaryPath($phpPath = null)
+	protected function setBinaryPath($phpPath = null)
 	{
 		if ($phpPath === null)
 		{
@@ -39,6 +39,11 @@ class php extends cli\command
 					}
 				}
 			}
+		}
+
+		if (basename($phpPath) === 'hhvm')
+		{
+			$this->addOption('--php');
 		}
 
 		return parent::setBinaryPath($phpPath);

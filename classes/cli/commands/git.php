@@ -14,15 +14,12 @@ class git
 
 	public function __construct($path = null)
 	{
-		$this
-			->setCommand()
-			->setPath($path)
-		;
+		$this->setPath($path);
 	}
 
 	public function setPath($path = null)
 	{
-		$this->command->setBinaryPath($path ?: static::defaultPath);
+		$this->setCommand(new cli\command($path ?: static::defaultPath));
 
 		return $this;
 	}

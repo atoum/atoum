@@ -289,7 +289,7 @@ class runner implements observable
 
 	public function setPhpPath($path)
 	{
-		$this->php->setBinaryPath($path);
+		$this->php = new atoum\php($path);
 
 		return $this;
 	}
