@@ -20,7 +20,7 @@ abstract class image extends notifier
 		{
 			return parent::__toString();
 		}
-		catch(exceptions\runtime $exception)
+		catch (exceptions\runtime $exception)
 		{
 			return $exception->getMessage() . PHP_EOL;
 		}

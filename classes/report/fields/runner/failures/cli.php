@@ -76,7 +76,7 @@ class cli extends runner\failures
 							break;
 
 						case $fail['case'] !== null && $fail['dataSetKey'] !== null:
-							$string .= sprintf($this->locale->_('In file %s on line %d in case \'%s\', %s failed for data set [%s] of data provider %s: %s'), $fail['file'], $fail['line'], $fail['case'],  $fail['asserter'], $fail['dataSetKey'], $fail['dataSetProvider'], $fail['fail']);
+							$string .= sprintf($this->locale->_('In file %s on line %d in case \'%s\', %s failed for data set [%s] of data provider %s: %s'), $fail['file'], $fail['line'], $fail['case'], $fail['asserter'], $fail['dataSetKey'], $fail['dataSetProvider'], $fail['fail']);
 							break;
 					}
 

@@ -112,7 +112,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail(($failMessage ?: $this->_('%s is not equal to %s', $this, $this->getTypeOf($value))) .  PHP_EOL .  $this->diff($value));
+			$this->fail(($failMessage ?: $this->_('%s is not equal to %s', $this, $this->getTypeOf($value))) . PHP_EOL . $this->diff($value));
 		}
 
 		return $this;
@@ -140,7 +140,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage ?: $this->_('%s is not identical to %s', $this, $this->getTypeOf($value)) .  PHP_EOL .  $this->diff($value));
+			$this->fail($failMessage ?: $this->_('%s is not identical to %s', $this, $this->getTypeOf($value)) . PHP_EOL . $this->diff($value));
 		}
 
 		return $this;

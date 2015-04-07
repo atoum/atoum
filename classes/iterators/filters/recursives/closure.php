@@ -12,7 +12,7 @@ class closure extends \recursiveFilterIterator
 
 		if ($closure !== null)
 		{
-			foreach((array) $closure as $c)
+			foreach ((array) $closure as $c)
 				$this->addClosure($c);
 		}
 	}
