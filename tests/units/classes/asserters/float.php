@@ -15,7 +15,7 @@ class float extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\asserters\integer');
+		$this->testedClass->extends('mageekguy\atoum\asserters\phpInteger');
 	}
 
 	public function test__construct()

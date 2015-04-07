@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class integer extends asserters\variable
+class phpInteger extends asserters\variable
 {
 	public function __get($property)
 	{

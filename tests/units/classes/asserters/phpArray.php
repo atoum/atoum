@@ -224,12 +224,12 @@ class phpArray extends atoum\test
 
 			->if($asserter->setWith($array))
 			->then
-				->object($asserter->integer[0]->isEqualTo($integer))->isIdenticalTo($asserter)
+				->object($asserter->phpInteger[0]->isEqualTo($integer))->isIdenticalTo($asserter)
 				->object($asserter->object[2][3]->isIdenticalTo($object))->isIdenticalTo($asserter)
-				->object($asserter->object[2][3]->isIdenticalTo($object)->integer[0]->isEqualTo($integer))->isIdenticalTo($asserter)
-				->object($asserter->object[2][3]->isIdenticalTo($object)->integer($integer)->isEqualTo($integer))
+				->object($asserter->object[2][3]->isIdenticalTo($object)->phpInteger[0]->isEqualTo($integer))->isIdenticalTo($asserter)
+				->object($asserter->object[2][3]->isIdenticalTo($object)->phpInteger($integer)->isEqualTo($integer))
 					->isNotIdenticalTo($asserter)
-					->isInstanceOf('mageekguy\atoum\asserters\integer')
+					->isInstanceOf('mageekguy\atoum\asserters\phpInteger')
 
 			->if(
 				$this->calling($locale)->_ = $unknownKey = uniqid(),
@@ -956,12 +956,12 @@ class phpArray extends atoum\test
 
 			->if($asserter->setWith(array()))
 			->then
-				->object($integer = $asserter->size)->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->object($integer = $asserter->size)->isInstanceOf('mageekguy\atoum\asserters\phpInteger')
 				->integer($integer->getValue())->isEqualTo(0)
 
 			->if($asserter->setWith(array(uniqid(), uniqid())))
 			->then
-				->object($integer = $asserter->size)->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->object($integer = $asserter->size)->isInstanceOf('mageekguy\atoum\asserters\phpInteger')
 				->integer($integer->getValue())->isEqualTo(2)
 		;
 	}
@@ -1003,7 +1003,7 @@ class phpArray extends atoum\test
 				->object($asserter->isEqualTo($array))->isIdenticalTo($asserter)
 
 			->given(
-				$this->calling($generator)->__get = $integerAsserter = new \mock\atoum\asserters\integer(),
+				$this->calling($generator)->__get = $integerAsserter = new \mock\atoum\asserters\phpInteger(),
 				$this->calling($integerAsserter)->isEqualTo->throw = $exception = new \exception(uniqid())
 			)
 
@@ -1068,7 +1068,7 @@ class phpArray extends atoum\test
 				->mock($analyzer)->call('getTypeOf')->withArguments($array)->once
 
 			->given(
-				$this->calling($generator)->__get = $integerAsserter = new \mock\atoum\asserters\integer(),
+				$this->calling($generator)->__get = $integerAsserter = new \mock\atoum\asserters\phpInteger(),
 				$this->calling($integerAsserter)->isNotEqualTo->throw = $exception = new \exception(uniqid())
 			)
 
@@ -1127,7 +1127,7 @@ class phpArray extends atoum\test
 				->mock($analyzer)->call('getTypeOf')->withArguments($notIdenticalValue)->once
 
 			->given(
-				$this->calling($generator)->__get = $integerAsserter = new \mock\atoum\asserters\integer(),
+				$this->calling($generator)->__get = $integerAsserter = new \mock\atoum\asserters\phpInteger(),
 				$this->calling($integerAsserter)->isIdenticalTo->throw = $exception = new \exception(uniqid())
 			)
 
@@ -1183,7 +1183,7 @@ class phpArray extends atoum\test
 				->mock($analyzer)->call('getTypeOf')->withArguments($array)->once
 
 			->given(
-				$this->calling($generator)->__get = $integerAsserter = new \mock\atoum\asserters\integer(),
+				$this->calling($generator)->__get = $integerAsserter = new \mock\atoum\asserters\phpInteger(),
 				$this->calling($integerAsserter)->isNotIdenticalTo->throw = $exception = new \exception(uniqid())
 			)
 
