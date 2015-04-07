@@ -56,7 +56,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 		if (isset($this->calls[$key]) === true)
 		{
-			$this->size -= count($this->calls[$key]);
+			$this->size -= sizeof($this->calls[$key]);
 
 			unset($this->calls[$key]);
 		}
