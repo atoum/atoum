@@ -10,7 +10,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class utf8String extends asserters\string
+class utf8String extends asserters\phpString
 {
 	protected $adapter = null;
 

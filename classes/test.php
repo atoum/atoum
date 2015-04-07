@@ -449,6 +449,7 @@ abstract class test implements observable, \countable
 			->use('phpFunction')->as('function')
             ->use('phpInteger')->as('integer')
             ->use('phpFloat')->as('float')
+            ->use('phpString')->as('string')
 			->use('calling')->as('method')
 		;
 

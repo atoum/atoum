@@ -11,7 +11,7 @@ use
 
 require_once __DIR__ . '/../../runner.php';
 
-class string extends atoum\test
+class phpString extends atoum\test
 {
 	public function testClass()
 	{

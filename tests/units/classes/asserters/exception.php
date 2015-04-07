@@ -259,18 +259,18 @@ class exception extends atoum\test
 
 			->if($this->testedInstance->setWith(new \exception('')))
 			->then
-				->object($string = $this->testedInstance->message)->isInstanceOf('mageekguy\atoum\asserters\string')
+				->object($string = $this->testedInstance->message)->isInstanceOf('mageekguy\atoum\asserters\phpString')
 				->string($string->getValue())->isEqualTo('')
 
-				->object($string = $this->testedInstance->MesSAge)->isInstanceOf('mageekguy\atoum\asserters\string')
+				->object($string = $this->testedInstance->MesSAge)->isInstanceOf('mageekguy\atoum\asserters\phpString')
 				->string($string->getValue())->isEqualTo('')
 
 			->if($this->testedInstance->setWith(new \exception($message = uniqid())))
 			->then
-				->object($string = $this->testedInstance->message)->isInstanceOf('mageekguy\atoum\asserters\string')
+				->object($string = $this->testedInstance->message)->isInstanceOf('mageekguy\atoum\asserters\phpString')
 				->string($string->getValue())->isEqualTo($message)
 
-				->object($string = $this->testedInstance->meSSAGe)->isInstanceOf('mageekguy\atoum\asserters\string')
+				->object($string = $this->testedInstance->meSSAGe)->isInstanceOf('mageekguy\atoum\asserters\phpString')
 				->string($string->getValue())->isEqualTo($message)
 		;
 	}

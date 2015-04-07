@@ -4,7 +4,7 @@ namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum\asserters;
 
-class castToString extends asserters\string
+class castToString extends asserters\phpString
 {
 	public function setWith($value, $charlist = null, $checkType = true)
 	{

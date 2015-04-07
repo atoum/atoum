@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\asserters
 ;
 
-class output extends asserters\string
+class output extends asserters\phpString
 {
 	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
 	{
