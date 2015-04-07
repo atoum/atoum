@@ -250,8 +250,8 @@ class score extends atoum\test
 				)
 				->integer($score->getErrorNumber())->isEqualTo(3)
 				->object($score->addError($file, $class, $method, $line + 1, $type, ("   \t	\t" . $messageWithWhitespace = 'message with withespace' . "	  \t	" . PHP_EOL), $errorFile, $errorLine))->isIdenticalTo($score)
-				->array($score->getErrors())->isEqualTo(array(
-						array(
+				->array($score->getErrors())
+					->contains(array(
 							'case' => null,
 							'dataSetKey' => null,
 							'dataSetProvider' => null,
@@ -263,8 +263,9 @@ class score extends atoum\test
 							'message' => $anAnotherMessage,
 							'errorFile' => $errorFile,
 							'errorLine' => $errorLine
-						),
-						array(
+						)
+					)
+					->contains(array(
 							'case' => null,
 							'dataSetKey' => null,
 							'dataSetProvider' => null,
@@ -276,8 +277,9 @@ class score extends atoum\test
 							'message' => $message,
 							'errorFile' => $errorFile,
 							'errorLine' => $errorLine
-						),
-						array(
+						)
+					)
+					->contains(array(
 							'case' => null,
 							'dataSetKey' => null,
 							'dataSetProvider' => null,
@@ -289,8 +291,9 @@ class score extends atoum\test
 							'message' => trim($messageWithWhitespace),
 							'errorFile' => $errorFile,
 							'errorLine' => $errorLine
-						),
-						array(
+						)
+					)
+					->contains(array(
 							'case' => null,
 							'dataSetKey' => null,
 							'dataSetProvider' => null,
@@ -302,9 +305,8 @@ class score extends atoum\test
 							'message' => $otherMessage,
 							'errorFile' => $otherErrorFile,
 							'errorLine' => $otherErrorLine
-						),
+						)
 					)
-				)
 				->integer($score->getErrorNumber())->isEqualTo(4)
 		;
 	}
