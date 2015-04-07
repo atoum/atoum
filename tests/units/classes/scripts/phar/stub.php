@@ -25,6 +25,109 @@ class stub extends atoum\test
 		;
 	}
 
+	public function testGetSetPharFactory()
+	{
+		$this
+			->given($this->newTestedInstance(uniqid()))
+			->then
+				->object($this->testedInstance->getPharFactory())->isInstanceOf('closure')
+				->object($this->testedInstance->setPharFactory())->isTestedInstance
+				->object($this->testedInstance->getPharFactory())->isInstanceOf('closure')
+			->if($factory = function() {})
+			->then
+				->object($this->testedInstance->setPharFactory($factory))->isTestedInstance
+				->object($this->testedInstance->getPharFactory())->isIdenticalTo($factory)
+		;
+	}
+
+	public function testListScripts()
+	{
+		$this
+			->given(
+				$this->newTestedInstance(uniqid()),
+				$writer = new \mock\mageekguy\atoum\writer
+			)
+			->if($this->testedInstance->setOutputWriter($writer))
+			->then
+				->object($this->testedInstance->listScripts())->isTestedInstance
+				->mock($writer)
+					->call('write')
+						->withArguments('Available scripts are:' . PHP_EOL)->once
+						->withArguments('   builder' . PHP_EOL)->once
+						->withArguments('   tagger' . PHP_EOL)->once
+						->withArguments('   treemap' . PHP_EOL)->once
+						->withArguments('   coverage' . PHP_EOL)->once
+		;
+	}
+
+	public function testInfos()
+	{
+		$this
+			->given(
+				$this->newTestedInstance(uniqid()),
+				$writer = new \mock\mageekguy\atoum\writer
+			)
+			->and->mockGenerator->shuntParentClassCalls()
+			->and(
+				$phar = new \mock\phar(uniqid()),
+				$this->calling($phar)->getMetadata = array(
+					$key = uniqid() => $value = uniqid(),
+					$otherKey = uniqid() => $otherValue = uniqid(),
+				),
+				$factory = function() use ($phar) { return $phar; }
+			)
+			->if(
+				$this->testedInstance->setHelpWriter($writer),
+				$this->testedInstance->setPharFactory($factory)
+			)
+			->then
+				->object($this->testedInstance->infos())->isTestedInstance
+				->mock($writer)
+					->call('write')
+						->withArguments('   ' . $key . ': ' . $value)->once
+						->withArguments('   ' . $otherKey . ': ' . $otherValue)->once
+		;
+	}
+
+	public function testSignature()
+	{
+		$this
+			->given(
+				$this->newTestedInstance(uniqid()),
+				$writer = new \mock\mageekguy\atoum\writer
+			)
+			->and->mockGenerator->shuntParentClassCalls()
+			->and(
+				$phar = new \mock\phar(uniqid()),
+				$this->calling($phar)->getSignature = array('hash' => $signature = uniqid()),
+				$factory = function() use ($phar) { return $phar; }
+			)
+			->if(
+				$this->testedInstance->setHelpWriter($writer),
+				$this->testedInstance->setPharFactory($factory)
+			)
+			->then
+				->object($this->testedInstance->signature())->isTestedInstance
+				->mock($writer)
+					->call('write')->withArguments('Signature: ' . $signature)->once
+		;
+	}
+
+	public function testVersion()
+	{
+		$this
+			->given(
+				$this->newTestedInstance(uniqid()),
+				$writer = new \mock\mageekguy\atoum\writer
+			)
+			->if($this->testedInstance->setInfoWriter($writer))
+			->then
+				->object($this->testedInstance->version())->isTestedInstance
+				->mock($writer)
+					->call('write')->withArguments(sprintf('atoum version %s by %s (%s)', atoum\version, atoum\author, \phar::running()))->once
+		;
+	}
+
 	public function testUpdate()
 	{
 		$this
