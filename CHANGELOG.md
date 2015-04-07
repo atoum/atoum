@@ -1,6 +1,6 @@
 # `dev-master`
 
-* [#441](https://github.com/atoum/atoum/pull/441) Add php 7.0 in the build matrix ([@jubianchi][jubianchi])
+* [#441](https://github.com/atoum/atoum/pull/441) Add PHP 7.0 in the build matrix ([@jubianchi][jubianchi])
 * [#399](https://github.com/atoum/atoum/pull/399) Add the `let` assertion handler ([@hywan][hywan])
 * [#443](https://github.com/atoum/atoum/pull/443) Autoloader should resolve classes step by step ([@jubianchi][jubianchi])
 
