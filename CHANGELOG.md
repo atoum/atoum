@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#399](https://github.com/atoum/atoum/pull/399) Add the `let` assertion handler ([@hywan][hywan])
 * [#443](https://github.com/atoum/atoum/pull/443) Autoloader should resolve classes step by step ([@jubianchi][jubianchi])
 
 # 2.0.1 - 2015-02-27
