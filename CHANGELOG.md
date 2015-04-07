@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#443](https://github.com/atoum/atoum/pull/443) Autoloader should resolve classes step by step ([@jubianchi][jubianchi])
+
 # 2.0.1 - 2015-02-27
 
 * [#440](https://github.com/atoum/atoum/pull/440) `--configurations` option should be handled first ([@jubianchi][jubianchi])
