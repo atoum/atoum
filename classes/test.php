@@ -43,6 +43,7 @@ abstract class test implements observable, \countable
 	private $mockAutoloader = null;
 	private $factoryBuilder = null;
 	private $reflectionMethodFactory = null;
+	private $phpExtensionFactory;
 	private $asserterGenerator = null;
 	private $assertionManager = null;
 	private $phpMocker = null;
@@ -84,7 +85,7 @@ abstract class test implements observable, \countable
 	private static $methodPrefix = null;
 	private static $defaultEngine = self::defaultEngine;
 
-	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null)
+	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null, \closure $phpExtensionFactory = null)
 	{
 		$this
 			->setAdapter($adapter)
@@ -101,6 +102,7 @@ abstract class test implements observable, \countable
 			->setReflectionMethodFactory()
 			->setAsserterCallManager()
 			->enableCodeCoverage()
+			->setPhpExtensionFactory($phpExtensionFactory);
 		;
 
 		$this->observers = new \splObjectStorage();
@@ -322,6 +324,15 @@ abstract class test implements observable, \countable
 	public function setReflectionMethodFactory(\closure $factory = null)
 	{
 		$this->reflectionMethodFactory = $factory ?: function($class, $method) { return new \reflectionMethod($class, $method); };
+
+		return $this;
+	}
+
+	public function setPhpExtensionFactory(\closure $factory = null)
+	{
+		$this->phpExtensionFactory = $factory ?: function($extensionName) {
+			return new atoum\php\extension($extensionName);
+		};
 
 		return $this;
 	}
@@ -1085,7 +1096,14 @@ abstract class test implements observable, \countable
 
 				foreach ($this->getMandatoryMethodExtensions($testMethod) as $mandatoryExtension)
 				{
-					$this->extension($mandatoryExtension)->isLoaded();
+					try
+					{
+						call_user_func($this->phpExtensionFactory, $mandatoryExtension)->requireExtension();
+					}
+					catch (atoum\php\exception $exception)
+					{
+						throw new test\exceptions\skip($exception->getMessage());
+					}
 				}
 
 				try
