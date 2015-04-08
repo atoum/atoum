@@ -68,7 +68,7 @@ class santa extends cli
 
 	public function __toString()
 	{
-		if(microtime(true) - $this->utime < self::refreshDelay) {
+		if (microtime(true) - $this->utime < self::refreshDelay) {
 			return '';
 		}
 

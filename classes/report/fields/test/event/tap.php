@@ -82,7 +82,7 @@ class tap extends report\fields\event
 
 					if ($lastError['class'] === $lastUncompleteMethod['class'] && $lastError['method'] === $lastUncompleteMethod['method'])
 					{
-						$this->testLine .= '# ' . $lastError['type'] . ' : ' .  str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastError['message'])) . PHP_EOL;
+						$this->testLine .= '# ' . $lastError['type'] . ' : ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastError['message'])) . PHP_EOL;
 					}
 					else
 					{

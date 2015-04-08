@@ -68,7 +68,7 @@ class nyancat extends cli
 			$this->catColorizer = new colorizer(31);
 		}
 
-		if(microtime(true) - $this->utime < 0.15) {
+		if (microtime(true) - $this->utime < 0.15) {
 			return '';
 		}
 

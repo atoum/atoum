@@ -32,7 +32,7 @@ class cli extends fields\runner\result
 	{
 		$string = $this->prompt;
 
-		if ($this->testNumber === null )
+		if ($this->testNumber === null)
 		{
 			$string .= $this->locale->_('No test running.');
 		}

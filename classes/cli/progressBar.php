@@ -66,7 +66,7 @@ class progressBar
 
 		if ($this->progressBar === null && $this->counter === null)
 		{
-			$this->progressBar = sprintf($this->progressBarFormat, ($this->iterations > self::width ?  str_repeat('.', self::width - 1) . '>' : str_pad(str_repeat('.', $this->iterations), self::width, '_', STR_PAD_RIGHT)));
+			$this->progressBar = sprintf($this->progressBarFormat, ($this->iterations > self::width ? str_repeat('.', self::width - 1) . '>' : str_pad(str_repeat('.', $this->iterations), self::width, '_', STR_PAD_RIGHT)));
 
 			$this->counter = sprintf($this->counterFormat, sprintf('%' . strlen((string) $this->iterations) . 'd', $this->currentIteration), $this->iterations);
 
