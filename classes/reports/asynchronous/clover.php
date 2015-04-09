@@ -141,7 +141,7 @@ class clover extends atoum\reports\asynchronous
 		$file->setAttribute('name', basename($filename));
 		$file->setAttribute('path', $filename);
 
-		$methods = count($coverage);
+		$methods = sizeof($coverage);
 		$coveredMethods = 0;
 		$totalLines = 0;
 		$coveredLines = 0;
@@ -207,7 +207,7 @@ class clover extends atoum\reports\asynchronous
 
 		$class->setAttribute('name', basename(str_replace('\\', DIRECTORY_SEPARATOR, $classname)));
 
-		$methods = count($coverage);
+		$methods = sizeof($coverage);
 		$coveredMethods = 0;
 		$totalLines = 0;
 		$coveredLines = 0;
