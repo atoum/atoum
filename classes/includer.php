@@ -57,7 +57,7 @@ class includer
 
 		$this->adapter->restore_error_handler();
 
-		if (sizeof($this->errors) > 0)
+		if (count($this->errors) > 0)
 		{
 			$realpath = parse_url($this->path, PHP_URL_SCHEME) !== null ? $this->path : realpath($this->path) ?: $this->path;
 
@@ -84,7 +84,7 @@ class includer
 	{
 		$firstError = null;
 
-		if (sizeof($this->errors) > 0)
+		if (count($this->errors) > 0)
 		{
 			$firstError = $this->errors[0];
 		}

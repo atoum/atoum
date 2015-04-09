@@ -28,7 +28,7 @@ class extractor
 					{
 						$annotation = strtolower($comment[0]);
 
-						switch (sizeof($comment))
+						switch (count($comment))
 						{
 							case 1:
 								$value = true;

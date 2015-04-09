@@ -69,7 +69,7 @@ class factory implements \iteratorAggregate
 			$iterator = call_user_func($this->dotFilterFactory, $iterator);
 		}
 
-		if (sizeof($this->acceptedExtensions) > 0)
+		if (count($this->acceptedExtensions) > 0)
 		{
 			$iterator = call_user_func($this->extensionFilterFactory, $iterator, $this->acceptedExtensions);
 		}

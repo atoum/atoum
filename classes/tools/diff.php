@@ -97,7 +97,7 @@ class diff
 	{
 		$diff = array();
 
-		if (sizeof($old) > 0 || sizeof($new) > 0)
+		if (count($old) > 0 || count($new) > 0)
 		{
 			$lengths = array();
 			$maxLength = 0;

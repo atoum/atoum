@@ -124,7 +124,7 @@ abstract class configurable extends atoum\script
 		parent::setArgumentHandlers()
 			->addArgumentHandler(
 					function($script, $argument, $values) {
-						if (sizeof($values) !== 0)
+						if (count($values) !== 0)
 						{
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
@@ -137,7 +137,7 @@ abstract class configurable extends atoum\script
 				)
 			->addArgumentHandler(
 					function($script, $argument, $files) {
-						if (sizeof($files) <= 0)
+						if (count($files) <= 0)
 						{
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}

@@ -8,7 +8,7 @@ class decorator
 	{
 		$string = '';
 
-		if ($arguments !== null && sizeof($arguments) > 0)
+		if ($arguments !== null && count($arguments) > 0)
 		{
 			$string = array();
 
@@ -33,7 +33,7 @@ class decorator
 						break;
 
 					case 'array':
-						$string[] = 'array(' . ($size = sizeof($argument)) . ') {' . ($size <= 0 ? '' : '...') . '}';
+						$string[] = 'array(' . ($size = count($argument)) . ') {' . ($size <= 0 ? '' : '...') . '}';
 						break;
 
 					case 'object':

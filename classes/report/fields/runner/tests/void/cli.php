@@ -36,7 +36,7 @@ class cli extends report\fields\runner\tests\void
 		{
 			$voidMethods = $this->runner->getScore()->getVoidMethods();
 
-			$sizeOfVoidMethod = sizeof($voidMethods);
+			$sizeOfVoidMethod = count($voidMethods);
 
 			if ($sizeOfVoidMethod > 0)
 			{

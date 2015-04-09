@@ -40,7 +40,7 @@ class cli extends report\fields\runner\tests\uncompleted
 		{
 			$uncompletedMethods = $this->runner->getScore()->getUncompletedMethods();
 
-			$sizeOfUncompletedMethod = sizeof($uncompletedMethods);
+			$sizeOfUncompletedMethod = count($uncompletedMethods);
 
 			if ($sizeOfUncompletedMethod > 0)
 			{

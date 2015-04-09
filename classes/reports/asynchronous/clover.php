@@ -95,7 +95,7 @@ class clover extends atoum\reports\asynchronous
 		$project->setAttribute('name', $this->getTitle());
 
 		$project->appendChild($this->makePackageElement($document, $coverage));
-		$project->appendChild($this->makeProjectMetricsElement($document, sizeof($coverage->getClasses())));
+		$project->appendChild($this->makeProjectMetricsElement($document, count($coverage->getClasses())));
 
 		return $project;
 	}
@@ -120,7 +120,7 @@ class clover extends atoum\reports\asynchronous
 			$package->appendChild($this->makeFileElement($document, $file, $class, $coverage->getCoverageForClass($class)));
 		}
 
-		$package->appendChild($this->makePackageMetricsElement($document, sizeof($coverage->getClasses())));
+		$package->appendChild($this->makePackageMetricsElement($document, count($coverage->getClasses())));
 
 		return $package;
 	}
@@ -148,7 +148,7 @@ class clover extends atoum\reports\asynchronous
 
 		foreach ($coverage as $lines)
 		{
-			if (sizeof($lines) > 0)
+			if (count($lines) > 0)
 			{
 				foreach ($lines as $lineNumber => $cover)
 				{
@@ -214,7 +214,7 @@ class clover extends atoum\reports\asynchronous
 
 		foreach ($coverage as $lines)
 		{
-			if (sizeof($lines) > 0)
+			if (count($lines) > 0)
 			{
 				++$coveredMethods;
 			}

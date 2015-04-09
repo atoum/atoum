@@ -84,13 +84,13 @@ class object extends asserters\variable
 
 	public function hasSize($size, $failMessage = null)
 	{
-		if (sizeof($this->valueIsSet()->value) == $size)
+		if (count($this->valueIsSet()->value) == $size)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage ?: $this->_('%s has size %d, expected size %d', $this, sizeof($this->valueIsSet()->value), $size));
+			$this->fail($failMessage ?: $this->_('%s has size %d, expected size %d', $this, count($this->valueIsSet()->value), $size));
 		}
 
 		return $this;
@@ -108,13 +108,13 @@ class object extends asserters\variable
 
 	public function isEmpty($failMessage = null)
 	{
-		if (sizeof($this->valueIsSet()->value) == 0)
+		if (count($this->valueIsSet()->value) == 0)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage ?: $this->_('%s has size %d', $this, sizeof($this->value)));
+			$this->fail($failMessage ?: $this->_('%s has size %d', $this, count($this->value)));
 		}
 
 		return $this;

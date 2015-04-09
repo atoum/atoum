@@ -100,6 +100,6 @@ class iterator implements \iterator, \countable
 
 	public function count()
 	{
-		return sizeof($this->tags);
+		return count($this->tags);
 	}
 }

@@ -30,7 +30,7 @@ class analyzer
 				return sprintf('string(%s) \'%s\'', strlen($mixed), $mixed);
 
 			case 'array':
-				return sprintf('array(%s)', sizeof($mixed));
+				return sprintf('array(%s)', count($mixed));
 		}
 	}
 

@@ -180,7 +180,7 @@ class coveralls extends atoum\reports\asynchronous
 			{
 				if ($number > 1)
 				{
-					while (sizeof($cover) < ($number - 1))
+					while (count($cover) < ($number - 1))
 					{
 						$cover[] = null;
 					}

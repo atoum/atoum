@@ -60,7 +60,7 @@ class score
 
 	public function getAssertionNumber()
 	{
-		return ($this->passNumber + sizeof($this->failAssertions));
+		return ($this->passNumber + count($this->failAssertions));
 	}
 
 	public function getPassNumber()
@@ -85,7 +85,7 @@ class score
 
 	public function getVoidMethodNumber()
 	{
-		return sizeof($this->voidMethods);
+		return count($this->voidMethods);
 	}
 
 	public function getUncompletedMethods()
@@ -95,7 +95,7 @@ class score
 
 	public function getUncompletedMethodNumber()
 	{
-		return sizeof($this->uncompletedMethods);
+		return count($this->uncompletedMethods);
 	}
 
 	public function getLastUncompleteMethod()
@@ -115,7 +115,7 @@ class score
 
 	public function getSkippedMethodNumber()
 	{
-		return sizeof($this->skippedMethods);
+		return count($this->skippedMethods);
 	}
 
 	public function getOutputs()
@@ -125,7 +125,7 @@ class score
 
 	public function getOutputNumber()
 	{
-		return sizeof($this->outputs);
+		return count($this->outputs);
 	}
 
 	public function getTotalDuration()
@@ -147,7 +147,7 @@ class score
 
 	public function getDurationNumber()
 	{
-		return sizeof($this->durations);
+		return count($this->durations);
 	}
 
 	public function getTotalMemoryUsage()
@@ -169,7 +169,7 @@ class score
 
 	public function getMemoryUsageNumber()
 	{
-		return sizeof($this->memoryUsages);
+		return count($this->memoryUsages);
 	}
 
 	public function getFailAssertions()
@@ -191,7 +191,7 @@ class score
 
 	public function getFailNumber()
 	{
-		return sizeof($this->getFailAssertions());
+		return count($this->getFailAssertions());
 	}
 
 	public function getErrors()
@@ -201,7 +201,7 @@ class score
 
 	public function getErrorNumber()
 	{
-		return sizeof($this->errors);
+		return count($this->errors);
 	}
 
 	public function getExceptions()
@@ -211,12 +211,12 @@ class score
 
 	public function getExceptionNumber()
 	{
-		return sizeof($this->exceptions);
+		return count($this->exceptions);
 	}
 
 	public function getRuntimeExceptionNumber()
 	{
-		return sizeof($this->runtimeExceptions);
+		return count($this->runtimeExceptions);
 	}
 
 	public function getMethodsWithFail()
@@ -454,7 +454,7 @@ class score
 	{
 		$id = $exception->getCode();
 
-		return (sizeof(array_filter($this->failAssertions, function($assertion) use ($id) { return ($assertion['id'] === $id); })) > 0);
+		return (count(array_filter($this->failAssertions, function($assertion) use ($id) { return ($assertion['id'] === $id); })) > 0);
 	}
 
 	private static function getMethods(array $array)

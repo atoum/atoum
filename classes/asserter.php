@@ -116,7 +116,7 @@ abstract class asserter implements asserter\definition
 
 	public function setWithArguments(array $arguments)
 	{
-		if (sizeof($arguments) > 0)
+		if (count($arguments) > 0)
 		{
 			call_user_func_array(array($this, 'setWith'), $arguments);
 		}

@@ -325,7 +325,7 @@ class generator
 			}
 			else
 			{
-				$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ', -1));' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . count($parameters) . ', -1));' . PHP_EOL;
 				$mockedMethods .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
 				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
 				$mockedMethods .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
@@ -396,7 +396,7 @@ class generator
 				}
 				else
 				{
-					$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . '));' . PHP_EOL;
+					$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . count($parameters) . '));' . PHP_EOL;
 				}
 
 				if ($this->isShunted($methodName) === true || $method->isAbstract() === true)
@@ -501,7 +501,7 @@ class generator
 					}
 					else
 					{
-						$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
+						$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . count($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
 					}
 
 					if ($isConstructor === true)
@@ -544,7 +544,7 @@ class generator
 				case $method->isStatic() === true:
 					$methodCode = "\t" . 'public static function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . PHP_EOL;
 					$methodCode .= "\t" . '{' . PHP_EOL;
-					$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ', -1));' . PHP_EOL;
+					$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . count($parameters) . ', -1));' . PHP_EOL;
 					$methodCode .= "\t\t" . 'return call_user_func_array(array(\'parent\', \'' . $methodName . '\'), $arguments);' . PHP_EOL;
 					$methodCode .= "\t" . '}' . PHP_EOL;
 					break;
@@ -698,7 +698,7 @@ class generator
 	{
 		$parameters = $method->getParameters();
 
-		if (sizeof($parameters) === 0)
+		if (count($parameters) === 0)
 		{
 			return false;
 		}

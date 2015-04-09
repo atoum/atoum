@@ -41,7 +41,7 @@ class cli extends report\fields\runner\exceptions
 		{
 			$exceptions = $this->runner->getScore()->getExceptions();
 
-			$sizeOfErrors = sizeof($exceptions);
+			$sizeOfErrors = count($exceptions);
 
 			if ($sizeOfErrors > 0)
 			{

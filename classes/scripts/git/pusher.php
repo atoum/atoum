@@ -133,7 +133,7 @@ class pusher extends script\configurable
 		parent::setArgumentHandlers()
 			->addArgumentHandler(
 				function($script, $argument, $remote) {
-					if (sizeof($remote) != 1)
+					if (count($remote) != 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $remote, $script->getName()));
 					}
@@ -146,7 +146,7 @@ class pusher extends script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $tagFile) {
-					if (sizeof($tagFile) != 1)
+					if (count($tagFile) != 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}

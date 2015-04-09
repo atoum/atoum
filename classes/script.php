@@ -117,7 +117,7 @@ abstract class script
 
 	public function hasArguments()
 	{
-		return (sizeof($this->argumentsParser->getValues()) > 0);
+		return (count($this->argumentsParser->getValues()) > 0);
 	}
 
 	public function setOutputWriter(atoum\writer $writer = null)
@@ -503,7 +503,7 @@ abstract class script
 
 			static::writeLabelWithWriter(str_pad($label, $maxLength, ' ', STR_PAD_LEFT), $value[0], $level, $writer);
 
-			if (sizeof($value) > 1)
+			if (count($value) > 1)
 			{
 				foreach (array_slice($value, 1) as $line)
 				{

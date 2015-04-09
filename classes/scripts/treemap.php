@@ -151,7 +151,7 @@ class treemap extends atoum\script\configurable
 		return parent::setArgumentHandlers()
 			->addArgumentHandler(
 				function($script, $argument, $projectName) {
-					if (sizeof($projectName) != 1)
+					if (count($projectName) != 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -164,7 +164,7 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $projectUrl) {
-					if (sizeof($projectUrl) != 1)
+					if (count($projectUrl) != 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getUrl()));
 					}
@@ -177,7 +177,7 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $codeUrl) {
-					if (sizeof($codeUrl) != 1)
+					if (count($codeUrl) != 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getUrl()));
 					}
@@ -190,7 +190,7 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $directories) {
-					if (sizeof($directories) <= 0)
+					if (count($directories) <= 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -206,7 +206,7 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $outputDirectory) {
-					if (sizeof($outputDirectory) != 1)
+					if (count($outputDirectory) != 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -219,7 +219,7 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $value) {
-					if (sizeof($value) != 0)
+					if (count($value) != 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -232,7 +232,7 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $value) {
-					if (sizeof($value) != 0)
+					if (count($value) != 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -245,7 +245,7 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $value) {
-					if (sizeof($value) != 0)
+					if (count($value) != 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -258,7 +258,7 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $value) {
-					if (sizeof($value) != 0)
+					if (count($value) != 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -271,7 +271,7 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $htmlDirectory) {
-					if (sizeof($htmlDirectory) != 1)
+					if (count($htmlDirectory) != 1)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
@@ -292,7 +292,7 @@ class treemap extends atoum\script\configurable
 			throw new exceptions\runtime($this->locale->_('Project name is undefined'));
 		}
 
-		if (sizeof($this->directories) <= 0)
+		if (count($this->directories) <= 0)
 		{
 			throw new exceptions\runtime($this->locale->_('Directories are undefined'));
 		}
@@ -337,7 +337,7 @@ class treemap extends atoum\script\configurable
 				{
 					$directories = explode(DIRECTORY_SEPARATOR, $directories);
 
-					$depth = sizeof($directories);
+					$depth = count($directories);
 
 					if ($depth > $maxDepth)
 					{
@@ -360,7 +360,7 @@ class treemap extends atoum\script\configurable
 
 						if ($childFound === false)
 						{
-							$key = sizeof($node['children']);
+							$key = count($node['children']);
 							$node['children'][] = array(
 								'name' => $directory,
 								'path' => $node['path'] . DIRECTORY_SEPARATOR . $directory,

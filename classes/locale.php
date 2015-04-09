@@ -43,7 +43,7 @@ class locale
 
 	private static function format($string, $arguments)
 	{
-		if (sizeof($arguments) > 0)
+		if (count($arguments) > 0)
 		{
 			$string = vsprintf($string, $arguments);
 		}
