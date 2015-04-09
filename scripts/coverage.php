@@ -13,7 +13,7 @@ set_error_handler(
 	function($error, $message, $file, $line) use ($coverage) {
 		if (error_reporting() !== 0)
 		{
-            $coverage->writeError($message);
+			$coverage->writeError($message);
 
 			exit($error);
 		}
@@ -22,11 +22,11 @@ set_error_handler(
 
 try
 {
-    $coverage->run();
+	$coverage->run();
 }
 catch (\exception $exception)
 {
-    $coverage->writeError($exception->getMessage());
+	$coverage->writeError($exception->getMessage());
 
 	exit($exception->getCode());
 }
