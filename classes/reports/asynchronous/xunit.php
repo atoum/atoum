@@ -62,7 +62,7 @@ class xunit extends atoum\reports\asynchronous
 		$skipped = $this->score->getSkippedMethods();
 		$assertions = $this->assertions;
 
-		$filterClass = function ($element) use (& $clname) { return ($element['class'] == $clname); };
+		$filterClass = function($element) use (& $clname) { return ($element['class'] == $clname); };
 		$extractClasses = function($list) use (& $clname, & $classes, & $assertions, $durations, $errors, $excepts, $fails, $uncomplete, $skipped, $filterClass) {
 			foreach ($list as $entry)
 			{
@@ -119,7 +119,7 @@ class xunit extends atoum\reports\asynchronous
 					$package = substr($name, 0, $antiSlashOffset);
 				}
 
-				$root->appendChild($testSuite  = $document->createElement('testsuite'));
+				$root->appendChild($testSuite = $document->createElement('testsuite'));
 
 				$testSuite->setAttribute('name', $clname);
 				$testSuite->setAttribute('package', $package);
