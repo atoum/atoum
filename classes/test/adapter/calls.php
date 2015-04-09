@@ -35,7 +35,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $this->size;
 	}
 
-	public function offsetSet($functionName = null, $call)
+	public function offsetSet($functionName = null, $call = null)
 	{
 		if ($functionName !== null)
 		{
