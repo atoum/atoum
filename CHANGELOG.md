@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#457](https://github.com/atoum/atoum/pull/457) Removed usage of die in deprecated methods ([@jubianchi][jubianchi])
 * [#442](https://github.com/atoum/atoum/issues/442) [#444](https://github.com/atoum/atoum/pull/444) Properly report skipped method due to a missing extension ([@jubianchi][jubianchi])
 * [#441](https://github.com/atoum/atoum/pull/441) Add PHP 7.0 in the build matrix ([@jubianchi][jubianchi])
 * [#399](https://github.com/atoum/atoum/pull/399) Add the `let` assertion handler ([@hywan][hywan])
