@@ -17,7 +17,7 @@ class utf8String extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\asserters\string');
+		$this->testedClass->extends('mageekguy\atoum\asserters\phpString');
 	}
 
 	public function test__construct()

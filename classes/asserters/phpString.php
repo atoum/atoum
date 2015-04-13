@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class string extends asserters\variable
+class phpString extends asserters\variable
 {
 	protected $charlist = null;
 
