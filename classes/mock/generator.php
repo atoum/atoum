@@ -367,7 +367,7 @@ class generator
 
 			$mockedMethods .= "\t" . '}' . PHP_EOL;
 
-			$mockedMethodNames[] = $constructorName;
+			$mockedMethodNames[] = strtolower($constructorName);
 		}
 
 		foreach ($class->getMethods() as $method)
