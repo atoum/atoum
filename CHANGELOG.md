@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#340](https://github.com/atoum/atoum/issues/340) Fixed an error when using `DebugClassLoader` autoloader and [atoum-bundle](https://github.com/atoum/AtoumBundle) ([@jubianchi][jubianchi])
 * [#454](https://github.com/atoum/atoum/pull/454) Rename asserters classes for PHP7 ([@jubianchi][jubianchi])
 * [#457](https://github.com/atoum/atoum/pull/457) Removed usage of die in deprecated methods ([@jubianchi][jubianchi])
 * [#442](https://github.com/atoum/atoum/issues/442) [#444](https://github.com/atoum/atoum/pull/444) Properly report skipped method due to a missing extension ([@jubianchi][jubianchi])

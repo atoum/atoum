@@ -2,9 +2,7 @@
 
 namespace mageekguy\atoum\test\assertion;
 
-use
-	atoum\asserter
-;
+use mageekguy\atoum\asserter;
 
 class aliaser implements \arrayAccess
 {
