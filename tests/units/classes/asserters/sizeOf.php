@@ -14,7 +14,7 @@ class sizeOf extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\phpInteger');
+		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\integer');
 	}
 
 	public function test__construct()

@@ -11,7 +11,7 @@ use
 
 require_once __DIR__ . '/../../runner.php';
 
-class phpInteger extends atoum\test
+class integer extends atoum\test
 {
 	public function testClass()
 	{

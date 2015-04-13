@@ -53,8 +53,8 @@ class asserter extends atoum
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->object($this->testedInstance->phpInteger($integer = rand(1, PHP_INT_MAX)))->isEqualTo($this->testedInstance->getGenerator()->phpInteger($integer))
-				->integer($this->testedInstance->phpInteger($integer = rand(1, PHP_INT_MAX))->getValue())->isEqualTo($integer)
+				->object($this->testedInstance->integer($integer = rand(1, PHP_INT_MAX)))->isEqualTo($this->testedInstance->getGenerator()->integer($integer))
+				->integer($this->testedInstance->integer($integer = rand(1, PHP_INT_MAX))->getValue())->isEqualTo($integer)
 		;
 	}
 

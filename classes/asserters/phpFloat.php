@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\tools\diffs
 ;
 
-class phpFloat extends asserters\phpInteger
+class phpFloat extends asserters\integer
 {
 	public function setWith($value)
 	{

@@ -574,7 +574,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	protected function getSizeAsserter()
 	{
-		return $this->generator->__call('phpInteger', array(sizeof($this->valueIsSet()->value)));
+		return $this->generator->__call('integer', array(sizeof($this->valueIsSet()->value)));
 	}
 
 	protected function callAssertion($method, array $arguments)

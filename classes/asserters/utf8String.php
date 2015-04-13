@@ -176,6 +176,6 @@ class utf8String extends asserters\phpString
 
 	protected function getLengthAsserter()
 	{
-		return $this->generator->__call('phpInteger', array(mb_strlen($this->valueIsSet()->value, 'UTF-8')));
+		return $this->generator->__call('integer', array(mb_strlen($this->valueIsSet()->value, 'UTF-8')));
 	}
 }

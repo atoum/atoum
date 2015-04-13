@@ -416,14 +416,14 @@ class utf8String extends atoum\test
 			->if($asserter->setWith(''))
 			->then
 				->object($integer = $asserter->length)
-					->isInstanceOf('mageekguy\atoum\asserters\phpInteger')
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
 				->integer($integer->getValue())
 					->isEqualTo(0)
 
 			->if($asserter->setWith($string = $this->getRandomUtf8String()))
 			->then
 				->object($integer = $asserter->length)
-					->isInstanceOf('mageekguy\atoum\asserters\phpInteger')
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
 				->integer($integer->getValue())
 					->isEqualTo(mb_strlen($string, 'UTF-8'))
 		;

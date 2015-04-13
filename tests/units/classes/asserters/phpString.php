@@ -577,14 +577,14 @@ class phpString extends atoum\test
 			->if($asserter->setWith(''))
 			->then
 				->object($integer = $asserter->length)
-					->isInstanceOf('mageekguy\atoum\asserters\phpInteger')
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
 				->integer($integer->getValue())
 					->isEqualTo(0)
 
 			->if($asserter->setWith($string = uniqid()))
 			->then
 				->object($integer = $asserter->length)
-					->isInstanceOf('mageekguy\atoum\asserters\phpInteger')
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
 				->integer($integer->getValue())
 					->isEqualTo(strlen($string))
 		;
