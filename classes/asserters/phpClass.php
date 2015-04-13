@@ -48,8 +48,6 @@ class phpClass extends atoum\asserter
 
 	public function getReflectionClass($class)
 	{
-		$reflectionClass = null;
-
 		if ($this->reflectionClassInjector === null)
 		{
 			$reflectionClass = new \reflectionClass($class);

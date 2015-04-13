@@ -153,7 +153,7 @@ abstract class test implements observable, \countable
 
 		$testMethodPrefix = $this->getTestMethodPrefix();
 
-		if (static::isRegex($testMethodPrefix) === false)
+		if (self::isRegex($testMethodPrefix) === false)
 		{
 			$testMethodFilter = function($methodName) use ($testMethodPrefix) { return (stripos($methodName, $testMethodPrefix) === 0); };
 		}

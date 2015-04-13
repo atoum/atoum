@@ -448,8 +448,6 @@ class phpArray extends asserters\variable implements \arrayAccess
 			}
 			else
 			{
-				$pass = false;
-
 				if ($strict === false)
 				{
 					$pass = ($this->value[$this->key] != $value);

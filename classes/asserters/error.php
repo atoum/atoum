@@ -120,8 +120,6 @@ class error extends atoum\asserter
 		}
 		else
 		{
-			$failReason = '';
-
 			switch (true)
 			{
 				case $this->type === null && $this->message === null:

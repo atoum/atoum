@@ -11,6 +11,7 @@ use
 class factory implements \iteratorAggregate
 {
 	protected $dotFilterFactory = null;
+	protected $iteratorFactory = null;
 	protected $acceptDots = false;
 	protected $extensionFilterFactory = null;
 	protected $acceptedExtensions = array('php');

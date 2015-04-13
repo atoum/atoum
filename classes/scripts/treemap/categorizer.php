@@ -9,7 +9,7 @@ use
 class categorizer
 {
 	protected $name = '';
-	protected $callback = array();
+	protected $callback = null;
 	protected $minDepthColor = '#94ff5a';
 	protected $maxDepthColor = '#00500f';
 

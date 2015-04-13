@@ -47,12 +47,12 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function offsetGet($mixed)
 	{
-		return $this->getEqualTo(static::buildCall($mixed));
+		return $this->getEqualTo(self::buildCall($mixed));
 	}
 
 	public function offsetUnset($mixed)
 	{
-		$key = self::getKey(static::buildCall($mixed));
+		$key = self::getKey(self::buildCall($mixed));
 
 		if (isset($this->calls[$key]) === true)
 		{
@@ -66,7 +66,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function offsetExists($mixed)
 	{
-		return (isset($this->calls[self::getKey(static::buildCall($mixed))]) === true);
+		return (isset($this->calls[self::getKey(self::buildCall($mixed))]) === true);
 	}
 
 	public function getIterator()
@@ -121,8 +121,6 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function toArray(adapter\call $call = null)
 	{
-		$calls = array();
-
 		if ($call === null)
 		{
 			$calls = $this->getTimeline();
@@ -144,7 +142,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 			$innerCalls = array_filter($innerCalls, function($innerCall) use ($call) { return $call->isEqualTo($innerCall); });
 		}
 
-		return static::buildCallsForCall($call, $innerCalls);
+		return self::buildCallsForCall($call, $innerCalls);
 	}
 
 	public function getIdenticalTo(adapter\call $call)
@@ -156,7 +154,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 			$innerCalls = array_filter($innerCalls, function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); });
 		}
 
-		return static::buildCallsForCall($call, $innerCalls);
+		return self::buildCallsForCall($call, $innerCalls);
 	}
 
 	public function getPreviousEqualTo(adapter\call $call, $position)

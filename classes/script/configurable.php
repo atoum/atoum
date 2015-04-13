@@ -4,7 +4,7 @@ namespace mageekguy\atoum\script;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\system,
+	mageekguy\atoum\includer,
 	mageekguy\atoum\exceptions
 ;
 

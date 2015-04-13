@@ -660,8 +660,6 @@ class builder extends atoum\script\configurable
 
 	protected function doRun()
 	{
-		$alreadyRun = false;
-
 		$runFile = $this->getRunFile();
 
 		$pid = trim(@$this->adapter->file_get_contents($runFile));

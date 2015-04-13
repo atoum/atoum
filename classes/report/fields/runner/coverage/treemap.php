@@ -168,8 +168,6 @@ class treemap extends report\fields\runner\coverage\cli
 
 	public function getReflectionClass($class)
 	{
-		$reflectionClass = null;
-
 		if ($this->reflectionClassFactory === null)
 		{
 			$reflectionClass = new \reflectionClass($class);
