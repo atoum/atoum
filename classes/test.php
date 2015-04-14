@@ -78,6 +78,7 @@ abstract class test implements observable, \countable
 	private $debugMode = false;
 	private $xdebugConfig = null;
 	private $codeCoverage = false;
+	private $branchCoverage = false;
 	private $classHasNotVoidMethods = false;
 	private $extensions = null;
 
@@ -693,6 +694,25 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
+	public function branchCoverageIsEnabled()
+	{
+		return $this->branchCoverage;
+	}
+
+	public function enableBranchCoverage()
+	{
+		$this->branchCoverage = $this->codeCoverageIsEnabled() && defined('XDEBUG_CC_BRANCH_CHECK');
+
+		return $this;
+	}
+
+	public function disableBranchCoverage()
+	{
+		$this->branchCoverage = false;
+
+		return $this;
+	}
+
 	public function setMaxChildrenNumber($number)
 	{
 		$number = (int) $number;
@@ -1161,7 +1181,14 @@ abstract class test implements observable, \countable
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
-						xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+						$options = XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE;
+
+						if ($this->branchCoverageIsEnabled() === true)
+						{
+							$options |= XDEBUG_CC_BRANCH_CHECK;
+						}
+
+						xdebug_start_code_coverage($options);
 					}
 
 					$assertionNumber = $this->score->getAssertionNumber();

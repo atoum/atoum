@@ -46,6 +46,31 @@ class cli extends report\fields\runner\tests\coverage
 				PHP_EOL
 			;
 
+			if (sizeof($this->coverage->getPaths()) > 0)
+			{
+				$string .= $this->titlePrompt .
+					sprintf(
+						$this->locale->_('%s: %s'),
+						$this->titleColorizer->colorize($this->locale->_('Path coverage value')),
+						$this->coverageColorizer->colorize(sprintf('%3.2f%%', $this->coverage->getPathsCoverageValue() * 100.0))
+					) .
+					PHP_EOL
+				;
+			}
+
+			if (sizeof($this->coverage->getBranches()) > 0)
+			{
+				$string .= $this->titlePrompt .
+					sprintf(
+						$this->locale->_('%s: %s'),
+						$this->titleColorizer->colorize($this->locale->_('Branch coverage value')),
+						$this->coverageColorizer->colorize(sprintf('%3.2f%%', $this->coverage->getBranchesCoverageValue() * 100.0))
+					) .
+					PHP_EOL
+				;
+			}
+
+
 			foreach ($this->coverage->getMethods() as $class => $methods)
 			{
 				$classCoverage = $this->coverage->getValueForClass($class);

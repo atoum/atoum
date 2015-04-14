@@ -99,6 +99,11 @@ class concurrent extends test\engine
 			}
 			else
 			{
+				if ($this->test->branchCoverageIsEnabled() === true)
+				{
+					$phpCode .= '$test->enableBranchCoverage();';
+				}
+
 				$phpCode .= '$coverage = $test->getCoverage();';
 
 				foreach ($this->test->getCoverage()->getExcludedMethods() as $excludedMethod)
