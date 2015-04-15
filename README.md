@@ -11,7 +11,7 @@ However, it has been designed from the start with the following ideas in mind:
 
 To accomplish that, it massively uses capabilities provided by *PHP 5.3*, to give the developer *a whole new way* of writing unit tests.  
 Therefore, it can be installed and integrated inside an existing project extremely easily, since it is only a *single PHAR archive*, which is the one and only entry point for the developper.  
-Also, thanks to its *fluid interface*, it allows for writing unit tests in a fashion close to natural language.  
+Also, thanks to its *fluent interface*, it allows for writing unit tests in a fashion close to natural language.  
 It also makes it easier to implement stubbing within tests, thanks to intelligent uses of *anonymous functions and closures*.  
 *atoum* natively, and by default, performs the execution of each unit test within a separate [PHP](http://www.php.net) process, to warrant *isolation*.  
 Of course, it can be used seamlessly for continuous integration, and given its design, it can be made to cope with specific needs extremely easily.  
