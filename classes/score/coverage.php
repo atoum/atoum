@@ -429,6 +429,68 @@ class coverage implements \countable, \serializable
 		return $value;
 	}
 
+	public function getPathsCoverageValueForClass($class)
+	{
+		$value = null;
+
+		if (isset($this->paths[$class]) === true)
+		{
+			$totalPaths = 0;
+			$coveredPaths = 0;
+
+			foreach ($this->paths[$class] as $method)
+			{
+				foreach ($method as $path)
+				{
+					$totalPaths++;
+
+					if ($path['hit'] === 1)
+					{
+						$coveredPaths++;
+					}
+				}
+			}
+
+			if ($totalPaths > 0)
+			{
+				$value = (float) $coveredPaths / $totalPaths;
+			}
+		}
+
+		return $value;
+	}
+
+	public function getBranchesCoverageValueForClass($class)
+	{
+		$value = null;
+
+		if (isset($this->branches[$class]) === true)
+		{
+			$totalPaths = 0;
+			$coveredPaths = 0;
+
+			foreach ($this->branches[$class] as $method)
+			{
+				foreach ($method as $path)
+				{
+					$totalPaths++;
+
+					if ($path['hit'] === 1)
+					{
+						$coveredPaths++;
+					}
+				}
+			}
+
+			if ($totalPaths > 0)
+			{
+				$value = (float) $coveredPaths / $totalPaths;
+			}
+		}
+
+		return $value;
+	}
+
 	public function getCoverageForClass($class)
 	{
 		$coverage = array();
@@ -519,6 +581,63 @@ class coverage implements \countable, \serializable
 
 		return $value;
 	}
+
+	public function getPathsCoverageValueForMethod($class, $method)
+	{
+		$value = null;
+
+		if (isset($this->paths[$class][$method]) === true)
+		{
+			$totalPaths = 0;
+			$coveredPaths = 0;
+
+			foreach ($this->paths[$class][$method] as $path)
+			{
+				$totalPaths++;
+
+				if ($path['hit'] === 1)
+				{
+					$coveredPaths++;
+				}
+			}
+
+			if ($totalPaths > 0)
+			{
+				$value = (float) $coveredPaths / $totalPaths;
+			}
+		}
+
+		return $value;
+	}
+
+	public function getBranchesCoverageValueForMethod($class, $method)
+	{
+		$value = null;
+
+		if (isset($this->branches[$class][$method]) === true)
+		{
+			$totalPaths = 0;
+			$coveredPaths = 0;
+
+			foreach ($this->branches[$class][$method] as $path)
+			{
+				$totalPaths++;
+
+				if ($path['hit'] === 1)
+				{
+					$coveredPaths++;
+				}
+			}
+
+			if ($totalPaths > 0)
+			{
+				$value = (float) $coveredPaths / $totalPaths;
+			}
+		}
+
+		return $value;
+	}
+
 
 	public function getCoverageForMethod($class, $method)
 	{
