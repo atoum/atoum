@@ -505,6 +505,34 @@ class coverage implements \countable, \serializable
 		return $coverage;
 	}
 
+	public function getBranchesCoverageForClass($class)
+	{
+		$coverage = array();
+
+		$class = (string) $class;
+
+		if (isset($this->branches[$class]) === true && $this->isInExcludedClasses($class) === false)
+		{
+			$coverage = $this->branches[$class];
+		}
+
+		return $coverage;
+	}
+
+	public function getPathsCoverageForClass($class)
+	{
+		$coverage = array();
+
+		$class = (string) $class;
+
+		if (isset($this->paths[$class]) === true && $this->isInExcludedClasses($class) === false)
+		{
+			$coverage = $this->paths[$class];
+		}
+
+		return $coverage;
+	}
+
 	public function getNumberOfCoverableLinesInClass($class)
 	{
 		$coverableLines = 0;

@@ -117,7 +117,7 @@ class clover extends atoum\reports\asynchronous
 
 		foreach ($coverage->getClasses() as $class => $file)
 		{
-			$package->appendChild($this->makeFileElement($document, $file, $class, $coverage->getCoverageForClass($class)));
+			$package->appendChild($this->makeFileElement($document, $file, $class, $coverage->getCoverageForClass($class), $coverage->getBranchesCoverageForClass($class), $coverage->getPathsCoverageForClass($class)));
 		}
 
 		$package->appendChild($this->makePackageMetricsElement($document, sizeof($coverage->getClasses())));
@@ -134,7 +134,7 @@ class clover extends atoum\reports\asynchronous
 		return $metrics;
 	}
 
-	protected function makeFileElement(\DOMDocument $document, $filename, $class, array $coverage)
+	protected function makeFileElement(\DOMDocument $document, $filename, $class, array $coverage, array $branches, array $paths)
 	{
 		$file = $document->createElement('file');
 
@@ -184,7 +184,7 @@ class clover extends atoum\reports\asynchronous
 			->addClasses(1)
 		;
 
-		$file->appendChild($this->makeClassElement($document, $class, $coverage));
+		$file->appendChild($this->makeClassElement($document, $class, $coverage, $branches, $paths));
 		$file->appendChild($this->makeFileMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods, 1));
 
 		return $file;
@@ -201,7 +201,7 @@ class clover extends atoum\reports\asynchronous
 		return $metrics;
 	}
 
-	protected function makeClassElement(\DOMDocument $document, $classname, array $coverage)
+	protected function makeClassElement(\DOMDocument $document, $classname, array $coverage, array $branches, array $paths)
 	{
 		$class = $document->createElement('class');
 
@@ -209,14 +209,28 @@ class clover extends atoum\reports\asynchronous
 
 		$methods = sizeof($coverage);
 		$coveredMethods = 0;
-		$totalLines = 0;
-		$coveredLines = 0;
+		$totalLines = $coveredLines = 0;
+		$totalBranches = $coveredBranches = 0;
+		$totalPaths = 0;
 
-		foreach ($coverage as $lines)
+		foreach ($coverage as $method => $lines)
 		{
-			if (sizeof($lines) > 0)
+			if (isset($branches[$method]))
 			{
-				++$coveredMethods;
+				foreach ($branches[$method] as $branch)
+				{
+					$totalBranches++;
+
+					if ($branch['hit'] === 1)
+					{
+						$coveredBranches++;
+					}
+				}
+			}
+
+			if (isset($paths[$method]))
+			{
+				$totalPaths += sizeof($paths[$method]);
 			}
 
 			foreach ($lines as $cover)
@@ -231,26 +245,31 @@ class clover extends atoum\reports\asynchronous
 					$coveredLines++;
 				}
 			}
+
+			if ($totalLines === $coveredLines)
+			{
+				++$coveredMethods;
+			}
 		}
 
-		$class->appendChild($this->makeClassMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods));
+		$class->appendChild($this->makeClassMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods, $totalBranches, $coveredBranches, $totalPaths));
 
 		return $class;
 	}
 
-	protected function makeClassMetricsElement(\DOMDocument $document, $loc, $cloc, $methods, $cmethods)
+	protected function makeClassMetricsElement(\DOMDocument $document, $loc, $coveredLines, $methods, $coveredMethods, $branches = 0, $coveredBranches = 0, $complexity = 0)
 	{
 		$metrics = $document->createElement('metrics');
 
-		$metrics->setAttribute('complexity', 0);
-		$metrics->setAttribute('elements', $loc);
-		$metrics->setAttribute('coveredelements', $cloc);
-		$metrics->setAttribute('conditionals', 0);
-		$metrics->setAttribute('coveredconditionals', 0);
+		$metrics->setAttribute('complexity', $complexity);
+		$metrics->setAttribute('elements', $loc + $methods + $branches);
+		$metrics->setAttribute('coveredelements', $coveredLines + $coveredMethods + $coveredBranches);
+		$metrics->setAttribute('conditionals', $branches);
+		$metrics->setAttribute('coveredconditionals', $coveredBranches);
 		$metrics->setAttribute('statements', $loc);
-		$metrics->setAttribute('coveredstatements', $cloc);
+		$metrics->setAttribute('coveredstatements', $coveredLines);
 		$metrics->setAttribute('methods', $methods);
-		$metrics->setAttribute('coveredmethods', $cmethods);
+		$metrics->setAttribute('coveredmethods', $coveredMethods);
 		$metrics->setAttribute('testduration', 0);
 		$metrics->setAttribute('testfailures', 0);
 		$metrics->setAttribute('testpasses', 0);
