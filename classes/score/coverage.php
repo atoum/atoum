@@ -270,6 +270,29 @@ class coverage implements \countable, \serializable
 							{
 								$this->branches[$class][$method][$index]['hit'] = $branch['hit'];
 							}
+
+							foreach ($branch['out'] as $outIndex => $outOp)
+							{
+								if (isset($this->branches[$class][$method][$index]['out'][$outIndex]) === false)
+								{
+									$this->branches[$class][$method][$index]['out'][$outIndex] = $outOp;
+								}
+							}
+
+							foreach ($branch['out_hit'] as $outIndex => $hit)
+							{
+								if (isset($this->branches[$class][$method][$index]['out_hit'][$outIndex]) === false)
+								{
+									$this->branches[$class][$method][$index]['out_hit'][$outIndex] = $hit;
+								}
+								else
+								{
+									if ($this->branches[$class][$method][$index]['out_hit'][$outIndex] < $hit)
+									{
+										$this->branches[$class][$method][$index]['out_hit'][$outIndex] = $hit;
+									}
+								}
+							}
 						}
 					}
 
@@ -374,13 +397,16 @@ class coverage implements \countable, \serializable
 			{
 				foreach ($methods as $method)
 				{
-					foreach ($method as $branch)
+					foreach ($method as $node)
 					{
-						$totalBranches++;
-
-						if ($branch['hit'] === 1)
+						foreach ($node['out'] as $index => $out)
 						{
-							$coveredBranches++;
+							$totalBranches++;
+
+							if ($node['out_hit'][$index] === 1)
+							{
+								$coveredBranches++;
+							}
 						}
 					}
 				}
@@ -644,22 +670,25 @@ class coverage implements \countable, \serializable
 
 		if (isset($this->branches[$class][$method]) === true)
 		{
-			$totalPaths = 0;
-			$coveredPaths = 0;
+			$totalBranches = 0;
+			$coveredBranches = 0;
 
-			foreach ($this->branches[$class][$method] as $path)
+			foreach ($this->branches[$class][$method] as $node)
 			{
-				$totalPaths++;
-
-				if ($path['hit'] === 1)
+				foreach ($node['out'] as $index => $out)
 				{
-					$coveredPaths++;
+					$totalBranches++;
+
+					if ($node['out_hit'][$index] === 1)
+					{
+						$coveredBranches++;
+					}
 				}
 			}
 
-			if ($totalPaths > 0)
+			if ($totalBranches > 0)
 			{
-				$value = (float) $coveredPaths / $totalPaths;
+				$value = (float) $coveredBranches / $totalBranches;
 			}
 		}
 
