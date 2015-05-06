@@ -31,6 +31,7 @@ class runner implements observable
 	protected $testNumber = 0;
 	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
+	protected $branchesAndPathsCoverage = false;
 	protected $php = null;
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
@@ -371,6 +372,25 @@ class runner implements observable
 		return $this->codeCoverage;
 	}
 
+	public function enableBranchesAndPathsCoverage()
+	{
+		$this->branchesAndPathsCoverage = $this->codeCoverageIsEnabled();
+
+		return $this;
+	}
+
+	public function disableBranchesAndPathsCoverage()
+	{
+		$this->branchesAndPathsCoverage = false;
+
+		return $this;
+	}
+
+	public function branchesAndPathsCoverageIsEnabled()
+	{
+		return $this->branchesAndPathsCoverage;
+	}
+
 	public function doNotfailIfVoidMethods()
 	{
 		$this->failIfVoidMethods = false;
@@ -558,6 +578,11 @@ class runner implements observable
 					}
 					else
 					{
+						if ($this->branchesAndPathsCoverageIsEnabled())
+						{
+							$test->enableBranchesAndPathsCoverage();
+						}
+
 						$test->getScore()->setCoverage($this->getCoverage());
 					}
 
@@ -890,38 +915,5 @@ class runner implements observable
 		}
 
 		return $this;
-	}
-
-	private static function getMethods(test $test, array $runTestMethods, array $tags)
-	{
-		$methods = array();
-
-		if (isset($runTestMethods['*']) === true)
-		{
-			$methods = $runTestMethods['*'];
-		}
-
-		$testClass = $test->getClass();
-
-		if (isset($runTestMethods[$testClass]) === true)
-		{
-			$methods = $runTestMethods[$testClass];
-		}
-
-		if (in_array('*', $methods) === true)
-		{
-			$methods = array();
-		}
-
-		if (sizeof($methods) <= 0)
-		{
-			$methods = $test->getTestMethods($tags);
-		}
-		else
-		{
-			$methods = $test->getTaggedTestMethods($methods, $tags);
-		}
-
-		return $methods;
 	}
 }

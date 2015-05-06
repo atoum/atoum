@@ -129,7 +129,7 @@ abstract class coverage extends report\field
 				$phpCode .=
 					'$data = array(\'classes\' => get_declared_classes());' .
 					'ob_start();' .
-					'xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);' .
+					'xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE' . ($observable->branchesAndPathsCoverageIsEnabled() === true ? ' | XDEBUG_CC_BRANCH_CHECK' : '')  . ');' .
 					'require_once \'%s\';' .
 					'$data[\'coverage\'] = xdebug_get_code_coverage();' .
 					'xdebug_stop_code_coverage();' .

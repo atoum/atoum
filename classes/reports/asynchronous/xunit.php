@@ -132,7 +132,7 @@ class xunit extends atoum\reports\asynchronous
 				{
 					$time += $duration['value'];
 
-					static::getTestCase($document, $testSuite, $name, $duration['method'], $duration['value'], $duration['path'], isset($class['assertions'][$duration['method']]) ? $class['assertions'][$duration['method']] : 0);
+					self::getTestCase($document, $testSuite, $name, $duration['method'], $duration['value'], $duration['path'], isset($class['assertions'][$duration['method']]) ? $class['assertions'][$duration['method']] : 0);
 				}
 
 				$testSuite->setAttribute('time', $time);
@@ -194,7 +194,7 @@ class xunit extends atoum\reports\asynchronous
 
 	private static function getTestCase(\DOMDocument $document, \DOMElement $testSuite, $class, $method, $time, $path, $assertions)
 	{
-		if (($testCase = static::findTestCase($document, $class, $method)) === null)
+		if (($testCase = self::findTestCase($document, $class, $method)) === null)
 		{
 			$testCase = $document->createElement('testcase');
 			$testCase->setAttribute('name', $method);
