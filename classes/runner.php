@@ -31,7 +31,7 @@ class runner implements observable
 	protected $testNumber = 0;
 	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
-	protected $branchCoverage = false;
+	protected $branchesAndPathsCoverage = false;
 	protected $php = null;
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
@@ -372,23 +372,23 @@ class runner implements observable
 		return $this->codeCoverage;
 	}
 
-	public function enableBranchCoverage()
+	public function enableBranchesAndPathsCoverage()
 	{
-		$this->branchCoverage = $this->codeCoverageIsEnabled();
+		$this->branchesAndPathsCoverage = $this->codeCoverageIsEnabled();
 
 		return $this;
 	}
 
-	public function disableBranchCoverage()
+	public function disableBranchesAndPathsCoverage()
 	{
-		$this->branchCoverage = false;
+		$this->branchesAndPathsCoverage = false;
 
 		return $this;
 	}
 
-	public function branchCoverageIsEnabled()
+	public function branchesAndPathsCoverageIsEnabled()
 	{
-		return $this->branchCoverage;
+		return $this->branchesAndPathsCoverage;
 	}
 
 	public function doNotfailIfVoidMethods()
@@ -578,9 +578,9 @@ class runner implements observable
 					}
 					else
 					{
-						if ($this->branchCoverageIsEnabled())
+						if ($this->branchesAndPathsCoverageIsEnabled())
 						{
-							$test->enableBranchCoverage();
+							$test->enableBranchesAndPathsCoverage();
 						}
 
 						$test->getScore()->setCoverage($this->getCoverage());

@@ -99,9 +99,9 @@ class concurrent extends test\engine
 			}
 			else
 			{
-				if ($this->test->branchCoverageIsEnabled() === true)
+				if ($this->test->branchesAndPathsCoverageIsEnabled() === true)
 				{
-					$phpCode .= '$test->enableBranchCoverage();';
+					$phpCode .= '$test->enableBranchesAndPathsCoverage();';
 				}
 
 				$phpCode .= '$coverage = $test->getCoverage();';

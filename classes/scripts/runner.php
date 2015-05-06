@@ -337,9 +337,9 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
-	public function enableBranchCoverage()
+	public function enableBranchesAndPathsCoverage()
 	{
-		$this->runner->enableBranchCoverage();
+		$this->runner->enableBranchesAndPathsCoverage();
 
 		return $this;
 	}
@@ -805,7 +805,7 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
-						$script->enableBranchCoverage();
+						$script->enableBranchesAndPathsCoverage();
 					},
 					array('-ebpc', '--enable-branch-and-path-coverage'),
 					null,

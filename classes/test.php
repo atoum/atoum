@@ -78,7 +78,7 @@ abstract class test implements observable, \countable
 	private $debugMode = false;
 	private $xdebugConfig = null;
 	private $codeCoverage = false;
-	private $branchCoverage = false;
+	private $branchesAndPathsCoverage = false;
 	private $classHasNotVoidMethods = false;
 	private $extensions = null;
 
@@ -694,21 +694,21 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	public function branchCoverageIsEnabled()
+	public function branchesAndPathsCoverageIsEnabled()
 	{
-		return $this->branchCoverage;
+		return $this->branchesAndPathsCoverage;
 	}
 
-	public function enableBranchCoverage()
+	public function enableBranchesAndPathsCoverage()
 	{
-		$this->branchCoverage = $this->codeCoverageIsEnabled() && defined('XDEBUG_CC_BRANCH_CHECK');
+		$this->branchesAndPathsCoverage = $this->codeCoverageIsEnabled() && defined('XDEBUG_CC_BRANCH_CHECK');
 
 		return $this;
 	}
 
-	public function disableBranchCoverage()
+	public function disableBranchesAndPathsCoverage()
 	{
-		$this->branchCoverage = false;
+		$this->branchesAndPathsCoverage = false;
 
 		return $this;
 	}
@@ -1183,7 +1183,7 @@ abstract class test implements observable, \countable
 					{
 						$options = XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE;
 
-						if ($this->branchCoverageIsEnabled() === true)
+						if ($this->branchesAndPathsCoverageIsEnabled() === true)
 						{
 							$options |= XDEBUG_CC_BRANCH_CHECK;
 						}
