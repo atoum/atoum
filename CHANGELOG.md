@@ -1,6 +1,8 @@
 # `dev-master`
 
-* [#436](https://github.com/atoum/atoum/issues/436) Support branches and paths coverage with [Xdebug](http://xdebug.org/) 2.3 ([@jubianchi][jubianchi])
+# 2.1.0 - 2015-05-08 
+
+* [#459](https://github.com/atoum/atoum/issues/459) Support branches and paths coverage with [Xdebug](http://xdebug.org/) 2.3 ([@jubianchi][jubianchi])
 * [#436](https://github.com/atoum/atoum/issues/436) Support old-style constructors in mocks ([@jubianchi][jubianchi])
 * [#453](https://github.com/atoum/atoum/issues/453) `phpClass` asserter will throw atoum's logic exceptions instead of native reflection exceptions ([@jubianchi][jubianchi])
 * [#340](https://github.com/atoum/atoum/issues/340) Fixed an error when using `DebugClassLoader` autoloader and [atoum-bundle](https://github.com/atoum/AtoumBundle) ([@jubianchi][jubianchi])
