@@ -17,6 +17,8 @@ class cli extends report\fields\runner\tests\coverage
 	protected $methodPrompt = null;
 	protected $titleColorizer = null;
 	protected $coverageColorizer = null;
+	protected $hideClassesCoverageDetails = false;
+	protected $hideMethodsCoverageDetails = false;
 
 	public function __construct()
 	{
@@ -71,43 +73,46 @@ class cli extends report\fields\runner\tests\coverage
 			}
 
 
-			foreach ($this->coverage->getMethods() as $class => $methods)
+			if ($this->hideClassesCoverageDetails === false)
 			{
-				$classCoverage = $this->coverage->getValueForClass($class);
-				$classPathsCoverage = $this->coverage->getPathsCoverageValueForClass($class);
-				$classBranchesCoverage = $this->coverage->getBranchesCoverageValueForClass($class);
-
-				if ($classCoverage < 1.0)
+				foreach ($this->coverage->getMethods() as $class => $methods)
 				{
-					$string .= $this->classPrompt .
-						sprintf(
-							$this->locale->_('%s: %s%s%s'),
-							$this->titleColorizer->colorize(sprintf($this->locale->_('Class %s'), $class)),
-							$this->coverageColorizer->colorize(sprintf('%s%3.2f%%', ($classPathsCoverage !== null || $classBranchesCoverage !== null ? 'Line: ' : ''), $classCoverage * 100.0)),
-							$classPathsCoverage !== null ? $this->coverageColorizer->colorize(sprintf(' Path: %3.2f%%', $classPathsCoverage * 100.0)) : '',
-							$classBranchesCoverage !== null ? $this->coverageColorizer->colorize(sprintf(' Branch: %3.2f%%', $classBranchesCoverage * 100.0)) : ''
-						) .
-						PHP_EOL
-					;
+					$classCoverage = $this->coverage->getValueForClass($class);
+					$classPathsCoverage = $this->coverage->getPathsCoverageValueForClass($class);
+					$classBranchesCoverage = $this->coverage->getBranchesCoverageValueForClass($class);
 
-					foreach (array_keys($methods) as $method)
+					if ($classCoverage < 1.0)
 					{
-						$methodCoverage = $this->coverage->getValueForMethod($class, $method);
-						$methodPathsCoverage = $this->coverage->getPathsCoverageValueForMethod($class, $method);
-						$methodBranchesCoverage = $this->coverage->getBranchesCoverageValueForMethod($class, $method);
+						$string .= $this->classPrompt .
+							sprintf(
+								$this->locale->_('%s: %s%s%s'),
+								$this->titleColorizer->colorize(sprintf($this->locale->_('Class %s'), $class)),
+								$this->coverageColorizer->colorize(sprintf('%s%3.2f%%', ($classPathsCoverage !== null || $classBranchesCoverage !== null ? 'Line: ' : ''), $classCoverage * 100.0)),
+								$classPathsCoverage !== null ? $this->coverageColorizer->colorize(sprintf(' Path: %3.2f%%', $classPathsCoverage * 100.0)) : '',
+								$classBranchesCoverage !== null ? $this->coverageColorizer->colorize(sprintf(' Branch: %3.2f%%', $classBranchesCoverage * 100.0)) : ''
+							) .
+							PHP_EOL
+						;
 
-						if ($methodCoverage < 1.0)
+						if ($this->hideMethodsCoverageDetails === false)
 						{
-							$string .= $this->methodPrompt .
-								sprintf(
-									$this->locale->_('%s: %s%s%s'),
-									$this->titleColorizer->colorize(sprintf($this->locale->_('%s::%s()'), $class, $method)),
-									$this->coverageColorizer->colorize(sprintf('%s%3.2f%%', ($methodPathsCoverage !== null || $methodBranchesCoverage !== null ? 'Line: ' : ''), $methodCoverage * 100.0)),
-									$methodPathsCoverage !== null ? $this->coverageColorizer->colorize(sprintf(', Path: %3.2f%%', $methodPathsCoverage * 100.0)) : '',
-									$methodBranchesCoverage !== null ? $this->coverageColorizer->colorize(sprintf(', Branch: %3.2f%%', $methodBranchesCoverage * 100.0)) : ''
-								) .
-								PHP_EOL
-							;
+							foreach (array_keys($methods) as $method) {
+								$methodCoverage = $this->coverage->getValueForMethod($class, $method);
+								$methodPathsCoverage = $this->coverage->getPathsCoverageValueForMethod($class, $method);
+								$methodBranchesCoverage = $this->coverage->getBranchesCoverageValueForMethod($class, $method);
+
+								if ($methodCoverage < 1.0) {
+									$string .= $this->methodPrompt .
+										sprintf(
+											$this->locale->_('%s: %s%s%s'),
+											$this->titleColorizer->colorize(sprintf($this->locale->_('%s::%s()'), $class, $method)),
+											$this->coverageColorizer->colorize(sprintf('%s%3.2f%%', ($methodPathsCoverage !== null || $methodBranchesCoverage !== null ? 'Line: ' : ''), $methodCoverage * 100.0)),
+											$methodPathsCoverage !== null ? $this->coverageColorizer->colorize(sprintf(', Path: %3.2f%%', $methodPathsCoverage * 100.0)) : '',
+											$methodBranchesCoverage !== null ? $this->coverageColorizer->colorize(sprintf(', Branch: %3.2f%%', $methodBranchesCoverage * 100.0)) : ''
+										) .
+										PHP_EOL;
+								}
+							}
 						}
 					}
 				}
@@ -175,5 +180,19 @@ class cli extends report\fields\runner\tests\coverage
 	public function getCoverageColorizer()
 	{
 		return $this->coverageColorizer;
+	}
+
+	public function hideClassesCoverageDetails()
+	{
+		$this->hideClassesCoverageDetails = true;
+
+		return $this;
+	}
+
+	public function hideMethodsCoverageDetails()
+	{
+		$this->hideMethodsCoverageDetails = true;
+
+		return $this;
 	}
 }
