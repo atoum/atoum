@@ -28,6 +28,9 @@ class phpArray extends asserters\variable implements \arrayAccess
 			case 'isempty':
 				return $this->isEmpty();
 
+			case 'isnotempty':
+				return $this->isNotEmpty();
+
 			default:
 				$asserter = parent::__get($asserter);
 

@@ -384,6 +384,11 @@ class phpArray extends atoum\test
 					->hasMessage($isEmpty)
 				->mock($locale)->call('_')->withArguments('%s is empty', $asserter)->once
 
+				->exception(function() use ($asserter) { $asserter->isNotEmpty; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($isEmpty)
+				->mock($locale)->call('_')->withArguments('%s is empty', $asserter)->twice
+
 				->exception(function() use ($asserter, & $failMessage) { $asserter->isNotEmpty($failMessage = uniqid()); })
 						->isInstanceOf('mageekguy\atoum\asserter\exception')
 						->hasMessage($failMessage)
