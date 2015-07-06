@@ -1,27 +1,27 @@
 # `dev-master`
 
-* [#470](https://github.com/atoum/atoum/pull/470) Add `isNotEmpty` asserter on `array` ([@metalaka](metalaka))
+* [#470](https://github.com/atoum/atoum/pull/470) Add `isNotEmpty` asserter on `array` ([@metalaka])
 
 # 2.1.0 - 2015-05-08 
 
-* [#459](https://github.com/atoum/atoum/issues/459) Support branches and paths coverage with [Xdebug](http://xdebug.org/) 2.3 ([@jubianchi][jubianchi])
-* [#436](https://github.com/atoum/atoum/issues/436) Support old-style constructors in mocks ([@jubianchi][jubianchi])
-* [#453](https://github.com/atoum/atoum/issues/453) `phpClass` asserter will throw atoum's logic exceptions instead of native reflection exceptions ([@jubianchi][jubianchi])
-* [#340](https://github.com/atoum/atoum/issues/340) Fixed an error when using `DebugClassLoader` autoloader and [atoum-bundle](https://github.com/atoum/AtoumBundle) ([@jubianchi][jubianchi])
-* [#454](https://github.com/atoum/atoum/pull/454) Rename asserters classes for PHP7 ([@jubianchi][jubianchi])
-* [#457](https://github.com/atoum/atoum/pull/457) Removed usage of die in deprecated methods ([@jubianchi][jubianchi])
-* [#442](https://github.com/atoum/atoum/issues/442) [#444](https://github.com/atoum/atoum/pull/444) Properly report skipped method due to a missing extension ([@jubianchi][jubianchi])
-* [#441](https://github.com/atoum/atoum/pull/441) Add PHP 7.0 in the build matrix ([@jubianchi][jubianchi])
-* [#399](https://github.com/atoum/atoum/pull/399) Add the `let` assertion handler ([@hywan][hywan])
-* [#443](https://github.com/atoum/atoum/pull/443) Autoloader should resolve classes step by step ([@jubianchi][jubianchi])
+* [#459](https://github.com/atoum/atoum/issues/459) Support branches and paths coverage with [Xdebug](http://xdebug.org/) 2.3 ([@jubianchi])
+* [#436](https://github.com/atoum/atoum/issues/436) Support old-style constructors in mocks ([@jubianchi])
+* [#453](https://github.com/atoum/atoum/issues/453) `phpClass` asserter will throw atoum's logic exceptions instead of native reflection exceptions ([@jubianchi])
+* [#340](https://github.com/atoum/atoum/issues/340) Fixed an error when using `DebugClassLoader` autoloader and [atoum-bundle](https://github.com/atoum/AtoumBundle) ([@jubianchi])
+* [#454](https://github.com/atoum/atoum/pull/454) Rename asserters classes for PHP7 ([@jubianchi])
+* [#457](https://github.com/atoum/atoum/pull/457) Removed usage of die in deprecated methods ([@jubianchi])
+* [#442](https://github.com/atoum/atoum/issues/442) [#444](https://github.com/atoum/atoum/pull/444) Properly report skipped method due to a missing extension ([@jubianchi])
+* [#441](https://github.com/atoum/atoum/pull/441) Add PHP 7.0 in the build matrix ([@jubianchi])
+* [#399](https://github.com/atoum/atoum/pull/399) Add the `let` assertion handler ([@hywan])
+* [#443](https://github.com/atoum/atoum/pull/443) Autoloader should resolve classes step by step ([@jubianchi])
 
 # 2.0.1 - 2015-02-27
 
-* [#440](https://github.com/atoum/atoum/pull/440) `--configurations` option should be handled first ([@jubianchi][jubianchi])
-* [#439](https://github.com/atoum/atoum/pull/439) Since atoum is 2.*, branch-alias must follow ([@hywan][hywan])
-* [#437](https://github.com/atoum/atoum/pull/437) Autoloader should not try to resolve alias if requested class exists ([@jubianchi][jubianchi])
-* Generalize method call checking in mock ([@mageekguy][mageekguy])
-* [#435](https://github.com/atoum/atoum/pull/435) Partially revert BC break introduced in [#420](https://github.com/atoum/atoum/pull/420) ([@mageekguy][mageekguy])
+* [#440](https://github.com/atoum/atoum/pull/440) `--configurations` option should be handled first ([@jubianchi])
+* [#439](https://github.com/atoum/atoum/pull/439) Since atoum is 2.*, branch-alias must follow ([@hywan])
+* [#437](https://github.com/atoum/atoum/pull/437) Autoloader should not try to resolve alias if requested class exists ([@jubianchi])
+* Generalize method call checking in mock ([@mageekguy])
+* [#435](https://github.com/atoum/atoum/pull/435) Partially revert BC break introduced in [#420](https://github.com/atoum/atoum/pull/420) ([@mageekguy])
 
 # 2.0.0 - 2015-02-13
 
@@ -88,7 +88,7 @@
 
 # 0.0.1 - 2013-11-05
 
-[mageekguy]: https://github.com/mageekguy
-[jubianchi]: https://github.com/jubianchi
-[hywan]: https://github.com/hywan
-[metalaka]: https://github.com/metalaka
+[@mageekguy]: https://github.com/mageekguy
+[@jubianchi]: https://github.com/jubianchi
+[@hywan]: https://github.com/hywan
+[@metalaka]: https://github.com/metalaka
