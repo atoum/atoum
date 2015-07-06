@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#470](https://github.com/atoum/atoum/pull/470) Add `isNotEmpty` asserter on `array` ([@metalaka](metalaka))
+
 # 2.1.0 - 2015-05-08 
 
 * [#459](https://github.com/atoum/atoum/issues/459) Support branches and paths coverage with [Xdebug](http://xdebug.org/) 2.3 ([@jubianchi][jubianchi])
@@ -89,3 +91,4 @@
 [mageekguy]: https://github.com/mageekguy
 [jubianchi]: https://github.com/jubianchi
 [hywan]: https://github.com/hywan
+[metalaka]: https://github.com/metalaka
