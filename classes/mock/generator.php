@@ -690,7 +690,7 @@ class generator
 				return '\\' . $class->getName() . ' ';
 
 			case method_exists($parameter, 'hasType') && $parameter->hasType():
-				return (string)$parameter->getType() . ' ';
+				return $parameter->getType() . ' ';
 
 			default:
 				return '';
@@ -894,9 +894,8 @@ class generator
 			);
 		}
 
-		$methodNameReservedWord[] =	 '__halt_compiler';
+		$methodNameReservedWord[] = '__halt_compiler';
 
 		return $methodNameReservedWord;
-
 	}
 }
