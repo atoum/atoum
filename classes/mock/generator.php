@@ -385,7 +385,7 @@ class generator
 				}
 				else
 				{
-					$mockedMethods .= "\t" . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')';
+					$mockedMethods .= "\t" . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . $this->getReturnType($method);
 				}
 
 				$mockedMethods .= PHP_EOL . "\t" . '{' . PHP_EOL;
@@ -492,7 +492,7 @@ class generator
 						$hasConstructor = true;
 					}
 
-					$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method, $isConstructor) . ')' . PHP_EOL;
+					$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method, $isConstructor) . ')' . $this->getReturnType($method) . PHP_EOL;
 					$methodCode .= "\t" . '{' . PHP_EOL;
 
 					if (self::hasVariadic($method) === true)
@@ -602,6 +602,16 @@ class generator
 		return '\\' . $this->getDefaultNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
 	}
 
+	protected function getReturnType(\reflectionMethod $method)
+	{
+		$returnTypeCode = '';
+		if($method->getName() !== '__construct' && method_exists($method, 'hasReturnType') && $method->hasReturnType()) {
+			$returnTypeCode = ': ' . $method->getReturnType();
+		}
+
+		return $returnTypeCode;
+	}
+
 	protected function getParameters(\reflectionMethod $method)
 	{
 		$parameters = array();
@@ -678,6 +688,9 @@ class generator
 
 			case ($class = $parameter->getClass()):
 				return '\\' . $class->getName() . ' ';
+
+			case method_exists($parameter, 'hasType') && $parameter->hasType():
+				return (string)$parameter->getType() . ' ';
 
 			default:
 				return '';
@@ -805,77 +818,85 @@ class generator
 
 	protected static function methodNameIsReservedWord(\reflectionMethod $method)
 	{
-		switch ($method->getName())
-		{
-			case '__halt_compiler':
-			case 'abstract':
-			case 'and':
-			case 'array':
-			case 'as':
-			case 'break':
-			case 'callable':
-			case 'case':
-			case 'catch':
-			case 'class':
-			case 'clone':
-			case 'const':
-			case 'continue':
-			case 'declare':
-			case 'default':
-			case 'die':
-			case 'do':
-			case 'echo':
-			case 'else':
-			case 'elseif':
-			case 'empty':
-			case 'enddeclare':
-			case 'endfor':
-			case 'endforeach':
-			case 'endif':
-			case 'endswitch':
-			case 'endwhile':
-			case 'eval':
-			case 'exit':
-			case 'extends':
-			case 'final':
-			case 'for':
-			case 'foreach':
-			case 'function':
-			case 'global':
-			case 'goto':
-			case 'if':
-			case 'implements':
-			case 'include':
-			case 'include_once':
-			case 'instanceof':
-			case 'insteadof':
-			case 'interface':
-			case 'isset':
-			case 'list':
-			case 'namespace':
-			case 'new':
-			case 'or':
-			case 'print':
-			case 'private':
-			case 'protected':
-			case 'public':
-			case 'require':
-			case 'require_once':
-			case 'return':
-			case 'static':
-			case 'switch':
-			case 'throw':
-			case 'trait':
-			case 'try':
-			case 'unset':
-			case 'use':
-			case 'var':
-			case 'while':
-			case 'xor':
-				return true;
+		return in_array($method->getName(), self::getMethodNameReservedWordByVersion(), true);
+	}
 
-			default:
-				return false;
+	protected static function getMethodNameReservedWordByVersion()
+	{
+		$methodNameReservedWord = array();
+
+		if(PHP_MAJOR_VERSION < 7) {
+			$methodNameReservedWord = array(
+				'abstract',
+				'and',
+				'array',
+				'as',
+				'break',
+				'callable',
+				'case',
+				'catch',
+				'class',
+				'clone',
+				'const',
+				'continue',
+				'declare',
+				'default',
+				'die',
+				'do',
+				'echo',
+				'else',
+				'elseif',
+				'empty',
+				'enddeclare',
+				'endfor',
+				'endforeach',
+				'endif',
+				'endswitch',
+				'endwhile',
+				'eval',
+				'exit',
+				'extends',
+				'final',
+				'for',
+				'foreach',
+				'function',
+				'global',
+				'goto',
+				'if',
+				'implements',
+				'include',
+				'include_once',
+				'instanceof',
+				'insteadof',
+				'interface',
+				'isset',
+				'list',
+				'namespace',
+				'new',
+				'or',
+				'print',
+				'private',
+				'protected',
+				'public',
+				'require',
+				'require_once',
+				'return',
+				'static',
+				'switch',
+				'throw',
+				'trait',
+				'try',
+				'unset',
+				'use',
+				'var',
+				'while',
+				'xor',
+			);
 		}
+
+		$methodNameReservedWord[] =	 '__halt_compiler';
+
+		return $methodNameReservedWord;
+
 	}
 }
