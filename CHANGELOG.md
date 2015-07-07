@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#474](https://github.com/atoum/atoum/pull/474) Add the method return type and parameter type in the mock generator ([@guillaumeDievart])
 * [#470](https://github.com/atoum/atoum/pull/470) Add `isNotEmpty` asserter on `array` ([@metalaka])
 
 # 2.1.0 - 2015-05-08 
@@ -92,3 +93,4 @@
 [@jubianchi]: https://github.com/jubianchi
 [@hywan]: https://github.com/hywan
 [@metalaka]: https://github.com/metalaka
+[@GuillaumeDievart]: https://github.com/GuillaumeDievart
