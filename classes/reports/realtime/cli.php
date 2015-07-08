@@ -13,6 +13,8 @@ use
 
 class cli extends realtime
 {
+	private $runnerTestsCoverageField = false;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -56,15 +58,15 @@ class cli extends realtime
 
 		$this->addField($runnerTestsMemoryField);
 
-		$runnerTestsCoverageField = new runner\tests\coverage\cli();
-		$runnerTestsCoverageField
+		$this->runnerTestsCoverageField = new runner\tests\coverage\cli();
+		$this->runnerTestsCoverageField
 			->setTitlePrompt($firstLevelPrompt)
 			->setTitleColorizer($defaultColorizer)
 			->setClassPrompt($secondLevelPrompt)
 			->setMethodPrompt(new prompt('==> ', $defaultColorizer))
 		;
 
-		$this->addField($runnerTestsCoverageField);
+		$this->addField($this->runnerTestsCoverageField);
 
 		$runnerDurationField = new runner\duration\cli();
 		$runnerDurationField
@@ -201,5 +203,19 @@ class cli extends realtime
 		;
 
 		$this->addField($testMemoryField);
+	}
+
+	public function hideClassesCoverageDetails()
+	{
+		$this->runnerTestsCoverageField->hideClassesCoverageDetails();
+
+		return $this;
+	}
+
+	public function hideMethodsCoverageDetails()
+	{
+		$this->runnerTestsCoverageField->hideMethodsCoverageDetails();
+
+		return $this;
 	}
 }
