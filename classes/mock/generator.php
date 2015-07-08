@@ -605,7 +605,9 @@ class generator
 	protected function getReturnType(\reflectionMethod $method)
 	{
 		$returnTypeCode = '';
-		if($method->getName() !== '__construct' && method_exists($method, 'hasReturnType') && $method->hasReturnType()) {
+
+		if($method->getName() !== '__construct' && method_exists($method, 'hasReturnType') && $method->hasReturnType())
+		{
 			$returnTypeCode = ': ' . $method->getReturnType();
 		}
 
@@ -823,7 +825,8 @@ class generator
 
 	protected static function getMethodNameReservedWordByVersion()
 	{
-		if(PHP_MAJOR_VERSION >= 7) {
+		if(PHP_MAJOR_VERSION >= 7)
+		{
 			return array('__halt_compiler');
 		}
 
