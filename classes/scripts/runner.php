@@ -205,6 +205,8 @@ class runner extends atoum\script\configurable
 		catch (atoum\exception $exception)
 		{
 			$this->writeError($exception->getMessage());
+
+			exit(2);
 		}
 
 		return $this;
