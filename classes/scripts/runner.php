@@ -231,10 +231,10 @@ class runner extends atoum\script\configurable
 	public function testIt()
 	{
 		$this->runner
-            ->addTestsFromDirectory(atoum\directory . '/tests/units/classes')
-            ->addTestsFromDirectory(atoum\directory . '/tests/units/resources')
-            ->addTestsFromDirectory(atoum\directory . '/tests/functionals/classes')
-        ;
+			->addTestsFromDirectory(atoum\directory . '/tests/units/classes')
+			->addTestsFromDirectory(atoum\directory . '/tests/units/resources')
+			->addTestsFromDirectory(atoum\directory . '/tests/functionals/classes')
+		;
 
 		return $this;
 	}
