@@ -41,7 +41,8 @@ class php extends cli\command
 			}
 		}
 
-		if (defined('HHVM_VERSION')) {
+		if (defined('HHVM_VERSION'))
+		{
 			$this->addOption('--php');
 		}
 
