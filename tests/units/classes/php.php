@@ -20,9 +20,13 @@ class php extends atoum\test
 				->object($php->getAdapter())->isEqualTo(new atoum\adapter())
 				->string($php->getStdout())->isEmpty()
 				->string($php->getStderr())->isEmpty()
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = false)
+			->and($php = new testedClass(null, $adapter))
+			->then
 				->array($php->getOptions())->isEmpty()
 				->array($php->getArguments())->isEmpty()
-			->if($php = new testedClass($phpPath = uniqid(), $adapter = new atoum\test\adapter()))
+			->if($php = new testedClass($phpPath = uniqid(), $adapter))
 			->then
 				->string($php->getBinaryPath())->isEqualTo($phpPath)
 				->object($php->getAdapter())->isIdenticalTo($adapter)
@@ -35,6 +39,10 @@ class php extends atoum\test
 			->and($php = new testedClass(null, $adapter))
 			->then
 				->string($php->getBinaryPath())->isEqualTo($phpBinary)
+			->if($adapter->defined = function($constant) { return ($constant === 'HHVM_VERSION'); })
+			->and($php = new testedClass(uniqid(), $adapter))
+			->then
+				->array($php->getOptions())->isEqualTo(array('--php' => null))
 			->if($adapter->defined = false)
 			->and($adapter->constant = null)
 			->and($adapter->getenv = function($variable) use (& $pearBinaryPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $pearBinaryPath = uniqid()); })
