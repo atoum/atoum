@@ -119,6 +119,24 @@ class cli extends atoum\test
 		;
 	}
 
+	public function testHideClassesCoverageDetails()
+	{
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->hideClassesCoverageDetails())->isTestedInstance
+		;
+	}
+
+	public function testHideMethodsCoverageDetails()
+	{
+		$this
+			->if($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->hideMethodsCoverageDetails())->isTestedInstance
+		;
+	}
+
 	public function test__toString()
 	{
 		$this
@@ -236,6 +254,21 @@ class cli extends atoum\test
 						) .
 						PHP_EOL
 					)
+			->if($defaultField->hideMethodsCoverageDetails())
+			->and($defaultField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($defaultField)->isEqualTo(
+						$defaultField->getTitlePrompt() . sprintf($defaultField->getLocale()->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
+						$defaultField->getClassPrompt() . sprintf($defaultField->getLocale()->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL
+					)
+			->if($defaultField->hideClassesCoverageDetails())
+			->and($defaultField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($defaultField)->isEqualTo($defaultField->getTitlePrompt() . sprintf($defaultField->getLocale()->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL)
+			->if($customField->hideClassesCoverageDetails())
+			->and($customField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($customField)->isEqualTo($customField->getTitlePrompt() . sprintf($customField->getLocale()->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL)
 		;
 	}
 }

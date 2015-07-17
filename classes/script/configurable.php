@@ -4,7 +4,7 @@ namespace mageekguy\atoum\script;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\system,
+	mageekguy\atoum\includer,
 	mageekguy\atoum\exceptions
 ;
 
@@ -157,7 +157,7 @@ abstract class configurable extends atoum\script
 					array('-c', '--configurations'),
 					'<file>...',
 					$this->locale->_('Use all configuration files <file>'),
-					1
+					PHP_INT_MAX
 				)
 		;
 

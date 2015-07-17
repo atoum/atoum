@@ -32,7 +32,7 @@ class decorator
 	{
 		$string = '';
 
-		$function  = $call->getFunction();
+		$function = $call->getFunction();
 
 		if ($function !== null)
 		{

@@ -99,6 +99,11 @@ class concurrent extends test\engine
 			}
 			else
 			{
+				if ($this->test->branchesAndPathsCoverageIsEnabled() === true)
+				{
+					$phpCode .= '$test->enableBranchesAndPathsCoverage();';
+				}
+
 				$phpCode .= '$coverage = $test->getCoverage();';
 
 				foreach ($this->test->getCoverage()->getExcludedMethods() as $excludedMethod)
@@ -122,9 +127,9 @@ class concurrent extends test\engine
 				}
 			}
 
-			if ($this->test->getMockGenerator()->undefinedMethodInInterfaceAreAllowed() === false)
+			if ($this->test->getMockGenerator()->undefinedMethodUsageIsAllowed() === false)
 			{
-				$phpCode .= '$test->getMockGenerator()->disallowUndefinedMethodInInterface();';
+				$phpCode .= '$test->getMockGenerator()->disallowUndefinedMethodUsage();';
 			}
 
 			foreach ($test->getExtensions() as $extension)
@@ -172,7 +177,7 @@ class concurrent extends test\engine
 
 			if ($score instanceof atoum\score === false)
 			{
-				$score = call_user_func($this->scoreFactory)->addUncompletedMethod($this->test->getPath(), $this->test->getClass(), $this->method,  $this->php->getExitCode(), $this->php->getStdOut());
+				$score = call_user_func($this->scoreFactory)->addUncompletedMethod($this->test->getPath(), $this->test->getClass(), $this->method, $this->php->getExitCode(), $this->php->getStdOut());
 			}
 
 			$stdErr = $this->php->getStderr();

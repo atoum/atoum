@@ -43,6 +43,7 @@ abstract class test implements observable, \countable
 	private $mockAutoloader = null;
 	private $factoryBuilder = null;
 	private $reflectionMethodFactory = null;
+	private $phpExtensionFactory;
 	private $asserterGenerator = null;
 	private $assertionManager = null;
 	private $phpMocker = null;
@@ -77,6 +78,7 @@ abstract class test implements observable, \countable
 	private $debugMode = false;
 	private $xdebugConfig = null;
 	private $codeCoverage = false;
+	private $branchesAndPathsCoverage = false;
 	private $classHasNotVoidMethods = false;
 	private $extensions = null;
 
@@ -84,7 +86,7 @@ abstract class test implements observable, \countable
 	private static $methodPrefix = null;
 	private static $defaultEngine = self::defaultEngine;
 
-	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null)
+	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null, \closure $phpExtensionFactory = null)
 	{
 		$this
 			->setAdapter($adapter)
@@ -101,6 +103,7 @@ abstract class test implements observable, \countable
 			->setReflectionMethodFactory()
 			->setAsserterCallManager()
 			->enableCodeCoverage()
+			->setPhpExtensionFactory($phpExtensionFactory);
 		;
 
 		$this->observers = new \splObjectStorage();
@@ -151,7 +154,7 @@ abstract class test implements observable, \countable
 
 		$testMethodPrefix = $this->getTestMethodPrefix();
 
-		if (static::isRegex($testMethodPrefix) === false)
+		if (self::isRegex($testMethodPrefix) === false)
 		{
 			$testMethodFilter = function($methodName) use ($testMethodPrefix) { return (stripos($methodName, $testMethodPrefix) === 0); };
 		}
@@ -326,6 +329,15 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
+	public function setPhpExtensionFactory(\closure $factory = null)
+	{
+		$this->phpExtensionFactory = $factory ?: function($extensionName) {
+			return new atoum\php\extension($extensionName);
+		};
+
+		return $this;
+	}
+
 	public function setAsserterGenerator(test\asserter\generator $generator = null)
 	{
 		if ($generator !== null)
@@ -383,6 +395,7 @@ abstract class test implements observable, \countable
 			->setHandler('then', $returnTest)
 			->setHandler('given', $returnTest)
 			->setMethodHandler('define', $returnTest)
+			->setMethodHandler('let', $returnTest)
 		;
 
 		$returnMockController = function(mock\aggregator $mock) { return $mock->getMockController(); };
@@ -435,6 +448,8 @@ abstract class test implements observable, \countable
 			->use('phpArray')->as('in')
 			->use('phpClass')->as('class')
 			->use('phpFunction')->as('function')
+			->use('phpFloat')->as('float')
+			->use('phpString')->as('string')
 			->use('calling')->as('method')
 		;
 
@@ -675,6 +690,25 @@ abstract class test implements observable, \countable
 	public function disableCodeCoverage()
 	{
 		$this->codeCoverage = false;
+
+		return $this;
+	}
+
+	public function branchesAndPathsCoverageIsEnabled()
+	{
+		return $this->branchesAndPathsCoverage;
+	}
+
+	public function enableBranchesAndPathsCoverage()
+	{
+		$this->branchesAndPathsCoverage = $this->codeCoverageIsEnabled() && defined('XDEBUG_CC_BRANCH_CHECK');
+
+		return $this;
+	}
+
+	public function disableBranchesAndPathsCoverage()
+	{
+		$this->branchesAndPathsCoverage = false;
 
 		return $this;
 	}
@@ -1084,14 +1118,28 @@ abstract class test implements observable, \countable
 
 				foreach ($this->getMandatoryMethodExtensions($testMethod) as $mandatoryExtension)
 				{
-					$this->extension($mandatoryExtension)->isLoaded();
+					try
+					{
+						call_user_func($this->phpExtensionFactory, $mandatoryExtension)->requireExtension();
+					}
+					catch (atoum\php\exception $exception)
+					{
+						throw new test\exceptions\skip($exception->getMessage());
+					}
 				}
 
 				try
 				{
 					ob_start();
 
+					test\adapter::setStorage($this->testAdapterStorage);
+					mock\controller::setLinker($this->mockControllerLinker);
+
+					$this->testAdapterStorage->add(php\mocker::getAdapter());
+
 					$this->beforeTestMethod($this->currentMethod);
+
+					$this->mockGenerator->testedClassIs($this->getTestedClassName());
 
 					try
 					{
@@ -1131,14 +1179,16 @@ abstract class test implements observable, \countable
 						}
 					);
 
-					test\adapter::setStorage($this->testAdapterStorage);
-					mock\controller::setLinker($this->mockControllerLinker);
-
-					$this->testAdapterStorage->add(php\mocker::getAdapter());
-
 					if ($this->codeCoverageIsEnabled() === true)
 					{
-						xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+						$options = XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE;
+
+						if ($this->branchesAndPathsCoverageIsEnabled() === true)
+						{
+							$options |= XDEBUG_CC_BRANCH_CHECK;
+						}
+
+						xdebug_start_code_coverage($options);
 					}
 
 					$assertionNumber = $this->score->getAssertionNumber();

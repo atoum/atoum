@@ -34,24 +34,24 @@ class santa extends cli
 	$brown = new colorizer('38;5;94');
 
 	$this->sprite = array(
-	'            _            ',
-	'           {_}           ',
-	$red->colorize('           / \\           '),
-	$red->colorize('          /   \\          '),
-	$red->colorize('         /_____\\         '),
-	'       {`_______`}       ',
-	'        // . . \\\\        ',
-	'       (/(__7__)\\)       ',
-	'       |\'-` = `-\'|       ',
-	'       |         |       ',
-	$red->colorize('       /') . '\\       /' . $red->colorize('\\       '),
-	$red->colorize('      /  ') . '\'.   .\'' . $red->colorize('  \\      '),
-	$red->colorize('     /_/') . '   `"`   ' . $red->colorize('\\_\\     '),
-	'    {__}' . $brown->colorize('###') . $black->colorize('[_]') . $brown->colorize('###') . '{__}    ',
-	'    (_/' . $red->colorize('\\_________/') . '\\_)    ',
-	$red->colorize('        |___|___|        '),
-	$red->colorize('         |--|--|         '),
-	$brown->colorize('        (__)') . '`' . $brown->colorize('(__)        ')
+	'			_			',
+	'		   {_}		   ',
+	$red->colorize('		   / \\		   '),
+	$red->colorize('		  /   \\		  '),
+	$red->colorize('		 /_____\\		 '),
+	'	   {`_______`}	   ',
+	'		// . . \\\\		',
+	'	   (/(__7__)\\)	   ',
+	'	   |\'-` = `-\'|	   ',
+	'	   |		 |	   ',
+	$red->colorize('	   /') . '\\	   /' . $red->colorize('\\	   '),
+	$red->colorize('	  /  ') . '\'.   .\'' . $red->colorize('  \\	  '),
+	$red->colorize('	 /_/') . '   `"`   ' . $red->colorize('\\_\\	 '),
+	'	{__}' . $brown->colorize('###') . $black->colorize('[_]') . $brown->colorize('###') . '{__}	',
+	'	(_/' . $red->colorize('\\_________/') . '\\_)	',
+	$red->colorize('		|___|___|		'),
+	$red->colorize('		 |--|--|		 '),
+	$brown->colorize('		(__)') . '`' . $brown->colorize('(__)		')
 	);
 	}
 
@@ -60,7 +60,7 @@ class santa extends cli
 		if (empty($this->santa) === false)
 		{
 			$lines = explode(PHP_EOL, $this->santa);
-			return "\x1b[" . (count($lines) - 1) . "F";
+			return "\x1b[" . (sizeof($lines) - 1) . "F";
 		}
 
 	return '';
@@ -68,7 +68,7 @@ class santa extends cli
 
 	public function __toString()
 	{
-		if(microtime(true) - $this->utime < self::refreshDelay) {
+		if (microtime(true) - $this->utime < self::refreshDelay) {
 			return '';
 		}
 
@@ -78,7 +78,7 @@ class santa extends cli
 		{
 			$string .= $this->clear();
 
-			for ($row = 0; $row < count($this->sprite); $row++)
+			for ($row = 0, $count = sizeof($this->sprite); $row < $count; $row++)
 			{
 				$string .= $this->getSnow() . $this->sprite[$row] . $this->getSnow() . PHP_EOL;
 			}
@@ -95,20 +95,20 @@ class santa extends cli
 
 	protected function getSnow()
 	{
-	$string = '';
+		$string = '';
 
-	for ($i = 0; $i < 10; $i++)
-	{
-	if (rand(0, 42) < rand(40, 42))
-	{
-	$string .= ' ';
-	}
-	else
-	{
-	$string .= $this->snowColorizer->colorize(self::snowflake);
-	}
-	}
+		for ($i = 0; $i < 10; $i++)
+		{
+			if (rand(0, 42) < rand(40, 42))
+			{
+				$string .= ' ';
+			}
+			else
+			{
+				$string .= $this->snowColorizer->colorize(self::snowflake);
+			}
+		}
 
-	return $string;
+		return $string;
 	}
 }

@@ -160,7 +160,6 @@ class adapter extends test
 	public function test__call()
 	{
 		$this
-			/*
 			->if($adapter = new testedClass())
 			->then
 				->string($adapter->md5($hash = uniqid()))->isEqualTo(md5($hash))
@@ -211,14 +210,12 @@ class adapter extends test
 				->integer($adapter->MD5())->isEqualTo(1)
 				->integer($adapter->MD5())->isEqualTo(2)
 				->integer($adapter->MD5())->isEqualTo(0)
-			*/
 			->if($adapter = new testedClass())
 			->and($adapter->sha1[2] = $sha1 = uniqid())
 			->then
 				->string($adapter->sha1($string = uniqid()))->isEqualTo(sha1($string))
-//				->string($adapter->sha1($string = uniqid()))->isEqualTo(sha1($string))
 				->string($adapter->sha1(uniqid()))->isEqualTo($sha1)
-//				->string($adapter->sha1($otherString = uniqid()))->isEqualTo(sha1($otherString))
+				->string($adapter->sha1($otherString = uniqid()))->isEqualTo(sha1($otherString))
 		;
 	}
 
@@ -424,12 +421,33 @@ class adapter extends test
 	public function testResetCalls()
 	{
 		$this
-			->if($adapter = new testedClass())
-			->and($adapter->md5(uniqid()))
+			->if(
+				$adapter = new testedClass(),
+				$adapter->md5(uniqid()),
+				$adapter->sha1(uniqid())
+			)
 			->then
-				->sizeof($adapter->getCalls())->isGreaterThan(0)
+				->sizeof($adapter->getCalls())->isEqualTo(2)
+				->sizeof($adapter->getCalls(new call('md5')))->isEqualTo(1)
+				->sizeof($adapter->getCalls(new call('sha1')))->isEqualTo(1)
 				->object($adapter->resetCalls())->isIdenticalTo($adapter)
-			->sizeof($adapter->getCalls())->isZero(0)
+				->sizeof($adapter->getCalls())->isZero
+			->if(
+				$adapter->md5(uniqid()),
+				$adapter->sha1(uniqid())
+			)
+			->then
+				->sizeof($adapter->getCalls())->isEqualTo(2)
+				->sizeof($adapter->getCalls(new call('md5')))->isEqualTo(1)
+				->sizeof($adapter->getCalls(new call('sha1')))->isEqualTo(1)
+				->object($adapter->resetCalls('md5'))->isIdenticalTo($adapter)
+				->sizeof($adapter->getCalls())->isEqualTo(1)
+				->sizeof($adapter->getCalls(new call('md5')))->isZero
+				->sizeof($adapter->getCalls(new call('sha1')))->isEqualTo(1)
+				->object($adapter->resetCalls('sha1'))->isIdenticalTo($adapter)
+				->sizeof($adapter->getCalls(new call('md5')))->isZero
+				->sizeof($adapter->getCalls(new call('sha1')))->isZero
+				->sizeof($adapter->getCalls())->isZero
 		;
 	}
 
@@ -465,6 +483,57 @@ class adapter extends test
 				->object($adapter->reset())->isIdenticalTo($adapter)
 				->array($adapter->getInvokers())->isEmpty()
 				->sizeof($adapter->getCalls())->isZero()
+		;
+	}
+
+	public function testGetCallsNumber()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->integer($this->testedInstance->getCallsNumber(new call('md5')))->isZero
+			->if(
+				$this->testedInstance->md5(uniqid()),
+				$this->testedInstance->sha1(uniqid())
+			)
+			->then
+				->integer($this->testedInstance->getCallsNumber())->isEqualTo(2)
+				->integer($this->testedInstance->getCallsNumber(new call('md5')))->isEqualTo(1)
+				->integer($this->testedInstance->getCallsNumber(new call('sha1')))->isEqualTo(1)
+			->given(
+				$castable = new \mock\castable,
+				$this->calling($castable)->__toString = $string = uniqid()
+			)
+			->if(
+				$this->testedInstance->resetCalls(),
+				$this->testedInstance->md5(1),
+				$this->testedInstance->md5('1')
+			)
+			->then
+				->integer($this->testedInstance->getCallsNumber())->isEqualTo(2)
+				->integer($this->testedInstance->getCallsNumber(new call('md5')))->isEqualTo(2)
+				->integer($this->testedInstance->getCallsNumber(new call('md5'), true))->isEqualTo(2)
+				->integer($this->testedInstance->getCallsNumber(new call('md5', array(1))))->isEqualTo(2)
+				->integer($this->testedInstance->getCallsNumber(new call('md5', array(1)), true))->isEqualTo(1)
+				->integer($this->testedInstance->getCallsNumber(new call('md5', array('1')), true))->isEqualTo(1)
+		;
+	}
+
+	public function testGetCallsNumberEqualTo()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->integer($this->testedInstance->getCallsNumber(new call('md5')))->isZero
+			->if(
+				$this->testedInstance->md5(uniqid()),
+				$this->testedInstance->md5(1),
+				$this->testedInstance->md5('1')
+			)
+			->then
+				->integer($this->testedInstance->getCallsNumberEqualTo(new call('md5')))->isEqualTo(3)
+				->integer($this->testedInstance->getCallsNumberEqualTo(new call('md5', array(1))))->isEqualTo(2)
+				->integer($this->testedInstance->getCallsNumberEqualTo(new call('md5', array('1'))))->isEqualTo(2)
 		;
 	}
 }

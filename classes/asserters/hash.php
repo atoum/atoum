@@ -6,7 +6,7 @@ use
 	mageekguy\atoum\asserters
 ;
 
-class hash extends asserters\string
+class hash extends asserters\phpString
 {
 	public function __get($asserter)
 	{

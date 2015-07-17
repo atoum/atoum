@@ -28,6 +28,9 @@ class phpArray extends asserters\variable implements \arrayAccess
 			case 'isempty':
 				return $this->isEmpty();
 
+			case 'isnotempty':
+				return $this->isNotEmpty();
+
 			default:
 				$asserter = parent::__get($asserter);
 
@@ -448,8 +451,6 @@ class phpArray extends asserters\variable implements \arrayAccess
 			}
 			else
 			{
-				$pass = false;
-
 				if ($strict === false)
 				{
 					$pass = ($this->value[$this->key] != $value);

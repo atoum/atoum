@@ -33,12 +33,12 @@ class locale
 
 	public function _($string)
 	{
-		return static::format($string, array_slice(func_get_args(), 1));
+		return self::format($string, array_slice(func_get_args(), 1));
 	}
 
 	public function __($singular, $plural, $quantity)
 	{
-		return static::format($quantity <= 1 ? $singular : $plural, array_slice(func_get_args(), 3));
+		return self::format($quantity <= 1 ? $singular : $plural, array_slice(func_get_args(), 3));
 	}
 
 	private static function format($string, $arguments)

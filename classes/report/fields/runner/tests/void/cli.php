@@ -51,7 +51,7 @@ class cli extends report\fields\runner\tests\void
 
 				foreach ($voidMethods as $voidMethod)
 				{
-					$string .= $this->methodPrompt . $this->methodColorizer->colorize(sprintf('%s::%s()', $voidMethod['class'], $voidMethod['method'])) .	PHP_EOL;
+					$string .= $this->methodPrompt . $this->methodColorizer->colorize(sprintf('%s::%s()', $voidMethod['class'], $voidMethod['method'])) . PHP_EOL;
 				}
 			}
 		}

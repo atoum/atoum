@@ -56,7 +56,7 @@ class cli extends outputs
 
 				foreach ($outputs as $output)
 				{
-					$string .= $this->methodPrompt .  sprintf('%s:', $this->methodColorizer->colorize(sprintf($this->locale->_('In %s::%s()'), $output['class'], $output['method']))) .	PHP_EOL;
+					$string .= $this->methodPrompt . sprintf('%s:', $this->methodColorizer->colorize(sprintf($this->locale->_('In %s::%s()'), $output['class'], $output['method']))) . PHP_EOL;
 
 					foreach (explode(PHP_EOL, rtrim($output['value'])) as $line)
 					{

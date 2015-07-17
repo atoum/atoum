@@ -87,7 +87,7 @@ class constant extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage ?: $this->_('%s is not equal to %s', $this, $this->getTypeOf($value)) .  PHP_EOL .  $this->diff->setExpected($this->value)->setActual($value));
+			$this->fail($failMessage ?: $this->_('%s is not equal to %s', $this, $this->getTypeOf($value)) . PHP_EOL . $this->diff->setExpected($this->value)->setActual($value));
 		}
 
 		return $this;

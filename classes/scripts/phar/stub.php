@@ -522,40 +522,6 @@ class stub extends scripts\runner
 		return ((is_array($versions) === false || isset($versions['current']) === false || isset($versions[$versions['current']]) === false) ? null : $versions);
 	}
 
-	protected static function extractFilesTo(\recursiveDirectoryIterator $fromPharDirectory, $toDirectory)
-	{
-		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
-		$pharName = \phar::running();
-
-		foreach (new \recursiveIteratorIterator($fromPharDirectory) as $pharFile)
-		{
-			$pharFilePath = ltrim(str_replace($pharName, '', $pharFile), DIRECTORY_SEPARATOR);
-
-			if (strpos($pharFilePath, $versions['current']) === 0)
-			{
-				$path = $directory . '/' . ltrim(substr($pharFilePath, strlen($versions['current'])), DIRECTORY_SEPARATOR);
-
-				$pathDirectory = dirname($path);
-
-				@mkdir($pathDirectory, 0777, true);
-
-				if (is_dir($pathDirectory) === false)
-				{
-					throw new exceptions\runtime('Unable to create directory \'' . $pathDirectory . '\'');
-				}
-
-				$data = file_get_contents($pharFile);
-
-				if (file_put_contents($path, $data) != strlen($data))
-				{
-					throw new exceptions\runtime('Unable to extract file \'' . $pharFilePath . '\' in directory \'' . $pathDirectory . '\'');
-				}
-			}
-		}
-
-		return $this;
-	}
-
 	protected static function getScriptFile($scriptName)
 	{
 		return atoum\directory . '/' . self::scriptsDirectory . '/' . $scriptName . self::scriptsExtension;

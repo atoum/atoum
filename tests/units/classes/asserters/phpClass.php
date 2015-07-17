@@ -275,6 +275,13 @@ class phpClass extends atoum\test
 				$this->calling($locale)->_ = $isNotSubclass = uniqid()
 			)
 
+			->if($this->calling($reflectionClass)->isSubclassOf->throw = $exception = new \reflectionException())
+			->then
+				->exception(function() use ($asserter) { $asserter->isSubclassOf(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Argument of ' . $this->getTestedClassName() . '::isSubClassOf() must be a class name')
+					->hasNestedException($exception)
+		
 			->if($this->calling($reflectionClass)->isSubclassOf = false)
 			->then
 				->exception(function() use ($asserter, & $parentClass) { $asserter->isSubclassOf($parentClass = uniqid()); })
@@ -333,6 +340,13 @@ class phpClass extends atoum\test
 					->setLocale($locale = new \mock\atoum\locale()),
 				$this->calling($locale)->_ = $notImplements = uniqid()
 			)
+
+			->if($this->calling($reflectionClass)->implementsInterface->throw = $exception = new \reflectionException())
+			->then
+				->exception(function() use ($asserter) { $asserter->hasInterface(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Argument of ' . $this->getTestedClassName() . '::hasInterface() must be an interface name')
+					->hasNestedException($exception)
 
 			->if($this->calling($reflectionClass)->implementsInterface = false)
 			->then

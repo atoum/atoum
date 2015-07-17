@@ -54,12 +54,12 @@ class autoloader
 			throw new \runtimeException('Unable to register autoloader \'' . get_class($this) . '\'');
 		}
 
-		if (static::$registeredAutoloaders === null)
+		if (self::$registeredAutoloaders === null)
 		{
-			static::$registeredAutoloaders = new \splObjectStorage();
+			self::$registeredAutoloaders = new \splObjectStorage();
 		}
 
-		static::$registeredAutoloaders->attach($this);
+		self::$registeredAutoloaders->attach($this);
 
 		return $this;
 	}
@@ -71,7 +71,7 @@ class autoloader
 			throw new \runtimeException('Unable to unregister');
 		}
 
-		static::$registeredAutoloaders->detach($this);
+		self::$registeredAutoloaders->detach($this);
 
 		return $this;
 	}
@@ -195,7 +195,30 @@ class autoloader
 	{
 		$class = strtolower($class);
 
-		$realClass = $this->resolveNamespaceAlias($this->resolveClassAlias($class));
+		if (static::exists($class) === false && ($path = $this->getPath($class)) !== null)
+		{
+			$realClass = $class;
+
+			require $path;
+		}
+		else
+		{
+			$realClass = $this->resolveClassAlias($class);
+
+			if (static::exists($realClass) === false && ($path = $this->getPath($realClass)) !== null)
+			{
+				require $path;
+			}
+			else
+			{
+				$realClass = $this->resolveNamespaceAlias($realClass);
+
+				if (static::exists($realClass) === false && ($path = $this->getPath($realClass)) !== null)
+				{
+					require $path;
+				}
+			}
+		}
 
 		if (static::exists($realClass) === false && ($path = $this->getPath($realClass)) !== null)
 		{
@@ -248,14 +271,14 @@ class autoloader
 
 	public static function getCacheFile()
 	{
-		return (static::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . sprintf(static::defaultCacheFileName, md5(__FILE__)));
+		return (self::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . sprintf(static::defaultCacheFileName, md5(__FILE__)));
 	}
 
 	public static function getRegisteredAutoloaders()
 	{
 		$registeredAutoloaders = array();
 
-		foreach (static::$registeredAutoloaders as $autoloader)
+		foreach (self::$registeredAutoloaders as $autoloader)
 		{
 			$registeredAutoloaders[] = $autoloader;
 		}

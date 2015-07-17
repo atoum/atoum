@@ -54,8 +54,8 @@ class phpArray extends atoum\test
 			->then
 				->object($this->testedInstance->object)->isTestedInstance
 				->object($this->testedInstance->getInnerAsserter())->isEqualTo($generator->object)
-				->object($this->testedInstance->object->string)->isTestedInstance
-				->object($this->testedInstance->getInnerAsserter())->isEqualTo($generator->string)
+				->object($this->testedInstance->object->phpString)->isTestedInstance
+				->object($this->testedInstance->getInnerAsserter())->isEqualTo($generator->phpString)
 				->object($this->testedInstance->error)->isInstanceOf($generator->error)
 				->variable($this->testedInstance->getInnerAsserter())->isNull()
 
@@ -72,11 +72,11 @@ class phpArray extends atoum\test
 			)
 			->then
 				->object($this->testedInstance->phpArray[0][0][1]->isEqualTo(array('foo', 'bar')))->isTestedInstance
-				->object($this->testedInstance->string[1]->isEqualTo('foobar'))->isTestedInstance
+				->object($this->testedInstance->phpString[1]->isEqualTo('foobar'))->isTestedInstance
 
 			->given($this->newTestedInstance->setWith(array($array1 = array('foo', 'bar'), $array2 = array(1, new \mock\object()))))
 			->then
-				->object($this->testedInstance->phpArray[0]->string[0]->isEqualTo('foo'))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
+				->object($this->testedInstance->phpArray[0]->phpString[0]->isEqualTo('foo'))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
 				->object($this->testedInstance->phpArray[1]->isEqualTo($array2))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
 		;
 	}
@@ -383,6 +383,11 @@ class phpArray extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($isEmpty)
 				->mock($locale)->call('_')->withArguments('%s is empty', $asserter)->once
+
+				->exception(function() use ($asserter) { $asserter->isNotEmpty; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($isEmpty)
+				->mock($locale)->call('_')->withArguments('%s is empty', $asserter)->twice
 
 				->exception(function() use ($asserter, & $failMessage) { $asserter->isNotEmpty($failMessage = uniqid()); })
 						->isInstanceOf('mageekguy\atoum\asserter\exception')

@@ -442,7 +442,10 @@ class variable extends atoum\test
 					->hasMessage($localizedMessage)
 				->mock($locale)->call('_')->withArguments('%s is not a reference to %s', $asserter, $type)->once
 
-			->if($asserter->setByReferenceWith($value = new \exception()))
+			->if(
+				$value = new \exception(),
+				$asserter->setByReferenceWith($value)
+			)
 			->then
 				->object($asserter->isReferenceTo($reference))->isIdenticalTo($asserter)
 

@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\tools\diffs
 ;
 
-class float extends asserters\integer
+class phpFloat extends asserters\integer
 {
 	public function setWith($value)
 	{
@@ -46,7 +46,7 @@ class float extends asserters\integer
 				case $offsetIsNaN === true:
 				case $offset / ($absCurrentValue + $absValue) >= $epsilon:
 				case $absCurrentValue * $absValue == 0 && $offset >= pow($epsilon, 2):
-					$this->fail(($failMessage ?: $this->_('%s is not nearly equal to %s with epsilon %s', $this, $this->getTypeOf($value), $epsilon)) .  PHP_EOL .  $this->diff($value));
+					$this->fail(($failMessage ?: $this->_('%s is not nearly equal to %s with epsilon %s', $this, $this->getTypeOf($value), $epsilon)) . PHP_EOL . $this->diff($value));
 			}
 		}
 

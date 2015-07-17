@@ -49,8 +49,6 @@ class phpClass extends atoum\asserter
 
 	public function getReflectionClass($class)
 	{
-		$reflectionClass = null;
-
 		if ($this->reflectionClassInjector === null)
 		{
 			$reflectionClass = new \reflectionClass($class);
@@ -137,13 +135,20 @@ class phpClass extends atoum\asserter
 
 	public function isSubClassOf($parent, $failMessage = null)
 	{
-		if ($this->classIsSet()->class->isSubClassOf($parent) == true)
+		try
 		{
-			$this->pass();
+			if ($this->classIsSet()->class->isSubClassOf($parent) == true)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage ?: $this->_('%s does not extend %s', $this, $parent));
+			}
 		}
-		else
+		catch (\reflectionException $exception)
 		{
-			$this->fail($failMessage ?: $this->_('%s does not extend %s', $this, $parent));
+			throw new exceptions\logic('Argument of ' . __METHOD__ . '() must be a class name', null, $exception);
 		}
 
 		return $this;
@@ -151,15 +156,22 @@ class phpClass extends atoum\asserter
 
 	public function hasInterface($interface, $failMessage = null)
 	{
-		if ($this->classIsSet()->class->implementsInterface($interface) === true)
+		try
 		{
-			$this->pass();
+			if ($this->classIsSet()->class->implementsInterface($interface) === true)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage ?: $this->_('%s does not implement %s', $this, $interface));
+			}
 		}
-		else
+		catch (\reflectionException $exception)
 		{
-			$this->fail($failMessage ?: $this->_('%s does not implement %s', $this, $interface));
+			throw new exceptions\logic('Argument of ' . __METHOD__ . '() must be an interface name', null, $exception);
 		}
-
+		
 		return $this;
 	}
 

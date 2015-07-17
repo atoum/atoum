@@ -59,7 +59,7 @@ class command
 			}
 		}
 
-		if (static::osIsWindows() === true)
+		if (self::osIsWindows() === true)
 		{
 			$command = '"' . $this->binaryPath . '"' . $command;
 		}

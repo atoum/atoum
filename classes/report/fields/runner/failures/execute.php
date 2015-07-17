@@ -14,6 +14,7 @@ use
 class execute extends runner\failures
 {
 	protected $command = '';
+	protected $adapter;
 
 	public function __construct($command)
 	{

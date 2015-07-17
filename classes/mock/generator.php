@@ -18,8 +18,9 @@ class generator
 	protected $overloadedMethods = array();
 	protected $orphanizedMethods = array();
 	protected $shuntParentClassCalls = false;
-	protected $allowUndefinedMethodsInInterface = true;
+	protected $allowUndefinedMethodsUsage = true;
 	protected $allIsInterface = false;
+	protected $testedClass = '';
 
 	private $defaultNamespace = null;
 
@@ -140,6 +141,13 @@ class generator
 		return $this;
 	}
 
+	public function testedClassIs($testedClass)
+	{
+		$this->testedClass = strtolower($testedClass);
+
+		return $this;
+	}
+
 	public function getMockedClassCode($class, $mockNamespace = null, $mockClass = null)
 	{
 		if (trim($class, '\\') == '' || rtrim($class, '\\') != $class)
@@ -180,6 +188,10 @@ class generator
 			$code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : $this->generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);
 		}
 
+		$this->shuntedMethods = $this->overloadedMethods = $this->orphanizedMethods = array();
+
+		$this->unshuntParentClassCalls();
+
 		return $code;
 	}
 
@@ -187,9 +199,7 @@ class generator
 	{
 		eval($this->getMockedClassCode($class, $mockNamespace, $mockClass));
 
-		$this->shuntedMethods = $this->overloadedMethods = $this->orphanizedMethods = array();
-
-		return $this->unshuntParentClassCalls();
+		return $this;
 	}
 
 	public function methodIsMockable(\reflectionMethod $method)
@@ -212,26 +222,45 @@ class generator
 
 	public function disallowUndefinedMethodInInterface()
 	{
-		$this->allowUndefinedMethodsInInterface = false;
+		return $this->disallowUndefinedMethodUsage();
+	}
+
+	public function disallowUndefinedMethodUsage()
+	{
+		$this->allowUndefinedMethodsUsage = false;
 
 		return $this;
 	}
 
 	public function allowUndefinedMethodInInterface()
 	{
-		$this->allowUndefinedMethodsInInterface = true;
+		return $this->allowUndefinedMethodUsage();
+	}
+
+	public function allowUndefinedMethodUsage()
+	{
+		$this->allowUndefinedMethodsUsage = true;
 
 		return $this;
 	}
 
 	public function undefinedMethodInInterfaceAreAllowed()
 	{
-		return $this->allowUndefinedMethodsInInterface === true;
+		return $this->undefinedMethodUsageIsAllowed();
+	}
+
+	public function undefinedMethodUsageIsAllowed()
+	{
+		return $this->allowUndefinedMethodsUsage === true;
 	}
 
 	protected function generateClassMethodCode(\reflectionClass $class)
 	{
-		if ($this->allIsInterface)
+		$mockedMethods = '';
+		$mockedMethodNames = array();
+		$className = $class->getName();
+
+		if ($this->allIsInterface && strtolower($className) != $this->testedClass)
 		{
 			foreach ($class->getMethods() as $method)
 			{
@@ -241,10 +270,6 @@ class generator
 				}
 			}
 		}
-
-		$mockedMethods = '';
-		$mockedMethodNames = array();
-		$className = $class->getName();
 
 		$constructor = $class->getConstructor();
 
@@ -342,7 +367,7 @@ class generator
 
 			$mockedMethods .= "\t" . '}' . PHP_EOL;
 
-			$mockedMethodNames[] = $constructorName;
+			$mockedMethodNames[] = strtolower($constructorName);
 		}
 
 		foreach ($class->getMethods() as $method)
@@ -360,7 +385,7 @@ class generator
 				}
 				else
 				{
-					$mockedMethods .= "\t" . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')';
+					$mockedMethods .= "\t" . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . $this->getReturnType($method);
 				}
 
 				$mockedMethods .= PHP_EOL . "\t" . '{' . PHP_EOL;
@@ -413,7 +438,7 @@ class generator
 			}
 		}
 
-		if ($class->isAbstract() === true && in_array('__call', $mockedMethodNames) === false)
+		if ($class->isAbstract() && $this->allowUndefinedMethodsUsage === true && in_array('__call', $mockedMethodNames) === false)
 		{
 			$mockedMethods .= self::generate__call();
 			$mockedMethodNames[] = '__call';
@@ -467,7 +492,7 @@ class generator
 						$hasConstructor = true;
 					}
 
-					$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method, $isConstructor) . ')' . PHP_EOL;
+					$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method, $isConstructor) . ')' . $this->getReturnType($method) . PHP_EOL;
 					$methodCode .= "\t" . '{' . PHP_EOL;
 
 					if (self::hasVariadic($method) === true)
@@ -537,7 +562,7 @@ class generator
 			$mockedMethodNames[] = '__construct';
 		}
 
-		if ($this->allowUndefinedMethodsInInterface === true)
+		if ($this->allowUndefinedMethodsUsage === true)
 		{
 			$mockedMethods .= self::generate__call();
 			$mockedMethodNames[] = '__call';
@@ -575,6 +600,18 @@ class generator
 		$lastAntiSlash = strrpos($class, '\\');
 
 		return '\\' . $this->getDefaultNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
+	}
+
+	protected function getReturnType(\reflectionMethod $method)
+	{
+		$returnTypeCode = '';
+
+		if($method->getName() !== '__construct' && method_exists($method, 'hasReturnType') && $method->hasReturnType())
+		{
+			$returnTypeCode = ': ' . $method->getReturnType();
+		}
+
+		return $returnTypeCode;
 	}
 
 	protected function getParameters(\reflectionMethod $method)
@@ -653,6 +690,9 @@ class generator
 
 			case ($class = $parameter->getClass()):
 				return '\\' . $class->getName() . ' ';
+
+			case method_exists($parameter, 'hasType') && $parameter->hasType():
+				return $parameter->getType() . ' ';
 
 			default:
 				return '';
@@ -780,77 +820,82 @@ class generator
 
 	protected static function methodNameIsReservedWord(\reflectionMethod $method)
 	{
-		switch ($method->getName())
-		{
-			case '__halt_compiler':
-			case 'abstract':
-			case 'and':
-			case 'array':
-			case 'as':
-			case 'break':
-			case 'callable':
-			case 'case':
-			case 'catch':
-			case 'class':
-			case 'clone':
-			case 'const':
-			case 'continue':
-			case 'declare':
-			case 'default':
-			case 'die':
-			case 'do':
-			case 'echo':
-			case 'else':
-			case 'elseif':
-			case 'empty':
-			case 'enddeclare':
-			case 'endfor':
-			case 'endforeach':
-			case 'endif':
-			case 'endswitch':
-			case 'endwhile':
-			case 'eval':
-			case 'exit':
-			case 'extends':
-			case 'final':
-			case 'for':
-			case 'foreach':
-			case 'function':
-			case 'global':
-			case 'goto':
-			case 'if':
-			case 'implements':
-			case 'include':
-			case 'include_once':
-			case 'instanceof':
-			case 'insteadof':
-			case 'interface':
-			case 'isset':
-			case 'list':
-			case 'namespace':
-			case 'new':
-			case 'or':
-			case 'print':
-			case 'private':
-			case 'protected':
-			case 'public':
-			case 'require':
-			case 'require_once':
-			case 'return':
-			case 'static':
-			case 'switch':
-			case 'throw':
-			case 'trait':
-			case 'try':
-			case 'unset':
-			case 'use':
-			case 'var':
-			case 'while':
-			case 'xor':
-				return true;
+		return in_array($method->getName(), self::getMethodNameReservedWordByVersion(), true);
+	}
 
-			default:
-				return false;
+	protected static function getMethodNameReservedWordByVersion()
+	{
+		if(PHP_MAJOR_VERSION >= 7)
+		{
+			return array('__halt_compiler');
 		}
+
+		return array(
+			'__halt_compiler',
+			'abstract',
+			'and',
+			'array',
+			'as',
+			'break',
+			'callable',
+			'case',
+			'catch',
+			'class',
+			'clone',
+			'const',
+			'continue',
+			'declare',
+			'default',
+			'die',
+			'do',
+			'echo',
+			'else',
+			'elseif',
+			'empty',
+			'enddeclare',
+			'endfor',
+			'endforeach',
+			'endif',
+			'endswitch',
+			'endwhile',
+			'eval',
+			'exit',
+			'extends',
+			'final',
+			'for',
+			'foreach',
+			'function',
+			'global',
+			'goto',
+			'if',
+			'implements',
+			'include',
+			'include_once',
+			'instanceof',
+			'insteadof',
+			'interface',
+			'isset',
+			'list',
+			'namespace',
+			'new',
+			'or',
+			'print',
+			'private',
+			'protected',
+			'public',
+			'require',
+			'require_once',
+			'return',
+			'static',
+			'switch',
+			'throw',
+			'trait',
+			'try',
+			'unset',
+			'use',
+			'var',
+			'while',
+			'xor',
+		);
 	}
 }

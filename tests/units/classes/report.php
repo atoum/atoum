@@ -111,4 +111,64 @@ class report extends atoum\test
 				->boolean($report->isOverridableBy($otherReport))->isTrue
 		;
 	}
+
+	public function testHandleEvent()
+	{
+		$this
+			->given(
+				$this->newTestedInstance,
+				$observable = new \mock\mageekguy\atoum\observable,
+				$event = uniqid()
+			)
+			->then
+				->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
+			->given($field = new \mock\mageekguy\atoum\report\field)
+			->if($this->testedInstance->addField($field))
+			->then
+				->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
+				->mock($field)
+					->call('handleEvent')->withArguments($event, $observable)->once
+			->given($otherField = new \mock\mageekguy\atoum\report\field)
+			->if($this->testedInstance->addField($otherField))
+			->then
+				->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
+				->mock($field)
+					->call('handleEvent')->withArguments($event, $observable)->twice
+				->mock($otherField)
+					->call('handleEvent')->withArguments($event, $observable)->once
+		;
+	}
+
+	public function test__toString()
+	{
+		$this
+			->given(
+				$this->newTestedInstance,
+				$observable = new \mock\mageekguy\atoum\observable,
+				$event = uniqid()
+			)
+			->then
+				->castToString($this->testedInstance)->isEmpty
+			->given(
+				$field = new \mock\mageekguy\atoum\report\field,
+				$this->calling($field)->__toString = $string = uniqid()
+			)
+			->if($this->testedInstance->addField($field))
+			->then
+				->castToString($this->testedInstance)->isEmpty
+			->if($this->testedInstance->handleEvent($event, $observable))
+			->then
+				->castToString($this->testedInstance)->isEqualTo($string)
+			->given(
+				$otherField = new \mock\mageekguy\atoum\report\field,
+				$this->calling($otherField)->__toString = $otherString = uniqid()
+			)
+			->if(
+				$this->testedInstance->addField($otherField),
+				$this->testedInstance->handleEvent($event, $observable)
+			)
+			->then
+				->castToString($this->testedInstance)->isEqualTo($string . $otherString)
+		;
+	}
 }

@@ -21,20 +21,20 @@ class error extends atoum\asserter
 		$this->setScore($score);
 	}
 
-    public function __get($asserter)
-    {
-        switch (strtolower($asserter))
-        {
-            case 'exists':
-            case 'notexists':
-            case 'withanytype':
-            case 'withanymessage':
-                return $this->{$asserter}();
+	public function __get($asserter)
+	{
+		switch (strtolower($asserter))
+		{
+			case 'exists':
+			case 'notexists':
+			case 'withanytype':
+			case 'withanymessage':
+				return $this->{$asserter}();
 
-            default:
-                return parent::__get($asserter);
-        }
-    }
+			default:
+				return parent::__get($asserter);
+		}
+	}
 
 	public function setWithTest(atoum\test $test)
 	{
@@ -120,8 +120,6 @@ class error extends atoum\asserter
 		}
 		else
 		{
-			$failReason = '';
-
 			switch (true)
 			{
 				case $this->type === null && $this->message === null:

@@ -21,6 +21,9 @@ class clover extends atoum\reports\asynchronous
 	protected $coveredLoc = 0;
 	protected $methods = 0;
 	protected $coveredMethods = 0;
+	protected $branches = 0;
+	protected $coveredBranches = 0;
+	protected $paths = 0;
 	protected $classes = 0;
 	protected $package = '';
 
@@ -117,7 +120,7 @@ class clover extends atoum\reports\asynchronous
 
 		foreach ($coverage->getClasses() as $class => $file)
 		{
-			$package->appendChild($this->makeFileElement($document, $file, $class, $coverage->getCoverageForClass($class)));
+			$package->appendChild($this->makeFileElement($document, $file, $class, $coverage->getCoverageForClass($class), $coverage->getBranchesCoverageForClass($class), $coverage->getPathsCoverageForClass($class)));
 		}
 
 		$package->appendChild($this->makePackageMetricsElement($document, sizeof($coverage->getClasses())));
@@ -127,72 +130,91 @@ class clover extends atoum\reports\asynchronous
 
 	protected function makePackageMetricsElement(\DOMDocument $document, $files)
 	{
-		$metrics = $this->makeFileMetricsElement($document, $this->loc, $this->coveredLoc, $this->methods, $this->coveredMethods, $files);
+		$metrics = $this->makeFileMetricsElement($document, $this->loc, $this->coveredLoc, $this->methods, $this->coveredMethods, $this->classes, $this->branches, $this->coveredBranches, $this->paths);
 
 		$metrics->setAttribute('files', $files);
 
 		return $metrics;
 	}
 
-	protected function makeFileElement(\DOMDocument $document, $filename, $class, array $coverage)
+	protected function makeFileElement(\DOMDocument $document, $filename, $class, array $coverage, array $branches, array $paths)
 	{
 		$file = $document->createElement('file');
 
 		$file->setAttribute('name', basename($filename));
 		$file->setAttribute('path', $filename);
 
-		$methods = count($coverage);
+		$methods = sizeof($coverage);
 		$coveredMethods = 0;
-		$totalLines = 0;
-		$coveredLines = 0;
+		$totalLines = $coveredLines = 0;
+		$totalBranches = $coveredBranches = 0;
+		$totalPaths = 0;
 
-		foreach ($coverage as $lines)
+		foreach ($coverage as $method => $lines)
 		{
-			if (sizeof($lines) > 0)
-			{
-				foreach ($lines as $lineNumber => $cover)
-				{
-					if ($cover >= -1)
-					{
-						$totalLines++;
-					}
+			$totalMethodLines = $coveredMethodLines = 0;
 
-					if ($cover === 1)
-					{
-						$coveredLines++;
-						$file->appendChild($this->makeLineElement($document, $lineNumber));
-					} else {
-						if ($cover !== -2)
-						{
-							$file->appendChild($this->makeLineElement($document, $lineNumber, 0));
-						}
-					}
+			if (isset($branches[$method]))
+			{
+				$totalBranches += sizeof($branches[$method]);
+				$coveredBranches += sizeof(array_filter($branches[$method], function(array $branch) { return $branch['hit'] === 1; }));
+			}
+
+			if (isset($paths[$method]))
+			{
+				$totalPaths += sizeof($paths[$method]);
+			}
+
+			foreach ($lines as $lineNumber => $cover)
+			{
+				if ($cover >= -1)
+				{
+					$totalMethodLines++;
 				}
 
-				if ($coveredLines === $totalLines)
+				if ($cover === 1)
 				{
-					++$coveredMethods;
+					$coveredMethodLines++;
+					$file->appendChild($this->makeLineElement($document, $lineNumber));
+				}
+				else
+				{
+					if ($cover !== -2)
+					{
+						$file->appendChild($this->makeLineElement($document, $lineNumber, 0));
+					}
 				}
 			}
+
+			if ($coveredMethodLines === $totalMethodLines)
+			{
+				++$coveredMethods;
+			}
+
+			$totalLines += $totalMethodLines;
+			$coveredLines += $coveredMethodLines;
 		}
 
 		$this
 			->addLoc($totalLines)
 			->addCoveredLoc($coveredLines)
+			->addClasses(1)
 			->addMethod($methods)
 			->addCoveredMethod($coveredMethods)
-			->addClasses(1)
+			->addBranches($totalBranches)
+			->addCoveredBranches($coveredBranches)
+			->addPaths($totalPaths)
 		;
 
-		$file->appendChild($this->makeClassElement($document, $class, $coverage));
-		$file->appendChild($this->makeFileMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods, 1));
+		$file->appendChild($this->makeClassElement($document, $class, $coverage, $branches, $paths));
+		$file->appendChild($this->makeFileMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods, 1, $totalBranches, $coveredBranches, $totalPaths));
 
 		return $file;
 	}
 
-	protected function makeFileMetricsElement(\DOMDocument $document, $loc, $cloc, $methods, $coveredMethods, $classes)
+	protected function makeFileMetricsElement(\DOMDocument $document, $loc, $cloc, $methods, $coveredMethods, $classes, $branches = 0, $coveredBranches = 0, $complexity = 0)
 	{
-		$metrics = $this->makeClassMetricsElement($document, $loc, $cloc, $methods, $coveredMethods);
+		$metrics = $this->makeClassMetricsElement($document, $loc, $cloc, $methods, $coveredMethods, $branches, $coveredBranches, $complexity);
 
 		$metrics->setAttribute('classes', $classes);
 		$metrics->setAttribute('loc', $loc);
@@ -201,22 +223,29 @@ class clover extends atoum\reports\asynchronous
 		return $metrics;
 	}
 
-	protected function makeClassElement(\DOMDocument $document, $classname, array $coverage)
+	protected function makeClassElement(\DOMDocument $document, $classname, array $coverage, array $branches, array $paths)
 	{
 		$class = $document->createElement('class');
 
 		$class->setAttribute('name', basename(str_replace('\\', DIRECTORY_SEPARATOR, $classname)));
 
-		$methods = count($coverage);
+		$methods = sizeof($coverage);
 		$coveredMethods = 0;
-		$totalLines = 0;
-		$coveredLines = 0;
+		$totalLines = $coveredLines = 0;
+		$totalBranches = $coveredBranches = 0;
+		$totalPaths = 0;
 
-		foreach ($coverage as $lines)
+		foreach ($coverage as $method => $lines)
 		{
-			if (sizeof($lines) > 0)
+			if (isset($branches[$method]))
 			{
-				++$coveredMethods;
+				$totalBranches += sizeof($branches[$method]);
+				$coveredBranches += sizeof(array_filter($branches[$method], function(array $branch) { return $branch['hit'] === 1; }));
+			}
+
+			if (isset($paths[$method]))
+			{
+				$totalPaths += sizeof($paths[$method]);
 			}
 
 			foreach ($lines as $cover)
@@ -231,26 +260,31 @@ class clover extends atoum\reports\asynchronous
 					$coveredLines++;
 				}
 			}
+
+			if ($totalLines === $coveredLines)
+			{
+				++$coveredMethods;
+			}
 		}
 
-		$class->appendChild($this->makeClassMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods));
+		$class->appendChild($this->makeClassMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods, $totalBranches, $coveredBranches, $totalPaths));
 
 		return $class;
 	}
 
-	protected function makeClassMetricsElement(\DOMDocument $document, $loc, $cloc, $methods, $cmethods)
+	protected function makeClassMetricsElement(\DOMDocument $document, $loc, $coveredLines, $methods, $coveredMethods, $branches = 0, $coveredBranches = 0, $complexity = 0)
 	{
 		$metrics = $document->createElement('metrics');
 
-		$metrics->setAttribute('complexity', 0);
-		$metrics->setAttribute('elements', $loc);
-		$metrics->setAttribute('coveredelements', $cloc);
-		$metrics->setAttribute('conditionals', 0);
-		$metrics->setAttribute('coveredconditionals', 0);
+		$metrics->setAttribute('complexity', $complexity);
+		$metrics->setAttribute('elements', $loc + $methods + $branches);
+		$metrics->setAttribute('coveredelements', $coveredLines + $coveredMethods + $coveredBranches);
+		$metrics->setAttribute('conditionals', $branches);
+		$metrics->setAttribute('coveredconditionals', $coveredBranches);
 		$metrics->setAttribute('statements', $loc);
-		$metrics->setAttribute('coveredstatements', $cloc);
+		$metrics->setAttribute('coveredstatements', $coveredLines);
 		$metrics->setAttribute('methods', $methods);
-		$metrics->setAttribute('coveredmethods', $cmethods);
+		$metrics->setAttribute('coveredmethods', $coveredMethods);
 		$metrics->setAttribute('testduration', 0);
 		$metrics->setAttribute('testfailures', 0);
 		$metrics->setAttribute('testpasses', 0);
@@ -300,6 +334,27 @@ class clover extends atoum\reports\asynchronous
 	protected function addCoveredMethod($count)
 	{
 		$this->coveredMethods += $count;
+
+		return $this;
+	}
+
+	protected function addBranches($count)
+	{
+		$this->branches += $count;
+
+		return $this;
+	}
+
+	protected function addCoveredBranches($count)
+	{
+		$this->coveredBranches += $count;
+
+		return $this;
+	}
+
+	protected function addPaths($count)
+	{
+		$this->paths += $count;
 
 		return $this;
 	}

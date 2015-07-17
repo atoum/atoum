@@ -293,12 +293,12 @@ class builder extends atoum\script\configurable
 
 			if ($this->reportTitle !== null)
 			{
-				$this->php->addArgument('-drt',  sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()));
+				$this->php->addArgument('-drt', sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()));
 			}
 
 			foreach ($this->runnerConfigurationFiles as $runnerConfigurationFile)
 			{
-				$this->php->addArgument('-c',  $runnerConfigurationFile);
+				$this->php->addArgument('-c', $runnerConfigurationFile);
 			}
 
 			try
@@ -660,8 +660,6 @@ class builder extends atoum\script\configurable
 
 	protected function doRun()
 	{
-		$alreadyRun = false;
-
 		$runFile = $this->getRunFile();
 
 		$pid = trim(@$this->adapter->file_get_contents($runFile));

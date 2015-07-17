@@ -107,7 +107,7 @@ class coveralls extends atoum\reports\asynchronous
 		{
 			return parent::handleEvent($event, $observable);
 		}
-		catch(atoum\writers\http\exception $exception)
+		catch (atoum\writers\http\exception $exception)
 		{
 			return $this;
 		}
@@ -174,7 +174,7 @@ class coveralls extends atoum\reports\asynchronous
 	{
 		$cover = array();
 
-		foreach($coverage as $method)
+		foreach ($coverage as $method)
 		{
 			foreach ($method as $number => $line)
 			{

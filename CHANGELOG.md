@@ -1,8 +1,40 @@
 # `dev-master`
 
-* #430 Add `atoum\mock\generator::allIsInterface()` to definitely disable all parent classes' behaviors in mocks (@mageekguy)
-* #427 `atoum\asserters\mock::receive` is an alias to `atoum\asserters\mock::call` (@mageekguy)
-* #420 `atoum\test::beforeTestMethod` is called before the tested class is loaded (@mageekguy)
+* [#452](https://github.com/atoum/atoum/issues/452) Hide classes and methods coverage details in CLI report ([@jubianchi])
+* [#474](https://github.com/atoum/atoum/pull/474) Add the method return type and parameter type in the mock generator ([@guillaumeDievart])
+* [#470](https://github.com/atoum/atoum/pull/470) Add `isNotEmpty` asserter on `array` ([@metalaka])
+
+# 2.1.0 - 2015-05-08 
+
+* [#459](https://github.com/atoum/atoum/issues/459) Support branches and paths coverage with [Xdebug](http://xdebug.org/) 2.3 ([@jubianchi])
+* [#436](https://github.com/atoum/atoum/issues/436) Support old-style constructors in mocks ([@jubianchi])
+* [#453](https://github.com/atoum/atoum/issues/453) `phpClass` asserter will throw atoum's logic exceptions instead of native reflection exceptions ([@jubianchi])
+* [#340](https://github.com/atoum/atoum/issues/340) Fixed an error when using `DebugClassLoader` autoloader and [atoum-bundle](https://github.com/atoum/AtoumBundle) ([@jubianchi])
+* [#454](https://github.com/atoum/atoum/pull/454) Rename asserters classes for PHP7 ([@jubianchi])
+* [#457](https://github.com/atoum/atoum/pull/457) Removed usage of die in deprecated methods ([@jubianchi])
+* [#442](https://github.com/atoum/atoum/issues/442) [#444](https://github.com/atoum/atoum/pull/444) Properly report skipped method due to a missing extension ([@jubianchi])
+* [#441](https://github.com/atoum/atoum/pull/441) Add PHP 7.0 in the build matrix ([@jubianchi])
+* [#399](https://github.com/atoum/atoum/pull/399) Add the `let` assertion handler ([@hywan])
+* [#443](https://github.com/atoum/atoum/pull/443) Autoloader should resolve classes step by step ([@jubianchi])
+
+# 2.0.1 - 2015-02-27
+
+* [#440](https://github.com/atoum/atoum/pull/440) `--configurations` option should be handled first ([@jubianchi])
+* [#439](https://github.com/atoum/atoum/pull/439) Since atoum is 2.*, branch-alias must follow ([@hywan])
+* [#437](https://github.com/atoum/atoum/pull/437) Autoloader should not try to resolve alias if requested class exists ([@jubianchi])
+* Generalize method call checking in mock ([@mageekguy])
+* [#435](https://github.com/atoum/atoum/pull/435) Partially revert BC break introduced in [#420](https://github.com/atoum/atoum/pull/420) ([@mageekguy])
+
+# 2.0.0 - 2015-02-13
+
+## BC break updates
+* [#420](https://github.com/atoum/atoum/pull/420) `atoum\test::beforeTestMethod` is called before the tested class is loaded (@mageekguy)
+
+## Other updates
+* [#431](https://github.com/atoum/atoum/pull/431) Tested class should not be mock as an interface. (@mageekguy)
+* [#430](https://github.com/atoum/atoum/pull/430) Add `atoum\mock\generator::allIsInterface()` to definitely disable all parent classes' behaviors in mocks (@mageekguy)
+* [#427](https://github.com/atoum/atoum/pull/427) `atoum\asserters\mock::receive` is an alias to `atoum\asserters\mock::call` (@mageekguy)
+
 
 # 1.2.2 - 2015-01-12
 
@@ -57,3 +89,9 @@
 * Add `CHANGELOG.md`
 
 # 0.0.1 - 2013-11-05
+
+[@mageekguy]: https://github.com/mageekguy
+[@jubianchi]: https://github.com/jubianchi
+[@hywan]: https://github.com/hywan
+[@metalaka]: https://github.com/metalaka
+[@GuillaumeDievart]: https://github.com/GuillaumeDievart

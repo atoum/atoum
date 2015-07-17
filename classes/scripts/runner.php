@@ -337,6 +337,13 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
+	public function enableBranchesAndPathsCoverage()
+	{
+		$this->runner->enableBranchesAndPathsCoverage();
+
+		return $this;
+	}
+
 	public function excludeNamespacesFromCoverage(array $namespaces)
 	{
 		$coverage = $this->runner->getCoverage();
@@ -790,6 +797,19 @@ class runner extends atoum\script\configurable
 					array('-nccfm', '--no-code-coverage-for-methods'),
 					'<method>...',
 					$this->locale->_('Disable code coverage for methods <method>')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $empty) {
+						if ($empty)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$script->enableBranchesAndPathsCoverage();
+					},
+					array('-ebpc', '--enable-branch-and-path-coverage'),
+					null,
+					$this->locale->_('Enable branch and path coverage')
 				)
 			->addArgumentHandler(
 					function($script, $argument, $files) {

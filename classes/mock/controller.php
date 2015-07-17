@@ -154,7 +154,7 @@ class controller extends test\adapter
 
 		foreach ($this->mockMethods as $method)
 		{
-			$invoker = $this->{$method}->setMock($mock);
+			$this->{$method}->setMock($mock);
 
 			if ($this->autoBind === true)
 			{

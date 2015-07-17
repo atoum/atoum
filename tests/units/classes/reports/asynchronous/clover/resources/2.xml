@@ -9,9 +9,9 @@
         <line num="7" type="stmt" complexity="0" count="1" falsecount="0" truecount="0" signature="" testduration="0" testsuccess="0"/>
         <line num="8" type="stmt" complexity="0" count="1" falsecount="0" truecount="0" signature="" testduration="0" testsuccess="0"/>
         <class name="bar">
-          <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="1" coveredmethods="1" testduration="0" testfailures="0" testpasses="0" testruns="0"/>
+          <metrics complexity="0" elements="6" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="1" coveredmethods="0" testduration="0" testfailures="0" testpasses="0" testruns="0"/>
         </class>
-        <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="1" coveredmethods="0" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="1" loc="5" ncloc="5"/>
+        <metrics complexity="0" elements="6" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="1" coveredmethods="0" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="1" loc="5" ncloc="5"/>
       </file>
       <file name="foo.php" path="bar/foo.php">
         <class name="foo">
@@ -19,8 +19,8 @@
         </class>
         <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="1" loc="0" ncloc="0"/>
       </file>
-      <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="1" coveredmethods="0" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="2" loc="5" ncloc="5" files="2"/>
+      <metrics complexity="0" elements="6" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="1" coveredmethods="0" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="2" loc="5" ncloc="5" files="2"/>
     </package>
-    <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="1" coveredmethods="0" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="2" loc="5" ncloc="5" files="2" packages="1"/>
+    <metrics complexity="0" elements="6" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="1" coveredmethods="0" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="2" loc="5" ncloc="5" files="2" packages="1"/>
   </project>
 </coverage>

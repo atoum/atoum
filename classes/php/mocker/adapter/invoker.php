@@ -2,9 +2,7 @@
 
 namespace mageekguy\atoum\php\mocker\adapter;
 
-use
-	atoum\test\adapter
-;
+use mageekguy\atoum\test\adapter;
 
 class invoker extends adapter\invoker
 {

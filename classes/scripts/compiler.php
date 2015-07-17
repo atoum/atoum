@@ -12,6 +12,7 @@ class compiler extends atoum\script
 {
 	protected $compile = true;
 	protected $srcDirectory = null;
+	protected $destinationDirectory = null;
 	protected $destinationFile = null;
 	protected $bootstrapFile = null;
 

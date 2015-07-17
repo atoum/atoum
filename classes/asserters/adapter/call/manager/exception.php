@@ -2,6 +2,6 @@
 
 namespace mageekguy\atoum\asserters\adapter\call\manager;
 
-use atoum;
+use mageekguy\atoum;
 
 class exception extends \runtimeException implements atoum\exception {}

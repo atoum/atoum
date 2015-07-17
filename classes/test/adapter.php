@@ -172,7 +172,7 @@ class adapter extends atoum\adapter
 			$unreferencedArguments[] = $argument;
 		}
 
-		$this->calls[] = $call = $this->buildCall($functionName, $unreferencedArguments);
+		$this->calls[] = $this->buildCall($functionName, $unreferencedArguments);
 
 		return $this;
 	}

@@ -183,8 +183,6 @@ class html extends report\fields\runner\coverage\cli
 							$methodLines[$reflectedMethod->getStartLine()] = $reflectedMethodName;
 						}
 
-						$currentMethod = null;
-
 						for ($currentMethod = null, $lineNumber = 1, $line = $this->adapter->fgets($srcFile); $line !== false; $lineNumber++, $line = $this->adapter->fgets($srcFile))
 						{
 							if (isset($methodLines[$lineNumber]) === true)
@@ -276,8 +274,6 @@ class html extends report\fields\runner\coverage\cli
 
 	public function getReflectionClass($class)
 	{
-		$reflectionClass = null;
-
 		if ($this->reflectionClassInjector === null)
 		{
 			$reflectionClass = new \reflectionClass($class);
