@@ -240,6 +240,12 @@
 			return zoom(node == d.parent ? root : d.parent);
 		} else if (codeUrl) {
 			return window.location.href = codeUrl + d.path;
+		} else if (codeUrl === '') {
+			var urlBase = window.location.href;
+			if (urlBase.substr(urlBase.length - 1) !== '/') {
+				urlBase = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+			}
+			return window.location.href = urlBase + d.path;
 		}
 	};
 
