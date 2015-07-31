@@ -1,8 +1,11 @@
 # `dev-master`
 
-* [#452](https://github.com/atoum/atoum/issues/452) Hide classes and methods coverage details in CLI report ([@jubianchi])
+# 2.2.0 - 2015-07-31 
+
+* [#467](https://github.com/atoum/atoum/pull/467) Hide classes and methods coverage details in CLI report ([@jubianchi])
 * [#474](https://github.com/atoum/atoum/pull/474) Add the method return type and parameter type in the mock generator ([@guillaumeDievart])
 * [#470](https://github.com/atoum/atoum/pull/470) Add `isNotEmpty` asserter on `array` ([@metalaka])
+* [#476](https://github.com/atoum/atoum/pull/476) Add relative url root choice for code coverage report ([@n-couet])
 
 # 2.1.0 - 2015-05-08 
 
