@@ -9,6 +9,35 @@ use
 
 class integer extends asserters\variable
 {
+	public function __call($method, $arguments)
+	{
+		$assertion = null;
+
+		switch ($method)
+		{
+			case '<=':
+				$assertion = 'isLessThanOrEqualTo';
+				break;
+
+			case '<':
+				$assertion = 'isLessThan';
+				break;
+
+			case '>=':
+				$assertion = 'isGreaterThanOrEqualTo';
+				break;
+
+			case '>':
+				$assertion = 'isGreaterThan';
+				break;
+
+			default:
+				return parent::__call($method, $arguments);
+		}
+
+		return call_user_func_array(array($this, $assertion), $arguments);
+	}
+
 	public function __get($property)
 	{
 		switch (strtolower($property))

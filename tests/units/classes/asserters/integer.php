@@ -71,6 +71,7 @@ class integer extends atoum\test
 			->if($asserter->setWith($value = rand(1, PHP_INT_MAX)))
 			->then
 				->object($asserter->isEqualTo($value))->isIdenticalTo($asserter)
+				->object($asserter->{'=='}($value))->isIdenticalTo($asserter)
 
 			->if($this->testedInstance
 					->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
@@ -111,6 +112,7 @@ class integer extends atoum\test
 			->if($asserter->setWith(PHP_INT_MAX))
 			->then
 				->object($asserter->isGreaterThan(0))->isIdenticalTo($asserter)
+				->object($asserter->{'>'}(0))->isIdenticalTo($asserter)
 
 			->if($asserter
 					->setWith(- PHP_INT_MAX)
@@ -146,6 +148,7 @@ class integer extends atoum\test
 			->then
 				->object($asserter->isGreaterThanOrEqualTo(0))->isIdenticalTo($asserter)
 				->object($asserter->isGreaterThanOrEqualTo(PHP_INT_MAX))->isIdenticalTo($asserter)
+				->object($asserter->{'>='}(PHP_INT_MAX))->isIdenticalTo($asserter)
 
 			->if($asserter
 					->setWith(- PHP_INT_MAX)
@@ -180,6 +183,7 @@ class integer extends atoum\test
 			->if($asserter->setWith(0))
 			->then
 				->object($asserter->isLessThan(PHP_INT_MAX))->isIdenticalTo($asserter)
+				->object($asserter->{'<'}(PHP_INT_MAX))->isIdenticalTo($asserter)
 
 			->if($asserter
 					->setWith(PHP_INT_MAX)
@@ -216,6 +220,7 @@ class integer extends atoum\test
 			->then
 				->object($asserter->isLessThanOrEqualTo(PHP_INT_MAX))->isIdenticalTo($asserter)
 				->object($asserter->isLessThanOrEqualTo(0))->isIdenticalTo($asserter)
+				->object($asserter->{'<='}(0))->isIdenticalTo($asserter)
 
 			->if($asserter
 					->setWith(PHP_INT_MAX)

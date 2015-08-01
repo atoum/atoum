@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#384](https://github.com/atoum/atoum/pull/384) Short syntax for base assertions ([@jubianchi])
+
 # 2.2.0 - 2015-07-31 
 
 * [#467](https://github.com/atoum/atoum/pull/467) Hide classes and methods coverage details in CLI report ([@jubianchi])
