@@ -135,6 +135,23 @@ class object extends asserters\variable
 		return $this->valueIsSet()->testedInstanceIsSet()->isInstanceOf($this->test->getTestedClassName(), $failMessage);
 	}
 
+	public function isEqualTo($value, $failMessage = null)
+	{
+		$object = $this->valueIsSet()->value;
+
+		$identities = array(self::getIdentity($value));
+		$actual = self::removeRecursion($object, $identities);
+
+		$identities = array(self::getIdentity($object));
+		$expected = self::removeRecursion($value, $identities);
+
+		$this->setWith($actual);
+		$result = parent::isEqualTo($expected, $failMessage);
+		$this->setWith($object);
+
+		return $result;
+	}
+
 	public function toString()
 	{
 		return $this->generator->castToString($this->valueIsSet()->value);
@@ -173,5 +190,109 @@ class object extends asserters\variable
 	protected static function classExists($value)
 	{
 		return (class_exists($value) === true || interface_exists($value) === true);
+	}
+
+	protected static function removeRecursion($mixed, & $identities = array(), & $recusrsion = false)
+	{
+		if (@json_encode($mixed))
+		{
+			return $mixed;
+		}
+
+		if (is_array($mixed))
+		{
+			return self::cleanClosures($mixed);
+		}
+
+		$identity = self::getIdentity($mixed);
+
+		if (in_array($identity, $identities))
+		{
+			$recusrsion = true;
+
+			return (object) $identity;
+		}
+
+		$identities[] = $identity;
+		$properties = array();
+		$reflection = new \reflectionObject($mixed);
+
+		foreach ($reflection->getProperties() as $property)
+		{
+			$access = $property->isPublic();
+			$property->setAccessible(true);
+
+			$value = $property->getValue($mixed);
+
+			if (is_object($value))
+			{
+				$value = self::removeRecursion($value, $identities, $recusrsion);
+			}
+
+			if (is_array($value))
+			{
+				$value = self::removeRecursion($value, $identities, $recusrsion);
+			}
+
+			$properties[$property->getName()] = $value;
+
+			$property->setAccessible($access);
+		}
+
+		if ($recusrsion === false)
+		{
+			return $mixed;
+		}
+
+		return (object) $properties;
+	}
+
+	protected static function getIdentity($mixed)
+	{
+		return md5(serialize(self::cleanClosures($mixed)));
+	}
+
+	protected static function cleanClosures($mixed)
+	{
+		$values = array();
+
+		if (is_object($mixed))
+		{
+			$reflection = new \reflectionObject($mixed);
+
+			foreach ($reflection->getProperties() as $property)
+			{
+				$access = $property->isPublic();
+				$property->setAccessible(true);
+
+				$value = $property->getValue($mixed);
+
+				$values[] = $value;
+
+				$property->setAccessible($access);
+			}
+		}
+		else
+		{
+			$values = $mixed;
+		}
+
+		return array_map(
+			function($value) use (& $identity)
+			{
+				if (is_array($value))
+				{
+					return self::cleanClosures($value);
+				}
+
+				if ($value instanceof \closure)
+				{
+					return spl_object_hash($value);
+				}
+
+				return $value;
+			},
+			$values
+		);
 	}
 }

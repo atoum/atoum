@@ -361,4 +361,117 @@ class object extends atoum\test
 				->object($asserter->isNotInstanceOf(new \stdClass()))->isIdenticalTo($asserter)
 		;
 	}
+
+	public function testIsEqualTo()
+	{
+		$this
+			->given(
+				$object = new \stdClass,
+				$otherObject = new \stdClass,
+				$object->property = $object,
+				$otherObject->property = $otherObject,
+				$asserter = $this->newTestedInstance
+			)
+			->if($asserter->setWith($object))
+			->then
+				->object($asserter->getValue())->isIdenticalTo($object)
+				->exception(function() use ($asserter) { $asserter->isEqualTo($asserter); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+
+			->if($asserter->setWith($asserter))
+			->then
+				->object($asserter->getValue())->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, $object) { $asserter->isEqualTo($object); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+
+			->given(
+				$object = new \stdClass,
+				$otherObject = new \stdClass,
+				$object->property = $object,
+				$otherObject->property = $object
+			)
+			->if($asserter->setWith($object))
+			->then
+				->object($asserter->getValue())->isIdenticalTo($object)
+				->object($asserter->isEqualTo($otherObject))->isTestedInstance
+				->object($asserter->getValue())->isIdenticalTo($object)
+
+			->given(
+				$object = new \stdClass,
+				$otherObject = new \stdClass,
+				$childObject = new \stdClass,
+				$otherChildObject = new \stdClass,
+
+				$childObject->property = $object,
+				$otherChildObject->property = $object,
+
+				$object->child = $childObject,
+				$otherObject->child = $childObject
+			)
+			->if($asserter->setWith($object))
+			->then
+				->object($asserter->getValue())->isIdenticalTo($object)
+				->object($asserter->isEqualTo($otherObject))->isTestedInstance
+				->object($asserter->getValue())->isIdenticalTo($object)
+
+			->given(
+				$object = new \stdClass,
+				$otherObject = new \stdClass,
+				$childObject = new \stdClass,
+				$otherChildObject = new \stdClass,
+
+				$childObject->property = $object,
+				$otherChildObject->property = $object,
+
+				$object->child = $childObject,
+				$otherObject->child = $otherChildObject
+			)
+			->if($asserter->setWith($object))
+			->then
+				->object($asserter->getValue())->isIdenticalTo($object)
+				->boolean($object == $otherObject)->isTrue
+				->object($asserter->isEqualTo($otherObject))->isTestedInstance
+				->object($asserter->getValue())->isIdenticalTo($object)
+
+			->given(
+				$object = new \stdClass,
+				$otherObject = new \stdClass,
+
+				$childObject->property = array('foo'),
+				$otherChildObject->property = array('foo')
+			)
+			->if($asserter->setWith($object))
+			->then
+				->object($asserter->getValue())->isIdenticalTo($object)
+				->boolean($object == $otherObject)->isTrue
+				->object($asserter->isEqualTo($otherObject))->isTestedInstance
+				->object($asserter->getValue())->isIdenticalTo($object)
+
+			->given(
+				$object = new \stdClass,
+				$otherObject = new \stdClass,
+
+				$childObject->property = array(array('foo')),
+				$otherChildObject->property = array(array('foo'))
+			)
+			->if($asserter->setWith($object))
+			->then
+				->object($asserter->getValue())->isIdenticalTo($object)
+				->boolean($object == $otherObject)->isTrue
+				->object($asserter->isEqualTo($otherObject))->isTestedInstance
+				->object($asserter->getValue())->isIdenticalTo($object)
+
+			->given(
+				$object = new \stdClass,
+				$otherObject = new \stdClass,
+
+				$childObject->property = array(array(function() {})),
+				$otherChildObject->property = array(array(function() {}))
+			)
+			->if($asserter->setWith($object))
+			->then
+				->exception(function() use ($asserter) { $asserter->isEqualTo($asserter); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+		;
+	}
 }
