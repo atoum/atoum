@@ -373,6 +373,8 @@ namespace mageekguy\atoum\tests\units
 					->string($test->getTestMethodPrefix())->isEqualTo($testMethodPrefix)
 					->object($test->setTestMethodPrefix($testMethodPrefix = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($test)
 					->string($test->getTestMethodPrefix())->isEqualTo((string) $testMethodPrefix)
+					->object($test->setTestMethodPrefix($testMethodPrefix = "0"))->isIdenticalTo($test)
+					->string($test->getTestMethodPrefix())->isEqualTo((string) $testMethodPrefix)
 					->exception(function() use ($test) {
 								$test->setTestMethodPrefix('');
 							}

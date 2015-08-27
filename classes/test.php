@@ -772,7 +772,7 @@ abstract class test implements observable, \countable
 
 	public function getTestMethodPrefix()
 	{
-		return $this->testMethodPrefix ?: self::getMethodPrefix();
+		return $this->testMethodPrefix !== NULL ? $this->testMethodPrefix : self::getMethodPrefix();
 	}
 
 	public function setPhpPath($path)
