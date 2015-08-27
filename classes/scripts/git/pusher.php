@@ -14,6 +14,7 @@ class pusher extends script\configurable
 {
 	const defaultRemote = 'origin';
 	const defaultTagFile = '.tag';
+	const defaultMasterTag = 'dev-master';
 	const versionPattern = '$Rev: %s $';
 	const majorVersion = 1;
 	const minorVersion = 2;
@@ -210,7 +211,7 @@ class pusher extends script\configurable
 			{
 				if ($this->createGitTag($tag) === true)
 				{
-					if ($this->tagDevelopmentVersion('DEVELOPMENT-' . $tag) === true)
+					if ($this->tagDevelopmentVersion(self::defaultMasterTag) === true)
 					{
 						if ($this->pushToRemote($tag) === true)
 						{
