@@ -1830,7 +1830,7 @@ abstract class test implements observable, \countable
 
 	private static function isRegex($namespace)
 	{
-		return is_numeric(@preg_match($namespace, 'foo'));
+		return false !== @preg_match($namespace, NULL);
 	}
 
 	private static function isValidIdentifier($id)
