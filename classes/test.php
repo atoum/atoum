@@ -764,6 +764,10 @@ abstract class test implements observable, \countable
 		{
 			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
 		}
+		if (!(self::isRegex($methodPrefix) || self::isValidIdentifier($methodPrefix)))
+		{
+			throw new exceptions\logic\invalidArgument('Test method prefix must a valid regex or identifier');
+		}
 
 		$this->testMethodPrefix = $methodPrefix;
 
@@ -1826,6 +1830,14 @@ abstract class test implements observable, \countable
 
 	private static function isRegex($namespace)
 	{
-		return preg_match('/^([^\\\[:alnum:][:space:]]).*\1.*$/', $namespace) === 1;
+		return is_numeric(@preg_match($namespace, 'foo'));
+	}
+
+	private static function isValidIdentifier($id)
+	{
+		return 0 !== preg_match(
+			'#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#',
+			$id
+		);
 	}
 }

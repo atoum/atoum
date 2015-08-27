@@ -369,11 +369,13 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new self())
 				->then
-					->object($test->setTestMethodPrefix($testMethodPrefix = uniqid()))->isIdenticalTo($test)
+					->object($test->setTestMethodPrefix($testMethodPrefix = uniqid('_')))->isIdenticalTo($test)
 					->string($test->getTestMethodPrefix())->isEqualTo($testMethodPrefix)
-					->object($test->setTestMethodPrefix($testMethodPrefix = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($test)
+					->object($test->setTestMethodPrefix($testMethodPrefix = '/^test/i'))->isIdenticalTo($test)
+					->string($test->getTestMethodPrefix())->isEqualTo($testMethodPrefix)
+					->object($test->setTestMethodPrefix($testMethodPrefix = ('_'.rand(0, PHP_INT_MAX))))->isIdenticalTo($test)
 					->string($test->getTestMethodPrefix())->isEqualTo((string) $testMethodPrefix)
-					->object($test->setTestMethodPrefix($testMethodPrefix = "0"))->isIdenticalTo($test)
+					->object($test->setTestMethodPrefix($testMethodPrefix = "_0"))->isIdenticalTo($test)
 					->string($test->getTestMethodPrefix())->isEqualTo((string) $testMethodPrefix)
 					->exception(function() use ($test) {
 								$test->setTestMethodPrefix('');
@@ -381,6 +383,18 @@ namespace mageekguy\atoum\tests\units
 						)
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Test method prefix must not be empty')
+					->exception(function() use ($test) {
+								$test->setTestMethodPrefix('0');
+							}
+						)
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test method prefix must a valid regex or identifier')
+					->exception(function() use ($test) {
+								$test->setTestMethodPrefix('/:(/');
+							}
+						)
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test method prefix must a valid regex or identifier')
 			;
 		}
 
@@ -390,7 +404,7 @@ namespace mageekguy\atoum\tests\units
 				->if($test = new self())
 				->then
 					->string($test->getTestMethodPrefix())->isEqualTo(atoum\test::defaultMethodPrefix)
-				->if($test->setTestMethodPrefix($testMethodPrefix = uniqid()))
+				->if($test->setTestMethodPrefix($testMethodPrefix = uniqid('_')))
 				->then
 					->string($test->getTestMethodPrefix())->isEqualTo($testMethodPrefix)
 			;
