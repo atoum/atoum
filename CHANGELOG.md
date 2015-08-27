@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 2.2.1 - 2015-08-27
+
 * [#491](https://github.com/atoum/atoum/pull/491) Fix `getTestMethodPrefix` when the prefix is `"0"` ([@remicollet])
 * [#384](https://github.com/atoum/atoum/pull/384) Short syntax for base assertions ([@jubianchi])
 
