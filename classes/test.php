@@ -178,7 +178,7 @@ abstract class test implements observable, \countable
 
 				$annotationExtractor->extract($publicMethod->getDocComment());
 
-				if ($publicMethod->getNumberOfParameters() > 0 && isset($this->dataProviders[$methodName]) === false)
+				if ($this->methodIsIgnored($methodName) === false && $publicMethod->getNumberOfParameters() > 0 && isset($this->dataProviders[$methodName]) === false)
 				{
 					$this->setDataProvider($methodName);
 				}
@@ -1266,7 +1266,16 @@ abstract class test implements observable, \countable
 					}
 					else
 					{
-						$data = $this->{$this->dataProviders[$testMethod]}();
+						$dataProvider = $this->dataProviders[$testMethod];
+
+						if ($dataProvider instanceof \closure)
+						{
+							$data = $this->dataProviders[$testMethod]();
+						}
+						else
+						{
+							$data = $this->{$this->dataProviders[$testMethod]}();
+						}
 
 						if (is_array($data) === false && $data instanceof \traversable === false)
 						{
@@ -1431,9 +1440,51 @@ abstract class test implements observable, \countable
 		if ($dataProvider === null)
 		{
 			$dataProvider = $testMethodName . 'DataProvider';
+
+			if (method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
+			{
+				$reflectedMethod = call_user_func($this->reflectionMethodFactory, $this, $testMethodName);
+				$mockClasses = array();
+
+				foreach ($reflectedMethod->getParameters() as $parameter)
+				{
+					if (($parameterClass = $parameter->getClass()) === null || class_exists($parameterClass->getName()) === false)
+					{
+						throw new exceptions\logic\invalidArgument('Could not generate a data provider for ' . $this->class . '::' . $testMethodName . '() because it has at least one argument which is not type-hinted with a classname');
+					}
+
+					try
+					{
+						$reflectedConstructor = $parameterClass->getMethod('__construct');
+
+						foreach ($reflectedConstructor->getParameters() as $parameter)
+						{
+							if ($parameter->isOptional() === false)
+							{
+								throw new exceptions\logic\invalidArgument('Could not generate a data provider for ' . $this->class . '::' . $testMethodName . '() because ' . $parameterClass->getName() . '::__construct() has at least one mandatory argument');
+							}
+						}
+					} catch (\reflectionException $exception) {}
+
+					$mockClasses[] = $parameterClass->getName();
+				}
+
+				$mockNamespace = $this->mockGenerator->getDefaultNamespace();
+
+				$dataProvider = function () use ($mockNamespace, $mockClasses) {
+					return array(array_map(
+						function ($class) use ($mockNamespace) {
+							$class = $mockNamespace . '\\' . $class;
+
+							return new $class();
+						},
+						$mockClasses
+					));
+				};
+			}
 		}
 
-		if (method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
+		if ($dataProvider instanceof \closure === false && method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
 		{
 			throw new exceptions\logic\invalidArgument('Data provider ' . $this->class . '::' . lcfirst($dataProvider) . '() is unknown');
 		}

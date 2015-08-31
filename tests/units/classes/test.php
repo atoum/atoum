@@ -65,6 +65,15 @@ namespace mageekguy\atoum\tests\units
 	/**
 	 * @ignore on
 	 */
+	class dataProviderTest extends atoum\test
+	{
+		public function testMethod1(\stdClass $a) {}
+
+		public function testMethod2(\splFileInfo $a) {}
+
+		public function testMethod3($a) {}
+	}
+
 	class foo extends atoum\test
 	{
 		public function __construct()
@@ -954,6 +963,20 @@ namespace mageekguy\atoum\tests\units
 						->hasMessage('Data provider ' . get_class($test) . '::' . $dataProvider . '() is unknown')
 					->object($test->setDataProvider('testMethod1', 'aDataProvider'))->isIdenticalTo($test)
 					->array($test->getDataProviders())->isEqualTo(array('testMethod1' => 'aDataProvider'))
+				->if($test = new dataProviderTest())
+				->then
+					->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod2'); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Could not generate a data provider for ' . get_class($test) . '::testMethod2() because SplFileInfo::__construct() has at least one mandatory argument')
+					->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod3'); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Could not generate a data provider for ' . get_class($test) . '::testMethod3() because it has at least one argument which is not type-hinted with a classname')
+					->object($test->setDataProvider('testMethod1'))->isIdenticalTo($test)
+					->array($test->getDataProviders())
+						->object['testMethod1']->isInstanceOf('closure')
+					->object($test->setDataProvider('testMethod1', $provider = function() {}))->isIdenticalTo($test)
+					->array($test->getDataProviders())
+						->object['testMethod1']->isIdenticalTo($provider)
 			;
 		}
 
