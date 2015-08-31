@@ -971,10 +971,12 @@ namespace mageekguy\atoum\tests\units
 					->exception(function() use ($providers) { $providers['testMethod2'](); })
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Could not generate a mock for ' . get_class($test) . '::testMethod2() because SplFileInfo::__construct() has at least one mandatory argument')
-				->if(
-					$test->getMockGenerator()->setDefaultNamespace('testMocks'),
-					$test->getMockGenerator()->allIsInterface()
-				)
+				->if($test->getMockGenerator()->allIsInterface())
+				->then
+					->exception(function() use ($providers) { $providers['testMethod2'](); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Could not generate a mock for ' . get_class($test) . '::testMethod2() because SplFileInfo::__construct() has at least one mandatory argument')
+				->if($test->getMockGenerator()->setDefaultNamespace('testMocks'))
 				->then
 					->array($providers['testMethod2']())->isEqualTo(array(array(new \testMocks\splFileInfo())))
 				->if($test = new dataProviderTest())

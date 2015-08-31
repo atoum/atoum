@@ -1467,7 +1467,11 @@ abstract class test implements observable, \countable
 							$parameterClassName = $parametersClass->getName();
 							$mockedParameterClassName = $mockNamespace . '\\' . $parameterClassName;
 
-							$mockGenerator->generate($parameterClassName);
+							if (class_exists($mockedParameterClassName) === false)
+							{
+								$mockGenerator->generate($parameterClassName);
+							}
+
 							$mockedParameterClass = new \reflectionClass($mockedParameterClassName);
 
 							if ($mockedParameterClass->hasMethod('__construct'))
