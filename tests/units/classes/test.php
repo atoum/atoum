@@ -965,9 +965,20 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getDataProviders())->isEqualTo(array('testMethod1' => 'aDataProvider'))
 				->if($test = new dataProviderTest())
 				->then
-					->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod2'); })
+					->object($test->setDataProvider('testMethod2'))->isIdenticalTo($test)
+					->array($providers = $test->getDataProviders())
+						->object['testMethod2']->isInstanceOf('closure')
+					->exception(function() use ($providers) { $providers['testMethod2'](); })
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Could not generate a data provider for ' . get_class($test) . '::testMethod2() because SplFileInfo::__construct() has at least one mandatory argument')
+						->hasMessage('Could not generate a mock for ' . get_class($test) . '::testMethod2() because SplFileInfo::__construct() has at least one mandatory argument')
+				->if(
+					$test->getMockGenerator()->setDefaultNamespace('testMocks'),
+					$test->getMockGenerator()->allIsInterface()
+				)
+				->then
+					->array($providers['testMethod2']())->isEqualTo(array(array(new \testMocks\splFileInfo())))
+				->if($test = new dataProviderTest())
+				->then
 					->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod3'); })
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Could not generate a data provider for ' . get_class($test) . '::testMethod3() because it has at least one argument which is not type-hinted with a classname')

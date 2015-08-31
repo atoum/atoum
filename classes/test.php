@@ -1444,7 +1444,7 @@ abstract class test implements observable, \countable
 			if (method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
 			{
 				$reflectedMethod = call_user_func($this->reflectionMethodFactory, $this, $testMethodName);
-				$mockClasses = array();
+				$parametersClasses = array();
 
 				foreach ($reflectedMethod->getParameters() as $parameter)
 				{
@@ -1453,33 +1453,40 @@ abstract class test implements observable, \countable
 						throw new exceptions\logic\invalidArgument('Could not generate a data provider for ' . $this->class . '::' . $testMethodName . '() because it has at least one argument which is not type-hinted with a classname');
 					}
 
-					try
-					{
-						$reflectedConstructor = $parameterClass->getMethod('__construct');
-
-						foreach ($reflectedConstructor->getParameters() as $parameter)
-						{
-							if ($parameter->isOptional() === false)
-							{
-								throw new exceptions\logic\invalidArgument('Could not generate a data provider for ' . $this->class . '::' . $testMethodName . '() because ' . $parameterClass->getName() . '::__construct() has at least one mandatory argument');
-							}
-						}
-					} catch (\reflectionException $exception) {}
-
-					$mockClasses[] = $parameterClass->getName();
+					$parametersClasses[] = $parameterClass;
 				}
 
-				$mockNamespace = $this->mockGenerator->getDefaultNamespace();
+				$mockGenerator = $this->mockGenerator;
+				$testClassName = get_class($this);
 
-				$dataProvider = function () use ($mockNamespace, $mockClasses) {
+				$dataProvider = function () use ($parametersClasses, $mockGenerator, $testClassName, $testMethodName) {
+					$mockNamespace = $mockGenerator->getDefaultNamespace();
+
 					return array(array_map(
-						function ($class) use ($mockNamespace) {
-							$class = $mockNamespace . '\\' . $class;
+						function (\reflectionClass $parametersClass) use ($mockGenerator, $mockNamespace, $testClassName, $testMethodName) {
+							$parameterClassName = $parametersClass->getName();
+							$mockedParameterClassName = $mockNamespace . '\\' . $parameterClassName;
 
-							return new $class();
+							$mockGenerator->generate($parameterClassName);
+							$mockedParameterClass = new \reflectionClass($mockedParameterClassName);
+
+							if ($mockedParameterClass->hasMethod('__construct'))
+							{
+								$reflectedConstructor = $mockedParameterClass->getMethod('__construct');
+
+								foreach ($reflectedConstructor->getParameters() as $parameter)
+								{
+									if ($parameter->isOptional() === false)
+									{
+										throw new exceptions\logic\invalidArgument('Could not generate a mock for ' . $testClassName . '::' . $testMethodName . '() because ' . $parameterClassName . '::__construct() has at least one mandatory argument');
+									}
+								}
+							}
+
+							return new $mockedParameterClassName();
 						},
-						$mockClasses
-					));
+						$parametersClasses)
+					);
 				};
 			}
 		}
