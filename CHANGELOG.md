@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#477](https://github.com/atoum/atoum/pull/477) Fix exit code when there is something wrong in the configuration file ([@jubianchi])
+
 # 2.2.1 - 2015-08-27
 
 * [#491](https://github.com/atoum/atoum/pull/491) Fix `getTestMethodPrefix` when the prefix is `"0"` ([@remicollet])
