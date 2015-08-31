@@ -181,7 +181,7 @@ class pusher extends atoum
 						->before($this->mock($git)
 							->call('addAllAndCommit')->withArguments('Set version to dev-master.')->once())
 						->after($this->mock($taggerEngine)->call('setSrcDirectory')->withArguments($pusher->getWorkingDirectory())->once())
-						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev:' . ' DEVELOPMENT-0.0.1 $')->once()) // Don't remove concatenation operator to avoid tagger replace the string.
+						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev:' . ' dev-master $')->once()) // Don't remove concatenation operator to avoid tagger replace the string.
 							->once()
 
 			->if($pusher->tagPatchVersion())
