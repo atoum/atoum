@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#497](https://github.com/atoum/atoum/pull/497) Fix forward failMessage from match to matches in string asserter ([@vonglasow])
 * [#477](https://github.com/atoum/atoum/pull/477) Fix exit code when there is something wrong in the configuration file ([@jubianchi])
 
 # 2.2.1 - 2015-08-27

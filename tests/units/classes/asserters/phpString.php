@@ -589,4 +589,19 @@ class phpString extends atoum\test
 					->isEqualTo(strlen($string))
 		;
 	}
+
+	public function testMatch()
+	{
+		$this
+			->if($asserter = $this->newTestedInstance)
+			->and($asserter->setWith(uniqid('foo', true)))
+			->and($failMessage = uniqid())
+			->then
+				->exception(function() use ($asserter, $failMessage) {
+					$asserter->match('/' . uniqid('bar', true) . '/', $failMessage);
+				})
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage($failMessage)
+		;
+	}
 }

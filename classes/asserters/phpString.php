@@ -74,7 +74,7 @@ class phpString extends asserters\variable
 
 	public function match($pattern, $failMessage = null)
 	{
-		return $this->matches($pattern, $failMessage = null);
+		return $this->matches($pattern, $failMessage);
 	}
 
 	public function matches($pattern, $failMessage = null)
