@@ -967,15 +967,15 @@ namespace mageekguy\atoum\tests\units
 				->then
 					->object($test->setDataProvider('testMethod2'))->isIdenticalTo($test)
 					->array($providers = $test->getDataProviders())
-						->object['testMethod2']->isInstanceOf('closure')
+						->object['testMethod2']->isInstanceOf('mageekguy\atoum\test\dataProvider\aggregator')
 					->exception(function() use ($providers) { $providers['testMethod2'](); })
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Could not generate a mock for ' . get_class($test) . '::testMethod2() because SplFileInfo::__construct() has at least one mandatory argument')
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Could not instanciate a mock from ' . $test->getMockGenerator()->getDefaultNamespace() . '\\SplFileInfo because SplFileInfo::__construct() has at least one mandatory argument')
 				->if($test->getMockGenerator()->allIsInterface())
 				->then
 					->exception(function() use ($providers) { $providers['testMethod2'](); })
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Could not generate a mock for ' . get_class($test) . '::testMethod2() because SplFileInfo::__construct() has at least one mandatory argument')
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Could not instanciate a mock from ' . $test->getMockGenerator()->getDefaultNamespace() . '\\SplFileInfo because SplFileInfo::__construct() has at least one mandatory argument')
 				->if($test->getMockGenerator()->setDefaultNamespace('testMocks'))
 				->then
 					->array($providers['testMethod2']())->isEqualTo(array(array(new \testMocks\splFileInfo())))
@@ -983,13 +983,10 @@ namespace mageekguy\atoum\tests\units
 				->then
 					->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod3'); })
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Could not generate a data provider for ' . get_class($test) . '::testMethod3() because it has at least one argument which is not type-hinted with a classname')
+						->hasMessage('Could not generate a data provider for ' . get_class($test) . '::testMethod3() because it has at least one argument which is not type-hinted with a class or interface name')
 					->object($test->setDataProvider('testMethod1'))->isIdenticalTo($test)
 					->array($test->getDataProviders())
-						->object['testMethod1']->isInstanceOf('closure')
-					->object($test->setDataProvider('testMethod1', $provider = function() {}))->isIdenticalTo($test)
-					->array($test->getDataProviders())
-						->object['testMethod1']->isIdenticalTo($provider)
+						->object['testMethod1']->isInstanceOf('mageekguy\atoum\test\dataProvider\aggregator')
 			;
 		}
 
