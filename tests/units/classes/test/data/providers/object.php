@@ -23,7 +23,7 @@ class object extends atoum\test
 		$this
 			->given($this->newTestedInstance)
 			->then
-				->exception(function(self $test) {
+				->exception(function($test) {
 						$test->testedInstance->generate();
 					}
 				)
@@ -37,7 +37,7 @@ class object extends atoum\test
 			->given($class = 'splFileObject')
 			->if($this->testedInstance->setClass($class))
 			->then
-				->exception(function(self $test) {
+				->exception(function($test) {
 						$test->testedInstance->generate();
 					}
 				)
@@ -47,7 +47,7 @@ class object extends atoum\test
 			->given($class = __NAMESPACE__ . '\\dummy')
 			->if($this->testedInstance->setClass($class))
 			->then
-				->exception(function(self $test) {
+				->exception(function($test) {
 						$test->testedInstance->generate();
 					}
 				)
@@ -62,7 +62,7 @@ class object extends atoum\test
 			->given($this->newTestedInstance)
 			->then
 				->variable($this->testedInstance->getClass())->isNull
-				->exception(function(self $test) {
+				->exception(function($test) {
 						$test->testedInstance->setClass(uniqid());
 					}
 				)
