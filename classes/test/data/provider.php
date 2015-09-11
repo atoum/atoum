@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\test;
+namespace mageekguy\atoum\test\data;
 
 
-interface dataProvider
+interface provider
 {
 	public function __invoke();
 

@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\test\dataProviders;
+namespace mageekguy\atoum\test\data\providers;
 
 use
 	mageekguy\atoum\exceptions\logic,
 	mageekguy\atoum\mock\generator,
-	mageekguy\atoum\test\dataProvider,
+	mageekguy\atoum\test\data\provider,
 	mageekguy\atoum\exceptions\runtime
 ;
 
-class object implements dataProvider
+class object implements provider
 {
 	protected $class;
 
@@ -79,14 +79,14 @@ class object implements dataProvider
 
 		if ($constructor->isPublic() === false)
 		{
-			throw new dataProvider\object\exceptions\privateConstructor('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() is private');
+			throw new provider\object\exceptions\privateConstructor('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() is private');
 		}
 
 		foreach ($constructor->getParameters() as $parameter)
 		{
 			if ($parameter->isOptional() === false)
 			{
-				throw new dataProvider\object\exceptions\mandatoryArgument('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() has at least one mandatory argument');
+				throw new provider\object\exceptions\mandatoryArgument('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() has at least one mandatory argument');
 			}
 		}
 

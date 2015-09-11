@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\dataProviders;
+namespace mageekguy\atoum\tests\units\test\data\providers;
 
 use mageekguy\atoum;
 
@@ -15,7 +15,7 @@ class mock extends atoum\test
 	public function testClass()
 	{
 		$this
-			->testedClass->implements('mageekguy\atoum\test\dataProvider');
+			->testedClass->implements('mageekguy\atoum\test\data\provider');
 	}
 
 	public function test__construct(atoum\mock\generator $mockGenerator)
@@ -38,7 +38,7 @@ class mock extends atoum\test
 				$this->newTestedInstance($mockGenerator)
 			)
 			->then
-				->exception(function(self $test) {
+				->exception(function($test) {
 						$test->testedInstance->generate();
 					}
 				)
@@ -54,7 +54,7 @@ class mock extends atoum\test
 			->given($class = 'splFileObject')
 			->if($this->testedInstance->setClass($class))
 			->then
-				->exception(function(self $test) {
+				->exception(function($test) {
 						$test->testedInstance->generate();
 					}
 				)
@@ -76,7 +76,7 @@ class mock extends atoum\test
 			->given($this->newTestedInstance)
 			->then
 				->variable($this->testedInstance->getClass())->isNull
-				->exception(function(self $test) {
+				->exception(function($test) {
 						$test->testedInstance->setClass(uniqid());
 					}
 				)

@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\dataProviders;
+namespace mageekguy\atoum\tests\units\test\data\providers;
 
 use mageekguy\atoum;
 
@@ -15,7 +15,7 @@ class object extends atoum\test
 	public function testClass()
 	{
 		$this
-			->testedClass->implements('mageekguy\atoum\test\dataProvider');
+			->testedClass->implements('mageekguy\atoum\test\data\provider');
 	}
 
 	public function testGenerate()

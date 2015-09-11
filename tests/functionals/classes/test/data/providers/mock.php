@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\functionals\test\dataProviders;
+namespace mageekguy\atoum\tests\functionals\test\data\providers;
 
 use mageekguy\atoum;
 
-require_once __DIR__ . '/../../../runner.php';
+require_once __DIR__ . '/../../../../runner.php';
 
 class mock extends atoum\tests\functionals\test\functional
 {

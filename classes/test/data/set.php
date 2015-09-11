@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\test\dataProvider;
+namespace mageekguy\atoum\test\data;
 
-use mageekguy\atoum\test\dataProvider;
+use mageekguy\atoum\test\data\provider;
 
-class set extends aggregator
+class set extends provider\aggregator
 {
 	protected $aggregator;
 	protected $size;
 
-	public function __construct(aggregator $aggregator, $size = null)
+	public function __construct(provider\aggregator $aggregator, $size = null)
 	{
 		$this->aggregator = $aggregator;
 		$this->size = $size ?: 1;
@@ -29,7 +29,7 @@ class set extends aggregator
 	{
 		$aggregator = $this->aggregator;
 
-		return array_map(function() use ($aggregator) { return $aggregator->generate(); }, range(0, $this->size));
+		return array_map(function() use ($aggregator) { return $aggregator->generate(); }, range(0, $this->size - 1));
 	}
 
 	public function count()

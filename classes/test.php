@@ -1268,7 +1268,7 @@ abstract class test implements observable, \countable
 					{
 						$dataProvider = $this->dataProviders[$testMethod];
 
-						if ($dataProvider instanceof test\dataProvider)
+						if ($dataProvider instanceof test\data\provider)
 						{
 							$data = $this->dataProviders[$testMethod]();
 						}
@@ -1294,7 +1294,7 @@ abstract class test implements observable, \countable
 
 							if (sizeof($arguments) < $numberOfArguments)
 							{
-								throw new test\exceptions\runtime('Data provider ' . ($dataProvider instanceof test\dataProvider ? '' : $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() ') . 'does not provide enough arguments at key ' . $key . ' for test method ' . $this->getClass() . '::' . $testMethod . '()');
+								throw new test\exceptions\runtime('Data provider ' . ($dataProvider instanceof test\data\provider ? '' : $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() ') . 'does not provide enough arguments at key ' . $key . ' for test method ' . $this->getClass() . '::' . $testMethod . '()');
 							}
 
 							$this->score->setDataSet($key, $this->dataProviders[$testMethod]);
@@ -1444,11 +1444,11 @@ abstract class test implements observable, \countable
 			if (method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
 			{
 				$reflectedMethod = call_user_func($this->reflectionMethodFactory, $this, $testMethodName);
-				$parametersProvider = new test\dataProvider\aggregator();
+				$parametersProvider = new test\data\provider\aggregator();
 
 				foreach ($reflectedMethod->getParameters() as $parameter)
 				{
-					$parameterProvider = new test\dataProviders\mock($this->mockGenerator);
+					$parameterProvider = new test\data\providers\mock($this->mockGenerator);
 
 					if (($parameterClass = $parameter->getClass()) === null)
 					{
@@ -1458,11 +1458,11 @@ abstract class test implements observable, \countable
 					$parametersProvider->addProvider($parameterProvider->setClass($parameterClass->getName()));
 				}
 
-				$dataProvider = new test\dataProvider\set($parametersProvider);
+				$dataProvider = new test\data\set($parametersProvider);
 			}
 		}
 
-		if ($dataProvider instanceof test\dataProvider === false && method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
+		if ($dataProvider instanceof test\data\provider === false && method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
 		{
 			throw new exceptions\logic\invalidArgument('Data provider ' . $this->class . '::' . lcfirst($dataProvider) . '() is unknown');
 		}

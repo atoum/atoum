@@ -967,7 +967,7 @@ namespace mageekguy\atoum\tests\units
 				->then
 					->object($test->setDataProvider('testMethod2'))->isIdenticalTo($test)
 					->array($providers = $test->getDataProviders())
-						->object['testMethod2']->isInstanceOf('mageekguy\atoum\test\dataProvider\aggregator')
+						->object['testMethod2']->isInstanceOf('mageekguy\atoum\test\data\provider\aggregator')
 					->exception(function() use ($providers) { $providers['testMethod2'](); })
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 						->hasMessage('Could not instanciate a mock from ' . $test->getMockGenerator()->getDefaultNamespace() . '\\SplFileInfo because SplFileInfo::__construct() has at least one mandatory argument')
@@ -986,7 +986,7 @@ namespace mageekguy\atoum\tests\units
 						->hasMessage('Could not generate a data provider for ' . get_class($test) . '::testMethod3() because it has at least one argument which is not type-hinted with a class or interface name')
 					->object($test->setDataProvider('testMethod1'))->isIdenticalTo($test)
 					->array($test->getDataProviders())
-						->object['testMethod1']->isInstanceOf('mageekguy\atoum\test\dataProvider\aggregator')
+						->object['testMethod1']->isInstanceOf('mageekguy\atoum\test\data\provider\aggregator')
 			;
 		}
 

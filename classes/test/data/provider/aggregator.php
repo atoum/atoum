@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test\dataProvider;
+namespace mageekguy\atoum\test\data\provider;
 
-use mageekguy\atoum\test\dataProvider;
+use mageekguy\atoum\test\data\provider;
 
-class aggregator implements dataProvider, \countable
+class aggregator implements provider, \countable
 {
 	protected $providers = array();
 
@@ -15,7 +15,7 @@ class aggregator implements dataProvider, \countable
 
 	public function __toString()
 	{
-		return __CLASS__ . '<' . implode(', ', array_map(function(dataProvider $provider) { return $provider->__toString(); }, $this->providers)) . '>';
+		return __CLASS__ . '<' . implode(', ', array_map(function(provider $provider) { return $provider->__toString(); }, $this->providers)) . '>';
 	}
 
 	public function generate()
@@ -30,7 +30,7 @@ class aggregator implements dataProvider, \countable
 		return $data;
 	}
 
-	public function addProvider(dataProvider $provider)
+	public function addProvider(provider $provider)
 	{
 		$this->providers[] = $provider;
 

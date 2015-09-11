@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\dataProvider;
+namespace mageekguy\atoum\tests\units\test\data\provider;
 
 use mageekguy\atoum;
 
@@ -11,10 +11,10 @@ class aggregator extends atoum\test
 	public function testClass()
 	{
 		$this
-			->testedClass->implements('mageekguy\atoum\test\dataProvider');
+			->testedClass->implements('mageekguy\atoum\test\data\provider');
 	}
 
-	public function testGenerate(atoum\test\dataProvider $dataProvider, atoum\test\dataProvider $otherDataProvider)
+	public function testGenerate(atoum\test\data\provider $dataProvider, atoum\test\data\provider $otherDataProvider)
 	{
 		$this
 			->given($this->newTestedInstance)
@@ -38,7 +38,7 @@ class aggregator extends atoum\test
 		;
 	}
 
-	public function testAddProvider(atoum\test\dataProvider $dataProvider, atoum\test\dataProvider $otherDataProvider)
+	public function testAddProvider(atoum\test\data\provider $dataProvider, atoum\test\data\provider $otherDataProvider)
 	{
 		$this
 			->given($this->newTestedInstance)

@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\test\dataProviders;
+namespace mageekguy\atoum\test\data\providers;
 
 use
 	mageekguy\atoum\exceptions\logic,
 	mageekguy\atoum\mock\generator,
-	mageekguy\atoum\test\dataProvider,
+	mageekguy\atoum\test\data\provider,
 	mageekguy\atoum\exceptions\runtime
 ;
 
@@ -55,13 +55,13 @@ class mock extends object
 				return new $className();
 			}
 		}
-		catch (dataProvider\object\exceptions\privateConstructor $exception)
+		catch (provider\object\exceptions\privateConstructor $exception)
 		{
-			throw new dataProvider\object\exceptions\privateConstructor('Could not instanciate a mock from ' . $mockNamespace . '\\' . $this->class . ' because ' . $this->class . '::__construct() is private');
+			throw new provider\object\exceptions\privateConstructor('Could not instanciate a mock from ' . $mockNamespace . '\\' . $this->class . ' because ' . $this->class . '::__construct() is private');
 		}
-		catch (dataProvider\object\exceptions\mandatoryArgument $exception)
+		catch (provider\object\exceptions\mandatoryArgument $exception)
 		{
-			throw new dataProvider\object\exceptions\mandatoryArgument('Could not instanciate a mock from ' . $mockNamespace . '\\' . $this->class . ' because ' . $this->class . '::__construct() has at least one mandatory argument');
+			throw new provider\object\exceptions\mandatoryArgument('Could not instanciate a mock from ' . $mockNamespace . '\\' . $this->class . ' because ' . $this->class . '::__construct() has at least one mandatory argument');
 		}
 
 

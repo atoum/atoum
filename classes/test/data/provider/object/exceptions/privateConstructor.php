@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\test\dataProvider\object\exceptions;
+namespace mageekguy\atoum\test\data\provider\object\exceptions;
 
 use
     mageekguy\atoum
