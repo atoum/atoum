@@ -108,3 +108,4 @@
 [@GuillaumeDievart]: https://github.com/GuillaumeDievart
 [@n-couet]: https://github.com/n-couet
 [@remicollet]: https://github.com/remicollet
+[@vonglasow]: https://github.com/vonglasow
