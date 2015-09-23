@@ -22,6 +22,16 @@ class cli extends atoum\test
 	public function test__construct()
 	{
 		$this
+			->define($atoumPathField = new fields\runner\atoum\path\cli())
+				->and($atoumPathField
+					->setPrompt(new prompt('> '))
+					->setTitleColorizer(new colorizer('1;36'))
+				)
+			->define($atoumVersionField = new fields\runner\atoum\version\cli())
+				->and($atoumVersionField
+					->setTitlePrompt(new prompt('> '))
+					->setTitleColorizer(new colorizer('1;36'))
+				)
 			->define($phpPathField = new fields\runner\php\path\cli())
 				->and($phpPathField
 					->setPrompt(new prompt('> '))
@@ -123,6 +133,8 @@ class cli extends atoum\test
 				->object($report->getLocale())->isEqualTo(new atoum\locale())
 				->object($report->getAdapter())->isEqualTo(new atoum\adapter())
 				->array($report->getFields())->isEqualTo(array(
+						$atoumPathField,
+						$atoumVersionField,
 						$phpPathField,
 						$phpVersionField,
 						$runnerTestsDurationField,
