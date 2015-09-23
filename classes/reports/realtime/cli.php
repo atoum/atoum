@@ -25,6 +25,14 @@ class cli extends realtime
 		$secondLevelPrompt = new prompt('=> ', $defaultColorizer);
 		$thirdLevelPrompt = new prompt('==> ', $defaultColorizer);
 
+		$atoumVersionField = new runner\atoum\version\cli();
+		$atoumVersionField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($defaultColorizer)
+		;
+
+		$this->addField($atoumVersionField);
+
 		$phpPathField = new runner\php\path\cli();
 		$phpPathField
 			->setPrompt($firstLevelPrompt)
