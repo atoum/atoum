@@ -747,7 +747,7 @@ abstract class test implements observable, \countable
 		{
 			throw new exceptions\logic\invalidArgument('Test namespace must not be empty');
 		}
-		if (!(self::isRegex($testNamespace) || self::isValidIdentifier($testNamespace, true)))
+		if (!(self::isRegex($testNamespace) || self::isValidNamespace($testNamespace, true)))
 		{
 			throw new exceptions\logic\invalidArgument('Test namespace must a valid regex or identifier');
 		}
@@ -1845,5 +1845,15 @@ abstract class test implements observable, \countable
 			'#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#',
 			$id
 		);
+	}
+
+	private static function isValidNamespace($id)
+	{
+		foreach(explode('\\', $id) as $sub) {
+			if (!self::isValidIdentifier($sub)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
