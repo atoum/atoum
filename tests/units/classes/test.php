@@ -333,15 +333,15 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new self())
 				->then
-					->object($test->setTestNamespace($testNamespace = uniqid()))->isIdenticalTo($test)
+					->object($test->setTestNamespace($testNamespace = uniqid('_')))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo($testNamespace)
-					->object($test->setTestNamespace('\\' . ($testNamespace = uniqid())))->isIdenticalTo($test)
+					->object($test->setTestNamespace('\\' . ($testNamespace = uniqid('_'))))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo($testNamespace)
-					->object($test->setTestNamespace('\\' . ($testNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
+					->object($test->setTestNamespace('\\' . ($testNamespace = uniqid('_')) . '\\'))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo($testNamespace)
-					->object($test->setTestNamespace(($testNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
+					->object($test->setTestNamespace(($testNamespace = uniqid('_')) . '\\'))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo($testNamespace)
-					->object($test->setTestNamespace($testNamespace = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($test)
+					->object($test->setTestNamespace($testNamespace = '_' . rand(0, PHP_INT_MAX)))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo((string) $testNamespace)
 					->exception(function() use ($test) {
 								$test->setTestNamespace('');
@@ -349,6 +349,12 @@ namespace mageekguy\atoum\tests\units
 						)
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Test namespace must not be empty')
+					->exception(function() use ($test) {
+								$test->setTestNamespace('0');
+							}
+						)
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test namespace must a valid regex or identifier')
 			;
 		}
 
@@ -358,7 +364,7 @@ namespace mageekguy\atoum\tests\units
 				->if($test = new self())
 				->then
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-				->if($test->setTestNamespace($testNamespace = uniqid()))
+				->if($test->setTestNamespace($testNamespace = uniqid('_')))
 				->then
 					->string($test->getTestNamespace())->isEqualTo($testNamespace)
 			;

@@ -741,12 +741,18 @@ abstract class test implements observable, \countable
 
 	public function setTestNamespace($testNamespace)
 	{
-		$this->testNamespace = self::cleanNamespace($testNamespace);
+		$testNamespace = self::cleanNamespace($testNamespace);
 
-		if ($this->testNamespace === '')
+		if ($testNamespace === '')
 		{
 			throw new exceptions\logic\invalidArgument('Test namespace must not be empty');
 		}
+		if (!(self::isRegex($testNamespace) || self::isValidIdentifier($testNamespace, true)))
+		{
+			throw new exceptions\logic\invalidArgument('Test namespace must a valid regex or identifier');
+		}
+
+		$this->testNamespace = $testNamespace;
 
 		return $this;
 	}
