@@ -753,7 +753,7 @@ abstract class test implements observable, \countable
 
 	public function getTestNamespace()
 	{
-		return $this->testNamespace ?: self::getNamespace();
+		return $this->testNamespace !== NULL ? $this->testNamespace : self::getNamespace();
 	}
 
 	public function setTestMethodPrefix($methodPrefix)
