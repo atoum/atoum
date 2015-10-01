@@ -50,7 +50,8 @@
 		"classmap": [ "classes/" ]
 	},
 	"suggest": {
-		"ext-mbstring": "Provides support for UTF-8 strings"
+		"ext-mbstring": "Provides support for UTF-8 strings",
+		"atoum/stubs": "Provides stubs for atoum that will help ide for autocompletion"
 	},
 	"extra": {
 		"branch-alias": {
