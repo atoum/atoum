@@ -34,7 +34,14 @@ class phpArray extends asserters\variable implements \arrayAccess
 			default:
 				$asserter = parent::__get($asserter);
 
-				if ($asserter instanceof asserters\variable === false)
+				if ($asserter instanceof asserters\phpArray === true)
+				{
+					$this->resetInnerAsserter();
+					$asserter->setWith($this->value);
+
+					return $asserter;
+				}
+				elseif ($asserter instanceof asserters\variable === false)
 				{
 					$this->resetInnerAsserter();
 
