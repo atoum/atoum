@@ -126,13 +126,6 @@ class command
 		return $this->binaryPath;
 	}
 
-	public function setBinaryPath($binaryPath = null)
-	{
-		$this->binaryPath = (string) $binaryPath;
-
-		return $this;
-	}
-
 	public function addOption($option, $value = null)
 	{
 		$this->options[$option] = $value ?: null;
@@ -251,6 +244,13 @@ class command
 
 		$this->adapter->stream_set_blocking($this->streams[1], 0);
 		$this->adapter->stream_set_blocking($this->streams[2], 0);
+
+		return $this;
+	}
+
+	protected function setBinaryPath($binaryPath = null)
+	{
+		$this->binaryPath = (string) $binaryPath;
 
 		return $this;
 	}

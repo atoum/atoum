@@ -155,6 +155,10 @@ class mocker extends atoum\test
 			->then
 				->object($this->testedInstance->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($this->testedInstance)
 				->boolean(function_exists($functionName))->isTrue()
+			->if($this->testedInstance->{$functionName} = function($a, $b) {
+				return \version_compare($a, $b, '<');
+			})
+			->then
 				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
 				->integer(\version_compare('5.4.0', '5.3.0'))->isEqualTo(1)
 				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
@@ -167,8 +171,8 @@ class mocker extends atoum\test
 			->then
 				->string(version_compare(uniqid(), uniqid()))->isEqualTo($returnValue)
 				->object($this->testedInstance->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($this->testedInstance)
-				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
-				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
+				->boolean(version_compare('5.4.0', '5.3.0', '<'))->isFalse()
+				->boolean(version_compare('5.3.0', '5.4.0', '<'))->isTrue()
 				->object($this->testedInstance->generate($unknownFunctionName = __NAMESPACE__ . '\\foo'))->isIdenticalTo($this->testedInstance)
 				->variable(foo())->isNull()
 
@@ -179,8 +183,8 @@ class mocker extends atoum\test
 			->if($this->testedInstance->{$functionName} = $returnValue = uniqid())
 			->when(function() use ($mocker, $functionName) { unset($mocker->{$functionName}); })
 			->then
-				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
-				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
+				->boolean(version_compare('5.4.0', '5.3.0', '<'))->isFalse()
+				->boolean(version_compare('5.3.0', '5.4.0', '<'))->isTrue()
 
 			->when(function() use ($mocker, $unknownFunctionName) { unset($mocker->{$unknownFunctionName}); })
 			->then

@@ -23,6 +23,8 @@ class concurrent extends atoum\test
 			->then
 				->object($defaultScoreFactory = $engine->getScoreFactory())->isInstanceOf('closure')
 				->object($defaultScoreFactory())->isInstanceOf('mageekguy\atoum\score')
+				->object($defaultPhpFactory = $engine->getPhpFactory())->isInstanceOf('closure')
+				->object($defaultPhpFactory())->isInstanceOf('mageekguy\atoum\php')
 				->object($engine->getPhp())->isEqualTo(new atoum\php())
 		;
 	}
@@ -52,9 +54,14 @@ class concurrent extends atoum\test
 
 	public function testRun()
 	{
+		$self = $this;
+
 		$this
 			->if($engine = new testedClass())
-			->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
+			->and($engine->setPhpFactory(function() use (& $php) {
+					return $php = new \mock\mageekguy\atoum\php();
+				}
+			))
 			->then
 				->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
 			->if($test->getMockController()->getCurrentMethod = $method = uniqid())
@@ -63,13 +70,25 @@ class concurrent extends atoum\test
 			->and($test->getMockController()->codeCoverageIsEnabled = false)
 			->and($test->getMockController()->getBootstrapFile = null)
 			->and($test->setXdebugConfig($xdebugConfig = uniqid()))
-			->and($this->calling($php)->run->throw = $exception = new atoum\php\exception())
+			->and($engine->setPhpFactory(function() use (& $php, & $exception, $self) {
+					$php = new \mock\mageekguy\atoum\php();
+					$self->calling($php)->run->throw = $exception = new atoum\php\exception();
+
+					return $php;
+				}
+			))
 			->and($this->function->getenv = false)
 			->and($this->function->ini_get = 0)
 			->then
 				->exception(function() use ($engine, $test) { $engine->run($test); })
 					->isIdenticalTo($exception)
-			->if($this->calling($php)->run = $php)
+			->if($engine->setPhpFactory(function() use (& $php, $self) {
+					$php = new \mock\mageekguy\atoum\php();
+					$self->calling($php)->run = $php;
+
+					return $php;
+				}
+			))
 			->then
 				->object($engine->run($test))->isIdenticalTo($engine)
 				->mock($php)
@@ -85,22 +104,34 @@ class concurrent extends atoum\test
 						'ob_end_clean();' .
 						'mageekguy\atoum\scripts\runner::disableAutorun();' .
 						'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
-					)->twice()
-					->call('__set')->withArguments('XDEBUG_CONFIG', $xdebugConfig)->twice()
+					)->once()
+					->call('__set')->withArguments('XDEBUG_CONFIG', $xdebugConfig)->once()
 		;
 	}
 
 	public function testGetScore()
 	{
+		$self = $this;
+
 		$this
 			->if($engine = new testedClass())
-			->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
-			->and($this->calling($php)->run = $php)
-			->and($this->calling($php)->isRunning = false)
+			->and($engine->setPhpFactory(function() use (& $php, $self) {
+				$php = new \mock\mageekguy\atoum\php();
+				$self->calling($php)->run = $php;
+				$self->calling($php)->isRunning = false;
+
+				return $php;
+			}))
 			->then
 				->variable($engine->getScore())->isNull()
-			->if($engine->run($test = new \mock\mageekguy\atoum\test()))
-			->and($this->calling($php)->isRunning = true)
+			->if($engine->setPhpFactory(function() use (& $php, $self) {
+				$php = new \mock\mageekguy\atoum\php();
+				$self->calling($php)->run = $php;
+				$self->calling($php)->isRunning = true;
+
+				return $php;
+			}))
+			->and($engine->run($test = new \mock\mageekguy\atoum\test()))
 			->then
 				->variable($engine->getScore())->isNull()
 			->if( $this->calling($test)->getCurrentMethod = $method = uniqid())
@@ -108,14 +139,28 @@ class concurrent extends atoum\test
 			->and($this->calling($test)->getPhpPath = $phpPath = uniqid())
 			->and($this->calling($test)->codeCoverageIsEnabled = false)
 			->and($this->calling($test)->getBootstrapFile = null)
-			->and($this->calling($php)->isRunning = false)
-			->and($this->calling($php)->getStdOut = $output = uniqid())
-			->and($this->calling($php)->getExitCode = $exitCode = uniqid())
+			->and($engine->setPhpFactory(function() use (& $php, & $output, & $exitCode, $self) {
+				$php = new \mock\mageekguy\atoum\php();
+				$self->calling($php)->run = $php;
+				$self->calling($php)->isRunning = false;
+				$self->calling($php)->getStdOut = $output = uniqid();
+				$self->calling($php)->getExitCode = $exitCode = uniqid();
+
+				return $php;
+			}))
 			->and($engine->run($test))
 			->then
 				->object($score = $engine->getScore())->isInstanceOf('mageekguy\atoum\score')
 				->array($score->getUncompletedMethods())->isEqualTo(array(array('file' => $testPath, 'class' => get_class($test), 'method' => $method, 'exitCode' => $exitCode, 'output' => $output)))
-			->if($this->calling($php)->getStdOut = serialize($score))
+			->if($engine->setPhpFactory(function() use (& $php, $score, $self) {
+				$php = new \mock\mageekguy\atoum\php();
+				$self->calling($php)->run = $php;
+				$self->calling($php)->isRunning = false;
+				$self->calling($php)->getStdOut = serialize($score);
+				$self->calling($php)->getExitCode = $exitCode = uniqid();
+
+				return $php;
+			}))
 			->and($engine->run($test))
 			->then
 				->object($score = $engine->getScore())->isEqualTo($score)

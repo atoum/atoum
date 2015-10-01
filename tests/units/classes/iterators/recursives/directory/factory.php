@@ -14,7 +14,7 @@ class factory extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->implements('iteratorAggregate');
+		$this->testedClass->hasMethod('getIterator');
 	}
 
 	public function test__construct()
@@ -24,7 +24,8 @@ class factory extends atoum\test
 				->boolean($iterator->dotsAreAccepted())->isFalse()
 				->array($iterator->getAcceptedExtensions())->isEqualTo(array('php'))
 				->object($iteratorFactory = $iterator->getIteratorFactory())->isInstanceOf('closure')
-				->object($defaultIterator = $iteratorFactory(__DIR__))->isEqualTo(new \recursiveDirectoryIterator(__DIR__))
+				->object($defaultIterator = $iteratorFactory(__DIR__))->isInstanceOf('recursiveDirectoryIterator')
+				->string($defaultIterator->getPath())->isEqualTo(__DIR__)
 				->object($dotFilterFactory = $iterator->getDotFilterFactory())->isInstanceOf('closure')
 				->object($dotFilterFactory($defaultIterator))->isEqualTo(new filters\recursives\dot($defaultIterator))
 				->object($extensionFilterIterator = $iterator->getExtensionFilterFactory())->isInstanceOf('closure')
@@ -51,7 +52,8 @@ class factory extends atoum\test
 				->object($defaultFactory = $iterator->getIteratorFactory())
 					->isInstanceOf('closure')
 					->isNotIdenticalTo($factory)
-				->object($defaultFactory(__DIR__))->isEqualTo(new \recursiveDirectoryIterator(__DIR__))
+				->object($defaultIterator = $defaultFactory(__DIR__))->isInstanceOf('recursiveDirectoryIterator')
+				->string($defaultIterator->getPath())->isEqualTo(__DIR__)
 		;
 	}
 

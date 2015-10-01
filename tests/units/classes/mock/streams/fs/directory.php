@@ -25,7 +25,7 @@ class directory extends atoum\test
 			->then
 				->boolean(mkdir($directory, 0777))->isTrue()
 				->integer($directory->getPermissions())->isEqualTo(0777)
-				->boolean(mkdir($directory, 0777))->isFalse()
+				->boolean(@mkdir($directory, 0777))->isFalse()
 			->if($directory->notExists())
 			->then
 				->boolean(mkdir($directory, 0007))->isTrue()
@@ -39,14 +39,14 @@ class directory extends atoum\test
 			->if($directory = testedClass::get())
 			->and($directory->notExists())
 			->then
-				->boolean(rmdir($directory))->isFalse()
+				->boolean(@rmdir($directory))->isFalse()
 			->if($directory->exists())
 			->then
 				->boolean(rmdir($directory))->isTrue()
 			->if($directory->exists())
 			->and($directory->isNotWritable())
 			->then
-				->boolean(rmdir($directory))->isFalse()
+				->boolean(@rmdir($directory))->isFalse()
 		;
 	}
 }

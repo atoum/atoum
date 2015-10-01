@@ -386,8 +386,14 @@ class html extends atoum\test
 				->array($field->getSrcDirectoryIterators())->isEmpty()
 			->if($field->addSrcDirectory($directory = __DIR__))
 			->then
-				->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory)))))
-				->array(current($iterators)->getClosures())->isEmpty()
+				->array($iterators = $field->getSrcDirectoryIterators())
+					->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory)))))
+					->hasSize(1)
+					->object[0]->isInstanceOf('recursiveIteratorIterator')
+				->object($filterIterator = $iterators[0]->getInnerIterator())->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\closure')
+				->array($filterIterator->getClosures())->isEmpty()
+				->object($filterInnerIterator = $filterIterator->getInnerIterator())->isInstanceOf('recursiveDirectoryIterator')
+				->string($filterInnerIterator->getPath())->isEqualTo($directory)
 			->if($field->addSrcDirectory($directory, $closure = function() {}))
 			->then
 				->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory)))))

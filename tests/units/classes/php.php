@@ -20,9 +20,13 @@ class php extends atoum\test
 				->object($php->getAdapter())->isEqualTo(new atoum\adapter())
 				->string($php->getStdout())->isEmpty()
 				->string($php->getStderr())->isEmpty()
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = false)
+			->and($php = new testedClass(null, $adapter))
+			->then
 				->array($php->getOptions())->isEmpty()
 				->array($php->getArguments())->isEmpty()
-			->if($php = new testedClass($phpPath = uniqid(), $adapter = new atoum\adapter()))
+			->if($php = new testedClass($phpPath = uniqid(), $adapter))
 			->then
 				->string($php->getBinaryPath())->isEqualTo($phpPath)
 				->object($php->getAdapter())->isIdenticalTo($adapter)
@@ -30,6 +34,43 @@ class php extends atoum\test
 				->string($php->getStderr())->isEmpty()
 				->array($php->getOptions())->isEmpty()
 				->array($php->getArguments())->isEmpty()
+			->if($adapter->defined = function($constant) { return ($constant == 'PHP_BINARY'); })
+			->and($adapter->constant = function($constant) use (& $phpBinary) { return ($constant != 'PHP_BINARY' ? null : $phpBinary = uniqid()); })
+			->and($php = new testedClass(null, $adapter))
+			->then
+				->string($php->getBinaryPath())->isEqualTo($phpBinary)
+			->if($adapter->defined = function($constant) { return ($constant === 'HHVM_VERSION'); })
+			->and($php = new testedClass(uniqid(), $adapter))
+			->then
+				->array($php->getOptions())->isEqualTo(array('--php' => null))
+			->if($adapter->defined = false)
+			->and($adapter->constant = null)
+			->and($adapter->getenv = function($variable) use (& $pearBinaryPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $pearBinaryPath = uniqid()); })
+			->and($php = new testedClass(null, $adapter))
+			->then
+				->string($php->getBinaryPath())->isEqualTo($pearBinaryPath)
+			->if($adapter->getenv = function($variable) use (& $phpBinPath) {
+					switch ($variable)
+					{
+						case 'PHPBIN':
+							return ($phpBinPath = uniqid());
+
+						default:
+							return false;
+					}
+				}
+			)
+			->and($php = new testedClass(null, $adapter))
+			->then
+				->string($php->getBinaryPath())->isEqualTo($phpBinPath)
+			->if($adapter->constant = function($constant) use (& $phpBinDir) { return ($constant != 'PHP_BINDIR' ? null : $phpBinDir = uniqid()); })
+			->and($adapter->getenv = false)
+			->and($php = new testedClass(null, $adapter))
+			->then
+				->string($php->getBinaryPath())->isEqualTo($phpBinDir . '/php')
+			->if($php = new testedClass($phpPath = uniqid(), $adapter))
+			->then
+				->string($php->getBinaryPath())->isEqualTo($phpPath)
 		;
 	}
 
@@ -77,7 +118,7 @@ class php extends atoum\test
 				->string($php->getBinaryPath())->isNotEmpty()
 				->array($php->getOptions())->isEmpty()
 				->array($php->getArguments())->isEmpty()
-			->if($php->setBinaryPath($binaryPath = uniqid()))
+			->if($php = new testedClass($binaryPath = uniqid()))
 			->and($php->addOption(uniqid()))
 			->and($php->addArgument(uniqid()))
 			->then
@@ -85,45 +126,6 @@ class php extends atoum\test
 				->string($php->getBinaryPath())->isEqualTo($binaryPath)
 				->array($php->getOptions())->isEmpty()
 				->array($php->getArguments())->isEmpty()
-		;
-	}
-
-	public function testSetBinaryPath()
-	{
-		$this
-			->given($php = new atoum\php(null, $adapter = new atoum\test\adapter()))
-			->if($adapter->defined = function($constant) { return ($constant == 'PHP_BINARY'); })
-			->and($adapter->constant = function($constant) use (& $phpBinary) { return ($constant != 'PHP_BINARY' ? null : $phpBinary = uniqid()); })
-			->then
-				->object($php->setBinaryPath())->isIdenticalTo($php)
-				->string($php->getBinaryPath())->isEqualTo($phpBinary)
-			->if($adapter->defined = false)
-			->and($adapter->constant = null)
-			->and($adapter->getenv = function($variable) use (& $pearBinaryPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $pearBinaryPath = uniqid()); })
-			->then
-				->object($php->setBinaryPath())->isIdenticalTo($php)
-				->string($php->getBinaryPath())->isEqualTo($pearBinaryPath)
-			->if($adapter->getenv = function($variable) use (& $phpBinPath) {
-					switch ($variable)
-					{
-						case 'PHPBIN':
-							return ($phpBinPath = uniqid());
-
-						default:
-							return false;
-					}
-				}
-			)
-			->then
-				->object($php->setBinaryPath())->isIdenticalTo($php)
-				->string($php->getBinaryPath())->isEqualTo($phpBinPath)
-			->if($adapter->constant = function($constant) use (& $phpBinDir) { return ($constant != 'PHP_BINDIR' ? null : $phpBinDir = uniqid()); })
-			->and($adapter->getenv = false)
-			->then
-				->object($php->setBinaryPath())->isIdenticalTo($php)
-				->string($php->getBinaryPath())->isEqualTo($phpBinDir . '/php')
-				->object($php->setBinaryPath($phpPath = uniqid()))->isIdenticalTo($php)
-				->string($php->getBinaryPath())->isEqualTo($phpPath)
 		;
 	}
 

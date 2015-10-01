@@ -289,7 +289,7 @@ class runner implements observable
 
 	public function setPhpPath($path)
 	{
-		$this->php->setBinaryPath($path);
+		$this->php = new atoum\php($path);
 
 		return $this;
 	}
@@ -869,7 +869,7 @@ class runner implements observable
 		$runner = $this;
 		$includer = function($path) use ($runner) { include_once($path); };
 
-		foreach ($this->testPaths as $testPath)
+		foreach ($this->testPaths as $testPath) if (is_file($testPath))
 		{
 			try
 			{

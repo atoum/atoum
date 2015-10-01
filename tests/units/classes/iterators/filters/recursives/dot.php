@@ -26,7 +26,7 @@ class dot extends atoum\test
 				->object($filter->getInnerIterator())->isIdenticalTo($recursiveIterator)
 			->and($filter = new recursives\dot(__DIR__))
 			->then
-				->object($filter->getInnerIterator())->isEqualTo(new \recursiveDirectoryIterator(__DIR__ ))
+				->object($filter->getInnerIterator())->isInstanceOf('recursiveDirectoryIterator')
 				->string($filter->getInnerIterator()->getPath())->isEqualTo(__DIR__)
 			->if($filter = new recursives\dot($path = uniqid(), function($path) use (& $innerIterator) { return ($innerIterator = new \mock\recursiveDirectoryIterator($path)); }))
 			->then

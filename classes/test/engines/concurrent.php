@@ -11,6 +11,7 @@ use
 class concurrent extends test\engine
 {
 	protected $scoreFactory = null;
+	protected $phpFactory = null;
 	protected $php = null;
 	protected $test = null;
 	protected $method = '';
@@ -19,6 +20,7 @@ class concurrent extends test\engine
 	{
 		$this
 			->setScoreFactory()
+			->setPhpFactory()
 			->setPhp()
 		;
 	}
@@ -35,9 +37,21 @@ class concurrent extends test\engine
 		return $this->scoreFactory;
 	}
 
+	public function setPhpFactory(\closure $factory = null)
+	{
+		$this->phpFactory = $factory ?: function($path = null) { return new atoum\php($path); };
+
+		return $this;
+	}
+
+	public function getPhpFactory()
+	{
+		return $this->phpFactory;
+	}
+
 	public function setPhp(atoum\php $php = null)
 	{
-		$this->php = $php ?: new atoum\php();
+		$this->php = $php ?: call_user_func($this->getPhpFactory());
 
 		return $this;
 	}
@@ -62,6 +76,7 @@ class concurrent extends test\engine
 			$this->method = $currentTestMethod;
 
 			$phpPath = $this->test->getPhpPath();
+			$this->php = call_user_func($this->getPhpFactory(), $phpPath);
 
 			$phpCode =
 				'<?php ' .
@@ -155,11 +170,7 @@ class concurrent extends test\engine
 				$this->php->XDEBUG_CONFIG = $xdebugConfig;
 			}
 
-			$this->php
-				->reset()
-				->setBinaryPath($phpPath)
-				->run($phpCode)
-			;
+			$this->php->run($phpCode);
 		}
 
 		return $this;

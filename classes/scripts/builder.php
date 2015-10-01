@@ -83,7 +83,7 @@ class builder extends atoum\script\configurable
 
 	public function setPhpPath($path)
 	{
-		$this->php->setBinaryPath($path);
+		$this->php = new atoum\php($path);
 
 		return $this;
 	}
