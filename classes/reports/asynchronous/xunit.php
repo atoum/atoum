@@ -198,7 +198,13 @@ class xunit extends atoum\reports\asynchronous
 		{
 			$testCase = $document->createElement('testcase');
 			$testCase->setAttribute('name', $method);
+
+			set_error_handler(function() {}, E_WARNING);
+
 			$testCase->setIdAttribute('name', true);
+
+			restore_error_handler();
+
 			$testCase->setAttribute('time', $time);
 			$testCase->setAttribute('classname', $class);
 			$testCase->setAttribute('assertions', $assertions);
