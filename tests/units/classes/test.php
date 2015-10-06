@@ -335,16 +335,32 @@ namespace mageekguy\atoum\tests\units
 				->then
 					->object($test->setTestNamespace($testNamespace = uniqid('_')))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo($testNamespace)
-					->object($test->setTestNamespace($testNamespace = uniqid('_').'\\'.uniqid('_')))->isIdenticalTo($test)
+					->object($test->setTestNamespace('\\' . $testNamespace))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo($testNamespace)
-					->object($test->setTestNamespace('\\' . ($testNamespace = uniqid('_'))))->isIdenticalTo($test)
+					->object($test->setTestNamespace($testNamespace . '\\'))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo($testNamespace)
-					->object($test->setTestNamespace('\\' . ($testNamespace = uniqid('_')) . '\\'))->isIdenticalTo($test)
+					->object($test->setTestNamespace('\\' . $testNamespace . '\\'))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo($testNamespace)
-					->object($test->setTestNamespace(($testNamespace = uniqid('_')) . '\\'))->isIdenticalTo($test)
+
+					->object($test->setTestNamespace($testNamespace = uniqid('_') . '\\' . $testNamespace))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+					->object($test->setTestNamespace('\\' . $testNamespace))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+					->object($test->setTestNamespace($testNamespace . '\\'))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+					->object($test->setTestNamespace('\\' . $testNamespace . '\\'))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+
 					->object($test->setTestNamespace($testNamespace = '_' . rand(0, PHP_INT_MAX)))->isIdenticalTo($test)
 					->string($test->getTestNamespace())->isEqualTo((string) $testNamespace)
+					->object($test->setTestNamespace('\\' . $testNamespace))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+					->object($test->setTestNamespace($testNamespace . '\\'))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+					->object($test->setTestNamespace('\\' . $testNamespace . '\\'))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testNamespace)
+
+
 					->exception(function() use ($test) {
 								$test->setTestNamespace('');
 							}
@@ -356,7 +372,13 @@ namespace mageekguy\atoum\tests\units
 							}
 						)
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Test namespace must a valid regex or identifier')
+						->hasMessage('Test namespace must be a valid regex or identifier')
+					->exception(function() use ($test) {
+								$test->setTestNamespace(uniqid('_') . '\\\\' . uniqid('_'));
+							}
+						)
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test namespace must be a valid regex or identifier')
 			;
 		}
 
