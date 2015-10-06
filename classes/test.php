@@ -741,19 +741,26 @@ abstract class test implements observable, \countable
 
 	public function setTestNamespace($testNamespace)
 	{
-		$this->testNamespace = self::cleanNamespace($testNamespace);
+		$testNamespace = self::cleanNamespace($testNamespace);
 
-		if ($this->testNamespace === '')
+		if ($testNamespace === '')
 		{
 			throw new exceptions\logic\invalidArgument('Test namespace must not be empty');
 		}
+
+		if (!self::isRegex($testNamespace) && !self::isValidNamespace($testNamespace, true))
+		{
+			throw new exceptions\logic\invalidArgument('Test namespace must be a valid regex or identifier');
+		}
+
+		$this->testNamespace = $testNamespace;
 
 		return $this;
 	}
 
 	public function getTestNamespace()
 	{
-		return $this->testNamespace ?: self::getNamespace();
+		return $this->testNamespace !== null ? $this->testNamespace : self::getNamespace();
 	}
 
 	public function setTestMethodPrefix($methodPrefix)
@@ -764,7 +771,8 @@ abstract class test implements observable, \countable
 		{
 			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
 		}
-		if (!(self::isRegex($methodPrefix) || self::isValidIdentifier($methodPrefix)))
+
+		if (!self::isRegex($methodPrefix) && !self::isValidIdentifier($methodPrefix))
 		{
 			throw new exceptions\logic\invalidArgument('Test method prefix must a valid regex or identifier');
 		}
@@ -776,7 +784,7 @@ abstract class test implements observable, \countable
 
 	public function getTestMethodPrefix()
 	{
-		return $this->testMethodPrefix !== NULL ? $this->testMethodPrefix : self::getMethodPrefix();
+		return $this->testMethodPrefix !== null ? $this->testMethodPrefix : self::getMethodPrefix();
 	}
 
 	public function setPhpPath($path)
@@ -1833,11 +1841,19 @@ abstract class test implements observable, \countable
 		return false !== @preg_match($namespace, null);
 	}
 
-	private static function isValidIdentifier($id)
+	private static function isValidIdentifier($identifier)
 	{
-		return 0 !== preg_match(
-			'#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#',
-			$id
-		);
+		return 0 !== preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#', $identifier);
+	}
+
+	private static function isValidNamespace($namespace)
+	{
+		foreach(explode('\\', $namespace) as $sub) {
+			if (!self::isValidIdentifier($sub)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
