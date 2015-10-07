@@ -65,5 +65,3 @@ $testGenerator->setRunnerPath('path/to/your/tests/units/runner.php');
 
 $script->getRunner()->setTestGenerator($testGenerator);
 */
-
-
