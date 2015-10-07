@@ -37,6 +37,13 @@ $report->addField($coverageField);
 */
 
 /*
+TEST EXECUTION SETUP
+
+// Please replace in next line "/path/to/your/tests/units/classes/directory" by your unit test's directory.
+$runner->addTestsFromDirectory('path/to/your/tests/units/classes/directory');
+*/
+
+/*
 TEST GENERATOR SETUP
 
 $testGenerator = new atoum\test\generator();
