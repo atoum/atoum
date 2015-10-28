@@ -1841,7 +1841,7 @@ abstract class test implements observable, \countable
 		return false !== @preg_match($namespace, null);
 	}
 
-	private static function isValidIdentifier($identifier)
+	public static function isValidIdentifier($identifier)
 	{
 		return 0 !== preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#', $identifier);
 	}
