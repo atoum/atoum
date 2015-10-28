@@ -749,7 +749,7 @@ abstract class test implements observable, \countable
 			throw new exceptions\logic\invalidArgument('Test namespace must not be empty');
 		}
 
-		if (!analyzer::isRegex($testNamespace) && !analyzer::isValidNamespace($testNamespace, true))
+		if (!analyzer::isRegex($testNamespace) && !analyzer::isValidNamespace($testNamespace))
 		{
 			throw new exceptions\logic\invalidArgument('Test namespace must be a valid regex or identifier');
 		}
