@@ -49,6 +49,11 @@ class resolver
 
 	public function resolve($asserter)
 	{
+		if (false === analyzer::isValidNamespace($asserter))
+		{
+			return null;
+		}
+
 		$class = null;
 
 		if (strpos($asserter, '\\') !== false)
@@ -57,11 +62,6 @@ class resolver
 		}
 		else
 		{
-			if (false === analyzer::isValidIdentifier($asserter))
-			{
-				return null;
-			}
-
 			foreach ($this->namespaces as $namespace)
 			{
 				$class = $this->checkClass($namespace . '\\' . $asserter);
