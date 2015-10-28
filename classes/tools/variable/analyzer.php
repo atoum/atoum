@@ -90,7 +90,7 @@ class analyzer
 
 	public static function isValidIdentifier($identifier)
 	{
-		return 0 !== preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#', $identifier);
+		return 0 !== \preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#', $identifier);
 	}
 
 	public static function isValidNamespace($namespace)
