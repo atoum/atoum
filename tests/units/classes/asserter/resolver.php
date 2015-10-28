@@ -54,10 +54,10 @@ class resolver extends atoum
 					$this->function->is_subclass_of = true
 				)
 				->then
-					->string($this->testedInstance->resolve($asserter = uniqid()))->isEqualTo('mageekguy\atoum\asserters\\' . $asserter)
-					->string($this->testedInstance->resolve($asserter = '\\' . uniqid()))->isEqualTo($asserter)
-					->string($this->testedInstance->resolve($asserter = uniqid() . '\\' . uniqid()))->isEqualTo($asserter)
-					->string($this->testedInstance->resolve($asserter = '\\' . uniqid() . '\\' . uniqid()))->isEqualTo($asserter)
+					->string($this->testedInstance->resolve($asserter = uniqid('a')))->isEqualTo('mageekguy\atoum\asserters\\' . $asserter)
+					->string($this->testedInstance->resolve($asserter = '\\' . uniqid('a')))->isEqualTo($asserter)
+					->string($this->testedInstance->resolve($asserter = uniqid('a') . '\\' . uniqid('a')))->isEqualTo($asserter)
+					->string($this->testedInstance->resolve($asserter = '\\' . uniqid('a') . '\\' . uniqid('a')))->isEqualTo($asserter)
 
 				->if($this->function->class_exists = function($class) use (& $unknownClass) { return ($class !== 'mageekguy\atoum\asserters\\' . $unknownClass); })
 				->then

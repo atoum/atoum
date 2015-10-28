@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\asserter;
 
+use mageekguy\atoum\test;
+
 class resolver
 {
 	const defaultBaseClass = 'mageekguy\atoum\asserter';
@@ -50,13 +52,28 @@ class resolver
 		{
 			$class = $this->checkClass($asserter);
 		}
-		else foreach ($this->namespaces as $namespace)
+		else
 		{
-			$class = $this->checkClass($namespace . '\\' . $asserter);
-
-			if ($class !== null)
+			if (false === test::isValidIdentifier($asserter))
 			{
-				break;
+				return null;
+			}
+
+			foreach ($this->namespaces as $namespace)
+			{
+				$class = $this->checkClass($namespace . '\\' . $asserter);
+
+				if ($class !== null)
+				{
+					break;
+				}
+
+				$class = $this->checkClass($namespace . '\\php' . ucfirst($asserter));
+
+				if ($class !== null)
+				{
+					break;
+				}
 			}
 		}
 
