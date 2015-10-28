@@ -5,7 +5,7 @@
 # 2.3.0
 
 * [#501](https://github.com/atoum/atoum/pull/501) Add atoum path and version to default CLI report ([@jubianchi])
-* [#502](https://github.com/atoum/atoum/pull/502) Improve setTestNamespace() parameters validation ([@remicollet])
+* [#502](https://github.com/atoum/atoum/pull/502) Improve `setTestNamespace` parameters validation ([@remicollet])
 
 ## Bugfix
 * [f28a6ee](https://github.com/atoum/atoum/commit/f28a6eeb6de80ccea3619e228b7a16ddd03637fc) "DOMElement::setIdAttribute(): ID otherMethod already defined" error ([@jubianchi])
