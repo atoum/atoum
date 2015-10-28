@@ -95,8 +95,10 @@ class analyzer
 
 	public static function isValidNamespace($namespace)
 	{
-		foreach(explode('\\', trim($namespace, '\\')) as $sub) {
-			if (!self::isValidIdentifier($sub)) {
+		foreach(explode('\\', trim($namespace, '\\')) as $sub)
+		{
+			if (!self::isValidIdentifier($sub))
+			{
 				return false;
 			}
 		}
