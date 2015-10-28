@@ -2,7 +2,10 @@
 
 namespace mageekguy\atoum\asserter;
 
-use mageekguy\atoum\test;
+use
+	mageekguy\atoum\test,
+	mageekguy\atoum\tools\variable\analyzer
+;
 
 class resolver
 {
@@ -54,7 +57,7 @@ class resolver
 		}
 		else
 		{
-			if (false === test::isValidIdentifier($asserter))
+			if (false === analyzer::isValidIdentifier($asserter))
 			{
 				return null;
 			}

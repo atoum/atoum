@@ -9,7 +9,8 @@ use
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\annotations
+	mageekguy\atoum\annotations,
+	mageekguy\atoum\tools\variable\analyzer
 ;
 
 abstract class test implements observable, \countable
@@ -154,7 +155,7 @@ abstract class test implements observable, \countable
 
 		$testMethodPrefix = $this->getTestMethodPrefix();
 
-		if (self::isRegex($testMethodPrefix) === false)
+		if (analyzer::isRegex($testMethodPrefix) === false)
 		{
 			$testMethodFilter = function($methodName) use ($testMethodPrefix) { return (stripos($methodName, $testMethodPrefix) === 0); };
 		}
@@ -748,7 +749,7 @@ abstract class test implements observable, \countable
 			throw new exceptions\logic\invalidArgument('Test namespace must not be empty');
 		}
 
-		if (!self::isRegex($testNamespace) && !self::isValidNamespace($testNamespace, true))
+		if (!analyzer::isRegex($testNamespace) && !analyzer::isValidNamespace($testNamespace, true))
 		{
 			throw new exceptions\logic\invalidArgument('Test namespace must be a valid regex or identifier');
 		}
@@ -772,7 +773,7 @@ abstract class test implements observable, \countable
 			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
 		}
 
-		if (!self::isRegex($methodPrefix) && !self::isValidIdentifier($methodPrefix))
+		if (!analyzer::isRegex($methodPrefix) && !analyzer::isValidIdentifier($methodPrefix))
 		{
 			throw new exceptions\logic\invalidArgument('Test method prefix must a valid regex or identifier');
 		}
@@ -1466,7 +1467,7 @@ abstract class test implements observable, \countable
 			$testNamespace = self::getNamespace();
 		}
 
-		if (self::isRegex($testNamespace) === true)
+		if (analyzer::isRegex($testNamespace) === true)
 		{
 			if (preg_match($testNamespace, $fullyQualifiedClassName) === 0)
 			{
@@ -1834,26 +1835,5 @@ abstract class test implements observable, \countable
 	private static function cleanNamespace($namespace)
 	{
 		return trim((string) $namespace, '\\');
-	}
-
-	private static function isRegex($namespace)
-	{
-		return false !== @preg_match($namespace, null);
-	}
-
-	public static function isValidIdentifier($identifier)
-	{
-		return 0 !== preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#', $identifier);
-	}
-
-	private static function isValidNamespace($namespace)
-	{
-		foreach(explode('\\', $namespace) as $sub) {
-			if (!self::isValidIdentifier($sub)) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 }

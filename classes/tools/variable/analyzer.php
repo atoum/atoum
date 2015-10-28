@@ -82,4 +82,25 @@ class analyzer
 	{
 		return (is_array($mixed) === true);
 	}
+
+	public static function isRegex($namespace)
+	{
+		return false !== @preg_match($namespace, null);
+	}
+
+	public static function isValidIdentifier($identifier)
+	{
+		return 0 !== preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#', $identifier);
+	}
+
+	public static function isValidNamespace($namespace)
+	{
+		foreach(explode('\\', $namespace) as $sub) {
+			if (!self::isValidIdentifier($sub)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
