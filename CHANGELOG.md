@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#515](https://github.com/atoum/atoum/pull/515) Fix PHP7 support in the basic resolver ([@hywan])
+
 # 2.3.0
 
 * [#501](https://github.com/atoum/atoum/pull/501) Add atoum path and version to default CLI report ([@jubianchi])
