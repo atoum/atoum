@@ -14,13 +14,27 @@ class resolver
 
 	protected $baseClass = '';
 	protected $namespaces = array();
+	private $analyzer;
 
-	public function __construct($baseClass = null, $namespace = null)
+	public function __construct($baseClass = null, $namespace = null, analyzer $analyzer = null)
 	{
 		$this
 			->setBaseClass($baseClass ?: static::defaultBaseClass)
 			->addNamespace($namespace ?: static::defaultNamespace)
+			->setAnalyzer($analyzer)
 		;
+	}
+
+	public function setAnalyzer(analyzer $analyzer = null)
+	{
+		$this->analyzer = $analyzer ?: new analyzer();
+
+		return $this;
+	}
+
+	public function getAnalyzer()
+	{
+		return $this->analyzer;
 	}
 
 	public function setBaseClass($baseClass)
@@ -49,7 +63,7 @@ class resolver
 
 	public function resolve($asserter)
 	{
-		if (false === analyzer::isValidNamespace($asserter))
+		if (false === $this->analyzer->isValidNamespace($asserter))
 		{
 			return null;
 		}
@@ -60,23 +74,20 @@ class resolver
 		{
 			$class = $this->checkClass($asserter);
 		}
-		else
+		else foreach ($this->namespaces as $namespace)
 		{
-			foreach ($this->namespaces as $namespace)
+			$class = $this->checkClass($namespace . '\\' . $asserter);
+
+			if ($class !== null)
 			{
-				$class = $this->checkClass($namespace . '\\' . $asserter);
+				break;
+			}
 
-				if ($class !== null)
-				{
-					break;
-				}
+			$class = $this->checkClass($namespace . '\\php' . ucfirst($asserter));
 
-				$class = $this->checkClass($namespace . '\\php' . ucfirst($asserter));
-
-				if ($class !== null)
-				{
-					break;
-				}
+			if ($class !== null)
+			{
+				break;
 			}
 		}
 

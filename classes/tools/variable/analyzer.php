@@ -83,17 +83,17 @@ class analyzer
 		return (is_array($mixed) === true);
 	}
 
-	public static function isRegex($namespace)
+	public function isRegex($namespace)
 	{
 		return false !== @preg_match($namespace, null);
 	}
 
-	public static function isValidIdentifier($identifier)
+	public function isValidIdentifier($identifier)
 	{
 		return 0 !== \preg_match('#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$#', $identifier);
 	}
 
-	public static function isValidNamespace($namespace)
+	public function isValidNamespace($namespace)
 	{
 		foreach(explode('\\', trim($namespace, '\\')) as $sub)
 		{

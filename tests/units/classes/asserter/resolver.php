@@ -58,7 +58,10 @@ class resolver extends atoum
 					->string($this->testedInstance->resolve($asserter = '\\' . uniqid('a')))->isEqualTo($asserter)
 					->string($this->testedInstance->resolve($asserter = uniqid('a') . '\\' . uniqid('a')))->isEqualTo($asserter)
 					->string($this->testedInstance->resolve($asserter = '\\' . uniqid('a') . '\\' . uniqid('a')))->isEqualTo($asserter)
-
+					->variable($this->testedInstance->resolve(uniqid(1)))->isNull
+					->variable($this->testedInstance->resolve('\\' . uniqid(1)))->isNull
+					->variable($this->testedInstance->resolve(uniqid(1) . '\\' . $asserter))->isNull
+					->variable($this->testedInstance->resolve(uniqid(1) . '\\' . uniqid(2)))->isNull
 				->if($this->function->class_exists = function($class) use (& $unknownClass) { return ($class !== 'mageekguy\atoum\asserters\\' . $unknownClass); })
 				->then
 					->variable($this->testedInstance->resolve($unknownClass = uniqid()))->isNull

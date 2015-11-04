@@ -82,12 +82,13 @@ abstract class test implements observable, \countable
 	private $branchesAndPathsCoverage = false;
 	private $classHasNotVoidMethods = false;
 	private $extensions = null;
+	private $analyzer;
 
 	private static $namespace = null;
 	private static $methodPrefix = null;
 	private static $defaultEngine = self::defaultEngine;
 
-	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null, \closure $phpExtensionFactory = null)
+	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null, \closure $phpExtensionFactory = null, analyzer $analyzer = null)
 	{
 		$this
 			->setAdapter($adapter)
@@ -104,7 +105,8 @@ abstract class test implements observable, \countable
 			->setReflectionMethodFactory()
 			->setAsserterCallManager()
 			->enableCodeCoverage()
-			->setPhpExtensionFactory($phpExtensionFactory);
+			->setPhpExtensionFactory($phpExtensionFactory)
+			->setAnalyzer($analyzer)
 		;
 
 		$this->observers = new \splObjectStorage();
@@ -155,7 +157,7 @@ abstract class test implements observable, \countable
 
 		$testMethodPrefix = $this->getTestMethodPrefix();
 
-		if (analyzer::isRegex($testMethodPrefix) === false)
+		if ($this->analyzer->isRegex($testMethodPrefix) === false)
 		{
 			$testMethodFilter = function($methodName) use ($testMethodPrefix) { return (stripos($methodName, $testMethodPrefix) === 0); };
 		}
@@ -204,6 +206,18 @@ abstract class test implements observable, \countable
 	public function __call($method, array $arguments)
 	{
 		return $this->assertionManager->__call($method, $arguments);
+	}
+
+	public function setAnalyzer(analyzer $analyzer = null)
+	{
+		$this->analyzer = $analyzer ?: new analyzer();
+
+		return $this;
+	}
+
+	public function getAnalyzer()
+	{
+		return $this->analyzer;
 	}
 
 	public function setTestAdapterStorage(test\adapter\storage $storage = null)
@@ -749,7 +763,7 @@ abstract class test implements observable, \countable
 			throw new exceptions\logic\invalidArgument('Test namespace must not be empty');
 		}
 
-		if (!analyzer::isRegex($testNamespace) && !analyzer::isValidNamespace($testNamespace))
+		if (!$this->analyzer->isRegex($testNamespace) && !$this->analyzer->isValidNamespace($testNamespace))
 		{
 			throw new exceptions\logic\invalidArgument('Test namespace must be a valid regex or identifier');
 		}
@@ -773,7 +787,7 @@ abstract class test implements observable, \countable
 			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
 		}
 
-		if (!analyzer::isRegex($methodPrefix) && !analyzer::isValidIdentifier($methodPrefix))
+		if (!$this->analyzer->isRegex($methodPrefix) && !$this->analyzer->isValidIdentifier($methodPrefix))
 		{
 			throw new exceptions\logic\invalidArgument('Test method prefix must a valid regex or identifier');
 		}
@@ -864,7 +878,7 @@ abstract class test implements observable, \countable
 	{
 		if ($this->testedClassName === null)
 		{
-			$this->testedClassName = self::getTestedClassNameFromTestClass($this->getClass(), $this->getTestNamespace());
+			$this->testedClassName = self::getTestedClassNameFromTestClass($this->getClass(), $this->getTestNamespace(), $this->getAnalyzer());
 		}
 
 		return $this->testedClassName;
@@ -1460,14 +1474,16 @@ abstract class test implements observable, \countable
 		return self::$defaultEngine ?: self::defaultEngine;
 	}
 
-	public static function getTestedClassNameFromTestClass($fullyQualifiedClassName, $testNamespace = null)
+	public static function getTestedClassNameFromTestClass($fullyQualifiedClassName, $testNamespace = null, analyzer $analyzer = null)
 	{
+		$analyzer = $analyzer ?: new analyzer();
+
 		if ($testNamespace === null)
 		{
 			$testNamespace = self::getNamespace();
 		}
 
-		if (analyzer::isRegex($testNamespace) === true)
+		if ($analyzer->isRegex($testNamespace) === true)
 		{
 			if (preg_match($testNamespace, $fullyQualifiedClassName) === 0)
 			{
