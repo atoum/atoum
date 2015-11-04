@@ -4,6 +4,19 @@ namespace mageekguy\atoum
 {
 	class emptyTest {}
 	class notEmptyTest {}
+
+	class withStatic
+	{
+		static public function staticMethod($return)
+		{
+			return $return;
+		}
+
+		static public function someOtherStaticMethod($return1, $return2, $return3)
+		{
+			return array($return1, $return2, $return3);
+		}
+	}
 }
 
 namespace mageekguy\atoum\mock\mageekguy\atoum
@@ -56,6 +69,26 @@ namespace mageekguy\atoum\tests\units
 			$this->setTestedClassName('mageekguy\atoum\test');
 
 			parent::__construct();
+		}
+	}
+
+	class withStatic extends atoum\test
+	{
+		public function testStaticMethod()
+		{
+			$this
+				->then
+					->string($this->callStaticOnTestedClass('staticMethod', $return = uniqid()))
+						->isEqualTo($return)
+
+					->array($this->callStaticOnTestedClass(
+						'someOtherStaticMethod',
+						$return1 = uniqid(),
+						$return2 = uniqid(),
+						$return3 = uniqid()
+					))
+						->isEqualTo(array($return1, $return2, $return3))
+			;
 		}
 	}
 

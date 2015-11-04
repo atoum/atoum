@@ -420,6 +420,17 @@ abstract class test implements observable, \countable
 			->setPropertyHandler('exception', function() { return asserters\exception::getLastValue(); })
 		;
 
+		// Around testedInstance
+		$this->assertionManager
+			->setHandler('callStaticOnTestedClass', function() use ($test) {
+					$args = func_get_args();
+					$method = array_shift($args);
+
+					return call_user_func_array(array($test->getTestedClassName(), $method), $args);
+				}
+			)
+		;
+
 		$mockGenerator = $this->mockGenerator;
 
 		$this->assertionManager
