@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#496](https://github.com/atoum/atoum/pull/496) Mock generator supports variadic arguments passed by reference ([@jubianchi])
 * [#496](https://github.com/atoum/atoum/pull/496) Auto generate and inject mocks in test methods ([@jubianchi])
 * [#496](https://github.com/atoum/atoum/pull/496) Support closure data provider in tests ([@jubianchi])
 
