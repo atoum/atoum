@@ -987,6 +987,11 @@ namespace mageekguy\atoum\tests\units
 					->object($test->setDataProvider('testMethod1'))->isIdenticalTo($test)
 					->array($test->getDataProviders())
 						->object['testMethod1']->isInstanceOf('mageekguy\atoum\test\data\provider\aggregator')
+				->if($test = new dataProviderTest())
+				->then
+					->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod3', function() {}); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Cannot use a closure as a data provider for method ' . get_class($test) . '::testMethod3()')
 			;
 		}
 

@@ -1462,6 +1462,11 @@ abstract class test implements observable, \countable
 			}
 		}
 
+		if ($dataProvider instanceof \closure)
+		{
+			throw new exceptions\logic\invalidArgument('Cannot use a closure as a data provider for method ' . $this->class . '::' . $testMethodName . '()');
+		}
+
 		if ($dataProvider instanceof test\data\provider === false && method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
 		{
 			throw new exceptions\logic\invalidArgument('Data provider ' . $this->class . '::' . lcfirst($dataProvider) . '() is unknown');
