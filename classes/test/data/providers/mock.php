@@ -23,7 +23,7 @@ class mock extends object
 		return __CLASS__ . '<' . $this->class . '>';
 	}
 
-	function __wakeup()
+	public function __wakeup()
 	{
 		$this->setMockGenerator();
 	}
@@ -43,7 +43,7 @@ class mock extends object
 		$mockNamespace = $this->mockGenerator->getDefaultNamespace();
 		$className = $mockNamespace . '\\' . $this->classIsSet()->class;
 
-		if (static::classExists($className) == false)
+		if (static::classExists($className) === false)
 		{
 			$this->mockGenerator->generate($this->class);
 		}

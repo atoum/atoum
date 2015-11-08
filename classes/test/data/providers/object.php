@@ -23,7 +23,7 @@ class object implements provider
 		return __CLASS__ . '<' . $this->class . '>';
 	}
 
-	function __sleep()
+	public function __sleep()
 	{
 		return array('class');
 	}
@@ -47,7 +47,8 @@ class object implements provider
 
 	public function generate()
 	{
-		if (static::canInstanciateClass($this->classIsSet()->class)) {
+		if (static::canInstanciateClass($this->classIsSet()->class))
+		{
 			$className = $this->class;
 
 			return new $className();
@@ -82,12 +83,9 @@ class object implements provider
 			throw new provider\object\exceptions\privateConstructor('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() is private');
 		}
 
-		foreach ($constructor->getParameters() as $parameter)
+		if ($constructor->getNumberOfRequiredParameters() > 0)
 		{
-			if ($parameter->isOptional() === false)
-			{
-				throw new provider\object\exceptions\mandatoryArgument('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() has at least one mandatory argument');
-			}
+			throw new provider\object\exceptions\mandatoryArgument('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() has at least one mandatory argument');
 		}
 
 		return true;

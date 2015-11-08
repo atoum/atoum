@@ -51,9 +51,9 @@ namespace mageekguy\atoum\tests\units
 		public function testMethod1() {}
 
 		/**
-		@extensions mbstring socket
-		@ignore off
-		@tags test method two
+		 * @extensions mbstring socket
+		 * @ignore off
+		 * @tags test method two
 		*/
 		public function testMethod2() {}
 

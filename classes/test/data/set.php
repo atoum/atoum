@@ -29,7 +29,12 @@ class set extends provider\aggregator
 	{
 		$provider = $this->provider;
 
-		return array_map(function() use ($provider) { return $provider->generate(); }, range(0, $this->size - 1));
+		return array_map(
+			function() use ($provider) {
+				return $provider->generate();
+			},
+			range(0, $this->size - 1)
+		);
 	}
 
 	public function count()

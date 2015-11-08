@@ -15,7 +15,14 @@ class aggregator implements provider, \countable
 
 	public function __toString()
 	{
-		return __CLASS__ . '<' . implode(', ', array_map(function(provider $provider) { return $provider->__toString(); }, $this->providers)) . '>';
+		$types = array_map(
+			function(provider $provider) {
+				return $provider->__toString();
+			},
+			$this->providers
+		);
+
+		return __CLASS__ . '<' . implode(', ', $types) . '>';
 	}
 
 	public function generate()
