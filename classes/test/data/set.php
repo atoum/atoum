@@ -6,12 +6,12 @@ use mageekguy\atoum\test\data\provider;
 
 class set extends provider\aggregator
 {
-	protected $aggregator;
+	protected $provider;
 	protected $size;
 
-	public function __construct(provider\aggregator $aggregator, $size = null)
+	public function __construct(provider $provider, $size = null)
 	{
-		$this->aggregator = $aggregator;
+		$this->provider = $provider;
 		$this->size = $size ?: 1;
 	}
 
@@ -22,14 +22,14 @@ class set extends provider\aggregator
 
 	public function __toString()
 	{
-		return $this->aggregator->__toString();
+		return $this->provider->__toString();
 	}
 
 	public function generate()
 	{
-		$aggregator = $this->aggregator;
+		$provider = $this->provider;
 
-		return array_map(function() use ($aggregator) { return $aggregator->generate(); }, range(0, $this->size - 1));
+		return array_map(function() use ($provider) { return $provider->generate(); }, range(0, $this->size - 1));
 	}
 
 	public function count()
