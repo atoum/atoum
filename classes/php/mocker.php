@@ -27,6 +27,8 @@ abstract class mocker
 
 	abstract public function __unset($name);
 
+	abstract function addToTest(atoum\test $test);
+
 	public function setDefaultNamespace($namespace)
 	{
 		$this->defaultNamespace = trim($namespace, '\\');
