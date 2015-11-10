@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#520](https://github.com/atoum/atoum/pull/520) Introduce the constant mocker ([@hywan])
 * [#518](https://github.com/atoum/atoum/pull/518) Update atoum's PHAR against Github releases with `--github-update` ([@jubianchi])
 * [#515](https://github.com/atoum/atoum/pull/515) Fix PHP7 support in the basic resolver ([@hywan])
 
