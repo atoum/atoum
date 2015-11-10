@@ -92,7 +92,8 @@ namespace mageekguy\atoum\tests\units
 					->object($test->getScore())->isInstanceOf('mageekguy\atoum\score')
 					->object($test->getLocale())->isEqualTo(new atoum\locale())
 					->object($test->getAdapter())->isEqualTo(new atoum\adapter())
-					->object($test->getPhpMocker())->isInstanceOf('mageekguy\atoum\php\mocker')
+					->object($test->getPhpFunctionMocker())->isInstanceOf('mageekguy\atoum\php\mocker\funktion')
+					->object($test->getPhpConstantMocker())->isInstanceOf('mageekguy\atoum\php\mocker\constant')
 					->object($test->getFactoryBuilder())->isInstanceOf('mageekguy\atoum\factory\builder\closure')
 					->boolean($test->isIgnored())->isTrue()
 					->boolean($test->debugModeIsEnabled())->isFalse()
@@ -314,17 +315,17 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testSetPhpMocker()
+		public function testSetPhpFunktionMocker()
 		{
 			$this
 				->if($test = new emptyTest())
 				->then
-					->object($test->setPhpMocker($phpMocker = new atoum\php\mocker()))->isIdenticalTo($test)
-					->object($test->getPhpMocker())->isIdenticalTo($phpMocker)
-					->object($test->setPhpMocker())->isIdenticalTo($test)
-					->object($test->getPhpMocker())
-						->isNotIdenticalTo($phpMocker)
-						->isInstanceOf('mageekguy\atoum\php\mocker')
+					->object($test->setPhpFunctionMocker($phpFunctionMocker = new atoum\php\mocker\funktion()))->isIdenticalTo($test)
+					->object($test->getPhpFunctionMocker())->isIdenticalTo($phpFunctionMocker)
+					->object($test->setPhpFunctionMocker())->isIdenticalTo($test)
+					->object($test->getPhpFunctionMocker())
+						->isNotIdenticalTo($phpFunctionMocker)
+						->isInstanceOf('mageekguy\atoum\php\mocker\funktion')
 			;
 		}
 

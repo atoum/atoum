@@ -47,7 +47,7 @@ abstract class test implements observable, \countable
 	private $phpExtensionFactory;
 	private $asserterGenerator = null;
 	private $assertionManager = null;
-	private $phpMocker = null;
+	private $phpFunctionMocker = null;
 	private $testAdapterStorage = null;
 	private $asserterCallManager = null;
 	private $mockControllerLinker = null;
@@ -92,7 +92,7 @@ abstract class test implements observable, \countable
 	{
 		$this
 			->setAdapter($adapter)
-			->setPhpMocker()
+			->setPhpFunctionMocker()
 			->setMockGenerator()
 			->setMockAutoloader()
 			->setAsserterGenerator($asserterGenerator)
@@ -280,16 +280,16 @@ abstract class test implements observable, \countable
 		return $this->adapter;
 	}
 
-	public function setPhpMocker(php\mocker $phpMocker = null)
+	public function setPhpFunctionMocker(php\mocker\funktion $phpFunctionMocker = null)
 	{
-		$this->phpMocker = $phpMocker ?: new php\mocker();
+		$this->phpFunctionMocker = $phpFunctionMocker ?: new php\mocker\funktion();
 
 		return $this;
 	}
 
-	public function getPhpMocker()
+	public function getPhpFunctionMocker()
 	{
-		return $this->phpMocker;
+		return $this->phpFunctionMocker;
 	}
 
 	public function setMockGenerator(test\mock\generator $generator = null)
@@ -392,7 +392,7 @@ abstract class test implements observable, \countable
 			->setHandler('stop', function() use ($test) { if ($test->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $test; })
 			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
 			->setHandler('dumpOnFailure', function($variable) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $test; })
-			->setPropertyHandler('function', function() use ($test) { return $test->getPhpMocker(); })
+            ->setPropertyHandler('function', function() use ($test) { return $this->getPhpFunctionMocker(); })
 			->setPropertyHandler('exception', function() { return asserters\exception::getLastValue(); })
 		;
 
@@ -426,9 +426,9 @@ abstract class test implements observable, \countable
 			->setHandler('resetAdapter', function(test\adapter $adapter) { return $adapter->resetCalls(); })
 		;
 
-		$phpMocker = $this->phpMocker;
+		$phpFunctionMocker = $this->phpFunctionMocker;
 
-		$this->assertionManager->setHandler('resetFunction', function(test\adapter\invoker $invoker) use ($phpMocker) { $phpMocker->resetCalls($invoker->getFunction()); return $invoker; });
+		$this->assertionManager->setHandler('resetFunction', function(test\adapter\invoker $invoker) use ($phpFunctionMocker) { $phpFunctionMocker->resetCalls($invoker->getFunction()); return $invoker; });
 
 		$assertionAliaser = $this->assertionManager->getAliaser();
 
@@ -1131,7 +1131,7 @@ abstract class test implements observable, \countable
 			$this->currentMethod = $testMethod;
 			$this->executeOnFailure = array();
 
-			$this->phpMocker->setDefaultNamespace($this->getTestedClassNamespace());
+			$this->phpFunctionMocker->setDefaultNamespace($this->getTestedClassNamespace());
 
 			try
 			{
