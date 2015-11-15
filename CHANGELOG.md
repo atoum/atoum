@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#518](https://github.com/atoum/atoum/pull/518) Update atoum's PHAR against Github releases with `--github-update` ([@jubianchi])
 * [#515](https://github.com/atoum/atoum/pull/515) Fix PHP7 support in the basic resolver ([@hywan])
 
 # 2.3.0
