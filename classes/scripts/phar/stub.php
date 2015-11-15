@@ -13,6 +13,7 @@ class stub extends scripts\runner
 	const scriptsDirectory = 'scripts';
 	const scriptsExtension = '.php';
 	const updateUrl = 'http://downloads.atoum.org/update.php?version=%s';
+	const githubUpdateUrl = 'https://api.github.com/repos/atoum/atoum/releases';
 
 	protected $pharFactory = null;
 
@@ -167,6 +168,74 @@ class stub extends scripts\runner
 		return $this->stopRun();
 	}
 
+	public function updateFromGithub()
+	{
+		if ($this->adapter->ini_get('phar.readonly') == true)
+		{
+			throw new exceptions\runtime('Unable to update the PHAR, phar.readonly is set, use \'-d phar.readonly=0\'');
+		}
+
+		if ($this->adapter->ini_get('allow_url_fopen') == false)
+		{
+			throw new exceptions\runtime('Unable to update the PHAR, allow_url_fopen is not set, use \'-d allow_url_fopen=1\'');
+		}
+
+		if (($versions = $this->getVersions($currentPhar = call_user_func($this->pharFactory, $this->getName()))) === null)
+		{
+			throw new exceptions\runtime('Unable to update the PHAR, the versions\'s file is invalid');
+		}
+
+		$this->writeMessage($this->locale->_('Checking if a new version is available on Github...'), false);
+
+		$httpContext = stream_context_create(array(
+			'http' => array(
+					'method' => 'GET',
+					'protocol_version' => '1.1',
+					'header' => "Accept: */*\r\nUser-Agent:atoum\r\nCache-Control: no-cache"
+			)
+		));
+		$data = json_decode($this->adapter->file_get_contents(self::githubUpdateUrl, false, $httpContext), true);
+
+		$this
+			->clearMessage()
+			->writeMessage($this->locale->_('Checking if a new version is available Github... Done!' . PHP_EOL))
+		;
+
+		if (is_array($data) === false || sizeof($data) === 0)
+		{
+			$this->writeInfo($this->locale->_('There is no new version available!'));
+		}
+		else
+		{
+			$data = array_filter($data, function ($release) { return $release['draft'] === false; });
+
+			$release = array_shift($data);
+
+			if (is_array($release) === false || isset($release['name']) === false || version_compare($versions[$versions['current']], $release['name']) >= 0)
+			{
+				$this->writeInfo($this->locale->_('There is no new version available!'));
+			}
+			else
+			{
+				$assets = array_filter($release['assets'], function ($asset) { return $asset['name'] === 'atoum.phar'; });
+				$asset = array_shift($assets);
+
+				$assetData = json_decode($this->adapter->file_get_contents($asset['url'], false, $httpContext), true);
+
+				if (is_array($assetData) === false || isset($assetData['browser_download_url']) === false)
+				{
+					$this->writeInfo($this->locale->_('There is no new version available!'));
+				}
+				else
+				{
+					$this->downloadPhar($release['name'], $currentPhar, $this->adapter->file_get_contents($assetData['browser_download_url'], false, $httpContext));
+				}
+			}
+		}
+
+		return $this->stopRun();
+	}
+
 	public function update()
 	{
 		if ($this->adapter->ini_get('phar.readonly') == true)
@@ -201,56 +270,61 @@ class stub extends scripts\runner
 		}
 		else
 		{
-			$tmpFile = $this->adapter->realpath($this->adapter->sys_get_temp_dir()) . '/' . md5($data['version']) . '.phar';
-
-			if ($this->adapter->file_put_contents($tmpFile, utf8_decode($data['phar'])) === false)
-			{
-				throw new exceptions\runtime('Unable to create temporary file to update to version \'' . $data['version']);
-			}
-
-			$this->writeMessage(sprintf($this->locale->_('Update to version \'%s\'...'), $data['version']), false);
-
-			$pharPathLength = strlen($pharPath = 'phar://' . $tmpFile . '/1/');
-
-			$newCurrentDirectory = 1;
-
-			while (isset($versions[$newCurrentDirectory]) === true)
-			{
-				$newCurrentDirectory++;
-			}
-
-			$newFiles = new \arrayIterator();
-
-			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($pharPath)) as $newFile)
-			{
-				$newFiles[$newCurrentDirectory . '/' . substr($newFile, $pharPathLength)] = ($newFile = (string) $newFile);
-			}
-
-			$currentPhar->buildFromIterator($newFiles);
-
-			$this
-				->clearMessage()
-				->writeMessage(sprintf($this->locale->_('Update to version \'%s\'... Done!' . PHP_EOL), $data['version']))
-			;
-
-			@$this->adapter->unlink($tmpFile);
-
-			$this->writeMessage(sprintf($this->locale->_('Enable version \'%s\'...'), $data['version']), false);
-
-			$versions[$newCurrentDirectory] = $data['version'];
-			$versions['current'] = $newCurrentDirectory;
-
-			$currentPhar['versions'] = serialize($versions);
-
-			$this
-				->clearMessage()
-				->writeMessage(sprintf($this->locale->_('Enable version \'%s\'... Done!' . PHP_EOL), $data['version']))
-			;
-
-			$this->writeInfo(sprintf($this->locale->_('Atoum has been updated from version \'%s\' to \'%s\' successfully!'), atoum\version, $data['version']));
+			$this->downloadPhar($data['version'], $currentPhar, utf8_decode($data['phar']));
 		}
 
 		return $this->stopRun();
+	}
+
+	private function downloadPhar($newVersion, $currentPhar, $newPhar)
+	{
+		$tmpFile = $this->adapter->realpath($this->adapter->sys_get_temp_dir()) . '/' . md5($newVersion) . '.phar';
+
+		if ($this->adapter->file_put_contents($tmpFile, $newPhar) === false)
+		{
+			throw new exceptions\runtime('Unable to create temporary file to update to version \'' . $newVersion);
+		}
+
+		$this->writeMessage(sprintf($this->locale->_('Update to version \'%s\'...'), $newVersion), false);
+
+		$pharPathLength = strlen($pharPath = 'phar://' . $tmpFile . '/1/');
+
+		$newCurrentDirectory = 1;
+
+		while (isset($versions[$newCurrentDirectory]) === true)
+		{
+			$newCurrentDirectory++;
+		}
+
+		$newFiles = new \arrayIterator();
+
+		foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($pharPath)) as $newFile)
+		{
+			$newFiles[$newCurrentDirectory . '/' . substr($newFile, $pharPathLength)] = ($newFile = (string) $newFile);
+		}
+
+		$currentPhar->buildFromIterator($newFiles);
+
+		$this
+			->clearMessage()
+			->writeMessage(sprintf($this->locale->_('Update to version \'%s\'... Done!' . PHP_EOL), $newVersion))
+		;
+
+		@$this->adapter->unlink($tmpFile);
+
+		$this->writeMessage(sprintf($this->locale->_('Enable version \'%s\'...'), $newVersion), false);
+
+		$versions[$newCurrentDirectory] = $newVersion;
+		$versions['current'] = $newCurrentDirectory;
+
+		$currentPhar['versions'] = serialize($versions);
+
+		$this
+			->clearMessage()
+			->writeMessage(sprintf($this->locale->_('Enable version \'%s\'... Done!' . PHP_EOL), $newVersion))
+		;
+
+		$this->writeInfo(sprintf($this->locale->_('Atoum has been updated from version \'%s\' to \'%s\' successfully!'), atoum\version, $newVersion));
 	}
 
 	public function listAvailableVersions()
@@ -465,6 +539,19 @@ class stub extends scripts\runner
 				array('--update'),
 				null,
 				$this->locale->_('Update atoum')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) > 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->updateFromGithub();
+				},
+				array('--github-update'),
+				null,
+				$this->locale->_('Update atoum from github')
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {
