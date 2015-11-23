@@ -254,9 +254,18 @@ class autoloader
 		{
 			static::$autoloader = new static();
 			static::$autoloader->register();
+			static::registerComposerAutoloader();
 		}
 
 		return static::$autoloader;
+	}
+
+	public static function registerComposerAutoloader()
+	{
+		$composerAutoloaderPath = __DIR__ . '/../../../autoload.php';
+		if (is_file($composerAutoloaderPath)) {
+			require_once $composerAutoloaderPath;
+		}
 	}
 
 	public static function get()
