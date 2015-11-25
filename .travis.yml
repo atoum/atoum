@@ -27,8 +27,8 @@ script:
   - php ./scripts/runner.php --test-it $args
 before_deploy:
   - mkdir phar
-  - php -dphar.readonly=Off scripts/phar/generator.php -d ./phar
-  - php ./phar/atoum.phar --test-it
+  - php -n -dphar.readonly=Off scripts/phar/generator.php -d ./phar
+  - php ./phar/atoum.phar --test-it $args
 deploy:
   provider: releases
   api_key:
