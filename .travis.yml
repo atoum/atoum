@@ -28,6 +28,7 @@ script:
 before_deploy:
   - mkdir phar
   - php -dphar.readonly=Off scripts/phar/generator.php -d ./phar
+  - php ./phar/atoum.phar --test-it
 deploy:
   provider: releases
   api_key:
