@@ -5,7 +5,7 @@
 * [#515](https://github.com/atoum/atoum/pull/515) Fix PHP7 support in the basic resolver ([@hywan])
 * [#516](https://github.com/atoum/atoum/pull/516) Add a "callStaticOnTestedClass" method ([@mikaelrandy])
 
-# 2.3.0 - 2O15-10-22
+# 2.3.0 - 2015-10-22
 
 * [#501](https://github.com/atoum/atoum/pull/501) Add atoum path and version to default CLI report ([@jubianchi])
 * [#502](https://github.com/atoum/atoum/pull/502) Improve `setTestNamespace` parameters validation ([@remicollet])
@@ -124,3 +124,4 @@
 [@n-couet]: https://github.com/n-couet
 [@remicollet]: https://github.com/remicollet
 [@vonglasow]: https://github.com/vonglasow
+[@mikaelrandy]: https://github.com/mikaelrandy
