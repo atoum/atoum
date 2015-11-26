@@ -4,6 +4,19 @@ namespace mageekguy\atoum
 {
 	class emptyTest {}
 	class notEmptyTest {}
+
+	class withStatic
+	{
+		static public function staticMethod($return)
+		{
+			return $return;
+		}
+
+		static public function someOtherStaticMethod($return1, $return2, $return3)
+		{
+			return array($return1, $return2, $return3);
+		}
+	}
 }
 
 namespace mageekguy\atoum\mock\mageekguy\atoum
@@ -21,15 +34,15 @@ namespace mageekguy\atoum\tests\units
 	require_once __DIR__ . '/../runner.php';
 
 	/**
-	@ignore on
-	@tags empty fake dummy
-	@maxChildrenNumber 666
-	*/
+	 * @ignore on
+	 * @tags empty fake dummy
+	 * @maxChildrenNumber 666
+	 */
 	class emptyTest extends atoum\test {}
 
 	/**
-	@ignore on
-	*/
+	 * @ignore on
+	 */
 	class notEmptyTest extends atoum\test
 	{
 		/**
@@ -49,11 +62,27 @@ namespace mageekguy\atoum\tests\units
 		}
 	}
 
+	/**
+	 * @ignore on
+	 */
 	class foo extends atoum\test
 	{
 		public function __construct()
 		{
 			$this->setTestedClassName('mageekguy\atoum\test');
+
+			parent::__construct();
+		}
+	}
+
+	/**
+	 * @ignore on
+	 */
+	class withStatic extends atoum\test
+	{
+		public function __construct()
+		{
+			$this->setTestedClassName('mageekguy\atoum\withStatic');
 
 			parent::__construct();
 		}
@@ -1139,6 +1168,24 @@ namespace mageekguy\atoum\tests\units
 					->object($test->removeExtensions())->isIdenticalTo($test)
 					->array($test->getExtensions())->isEmpty()
 					->array($test->getObservers())->isEmpty()
+			;
+		}
+
+		public function testStaticMethod()
+		{
+			$this
+				->if($test = new withStatic())
+				->then
+					->string($test->callStaticOnTestedClass('staticMethod', $return = uniqid()))
+						->isEqualTo($return)
+
+					->array($test->callStaticOnTestedClass(
+						'someOtherStaticMethod',
+						$return1 = uniqid(),
+						$return2 = uniqid(),
+						$return3 = uniqid()
+					))
+						->isEqualTo(array($return1, $return2, $return3))
 			;
 		}
 	}
