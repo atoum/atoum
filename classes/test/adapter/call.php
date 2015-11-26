@@ -94,7 +94,7 @@ class call
 	{
 		switch (true)
 		{
-			case $this->function === null || $this->function != $call->function:
+			case $this->function === null || strtolower($this->function) != strtolower($call->function):
 				return false;
 
 			case $this->arguments === null:

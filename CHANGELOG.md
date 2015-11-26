@@ -5,12 +5,18 @@
 * [#515](https://github.com/atoum/atoum/pull/515) Fix PHP7 support in the basic resolver ([@hywan])
 * [#516](https://github.com/atoum/atoum/pull/516) Add a "callStaticOnTestedClass" method ([@mikaelrandy])
 
-# 2.3.0 - 2015-10-22
+## Bugfix
+
+* [#526](https://github.com/atoum/atoum/pull/526) Mock asserter is not case sensitive ([@mageekguy])
+
+
+# 2.3.0 - 2O15-10-22
 
 * [#501](https://github.com/atoum/atoum/pull/501) Add atoum path and version to default CLI report ([@jubianchi])
 * [#502](https://github.com/atoum/atoum/pull/502) Improve `setTestNamespace` parameters validation ([@remicollet])
 
 ## Bugfix
+
 * [f28a6ee](https://github.com/atoum/atoum/commit/f28a6eeb6de80ccea3619e228b7a16ddd03637fc) "DOMElement::setIdAttribute(): ID otherMethod already defined" error ([@jubianchi])
 
 # 2.2.2 - 2015-09-17
@@ -54,6 +60,7 @@
 # 2.0.0 - 2015-02-13
 
 ## BC break updates
+
 * [#420](https://github.com/atoum/atoum/pull/420) `atoum\test::beforeTestMethod` is called before the tested class is loaded (@mageekguy)
 
 ## Other updates
