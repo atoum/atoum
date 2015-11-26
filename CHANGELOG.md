@@ -10,7 +10,7 @@
 * [#526](https://github.com/atoum/atoum/pull/526) Mock asserter is not case sensitive ([@mageekguy])
 
 
-# 2.3.0 - 2O15-10-22
+# 2.3.0 - 2015-10-22
 
 * [#501](https://github.com/atoum/atoum/pull/501) Add atoum path and version to default CLI report ([@jubianchi])
 * [#502](https://github.com/atoum/atoum/pull/502) Improve `setTestNamespace` parameters validation ([@remicollet])
