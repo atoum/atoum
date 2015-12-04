@@ -1,9 +1,12 @@
 # `dev-master`
 
+# 2.4.0 - 2015-12-04
+
 * [#520](https://github.com/atoum/atoum/pull/520) Introduce the constant mocker ([@hywan])
 * [#518](https://github.com/atoum/atoum/pull/518) Update atoum's PHAR against Github releases with `--github-update` ([@jubianchi])
 * [#515](https://github.com/atoum/atoum/pull/515) Fix PHP7 support in the basic resolver ([@hywan])
 * [#516](https://github.com/atoum/atoum/pull/516) Add a "callStaticOnTestedClass" method ([@mikaelrandy])
+* [#530](https://github.com/atoum/atoum/pull/530) Reset PHP7 configuration for tests ([@jubianchi])
 
 ## Bugfix
 
