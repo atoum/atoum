@@ -17,14 +17,12 @@ env:
     global:
         - secure: "vJ1TnFhU9muqLwkiBd13lFqdPJIrwKJ5OJjR3/jQROWQsRO4NPd/I7OfdDKk\noJGYbgjGMw7bmBYI0xjhYfZAnrClwIBvn1Qx5x5UDGxTHC8ZP6xs49AGa37I\n7BJlWC7+nRwPmmLhoLsbut/O7Kkn8IkdJIeChHbdn8RHQIJTJ4Y="
 sudo: false
-before_install:
-  - if [[ "$TRAVIS_PHP_VERSION" = "7.0" ]]; then args="-ncc"; fi;
 before_script:
-  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && cp resources/configurations/runner/coveralls.php.dist .atoum.php || true"
+  - "cp resources/configurations/travis/.atoum.php.dist .atoum.php"
   - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s?/path/to/sources/directory?classes? .atoum.php || true"
   - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s/YouCoverallsProjectToken/$COVERALLS_REPO_TOKEN/ .atoum.php || true"
 script:
-  - php ./scripts/runner.php --test-it $args
+  - bin/atoum +verbose
 before_deploy:
   - mkdir phar
   - php -n -dphar.readonly=Off scripts/phar/generator.php -d ./phar
