@@ -1,8 +1,12 @@
 # `dev-master`
 
+* [#496](https://github.com/atoum/atoum/pull/496) Mock generator supports variadic arguments passed by reference ([@jubianchi])
+* [#496](https://github.com/atoum/atoum/pull/496) Auto generate and inject mocks in test methods ([@jubianchi])
+
 ## Bugfix
 
 * [#350](https://github.com/atoum/atoum/pull/526) PHAR can be built on Windows ([@kao98])
+
 
 # 2.4.0 - 2015-12-04
 
