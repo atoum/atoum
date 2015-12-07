@@ -1,5 +1,9 @@
 # `dev-master`
 
+## Bugfix
+
+* [#350](https://github.com/atoum/atoum/pull/526) PHAR can be built on Windows ([@kao98])
+
 # 2.4.0 - 2015-12-04
 
 * [#520](https://github.com/atoum/atoum/pull/520) Introduce the constant mocker ([@hywan])
@@ -135,3 +139,4 @@
 [@remicollet]: https://github.com/remicollet
 [@vonglasow]: https://github.com/vonglasow
 [@mikaelrandy]: https://github.com/mikaelrandy
+[@kao98]: https://github.com/kao98
