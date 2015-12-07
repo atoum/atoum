@@ -105,6 +105,7 @@ namespace mageekguy\atoum\tests\units
 				->string(atoum\test::exception)->isEqualTo('testException')
 				->string(atoum\test::success)->isEqualTo('testAssertionSuccess')
 				->string(atoum\test::afterTestMethod)->isEqualTo('afterTestMethod')
+				->string(atoum\test::afterTestMethodDataSet)->isEqualTo('afterTestMethodDataSet')
 				->string(atoum\test::beforeTearDown)->isEqualTo('beforeTestTearDown')
 				->string(atoum\test::afterTearDown)->isEqualTo('afterTestTearDown')
 				->string(atoum\test::runStop)->isEqualTo('testRunStop')
@@ -847,12 +848,13 @@ namespace mageekguy\atoum\tests\units
 					->object($test->run())->isIdenticalTo($test)
 					->mock($test)
 						->call('callObservers')
-							->withArguments(\mageekguy\atoum\test::runStart)->never()
-							->withArguments(\mageekguy\atoum\test::runStop)->never()
-							->withArguments(\mageekguy\atoum\test::beforeSetUp)->never()
-							->withArguments(\mageekguy\atoum\test::afterSetUp)->never()
-							->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
-							->withArguments(\mageekguy\atoum\test::afterTestMethod)->never()
+							->withArguments(atoum\test::runStart)->never()
+							->withArguments(atoum\test::runStop)->never()
+							->withArguments(atoum\test::beforeSetUp)->never()
+							->withArguments(atoum\test::afterSetUp)->never()
+							->withArguments(atoum\test::beforeTestMethod)->never()
+							->withArguments(atoum\test::afterTestMethodDataSet)->never()
+							->withArguments(atoum\test::afterTestMethod)->never()
 			;
 		}
 
@@ -1098,6 +1100,9 @@ namespace mageekguy\atoum\tests\units
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 						->hasMessage('Test class \'foo\bar\aaa\bbb\testedClass\' is not in a namespace which match pattern \'' . atoum\test::getNamespace() . '\'')
 					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass', '#(?:^|\\\)aaas?\\\bbbs?\\\#i'))->isEqualTo('foo\bar\testedClass')
+				->if(atoum\test::setTestedClass('#Test$#i'))
+				->then
+					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\xxx\yyy\testedClassTest'))->isEqualTo('foo\bar\testedClass')
 			;
 		}
 

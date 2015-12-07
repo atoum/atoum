@@ -174,7 +174,7 @@ class generator
 
 		if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false)
 		{
-			$code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);
+			$code = static::generateUnknownClassCode($class, $mockNamespace, $mockClass);
 		}
 		else
 		{
@@ -452,7 +452,7 @@ class generator
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
 			'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
-			self::generateMockControllerMethods() .
+			static::generateMockControllerMethods() .
 			$this->generateClassMethodCode($class) .
 			'}' . PHP_EOL .
 			'}'
@@ -587,7 +587,7 @@ class generator
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
 			'final class ' . $mockClass . ' implements \\' . ($addIteratorAggregate === false ? '' : 'iteratorAggregate, \\') . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
-			self::generateMockControllerMethods() .
+			static::generateMockControllerMethods() .
 			$this->generateInterfaceMethodCode($class, $addIteratorAggregate) .
 			'}' . PHP_EOL .
 			'}'
@@ -809,7 +809,7 @@ class generator
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
 			'final class ' . $mockClass . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
-			self::generateMockControllerMethods() .
+			static::generateMockControllerMethods() .
 			self::generateDefaultConstructor(true) .
 			self::generate__call() .
 			self::generateGetMockedMethod(array('__call')) .
