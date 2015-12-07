@@ -795,7 +795,7 @@ class runner implements observable
 
 	public function getExtensions()
 	{
-		return iterator_to_array($this->extensions);
+		return $this->extensions;
 	}
 
 	public function removeExtension(atoum\extension $extension)
@@ -818,13 +818,13 @@ class runner implements observable
 	}
 
 
-	public function addExtension(atoum\extension $extension)
+	public function addExtension(atoum\extension $extension, atoum\extension\configuration $configuration = null)
 	{
 		if ($this->extensions->contains($extension) === false)
 		{
 			$extension->setRunner($this);
 
-			$this->extensions->attach($extension);
+			$this->extensions->attach($extension, $configuration);
 
 			$this->addObserver($extension);
 		}
