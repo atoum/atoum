@@ -385,7 +385,7 @@ class generator
 				}
 				else
 				{
-					$mockedMethods .= "\t" . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . $this->getReturnType($method);
+					$mockedMethods .= "\t" . $this->generateMethodSignature($method);
 				}
 
 				$mockedMethods .= PHP_EOL . "\t" . '{' . PHP_EOL;
@@ -445,6 +445,11 @@ class generator
 		}
 
 		return $mockedMethods . self::generateGetMockedMethod($mockedMethodNames);
+	}
+
+	protected function generateMethodSignature(\reflectionMethod $method)
+	{
+		return ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $method->getName() . '(' . $this->getParametersSignature($method) . ')' . $this->getReturnType($method);
 	}
 
 	protected function generateClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
