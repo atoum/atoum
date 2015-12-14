@@ -31,6 +31,13 @@ class phpArray extends asserters\variable implements \arrayAccess
 			case 'isnotempty':
 				return $this->isNotEmpty();
 
+			case 'child':
+				$asserter = new phpArray\child($this);
+
+				$this->resetInnerAsserter();
+
+				return $asserter->setWith($this->value);
+
 			default:
 				$asserter = parent::__get($asserter);
 
