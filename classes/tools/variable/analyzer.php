@@ -83,6 +83,11 @@ class analyzer
 		return (is_array($mixed) === true);
 	}
 
+	public function isResource($mixed)
+	{
+		return (is_resource($mixed) === true);
+	}
+
 	public function isRegex($namespace)
 	{
 		return false !== @preg_match($namespace, null);
