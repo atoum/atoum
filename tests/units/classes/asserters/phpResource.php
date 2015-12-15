@@ -44,7 +44,6 @@ class phpResource extends atoum\test
 		$this
 			->given(
 				$asserter = $this->newTestedInstance
-					->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
 					->setLocale($locale = new \mock\atoum\locale()),
 				$this->calling($locale)->_ = $notAResource = uniqid()
 			)
@@ -52,7 +51,10 @@ class phpResource extends atoum\test
 				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notAResource)
-				->mock($locale)->call('_')->withArguments('%s is not a resource', $asserter)->once
+				->mock($locale)
+					->call('_')
+						->withArguments('%s is not a resource', $asserter)
+						->once
 				->string($asserter->getValue())->isEqualTo($value)
 
 				->object($asserter->setWith($value = fopen(__FILE__, 'r')))->isIdenticalTo($asserter)
