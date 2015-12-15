@@ -46,7 +46,7 @@ class exception extends asserters\object
 
 		if ($checkType === true)
 		{
-			if ($exception instanceof \exception === false)
+			if (self::isThrowable($exception) === false)
 			{
 				$this->fail($this->_('%s is not an exception', $this));
 			}
@@ -159,5 +159,10 @@ class exception extends asserters\object
 		}
 
 		return $this;
+	}
+
+	private static function isThrowable($value)
+	{
+		return $value instanceof \exception || (version_compare(PHP_VERSION, '7.0.0') >= 0 && $value instanceof \throwable);
 	}
 }

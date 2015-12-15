@@ -7,7 +7,7 @@
 
 * [#350](https://github.com/atoum/atoum/pull/350) PHAR can be built on Windows ([@kao98])
 * [#530](https://github.com/atoum/atoum/pull/530) Extracted mocked method signature generation to make it work with visibility extension ([@jubianchi])
-
+* [#537](https://github.com/atoum/atoum/pull/537) `exception` asserter handles PHP 7 throwables ([@jubianchi])
 
 # 2.4.0 - 2015-12-04
 
