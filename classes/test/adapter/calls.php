@@ -320,6 +320,10 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 			throw new exceptions\logic\invalidArgument('Function is undefined');
 		}
 
+		if (!isset(self::$callsNumber)) {
+			return $this;
+		}
+
 		if ($position === null)
 		{
 			$position = ++self::$callsNumber;
