@@ -5,7 +5,6 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\tools\diffs,
 	mageekguy\atoum\tools\variable
 ;
 
@@ -74,26 +73,18 @@ class phpResource extends atoum\test
 			->if(
 				$asserter
 					->setWith($value = fopen(__FILE__, 'r'))
-					->setLocale($locale = new \mock\atoum\locale())
-					->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
-				$this->calling($locale)->_ = $notAResource = uniqid(),
-				$this->calling($diff)->__toString = $diffValue = uniqid()
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $notAResource = uniqid()
 			)
 			->then
 				->exception(function() use ($asserter) { $asserter->isOfType('foo'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($notAResource . PHP_EOL . $diff)
+					->hasMessage($notAResource)
 				->mock($locale)->call('_')->withArguments('%s is not of type %s', $asserter, 0)->once
-				->mock($diff)
-					->call('setExpected')->withArguments(0)->once
-					->call('setActual')->withArguments($value)->once
 
 				->exception(function() use ($asserter, & $failMessage) { $asserter->isOfType('foo', $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($failMessage . PHP_EOL . $diffValue)
-				->mock($diff)
-					->call('setExpected')->withArguments(0)->twice
-					->call('setActual')->withArguments($value)->twice
+					->hasMessage($failMessage)
 		;
 	}
 }

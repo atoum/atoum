@@ -34,7 +34,7 @@ class phpResource extends asserters\variable
 		}
 		else
 		{
-			$this->fail(($failMessage ?: $this->_('%s is not of type %s', $this, $type)) . PHP_EOL . $this->diff($actualType));
+			$this->fail($failMessage ?: $this->_('%s is not of type %s', $this, $type));
 		}
 
 		return $this;
