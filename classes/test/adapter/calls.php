@@ -320,16 +320,9 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 			throw new exceptions\logic\invalidArgument('Function is undefined');
 		}
 
-		// A bug in PHP removes this static attribute when destructing all the
-		// object. So accessing it create an error. This is a workaround.
-		if (!isset(self::$callsNumber)) {
-			return $this;
-		}
-
-		if ($position === null)
-		{
-			$position = ++self::$callsNumber;
-		}
+		$position = $position === null
+			? (self::canAddCall() === true ? ++self::$callsNumber : 1)
+			: $position;
 
 		$this->calls[self::getKey($call)][$position] = $call;
 		$this->size++;
@@ -362,5 +355,12 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	private static function buildCall($mixed)
 	{
 		return ($mixed instanceof adapter\call ? $mixed : new adapter\call($mixed));
+	}
+
+	private static function canAddCall()
+	{
+		// A bug in PHP removes this static attribute when destructing all the
+		// object. So accessing it create an error. This is a workaround.
+		return isset(self::$callsNumber);
 	}
 }
