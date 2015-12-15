@@ -26,13 +26,15 @@ class phpResource extends asserters\variable
 
 	public function isOfType($type, $failMessage = null)
 	{
-		if (get_resource_type($this->valueIsSet()->value) === $type)
+		$actualType = get_resource_type($this->valueIsSet()->value);
+
+		if ($actualType === $type)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage ?: $this->_('%s is not of type %s', $this, $type));
+			$this->fail(($failMessage ?: $this->_('%s is not of type %s', $this, $type)) . PHP_EOL . $this->diff($actualType));
 		}
 
 		return $this;
