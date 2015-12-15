@@ -68,7 +68,7 @@ class phpResource extends atoum\test
 
 			->if($asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')))
 			->then
-				->object($asserter->isOfType('stream'))->isIdenticalTo($asserter)
+				->object($asserter->matches('stream'))->isIdenticalTo($asserter)
 
 			->if(
 				$asserter
@@ -77,14 +77,62 @@ class phpResource extends atoum\test
 				$this->calling($locale)->_ = $notAResource = uniqid()
 			)
 			->then
-				->exception(function() use ($asserter) { $asserter->isOfType('foo'); })
+				->exception(function() use ($asserter) { $asserter->matches('foo'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notAResource)
 				->mock($locale)->call('_')->withArguments('%s is not of type %s', $asserter, 0)->once
 
-				->exception(function() use ($asserter, & $failMessage) { $asserter->isOfType('foo', $failMessage = uniqid()); })
+				->exception(function() use ($asserter, & $failMessage) { $asserter->matches('foo', $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
 		;
+	}
+
+	public function testCallSimpleMatch()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+			->if(
+				$asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')),
+				$this->function->get_resource_type = 'foo bar'
+			)
+			->then
+				->object($asserter->isFooBar())->isIdenticalTo($asserter);
+	}
+
+	public function testCallUnderscoreMatch()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+			->if(
+				$asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')),
+				$this->function->get_resource_type = 'foo_bar'
+			)
+			->then
+				->object($asserter->isFooBar())->isIdenticalTo($asserter);
+	}
+
+	public function testCallDotMatch()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+			->if(
+				$asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')),
+				$this->function->get_resource_type = 'foo.bar'
+			)
+			->then
+				->object($asserter->isFooBar())->isIdenticalTo($asserter);
+	}
+
+	public function testCallCamlCaseMatch()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+			->if(
+				$asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')),
+				$this->function->get_resource_type = 'fooBar'
+			)
+			->then
+				->object($asserter->isFooBar())->isIdenticalTo($asserter);
 	}
 }

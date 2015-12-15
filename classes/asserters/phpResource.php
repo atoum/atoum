@@ -24,11 +24,12 @@ class phpResource extends asserters\variable
 		return $this;
 	}
 
-	public function isOfType($type, $failMessage = null)
+	public function matches($type, $failMessage = null)
 	{
+		$pattern = '/^' . $type . '$/i';
 		$actualType = get_resource_type($this->valueIsSet()->value);
 
-		if ($actualType === $type)
+		if (0 !== preg_match($pattern, $actualType))
 		{
 			$this->pass();
 		}
@@ -38,5 +39,27 @@ class phpResource extends asserters\variable
 		}
 
 		return $this;
+	}
+
+	public function __call($name, $arguments)
+	{
+		if ('is' === substr($name, 0, 2)) {
+			$pattern = preg_replace(['/^is/', '/_/'], ['', '.?'], $name);
+			$pattern = preg_replace_callback(
+				'/([A-Z])([a-z]+)/',
+				function ($matches) {
+					return '.?' . strtolower($matches[1]) . $matches[2];
+				},
+				$pattern
+			);
+
+			if (1 === count($arguments)) {
+				return $this->matches($pattern, $arguments[0]);
+			} else {
+				return $this->matches($pattern);
+			}
+		}
+
+		return parent::__call($name, $arguments);
 	}
 }
