@@ -320,6 +320,8 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 			throw new exceptions\logic\invalidArgument('Function is undefined');
 		}
 
+		// A bug in PHP removes this static attribute when destructing all the
+		// object. So accessing it create an error. This is a workaround.
 		if (!isset(self::$callsNumber)) {
 			return $this;
 		}
