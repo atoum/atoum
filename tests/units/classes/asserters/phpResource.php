@@ -56,7 +56,7 @@ class phpResource extends atoum\test
 						->once
 				->string($asserter->getValue())->isEqualTo($value)
 
-				->object($asserter->setWith($value = fopen(atoum\mock\streams\fs\file::get(), 'r')))->isIdenticalTo($asserter)
+				->object($asserter->setWith($value = fopen(__FILE__, 'r')))->isIdenticalTo($asserter)
 				->resource($asserter->getValue())->isEqualTo($value)
 		;
 	}
@@ -66,13 +66,13 @@ class phpResource extends atoum\test
 		$this
 			->given($asserter = $this->newTestedInstance)
 
-			->if($asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')))
+			->if($asserter->setWith(fopen(__FILE__, 'r')))
 			->then
 				->object($asserter->isOfType('stream'))->isIdenticalTo($asserter)
 
 			->if(
 				$asserter
-					->setWith($value = fopen(atoum\mock\streams\fs\file::get(), 'r'))
+					->setWith($value = fopen(__FILE__, 'r'))
 					->setLocale($locale = new \mock\atoum\locale()),
 				$this->calling($locale)->_ = $notAResource = uniqid()
 			)
@@ -93,7 +93,7 @@ class phpResource extends atoum\test
 		$this
 			->given($asserter = $this->newTestedInstance)
 
-			->if($asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')))
+			->if($asserter->setWith(fopen(__FILE__, 'r')))
 			->then
 				->object($asserter->matches('stream'))->isIdenticalTo($asserter)
 
@@ -120,7 +120,7 @@ class phpResource extends atoum\test
 		$this
 			->given($asserter = $this->newTestedInstance)
 			->if(
-				$asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')),
+				$asserter->setWith(fopen(__FILE__, 'r')),
 				$this->function->get_resource_type = 'foo bar'
 			)
 			->then
@@ -132,7 +132,7 @@ class phpResource extends atoum\test
 		$this
 			->given($asserter = $this->newTestedInstance)
 			->if(
-				$asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')),
+				$asserter->setWith(fopen(__FILE__, 'r')),
 				$this->function->get_resource_type = 'foo_bar'
 			)
 			->then
@@ -144,7 +144,7 @@ class phpResource extends atoum\test
 		$this
 			->given($asserter = $this->newTestedInstance)
 			->if(
-				$asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')),
+				$asserter->setWith(fopen(__FILE__, 'r')),
 				$this->function->get_resource_type = 'foo.bar'
 			)
 			->then
@@ -156,7 +156,7 @@ class phpResource extends atoum\test
 		$this
 			->given($asserter = $this->newTestedInstance)
 			->if(
-				$asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')),
+				$asserter->setWith(fopen(__FILE__, 'r')),
 				$this->function->get_resource_type = 'fooBar'
 			)
 			->then
