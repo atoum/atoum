@@ -61,6 +61,33 @@ class phpResource extends atoum\test
 		;
 	}
 
+	public function testIsOfType()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+
+			->if($asserter->setWith(fopen(atoum\mock\streams\fs\file::get(), 'r')))
+			->then
+				->object($asserter->isOfType('stream'))->isIdenticalTo($asserter)
+
+			->if(
+				$asserter
+					->setWith($value = fopen(atoum\mock\streams\fs\file::get(), 'r'))
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $notAResource = uniqid()
+			)
+			->then
+				->exception(function() use ($asserter) { $asserter->isOfType('foo'); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notAResource)
+				->mock($locale)->call('_')->withArguments('%s is not of type %s', $asserter, 0)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->matches('foo', $failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+		;
+	}
+
 	public function testMatches()
 	{
 		$this
