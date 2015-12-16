@@ -61,7 +61,7 @@ class phpResource extends atoum\test
 		;
 	}
 
-	public function testIsOfType()
+	public function testMatches()
 	{
 		$this
 			->given($asserter = $this->newTestedInstance)
@@ -80,7 +80,7 @@ class phpResource extends atoum\test
 				->exception(function() use ($asserter) { $asserter->matches('foo'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notAResource)
-				->mock($locale)->call('_')->withArguments('%s is not of type %s', $asserter, 0)->once
+				->mock($locale)->call('_')->withArguments('%s does not match %s', $asserter, 0)->once
 
 				->exception(function() use ($asserter, & $failMessage) { $asserter->matches('foo', $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
