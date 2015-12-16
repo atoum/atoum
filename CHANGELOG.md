@@ -1,6 +1,6 @@
 # `dev-master`
 
-* [#535](https://github.com/atoum/atoum/pull/535) New `resource` asserter ([@hywan])
+* [#535](https://github.com/atoum/atoum/pull/535) New `resource` asserter group (with `isOfType`, `matches` or `is*` wildcard like `isStream`) ([@hywan])
 * [#529](https://github.com/atoum/atoum/pull/529) Allow extensions to define configuration ([@jubianchi])
 * [#496](https://github.com/atoum/atoum/pull/496) Mock generator supports variadic arguments passed by reference ([@jubianchi])
 * [#496](https://github.com/atoum/atoum/pull/496) Auto generate and inject mocks in test methods ([@jubianchi])
