@@ -82,7 +82,7 @@ class phpResource extends atoum\test
 					->hasMessage($notAResource)
 				->mock($locale)->call('_')->withArguments('%s is not of type %s', $asserter, 0)->once
 
-				->exception(function() use ($asserter, & $failMessage) { $asserter->matches('foo', $failMessage = uniqid()); })
+				->exception(function() use ($asserter, & $failMessage) { $asserter->matches('/foo/', $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
 		;
@@ -95,7 +95,7 @@ class phpResource extends atoum\test
 
 			->if($asserter->setWith(fopen(__FILE__, 'r')))
 			->then
-				->object($asserter->matches('stream'))->isIdenticalTo($asserter)
+				->object($asserter->matches('/^stream$/'))->isIdenticalTo($asserter)
 
 			->if(
 				$asserter
@@ -104,12 +104,12 @@ class phpResource extends atoum\test
 				$this->calling($locale)->_ = $notAResource = uniqid()
 			)
 			->then
-				->exception(function() use ($asserter) { $asserter->matches('foo'); })
+				->exception(function() use ($asserter) { $asserter->matches('/foo/'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notAResource)
 				->mock($locale)->call('_')->withArguments('%s does not match %s', $asserter, 0)->once
 
-				->exception(function() use ($asserter, & $failMessage) { $asserter->matches('foo', $failMessage = uniqid()); })
+				->exception(function() use ($asserter, & $failMessage) { $asserter->matches('/foo/', $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
 		;

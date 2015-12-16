@@ -40,9 +40,8 @@ class phpResource extends asserters\variable
 		return $this;
 	}
 
-	public function matches($type, $failMessage = null)
+	public function matches($pattern, $failMessage = null)
 	{
-		$pattern = '/^' . $type . '$/i';
 		$actualType = get_resource_type($this->valueIsSet()->value);
 
 		if (0 !== preg_match($pattern, $actualType))
@@ -51,7 +50,7 @@ class phpResource extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage ?: $this->_('%s does not match %s', $this, $type));
+			$this->fail($failMessage ?: $this->_('%s does not match %s', $this, $pattern));
 		}
 
 		return $this;
@@ -68,6 +67,7 @@ class phpResource extends asserters\variable
 				},
 				$pattern
 			);
+			$pattern = '/^' . $pattern . '$/i';
 
 			if (1 === count($arguments)) {
 				return $this->matches($pattern, $arguments[0]);
