@@ -71,7 +71,7 @@ class phpArray extends atoum\test
 				)
 			)
 			->then
-				->object($this->testedInstance->phpArray[0][0][1]->isEqualTo(array('foo', 'bar')))->isTestedInstance
+				->object($innerAsserter = $this->testedInstance->phpArray[0][0][1]->isEqualTo(array('foo', 'bar')))->isIdenticalTo($innerAsserter)
 				->object($this->testedInstance->phpString[1]->isEqualTo('foobar'))->isTestedInstance
 
 			->given($this->newTestedInstance->setWith(array($array1 = array('foo', 'bar'), $array2 = array(1, new \mock\object()))))
@@ -321,6 +321,28 @@ class phpArray extends atoum\test
 			->if($asserter->setWith(range(1, 5)))
 			->then
 				->object($asserter->hasSize(5))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHasSizeOnInnerAsserter()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance
+				->setLocale($locale = new \mock\atoum\locale())
+				->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+			)
+			->then
+				->exception(function() use ($asserter) { $asserter->isEmpty(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+
+			->if($asserter->setWith(array(range(1, 5))))
+			->then
+				->object($innerAsserter = $asserter->phpArray[0]->hasSize(5))->isIdenticalTo($innerAsserter)
+
+			->if($asserter->setWith(array(array(range(1, 5), range(1, 3)))))
+			->then
+				->object($innerAsserter = $asserter->phpArray[0][1]->hasSize(3))->isIdenticalTo($innerAsserter)
 		;
 	}
 
