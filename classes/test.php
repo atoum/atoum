@@ -1242,6 +1242,11 @@ abstract class test implements observable, \countable
 						}
 					);
 
+					$this->assertionManager->setPropertyHandler('newMockInstance', function($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = array()) {
+							return $this->mockGenerator->getNewMockInstance($class, $mockNamespace, $mockClass, $constructorArguments);
+						}
+					);
+
 					if ($this->codeCoverageIsEnabled() === true)
 					{
 						$options = XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE;

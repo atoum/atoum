@@ -201,6 +201,26 @@ class generator
 
 		return $this;
 	}
+	
+	public function getNewMockInstance($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = array())
+	{
+		$this->generate($class, $mockNamespace, $mockClass);
+		
+		if ($mockNamespace === null)
+		{
+			$mockNamespace = $this->getNamespace($class);
+		}
+
+		$class = '\\' . ltrim($class, '\\');
+
+		if ($mockClass === null)
+		{
+			$mockClass = self::getClassName($class);
+		}
+		
+		$reflectionClass = call_user_func($this->reflectionClassFactory, $mockNamespace . '\\' . $mockClass);
+		return $reflectionClass->newInstanceArgs($constructorArguments);
+	}
 
 	public function methodIsMockable(\reflectionMethod $method)
 	{
