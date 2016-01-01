@@ -62,7 +62,7 @@ class mail extends atoum\writer implements report\writers\asynchronous
 
 			if ($reportTitle === null)
 			{
-				$reportTitle = sprintf($this->locale->_('Unit tests report, the %1$s at %2$s'), $this->adapter->date($this->locale->_('Y-m-d')), $this->adapter->date($this->locale->_('H:i:s')));
+				$reportTitle = $this->locale->_('Unit tests report, the %1$s at %2$s', $this->adapter->date($this->locale->_('Y-m-d')), $this->adapter->date($this->locale->_('H:i:s')));
 			}
 
 			$this->mailer->setSubject($reportTitle);

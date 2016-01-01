@@ -40,7 +40,7 @@ class phing extends report\fields\runner\tests\coverage\cli
 						$string .= $this->classPrompt .
 							sprintf(
 								$this->locale->_('%s : %s'),
-								$this->titleColorizer->colorize(sprintf($this->locale->_('Class %s'), $class)),
+								$this->titleColorizer->colorize($this->locale->_('Class %s', $class)),
 								$this->coverageColorizer->colorize(sprintf('%3.2f%%', $classCoverage * 100.0))
 							) .
 							PHP_EOL
@@ -55,7 +55,7 @@ class phing extends report\fields\runner\tests\coverage\cli
 								$string .= $this->methodPrompt .
 									sprintf(
 										$this->locale->_('%s : %s'),
-										$this->titleColorizer->colorize(sprintf($this->locale->_('     ::%s()'), $method)),
+										$this->titleColorizer->colorize($this->locale->_('     ::%s()', $method)),
 										$this->coverageColorizer->colorize(sprintf('%3.2f%%', $methodCoverage * 100.0))
 									) .
 									PHP_EOL

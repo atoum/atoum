@@ -162,7 +162,7 @@ class stub extends scripts\runner
 	public function version()
 	{
 		$this
-			->writeInfo(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, \phar::running()))
+			->writeInfo($this->locale->_('atoum version %s by %s (%s)', atoum\version, atoum\author, \phar::running()))
 		;
 
 		return $this->stopRun();
@@ -285,7 +285,7 @@ class stub extends scripts\runner
 			throw new exceptions\runtime('Unable to create temporary file to update to version \'' . $newVersion);
 		}
 
-		$this->writeMessage(sprintf($this->locale->_('Update to version \'%s\'...'), $newVersion), false);
+		$this->writeMessage($this->locale->_('Update to version \'%s\'...', $newVersion), false);
 
 		$pharPathLength = strlen($pharPath = 'phar://' . $tmpFile . '/1/');
 
@@ -307,12 +307,12 @@ class stub extends scripts\runner
 
 		$this
 			->clearMessage()
-			->writeMessage(sprintf($this->locale->_('Update to version \'%s\'... Done!' . PHP_EOL), $newVersion))
+			->writeMessage($this->locale->_('Update to version \'%s\'... Done!' . PHP_EOL, $newVersion))
 		;
 
 		@$this->adapter->unlink($tmpFile);
 
-		$this->writeMessage(sprintf($this->locale->_('Enable version \'%s\'...'), $newVersion), false);
+		$this->writeMessage($this->locale->_('Enable version \'%s\'...', $newVersion), false);
 
 		$versions[$newCurrentDirectory] = $newVersion;
 		$versions['current'] = $newCurrentDirectory;
@@ -321,10 +321,10 @@ class stub extends scripts\runner
 
 		$this
 			->clearMessage()
-			->writeMessage(sprintf($this->locale->_('Enable version \'%s\'... Done!' . PHP_EOL), $newVersion))
+			->writeMessage($this->locale->_('Enable version \'%s\'... Done!' . PHP_EOL, $newVersion))
 		;
 
-		$this->writeInfo(sprintf($this->locale->_('Atoum has been updated from version \'%s\' to \'%s\' successfully!'), atoum\version, $newVersion));
+		$this->writeInfo($this->locale->_('Atoum has been updated from version \'%s\' to \'%s\' successfully!', atoum\version, $newVersion));
 	}
 
 	public function listAvailableVersions()

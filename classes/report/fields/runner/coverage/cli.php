@@ -39,7 +39,7 @@ class cli extends report\fields\runner\coverage
 					?
 					$this->locale->_('unknown')
 					:
-					sprintf($this->locale->_('%3.2f%%'), round($this->coverage->getValue() * 100, 2))
+					$this->locale->_('%3.2f%%', round($this->coverage->getValue() * 100, 2))
 				)
 			) .
 			PHP_EOL

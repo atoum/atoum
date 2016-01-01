@@ -143,7 +143,7 @@ class compiler extends atoum\script
 
 		if (file_put_contents($this->destinationFile, $bootstrap . 'return ' . var_export($data, true) . ';') === false)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('Unable to write in file \'%s\''), $this->destinationFile));
+			throw new exceptions\runtime($this->locale->_('Unable to write in file \'%s\'', $this->destinationFile));
 		}
 
 		return $this;

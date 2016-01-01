@@ -120,32 +120,32 @@ class generator extends atoum\script
 	{
 		if ($this->originDirectory === null)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('Origin directory must be defined'), $this->originDirectory));
+			throw new exceptions\runtime($this->locale->_('Origin directory must be defined', $this->originDirectory));
 		}
 
 		if ($this->destinationDirectory === null)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('Destination directory must be defined'), $this->originDirectory));
+			throw new exceptions\runtime($this->locale->_('Destination directory must be defined', $this->originDirectory));
 		}
 
 		if ($this->stubFile === null)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('Stub file must be defined'), $this->originDirectory));
+			throw new exceptions\runtime($this->locale->_('Stub file must be defined', $this->originDirectory));
 		}
 
 		if ($this->adapter->is_readable($this->originDirectory) === false)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('Origin directory \'%s\' is not readable'), $this->originDirectory));
+			throw new exceptions\runtime($this->locale->_('Origin directory \'%s\' is not readable', $this->originDirectory));
 		}
 
 		if ($this->adapter->is_writable($this->destinationDirectory) === false)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('Destination directory \'%s\' is not writable'), $this->destinationDirectory));
+			throw new exceptions\runtime($this->locale->_('Destination directory \'%s\' is not writable', $this->destinationDirectory));
 		}
 
 		if ($this->adapter->is_readable($this->stubFile) === false)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('Stub file \'%s\' is not readable'), $this->stubFile));
+			throw new exceptions\runtime($this->locale->_('Stub file \'%s\' is not readable', $this->stubFile));
 		}
 
 		$pharFile = $this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar;
@@ -156,21 +156,21 @@ class generator extends atoum\script
 
 		if ($description === false)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('ABOUT file is missing in \'%s\''), $this->originDirectory));
+			throw new exceptions\runtime($this->locale->_('ABOUT file is missing in \'%s\'', $this->originDirectory));
 		}
 
 		$licence = @$this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING');
 
 		if ($licence === false)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('COPYING file is missing in \'%s\''), $this->originDirectory));
+			throw new exceptions\runtime($this->locale->_('COPYING file is missing in \'%s\'', $this->originDirectory));
 		}
 
 		$stub = @$this->adapter->file_get_contents($this->stubFile);
 
 		if ($stub === false)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('Unable to read stub file \'%s\''), $this->stubFile));
+			throw new exceptions\runtime($this->locale->_('Unable to read stub file \'%s\'', $this->stubFile));
 		}
 
 		$phar = call_user_func($this->pharFactory, $pharFile);
