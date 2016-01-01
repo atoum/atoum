@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#541](https://github.com/atoum/atoum/pull/541) New `iterator` asserter ([@jubianchi])
 * [#541](https://github.com/atoum/atoum/pull/541) New `castToArray` asserter ([@jubianchi])
 * [#535](https://github.com/atoum/atoum/pull/535) New `resource` asserter group (with `isOfType` or `is*` wildcard like `isStream`) ([@hywan])
 * [#529](https://github.com/atoum/atoum/pull/529) Allow extensions to define configuration ([@jubianchi])
