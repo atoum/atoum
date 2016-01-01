@@ -2,86 +2,92 @@
 
 ## Coding style
 
+__Thanks to the Drupal community for its work about its [coding convention](https://drupal.org/coding-standards).__
+
+The key words "**must**", "**must not**", "**should**", "**should not**" and "**may**" in this document are to be interpreted as described in [RFC 2119](http://www.ietf.org/rfc/rfc2119.txt).
+
 ### Indenting and Whitespace
 
-Use only tabs, with no space. 
-Lines should have no trailing whitespace at the end. 
-Files should be formatted with \n as the line ending (Unix line endings), not \r\n (Windows line endings). 
-PHP files should be in UTF-8. 
-PHP files should begin with `<?php ` and should not have an end tag (no `?>`).
-The reasons for this can be summarized as:
-* Removing it eliminates the possibility for unwanted whitespace at the end of files which can cause "header already sent" errors, XHTML/XML validation issues, and other problems.
-* The closing delimiter at the end of a file is optional.
-* PHP.net itself removes the closing delimiter from the end of its files (example: prepend.inc), so this can be seen as a "best practice."
+* Tabs **must** be used to indent lines,
+* Lines **must not** have any trailing whitespace at the end,
+* Files **must** be formatted with `\n` as the line ending (Unix line endings), not `\r\n` (Windows line endings),
+* PHP files **must** be in UTF-8,
+* PHP files **must** begin with `<?php ` and **should not** have an end tag (no `?>`).
 
 ### Operators
 
-All binary operators (operators that come between two values), such as `+`, `-`, `=`, `!=`, `==`, `>`, etc. should have a space before and after the operator, for readability. 
-For example, an assignment should be formatted as `$foo = $bar;` rather than `$foo=$bar;`. 
-Unary operators (operators that operate on only one value), such as `++`, should not have a space between the operator and the variable or number they are operating on.
+All binary operators (operators that come between two values), such as `+`, `-`, `=`, `!=`, `==`, `>`, etc. **must** have a space before and after the operator, for readability.
+For example, an assignment should be formatted as `$foo = $bar;` rather than `$foo=$bar;`.
+
+Unary operators (operators that operate on only one value), such as `++`, **must not** have a space between the operator and the variable or number they are operating on.
 
 ### Casting
 
-Put a space between the (type) and the `$variable` in a cast: `(int) $mynumber`.
+There **must** be a space between the `(type)` and the `$variable` in a cast: `(int) $mynumber`.
 
 ### Control Structures
 
-Control structures include `if`, `for`, `while`, `switch`, etc. 
+_Control structures include `if`, `for`, `while`, `switch`, etc._
+
 Here is a sample `if` statement, since it is the most complicated of them:
 
 ```php
-if (condition1 || condition2)
+if ($condition1 || $condition2)
 {
-	action1;
+	// action1;
 }
-else if (condition3 && condition4)
+else if ($condition3 && $condition4)
 {
-	action2;
+	// action2;
 }
 else
 {
-	defaultaction;
+	// default action;
 }
 ```
 
-Don't use "elseif", always use `else if`, and dont' use alternative syntax. 
-If there are more than three `else if`, replace them by a `switch` to improve readability:
+* `elseif` must not be used, `else if` **must** be used.
+* If there are more than three `else if`, a `switch` statement **should** be used:
 
 ```php
 switch (true)
 {
-	case condition1 || condition2:
+	case $condition1 || $condition2:
+		// action1;
 		break;
 
-	case condition3 && condition4:
+	case $condition3 && $condition4:
+		// action2;
 		break;
 
-	case condition5:
+	case $condition5:
+		// action3;
 		break;
 
 	default:
-		defaultaction;
+		// default action;
 }
 ```
 
-Control statements should have one space between the control keyword and opening parenthesis, to distinguish them from function calls. 
-Always use curly braces even in situations where they are technically optional. 
+Control statements **must** have one space between the control keyword and opening parenthesis to distinguish them from function calls.
+Curly braces **must** always be used even in situations where they are technically optional.
 Having them increases readability and decreases the likelihood of logic errors being introduced when new lines are added. 
+
 For `switch` statements:
 
 ```php
-switch (condition)
+switch ($condition)
 {
 	case 1:
-		action1;
+		// action1;
 		break;
 
 	case 2:
-		action2;
+		// action2;
 		break;
 
 	default:
-		defaultaction;
+		// defaultaction;
 }
 ```
 
@@ -90,39 +96,42 @@ For do-while statements:
 ```php
 do
 {
-	actions;
+	// actions;
 }
 while ($condition);
 ```
-	
+
 ### Line length and wrapping
 
-There is no limit to line length.
+Lines **should not** be wrapped at any specific length.
 
 ### Function Calls
 
-Functions should be called with no spaces between the function name, the opening parenthesis, and the first parameter; spaces between commas and each parameter, and no space between the last parameter, the closing parenthesis, and the semicolon. 
+* There **must not** be any space between the function name, the opening parenthesis, and the first parameter
+* The **must** be a space between commas and each parameter
+* There **must not** be any space between the last parameter, the closing parenthesis, and the semicolon.
+
 Here's an example:
 
 ```php
 $var = $object->foo($bar, $baz, $quux);
 ```
 
-As displayed above, there should be one space on either side of an equals sign used to assign the return value of a function to a variable. 
-In the case of a block of related assignments, more space should not be used to indent them.
-This is a bad practice in the sense of this coding convention:
+As displayed above, there **must** be one space on either side of an equals sign used to assign the return value of a function to a variable.
+In the case of a block of related assignments, more space **must not** be used to align them:
 
 ```php
-$short         = foo($bar);
+$short = foo($bar);
 $long_variable = foo($baz);
 ```
 
-Always attempt to return a meaningful value from a function if one is appropriated.
-If there is no meaningful value, always return `$this` (fluent syntax).
+
+A meaningful value **should** be returned from any function.
+If there is no meaningful value, methods **should** return `$this` (fluent syntax).
 
 ### Class Constructor Calls
 
-When calling class constructors with no arguments, always include parentheses:
+When calling class constructors with no arguments parenthesis **must** be used:
 
 ```php
 $foo = new MyClassName();
@@ -138,8 +147,8 @@ $foo = new $bar($arg1, $arg2);
 
 ### Arrays
 
-Arrays should be formatted with a space separating each element (after the comma), and spaces around the `=>` key association operator, if applicable.
-If an array contains several values, put each of them on one line:
+Arrays **must** be formatted with a space separating each element (after the comma), and spaces around the `=>` key association operator, if applicable.
+If an array contains several values, they **must** be on their own lines:
 
 ```php
 $array = array(
@@ -149,11 +158,12 @@ $array = array(
 );
 ```
 
-To get lenght of an array, use `sizeof` instead of `count` (no technical reason about that, it's just the current convention).
+To get the length of an array, `sizeof` **must** be used instead of `count` (no technical reason about that, it's just the current convention).
 
 ### Quotes
 
-You should always use single quote and always use a space between the dot and the concatenated parts to improve readability:
+* Single quotes **must** be used.
+* There **must** be a space between the dot and the concatenated parts to improve readability:
 
 ```php
 $string = 'Foo' . $bar;
@@ -162,7 +172,7 @@ $string = bar() . 'foo';
 $string = 'foo' . 'bar';
 ```
 
-When using the concatenating assignment operator ('.='), use a space on each side as with the assignment operator:
+When using the concatenating assignment operator (`.=`), there **must** be a space on each side as with the assignment operator:
 
 ```php
 $string .= 'Foo';
@@ -172,8 +182,8 @@ $string .= baz();
 
 ### Comments
 
-Try to avoid useless comment, ie. use them only to add a link to a technical documentation or an explanation about the code.
-You should use `//` or `#` to comment, and they should be in english.
+Try to avoid useless comment, ie. they **may** only be used to add a link to a technical documentation or an explanation about the code.
+`//` or `#` **must** be used to add comment, and they **must** be in english.
 This is a good example:
 
 ```php
@@ -189,12 +199,13 @@ Currently, atoum does not support PHPDoc.
 
 ### Including code
 
-Anywhere you are unconditionally including a class file, use `require_once`. 
-Anywhere you are conditionally including a class file, use `include_once`. 
-Both of these will ensure that class files are included only once. 
+* Anywhere you are unconditionally including a class file, `require_once` **must** be used.
+* Anywhere you are conditionally including a class file, `include_once` **must** be used.
+
+Both of these will ensure that class files are included only once.
 They share the same file list, so you don't need to worry about mixing them (a file included with `require_once` will not be included again by `include_once`).
-You don't need parenthesis around the file name to be included.
-When including code, you should always use a relative path from the current directory:
+Parenthesis around the file name to be included **must not** be used.
+When including code, you **must** always use a relative path from the current directory:
 
 ```php
 require_once __DIR__ . '/../../../path/to/the/included/php/file.php';
@@ -202,22 +213,20 @@ require_once __DIR__ . '/../../../path/to/the/included/php/file.php';
 
 ### Naming Conventions
 
-Function, variable, constant, class, interface and method must be named using lowerCamelCase.
-Protected or private properties and methods should not use an underscore prefix.
+Function, variable, constant, class, interface and method **must** be named using `lowerCamelCase`.
+Protected or private properties and methods **must not** use an underscore prefix.
 
 ### Global Variables
 
-You should not use global variable.
-
-Thanks to the Drupal community for its work about its [coding convention](https://drupal.org/coding-standards).
+Global variables **must not** be used.
 
 ## Code of Conduct
 
 By contributing to atoum you agree to adopt the [Open CoC](http://todogroup.org/opencodeofconduct/#atoum/team@atoum.org):
 
-* Be friendly and patient
-* Be welcoming
-* Be considerate
-* Be respectful
-* Be careful in the words that we choose
-* Try to understand why we disagree
+* Be friendly and patient,
+* Be welcoming,
+* Be considerate,
+* Be respectful,
+* Be careful in the words that we choose,
+* Try to understand why we disagree.
