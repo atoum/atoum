@@ -451,14 +451,14 @@ class runner extends atoum\test
 			->if($runner = new testedClass())
 			->then
 				->object($runner->addExtension($extension = new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
-				->array($runner->getExtensions())->isEqualTo(array($extension))
+				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension))
 				->array($runner->getObservers())->contains($extension)
 				->mock($extension)
 					->call('setRunner')->withArguments($runner)->once()
 			->if($this->resetMock($extension))
 			->then
 				->object($runner->addExtension($extension))->isIdenticalTo($runner)
-				->array($runner->getExtensions())->isEqualTo(array($extension))
+				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension))
 				->array($runner->getObservers())->contains($extension)
 				->mock($extension)
 					->call('setRunner')->never();
@@ -470,25 +470,25 @@ class runner extends atoum\test
 		$this
 			->if($runner = new testedClass())
 			->then
-				->array($runner->getExtensions())->isEmpty()
+				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
 				->array($runner->getObservers())->isEmpty()
 				->object($runner->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
-				->array($runner->getExtensions())->isEmpty()
+				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
 				->array($runner->getObservers())->isEmpty()
 			->if($extension = new \mock\mageekguy\atoum\extension())
 			->and($otherExtension = new \mock\mageekguy\atoum\extension())
 			->and($runner->addExtension($extension)->addExtension($otherExtension))
 			->then
-				->array($runner->getExtensions())->isEqualTo(array($extension, $otherExtension))
+				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension, $otherExtension))
 				->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
 				->object($runner->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
-				->array($runner->getExtensions())->isEqualTo(array($extension, $otherExtension))
+				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension, $otherExtension))
 				->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
 				->object($runner->removeExtension($extension))->isIdenticalTo($runner)
-				->array($runner->getExtensions())->isEqualTo(array($otherExtension))
+				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($otherExtension))
 				->array($runner->getObservers())->isEqualTo(array($otherExtension))
 				->object($runner->removeExtension($otherExtension))->isIdenticalTo($runner)
-				->array($runner->getExtensions())->isEmpty()
+				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
 				->array($runner->getObservers())->isEmpty()
 		;
 	}
@@ -498,19 +498,19 @@ class runner extends atoum\test
 		$this
 			->if($runner = new testedClass())
 			->then
-				->array($runner->getExtensions())->isEmpty()
+				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
 				->array($runner->getObservers())->isEmpty()
 				->object($runner->removeExtensions())->isIdenticalTo($runner)
-				->array($runner->getExtensions())->isEmpty()
+				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
 				->array($runner->getObservers())->isEmpty()
 			->if($extension = new \mock\mageekguy\atoum\extension())
 			->and($otherExtension = new \mock\mageekguy\atoum\extension())
 			->and($runner->addExtension($extension)->addExtension($otherExtension))
 			->then
-				->array($runner->getExtensions())->isEqualTo(array($extension, $otherExtension))
+				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension, $otherExtension))
 				->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
 				->object($runner->removeExtensions())->isIdenticalTo($runner)
-				->array($runner->getExtensions())->isEmpty()
+				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
 				->array($runner->getObservers())->isEmpty()
 		;
 	}

@@ -1871,14 +1871,14 @@ abstract class test implements observable, \countable
 
 	public function getExtensions()
 	{
-		return iterator_to_array($this->extensions);
+		return $this->extensions;
 	}
 
 	public function removeExtension(atoum\extension $extension)
 	{
 		$this->extensions->detach($extension);
 
-		return $this->removeObserver($extension);;
+		return $this->removeObserver($extension);
 	}
 
 	public function removeExtensions()
@@ -1893,29 +1893,43 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-
-	public function addExtension(atoum\extension $extension)
+	public function addExtension(atoum\extension $extension, atoum\extension\configuration $configuration = null)
 	{
 		if ($this->extensions->contains($extension) === false)
 		{
-			$extension->setTest($this);
+			$this->extensions->detach($extension);
+			$this->removeObserver($extension);
+		}
 
-			$this->extensions->attach($extension);
+		$this->extensions->attach($extension, $configuration);
 
-			$this->addObserver($extension);
+		$extension->setTest($this);
+
+		$this->addObserver($extension);
+
+		return $this;
+	}
+
+	public function addExtensions(\splObjectStorage $extensions)
+	{
+		foreach ($extensions as $extension)
+		{
+			$this->addExtension($extension, $extensions[$extension]);
 		}
 
 		return $this;
 	}
 
-	public function addExtensions(\traversable $extensions)
+	public function getExtensionConfiguration(atoum\extension $extension)
 	{
-		foreach ($extensions as $extension)
+		try
 		{
-			$this->addExtension($extension);
+			return $this->extensions[$extension];
 		}
-
-		return $this;
+		catch (\unexpectedValueException $e)
+		{
+			return null;
+		}
 	}
 
 	private static function cleanNamespace($namespace)

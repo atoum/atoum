@@ -1145,17 +1145,17 @@ namespace mageekguy\atoum\tests\units
 				->if($test = new emptyTest())
 				->then
 					->object($test->addExtension($extension = new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
-					->array($test->getExtensions())->isEqualTo(array($extension))
-					->array($test->getObservers())->contains($extension)
+					->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($extension))
+					->array($test->getObservers())->isEqualTo(array($extension))
 					->mock($extension)
 						->call('setTest')->withArguments($test)->once()
 				->if($this->resetMock($extension))
 				->then
 					->object($test->addExtension($extension))->isIdenticalTo($test)
-					->array($test->getExtensions())->isEqualTo(array($extension))
-					->array($test->getObservers())->contains($extension)
+					->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($extension))
+					->array($test->getObservers())->isEqualTo(array($extension))
 					->mock($extension)
-						->call('setTest')->never();
+						->call('setTest')->once();
 			;
 		}
 
@@ -1164,25 +1164,25 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new emptyTest())
 				->then
-					->array($test->getExtensions())->isEmpty()
+					->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
 					->array($test->getObservers())->isEmpty()
 					->object($test->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
-					->array($test->getExtensions())->isEmpty()
+					->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
 					->array($test->getObservers())->isEmpty()
 				->if($extension = new \mock\mageekguy\atoum\extension())
 				->and($otherExtension = new \mock\mageekguy\atoum\extension())
 				->and($test->addExtension($extension)->addExtension($otherExtension))
 				->then
-					->array($test->getExtensions())->isEqualTo(array($extension, $otherExtension))
+					->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($extension, $otherExtension))
 					->array($test->getObservers())->isEqualTo(array($extension, $otherExtension))
 					->object($test->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
-					->array($test->getExtensions())->isEqualTo(array($extension, $otherExtension))
+					->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($extension, $otherExtension))
 					->array($test->getObservers())->isEqualTo(array($extension, $otherExtension))
 					->object($test->removeExtension($extension))->isIdenticalTo($test)
-					->array($test->getExtensions())->isEqualTo(array($otherExtension))
+					->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($otherExtension))
 					->array($test->getObservers())->isEqualTo(array($otherExtension))
 					->object($test->removeExtension($otherExtension))->isIdenticalTo($test)
-					->array($test->getExtensions())->isEmpty()
+					->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
 					->array($test->getObservers())->isEmpty()
 			;
 		}
@@ -1192,20 +1192,39 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new emptyTest())
 				->then
-					->array($test->getExtensions())->isEmpty()
+					->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
 					->array($test->getObservers())->isEmpty()
 					->object($test->removeExtensions())->isIdenticalTo($test)
-					->array($test->getExtensions())->isEmpty()
+					->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
 					->array($test->getObservers())->isEmpty()
 				->if($extension = new \mock\mageekguy\atoum\extension())
 				->and($otherExtension = new \mock\mageekguy\atoum\extension())
 				->and($test->addExtension($extension)->addExtension($otherExtension))
 				->then
-					->array($test->getExtensions())->isEqualTo(array($extension, $otherExtension))
+					->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($extension, $otherExtension))
 					->array($test->getObservers())->isEqualTo(array($extension, $otherExtension))
 					->object($test->removeExtensions())->isIdenticalTo($test)
-					->array($test->getExtensions())->isEmpty()
+					->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
 					->array($test->getObservers())->isEmpty()
+			;
+		}
+
+		public function testGetExtensionConfiguration()
+		{
+			$this
+				->if(
+					$test = new emptyTest(),
+					$extension = new \mock\mageekguy\atoum\extension()
+				)
+				->then
+					->variable($test->getExtensionConfiguration($extension))->isNull
+				->if($test->addExtension($extension))
+				->then
+					->variable($test->getExtensionConfiguration($extension))->isNull
+				->given($configuration = new \mock\mageekguy\atoum\extension\configuration())
+				->if($test->addExtension($extension, $configuration))
+				->then
+					->object($test->getExtensionConfiguration($extension))->isIdenticalTo($configuration)
 			;
 		}
 

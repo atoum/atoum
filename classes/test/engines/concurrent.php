@@ -132,9 +132,35 @@ class concurrent extends test\engine
 				$phpCode .= '$test->getMockGenerator()->disallowUndefinedMethodUsage();';
 			}
 
-			foreach ($test->getExtensions() as $extension)
+			$extensions = $test->getExtensions();
+
+			foreach ($extensions as $extension)
 			{
-				$phpCode .= '$test->addExtension(new ' . get_class($extension) . ');';
+				$configuration = $exception = null;
+				$extensionClass = get_class($extension);
+
+				try
+				{
+					$configuration = $extensions[$extension];
+				}
+				catch (\unexpectedValueException $exception) {}
+
+				if ($exception !== null || $configuration === null)
+				{
+					$phpCode .= '$test->addExtension(new ' . $extensionClass . ');';
+				}
+				else
+				{
+					$configurationClass = get_class($configuration);
+					$serialized = $configuration->serialize();
+
+					if (is_array($serialized) === false)
+					{
+						throw new exceptions\logic('Extension (' . $extensionClass . ') configuration (' . $configurationClass . ') should serialize as an array');
+					}
+
+					$phpCode .= '$test->addExtension(new ' . $extensionClass . ', ' . $configurationClass . '::unserialize(' . var_export($serialized, true) . '));';
+				}
 			}
 
 			$phpCode .=
