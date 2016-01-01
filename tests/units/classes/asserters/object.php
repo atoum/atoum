@@ -266,6 +266,20 @@ class object extends atoum\test
 		;
 	}
 
+	public function testToArray()
+	{
+		$this
+			->if($asserter = $this->newTestedInstance(new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->toArray(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Object is undefined')
+			->if($asserter->setWith($this))
+			->then
+				->object($asserter->toArray())->isInstanceOf('mageekguy\atoum\asserters\castToArray')
+		;
+	}
+
 	public function testIsInstanceOf()
 	{
 		$this

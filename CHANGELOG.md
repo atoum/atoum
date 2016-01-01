@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#541](https://github.com/atoum/atoum/pull/541) New `toArray` method on the `phpString` and `object` asserters to cast value to an array ([@jubianchi])
 * [#541](https://github.com/atoum/atoum/pull/541) New `iterator` asserter ([@jubianchi])
 * [#541](https://github.com/atoum/atoum/pull/541) New `castToArray` asserter ([@jubianchi])
 * [#535](https://github.com/atoum/atoum/pull/535) New `resource` asserter group (with `isOfType` or `is*` wildcard like `isStream`) ([@hywan])

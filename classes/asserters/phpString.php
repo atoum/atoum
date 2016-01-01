@@ -26,6 +26,9 @@ class phpString extends asserters\variable
 			case 'isnotempty':
 				return $this->isNotEmpty();
 
+			case 'toArray':
+				return $this->toArray();
+
 			default:
 				return $this->generator->__get($asserter);
 		}
@@ -238,6 +241,11 @@ class phpString extends asserters\variable
 		}
 
 		return $this;
+	}
+
+	public function toArray()
+	{
+		return $this->generator->castToArray($this->valueIsSet()->value);
 	}
 
 	protected function getLengthAsserter()

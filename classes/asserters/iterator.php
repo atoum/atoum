@@ -5,7 +5,7 @@ namespace mageekguy\atoum\asserters;
 use
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
-	;
+;
 
 class iterator extends asserters\object
 {
