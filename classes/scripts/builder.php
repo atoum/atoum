@@ -676,19 +676,19 @@ class builder extends atoum\script\configurable
 
 		if ($pid_exists !== false)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('A process has locked run file \'%s\''), $runFile));
+			throw new exceptions\runtime($this->locale->_('A process has locked run file \'%s\'', $runFile));
 		}
 
 		$this->lockResource = @$this->adapter->fopen($runFile, 'w+');
 
 		if ($this->lockResource === false)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $runFile));
+			throw new exceptions\runtime($this->locale->_('Unable to open run file \'%s\'', $runFile));
 		}
 
 		if ($this->adapter->flock($this->lockResource, \LOCK_EX | \LOCK_NB) === false)
 		{
-			throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $runFile));
+			throw new exceptions\runtime($this->locale->_('Unable to get exclusive lock on run file \'%s\'', $runFile));
 		}
 
 		$this->adapter->fwrite($this->lockResource, $this->adapter->getmypid());

@@ -86,7 +86,7 @@ class cli extends report\fields\runner\tests\coverage
 						$string .= $this->classPrompt .
 							sprintf(
 								$this->locale->_('%s: %s%s%s'),
-								$this->titleColorizer->colorize(sprintf($this->locale->_('Class %s'), $class)),
+								$this->titleColorizer->colorize($this->locale->_('Class %s', $class)),
 								$this->coverageColorizer->colorize(sprintf('%s%3.2f%%', ($classPathsCoverage !== null || $classBranchesCoverage !== null ? 'Line: ' : ''), $classCoverage * 100.0)),
 								$classPathsCoverage !== null ? $this->coverageColorizer->colorize(sprintf(' Path: %3.2f%%', $classPathsCoverage * 100.0)) : '',
 								$classBranchesCoverage !== null ? $this->coverageColorizer->colorize(sprintf(' Branch: %3.2f%%', $classBranchesCoverage * 100.0)) : ''
@@ -105,7 +105,7 @@ class cli extends report\fields\runner\tests\coverage
 									$string .= $this->methodPrompt .
 										sprintf(
 											$this->locale->_('%s: %s%s%s'),
-											$this->titleColorizer->colorize(sprintf($this->locale->_('%s::%s()'), $class, $method)),
+											$this->titleColorizer->colorize($this->locale->_('%s::%s()', $class, $method)),
 											$this->coverageColorizer->colorize(sprintf('%s%3.2f%%', ($methodPathsCoverage !== null || $methodBranchesCoverage !== null ? 'Line: ' : ''), $methodCoverage * 100.0)),
 											$methodPathsCoverage !== null ? $this->coverageColorizer->colorize(sprintf(', Path: %3.2f%%', $methodPathsCoverage * 100.0)) : '',
 											$methodBranchesCoverage !== null ? $this->coverageColorizer->colorize(sprintf(', Branch: %3.2f%%', $methodBranchesCoverage * 100.0)) : ''

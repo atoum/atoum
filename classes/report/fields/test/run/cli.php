@@ -33,7 +33,7 @@ class cli extends report\fields\test\run
 				?
 				$this->colorizer->colorize($this->locale->_('There is currently no test running.'))
 				:
-				sprintf($this->locale->_('%s...'), $this->colorizer->colorize($this->testClass))
+				$this->locale->_('%s...', $this->colorizer->colorize($this->testClass))
 			) .
 			PHP_EOL
 		;

@@ -129,11 +129,11 @@ class treemap extends report\fields\runner\coverage\cli
 					}
 				}
 
-				$string .= $this->urlPrompt . $this->urlColorizer->colorize(sprintf($this->locale->_('Treemap of code coverage are available at %s.'), $this->treemapUrl)) . PHP_EOL;
+				$string .= $this->urlPrompt . $this->urlColorizer->colorize($this->locale->_('Treemap of code coverage are available at %s.', $this->treemapUrl)) . PHP_EOL;
 			}
 			catch (\exception $exception)
 			{
-				$string .= $this->urlPrompt . $this->urlColorizer->colorize(sprintf($this->locale->_('Unable to generate code coverage at %s: %s.'), $this->treemapUrl, $exception->getMessage())) . PHP_EOL;
+				$string .= $this->urlPrompt . $this->urlColorizer->colorize($this->locale->_('Unable to generate code coverage at %s: %s.', $this->treemapUrl, $exception->getMessage())) . PHP_EOL;
 			}
 		}
 

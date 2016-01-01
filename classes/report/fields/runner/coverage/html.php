@@ -247,11 +247,11 @@ class html extends report\fields\runner\coverage\cli
 					$sourceFileTemplates->resetData();
 				}
 
-				$string .= $this->urlPrompt . $this->urlColorizer->colorize(sprintf($this->locale->_('Details of code coverage are available at %s.'), $this->rootUrl)) . PHP_EOL;
+				$string .= $this->urlPrompt . $this->urlColorizer->colorize($this->locale->_('Details of code coverage are available at %s.', $this->rootUrl)) . PHP_EOL;
 			}
 			catch (\exception $exception)
 			{
-				$string .= $this->urlPrompt . $this->urlColorizer->colorize(sprintf($this->locale->_('Unable to generate code coverage at %s: %s.'), $this->rootUrl, $exception->getMessage())) . PHP_EOL;
+				$string .= $this->urlPrompt . $this->urlColorizer->colorize($this->locale->_('Unable to generate code coverage at %s: %s.', $this->rootUrl, $exception->getMessage())) . PHP_EOL;
 			}
 		}
 

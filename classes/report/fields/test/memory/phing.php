@@ -17,7 +17,7 @@ class phing extends report\fields\test\memory\cli
 		return $this->prompt .
 			sprintf(
 				 $this->locale->_('%1$s'),
-				 $this->memoryColorizer->colorize($this->value === null ? $this->locale->_('unknown') : sprintf($this->locale->_('%4.2f Mb'), $this->value / 1048576))
+				 $this->memoryColorizer->colorize($this->value === null ? $this->locale->_('unknown') : $this->locale->_('%4.2f Mb', $this->value / 1048576))
 			)
 		;
 	}

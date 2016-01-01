@@ -964,7 +964,7 @@ class runner extends atoum\test
 			->if($argumentsParser = new mock\script\arguments\parser())
 			->and($this->calling($argumentsParser)->addHandler = function() {})
 			->and($locale = new mock\locale())
-			->and($this->calling($locale)->_ = function($string) { return $string; })
+			->and($this->calling($locale)->_ = function($string) { return vsprintf($string, array_slice(func_get_args(), 1)); })
 			->and($helpWriter = new mock\writers\std\out())
 			->and($this->calling($helpWriter)->write = function() {})
 			->and($runner = new testedClass($name = uniqid()))

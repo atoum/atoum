@@ -433,7 +433,7 @@ abstract class script
 	{
 		if ($this->help)
 		{
-			$this->writeHelp(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()));
+			$this->writeHelp($this->locale->_('Usage: %s [options]', $this->getName()));
 		}
 
 		return $this;

@@ -215,7 +215,7 @@ class runner extends atoum\script\configurable
 	public function version()
 	{
 		$this
-			->writeInfo(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory))
+			->writeInfo($this->locale->_('atoum version %s by %s (%s)', atoum\version, atoum\author, atoum\directory))
 			->stopRun()
 		;
 
@@ -685,7 +685,7 @@ class runner extends atoum\script\configurable
 					},
 					array('--init'),
 					'<path/to/directory>',
-					sprintf($this->locale->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)'), $this->getDirectory())
+					$this->locale->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)', $this->getDirectory())
 				)
 			->addArgumentHandler(
 					function($script, $argument, $path) {
@@ -1107,7 +1107,7 @@ class runner extends atoum\script\configurable
 
 			if (sizeof($arguments) <= 0)
 			{
-				$this->verbose(sprintf($this->locale->_('Using no CLI argument…')));
+				$this->verbose($this->locale->_('Using no CLI argument…'));
 			}
 			else
 			{
@@ -1118,7 +1118,7 @@ class runner extends atoum\script\configurable
 			{
 				foreach ($this->configFiles as $configFile)
 				{
-					$this->verbose(sprintf($this->locale->_('Using \'%s\' configuration file…'), $configFile));
+					$this->verbose($this->locale->_('Using \'%s\' configuration file…', $configFile));
 				}
 			}
 
@@ -1126,17 +1126,17 @@ class runner extends atoum\script\configurable
 
 			if ($bootstrapFile !== null)
 			{
-				$this->verbose(sprintf($this->locale->_('Using \'%s\' bootstrap file…'), $bootstrapFile));
+				$this->verbose($this->locale->_('Using \'%s\' bootstrap file…', $bootstrapFile));
 			}
 
 			foreach (atoum\autoloader::getRegisteredAutoloaders() as $autoloader)
 			{
-				$this->verbose(sprintf($this->locale->_('Using \'%s\' autoloader cache file…'), $autoloader->getCacheFileForInstance()));
+				$this->verbose($this->locale->_('Using \'%s\' autoloader cache file…', $autoloader->getCacheFileForInstance()));
 			}
 
 			foreach ($this->runner->getTestPaths() as $testPath)
 			{
-				$this->verbose(sprintf($this->locale->_('Using \'%s\' test file…'), $testPath), 2);
+				$this->verbose($this->locale->_('Using \'%s\' test file…', $testPath), 2);
 			}
 
 			if ($this->loop === true)
@@ -1267,7 +1267,7 @@ class runner extends atoum\script\configurable
 
 	protected function writeHelpUsage()
 	{
-		$this->writeHelp(sprintf($this->locale->_('Usage: %s [path/to/test/file] [options]'), $this->getName()) . PHP_EOL);
+		$this->writeHelp($this->locale->_('Usage: %s [path/to/test/file] [options]', $this->getName()) . PHP_EOL);
 
 		return $this;
 	}

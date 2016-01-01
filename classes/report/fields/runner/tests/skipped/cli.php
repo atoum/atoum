@@ -53,7 +53,7 @@ class cli extends skipped
 
 				foreach ($skippedMethods as $skippedMethod)
 				{
-					$string .= $this->methodPrompt . sprintf($this->locale->_('%s: %s'), $this->methodColorizer->colorize(sprintf('%s::%s()', $skippedMethod['class'], $skippedMethod['method'])), $this->messageColorizer->colorize($skippedMethod['message'])) . PHP_EOL;
+					$string .= $this->methodPrompt . $this->locale->_('%s: %s', $this->methodColorizer->colorize(sprintf('%s::%s()', $skippedMethod['class'], $skippedMethod['method'])), $this->messageColorizer->colorize($skippedMethod['message'])) . PHP_EOL;
 				}
 			}
 		}
