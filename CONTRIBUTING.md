@@ -1,4 +1,8 @@
-# Indenting and Whitespace
+# Contributing to atoum
+
+## Coding style
+
+### Indenting and Whitespace
 
 Use only tabs, with no space. 
 Lines should have no trailing whitespace at the end. 
@@ -10,17 +14,17 @@ The reasons for this can be summarized as:
 * The closing delimiter at the end of a file is optional.
 * PHP.net itself removes the closing delimiter from the end of its files (example: prepend.inc), so this can be seen as a "best practice."
 
-# Operators
+### Operators
 
 All binary operators (operators that come between two values), such as `+`, `-`, `=`, `!=`, `==`, `>`, etc. should have a space before and after the operator, for readability. 
 For example, an assignment should be formatted as `$foo = $bar;` rather than `$foo=$bar;`. 
 Unary operators (operators that operate on only one value), such as `++`, should not have a space between the operator and the variable or number they are operating on.
 
-# Casting
+### Casting
 
 Put a space between the (type) and the `$variable` in a cast: `(int) $mynumber`.
 
-# Control Structures
+### Control Structures
 
 Control structures include `if`, `for`, `while`, `switch`, etc. 
 Here is a sample `if` statement, since it is the most complicated of them:
@@ -91,11 +95,11 @@ do
 while ($condition);
 ```
 	
-# Line length and wrapping
+### Line length and wrapping
 
 There is no limit to line length.
 
-# Function Calls
+### Function Calls
 
 Functions should be called with no spaces between the function name, the opening parenthesis, and the first parameter; spaces between commas and each parameter, and no space between the last parameter, the closing parenthesis, and the semicolon. 
 Here's an example:
@@ -116,7 +120,7 @@ $long_variable = foo($baz);
 Always attempt to return a meaningful value from a function if one is appropriated.
 If there is no meaningful value, always return `$this` (fluent syntax).
 
-# Class Constructor Calls
+### Class Constructor Calls
 
 When calling class constructors with no arguments, always include parentheses:
 
@@ -132,7 +136,7 @@ $foo = new $bar();
 $foo = new $bar($arg1, $arg2);
 ```
 
-# Arrays
+### Arrays
 
 Arrays should be formatted with a space separating each element (after the comma), and spaces around the `=>` key association operator, if applicable.
 If an array contains several values, put each of them on one line:
@@ -147,7 +151,7 @@ $array = array(
 
 To get lenght of an array, use `sizeof` instead of `count` (no technical reason about that, it's just the current convention).
 
-# Quotes
+### Quotes
 
 You should always use single quote and always use a space between the dot and the concatenated parts to improve readability:
 
@@ -166,7 +170,7 @@ $string .= $bar;
 $string .= baz();
 ```
 
-# Comments
+### Comments
 
 Try to avoid useless comment, ie. use them only to add a link to a technical documentation or an explanation about the code.
 You should use `//` or `#` to comment, and they should be in english.
@@ -183,7 +187,7 @@ This is a good example:
 
 Currently, atoum does not support PHPDoc.
 
-# Including code
+### Including code
 
 Anywhere you are unconditionally including a class file, use `require_once`. 
 Anywhere you are conditionally including a class file, use `include_once`. 
@@ -196,13 +200,24 @@ When including code, you should always use a relative path from the current dire
 require_once __DIR__ . '/../../../path/to/the/included/php/file.php';
 ```
 
-# Naming Conventions
+### Naming Conventions
 
 Function, variable, constant, class, interface and method must be named using lowerCamelCase.
 Protected or private properties and methods should not use an underscore prefix.
 
-# Global Variables
+### Global Variables
 
 You should not use global variable.
 
 Thanks to the Drupal community for its work about its [coding convention](https://drupal.org/coding-standards).
+
+## Code of Conduct
+
+By contributing to atoum you agree to adopt the [Open CoC](http://todogroup.org/opencodeofconduct/#atoum/team@atoum.org):
+
+* Be friendly and patient
+* Be welcoming
+* Be considerate
+* Be respectful
+* Be careful in the words that we choose
+* Try to understand why we disagree
