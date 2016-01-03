@@ -24,5 +24,3 @@ $cloverReport = new atoum\reports\asynchronous\clover();
 $cloverReport->addWriter($cloverWriter);
 
 $runner->addReport($cloverReport);
-
-?>

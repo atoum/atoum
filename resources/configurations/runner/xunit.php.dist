@@ -24,5 +24,3 @@ $xunitReport = new atoum\reports\asynchronous\xunit();
 $xunitReport->addWriter($xunitWriter);
 
 $runner->addReport($xunitReport);
-
-?>
