@@ -2281,16 +2281,6 @@ class generator extends atoum\test
 				->boolean($generator->callsToParentClassAreShunted())->isFalse()
 		;
 	}
-	
-	public function testGetNewMockInstance()
-	{
-		$this
-			->if($generator = new testedClass())
-			->and($class = uniqid('unknownClass'))
-			->then
-				->object($generator->getNewMockInstance($class))
-					->isInstanceOf('\\mock\\' . $class);
-	}
 
 	public function testMethodIsMockable()
 	{

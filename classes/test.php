@@ -1243,9 +1243,24 @@ abstract class test implements observable, \countable
 					);
 
 					$this->assertionManager->setPropertyHandler('newMockInstance', function($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = array()) {
-							return $this->mockGenerator->getNewMockInstance($class, $mockNamespace, $mockClass, $constructorArguments);
+						$this->mockGenerator->generate($class, $mockNamespace, $mockClass);
+
+						if ($mockNamespace === null)
+						{
+							$mockNamespace = $this->mockGenerator->getDefaultNamespace();
 						}
-					);
+
+						if ($mockClass === null)
+						{
+							$mockClass = rtrim(ltrim($class, '\\'), '\\');
+						}
+
+						$classname = rtrim($mockNamespace, '\\') . '\\' . ltrim($mockClass, '\\');
+
+						$reflectionClass = new \reflectionClass($classname);
+
+						return $reflectionClass->newInstanceArgs($constructorArguments);
+					});
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
