@@ -324,6 +324,27 @@ class phpArray extends atoum\test
 		;
 	}
 
+	public function testHasSizeOnInnerAsserter()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+			->then
+				->exception(function() use ($asserter) { $asserter->isEmpty(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array(range(1, 5))))
+			->then
+				->object($childAsserter = $asserter->child[0](function($child) { $child->hasSize(5); }))->isInstanceOf('mageekguy\atoum\asserters\phpArray\child')
+				->object($childAsserter->hasSize(1))->isIdenticalTo($asserter)
+
+			->given($asserter = $this->newTestedInstance)
+			->if($asserter->setWith(array(array(range(1, 5), range(1, 3)))))
+			->then
+				->object($childAsserter = $asserter->child[0][1](function($child) { $child->hasSize(3); }))->isInstanceOf('mageekguy\atoum\asserters\phpArray\child')
+				->object($childAsserter->hasSize(1))->isIdenticalTo($asserter)
+		;
+	}
+
 	public function testIsEmpty()
 	{
 		$this
