@@ -604,4 +604,18 @@ class phpString extends atoum\test
 				->hasMessage($failMessage)
 		;
 	}
+
+	public function testToArray()
+	{
+		$this
+			->if($asserter = $this->newTestedInstance(new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->toArray(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith(uniqid()))
+			->then
+				->object($asserter->toArray())->isInstanceOf('mageekguy\atoum\asserters\castToArray')
+		;
+	}
 }

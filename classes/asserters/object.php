@@ -14,6 +14,7 @@ class object extends asserters\variable
 		switch (strtolower($property))
 		{
 			case 'tostring':
+			case 'toarray':
 			case 'isempty':
 			case 'istestedinstance':
 			case 'isnottestedinstance':
@@ -138,6 +139,11 @@ class object extends asserters\variable
 	public function toString()
 	{
 		return $this->generator->castToString($this->valueIsSet()->value);
+	}
+
+	public function toArray()
+	{
+		return $this->generator->castToArray($this->valueIsSet()->value);
 	}
 
 	protected function valueIsSet($message = 'Object is undefined')
