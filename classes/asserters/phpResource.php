@@ -58,7 +58,8 @@ class phpResource extends asserters\variable
 
 	public function __call($name, $arguments)
 	{
-		if ('is' === substr($name, 0, 2)) {
+		if ('is' === substr($name, 0, 2))
+		{
 			$pattern = preg_replace(array('/^is/', '/_/'), array('', '.?'), $name);
 			$pattern = preg_replace_callback(
 				'/([A-Z])([a-z]+)/',
@@ -69,11 +70,12 @@ class phpResource extends asserters\variable
 			);
 			$pattern = '/^' . $pattern . '$/i';
 
-			if (1 === count($arguments)) {
+			if (1 === count($arguments))
+			{
 				return $this->matches($pattern, $arguments[0]);
-			} else {
-				return $this->matches($pattern);
 			}
+
+			return $this->matches($pattern);
 		}
 
 		return parent::__call($name, $arguments);
