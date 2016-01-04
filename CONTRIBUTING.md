@@ -1,5 +1,17 @@
 # Contributing to atoum
 
+## Opening Issues
+
+* PHP Version (`php -v`)
+* atoum version (sha1, phar, tag)
+* MWE (code and test)
+* clear description of the problem
+* expected and actual results
+
+## Sending Pull Requests
+
+
+
 ## Coding style
 
 __Thanks to the Drupal community for its work about its [coding convention](https://drupal.org/coding-standards).__
