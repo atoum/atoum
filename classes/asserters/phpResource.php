@@ -24,6 +24,18 @@ class phpResource extends asserters\variable
 		return $this;
 	}
 
+	public function __get($asserter)
+	{
+		switch (strtolower($asserter))
+		{
+			case 'type':
+				return $this->getTypeAsserter();
+
+			default:
+				return $this->generator->__get($asserter);
+		}
+	}
+
 	public function isOfType($type, $failMessage = null)
 	{
 		$actualType = get_resource_type($this->valueIsSet()->value);
@@ -40,7 +52,7 @@ class phpResource extends asserters\variable
 		return $this;
 	}
 
-	public function matches($pattern, $failMessage = null)
+	protected function matches($pattern, $failMessage = null)
 	{
 		$actualType = get_resource_type($this->valueIsSet()->value);
 
@@ -79,5 +91,10 @@ class phpResource extends asserters\variable
 		}
 
 		return parent::__call($name, $arguments);
+	}
+
+	protected function getTypeAsserter()
+	{
+		return $this->generator->__call('phpString', array(get_resource_type($this->valueIsSet()->value)));
 	}
 }
