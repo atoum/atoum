@@ -411,6 +411,26 @@ abstract class test implements observable, \countable
 			->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); })
 			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $test; })
 			->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass); return $test; })
+			->setHandler('newMockInstance', function($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = array()) use ($test)
+			{
+				$test->getMockGenerator()->generate($class, $mockNamespace, $mockClass);
+
+				if ($mockNamespace === null)
+				{
+					$mockNamespace = $test->getMockGenerator()->getDefaultNamespace();
+				}
+
+				if ($mockClass === null)
+				{
+					$mockClass = rtrim(ltrim($class, '\\'), '\\');
+				}
+
+				$classname = rtrim($mockNamespace, '\\') . '\\' . ltrim($mockClass, '\\');
+
+				$reflectionClass = new \reflectionClass($classname);
+
+				return $reflectionClass->newInstanceArgs($constructorArguments);
+			})
 			->setHandler('dump', function() use ($test) { if ($test->debugModeIsEnabled() === true) { call_user_func_array('var_dump', func_get_args()); } return $test; })
 			->setHandler('stop', function() use ($test) { if ($test->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $test; })
 			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
@@ -1241,26 +1261,6 @@ abstract class test implements observable, \countable
 							return $instance;
 						}
 					);
-
-					$this->assertionManager->setPropertyHandler('newMockInstance', function($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = array()) {
-						$this->mockGenerator->generate($class, $mockNamespace, $mockClass);
-
-						if ($mockNamespace === null)
-						{
-							$mockNamespace = $this->mockGenerator->getDefaultNamespace();
-						}
-
-						if ($mockClass === null)
-						{
-							$mockClass = rtrim(ltrim($class, '\\'), '\\');
-						}
-
-						$classname = rtrim($mockNamespace, '\\') . '\\' . ltrim($mockClass, '\\');
-
-						$reflectionClass = new \reflectionClass($classname);
-
-						return $reflectionClass->newInstanceArgs($constructorArguments);
-					});
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
