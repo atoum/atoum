@@ -18,6 +18,27 @@ __Thanks to the Drupal community for its work about its [coding convention](http
 
 The key words "**must**", "**must not**", "**should**", "**should not**" and "**may**" in this document are to be interpreted as described in [RFC 2119](http://www.ietf.org/rfc/rfc2119.txt).
 
+### Compatibility
+
+Your code **must** work on PHP from version 5.3 to the latest stable. 
+
+You **must not**:
+
+* Use short array syntax,
+* Use variadic functions,
+* Use traits,
+* `$this` inside closures,
+* ...
+
+When you need to use a feature that is only available on PHP version greater than 5.3, you **must** either:
+
+* Use version sniffing (`version_compare`),
+* Check if class exists,
+* Check if method exists,
+* ...
+
+You **must** ensure a consistent behavior on all supported version. If it is not possible, you **must** ensure a correct behavior.
+
 ### Indenting and Whitespace
 
 * Tabs **must** be used to indent lines,
