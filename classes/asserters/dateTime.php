@@ -9,13 +9,25 @@ use
 
 class dateTime extends asserters\object
 {
+	public function __get($property)
+	{
+		switch (strtolower($property))
+		{
+			case 'isimmutable':
+				return $this->isImmutable();
+
+			default:
+				return parent::__get($property);
+		}
+	}
+
 	public function setWith($value, $checkType = true)
 	{
 		parent::setWith($value, false);
 
 		if ($checkType === true)
 		{
-			if ($this->value instanceof \dateTime)
+			if (self::isDateTime($this->value))
 			{
 				$this->pass();
 			}
@@ -183,13 +195,34 @@ class dateTime extends asserters\object
 		return $this;
 	}
 
-	protected function valueIsSet($message = 'Instance of \dateTime is undefined')
+	public function isImmutable($failMessage = null)
 	{
+		if (version_compare(PHP_VERSION, '5.5.0') < 0 || $this->valueIsSet()->value instanceof \dateTimeImmutable === false)
+		{
+			$this->fail($failMessage ?: $this->_('%s is not immutable', $this));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
+	}
+
+	protected function valueIsSet($message = null)
+	{
+		$message = $message ?: 'Instance of \dateTime is undefined';
+
 		if (parent::valueIsSet($message)->value instanceof \dateTime === false)
 		{
 			throw new exceptions\logic($message);
 		}
 
 		return $this;
+	}
+
+	private static function isDateTime($value)
+	{
+		return $value instanceof \dateTime || (version_compare(PHP_VERSION, '5.5.0') >= 0 && $value instanceof \dateTimeInterface);
 	}
 }
