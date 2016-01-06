@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#539](https://github.com/atoum/atoum/pull/539) Add a `newMockInstance` helper method on test class [@Grummfy]
 * [#548](https://github.com/atoum/atoum/pull/548) The `dateTime` asserter now supports `\dateTimeImmutable` ([@jubianchi])
 * [#540](https://github.com/atoum/atoum/pull/540) Assert on child arrays using the `phpArray` asserter ([@jubianchi])
 * [#541](https://github.com/atoum/atoum/pull/541) New `toArray` (along with `toArray` method on `phpString` and `object` asserters) and `iterator` asserters ([@jubianchi])
@@ -150,3 +151,4 @@
 [@vonglasow]: https://github.com/vonglasow
 [@mikaelrandy]: https://github.com/mikaelrandy
 [@kao98]: https://github.com/kao98
+[@Grummfy]: https://github.com/Grummfy
