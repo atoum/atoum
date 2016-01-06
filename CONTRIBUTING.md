@@ -80,7 +80,18 @@ You **may** also link to external resources or other tools providing similar fea
 
 ## Sending Pull Requests
 
+To be accepted your code contribution **must** follow atoum's [coding style](#coding-style).
 
+You **must** write unit tests to cover your modifications.
+
+Your commit history **should** be as clean as possible:
+
+* you **should** squash your commits to hide non-valudable commits (coding style fix, unit tests, ...)
+* you **should** rebase your branch on top of master to make your pull-request fast-forward
+* you **must** add a changelog entry
+
+You **must** also provide a descriptive title and a description for your changes. It **may** include code snippets to illustrate how to use
+the feature you added.
 
 ## Coding style
 
