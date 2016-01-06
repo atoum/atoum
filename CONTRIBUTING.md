@@ -70,7 +70,13 @@ Test should either pass or fail nicely, without a non-handled error.
 
 ### Requesting a new feature
 
+When requesting a new feature you **should** ensute that it does not already exist in atoum or any extension.
 
+You **must** provide a valid use case for the feature and it **must** be compliant with atoum's mantra (modern, simple and intuitive).
+
+You **should** also provide code snippets to illustrate your need and how the feature will be used from a user point of view.
+
+You **may** also link to external resources or other tools providing similar features to help reviewers.
 
 ## Sending Pull Requests
 
