@@ -17,6 +17,11 @@ namespace mageekguy\atoum
 			return array($return1, $return2, $return3);
 		}
 	}
+
+	class dummy
+	{
+		public function __construct($firstArgument, $secondArgument) {}
+	}
 }
 
 namespace mageekguy\atoum\mock\mageekguy\atoum
@@ -1228,7 +1233,7 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testStaticMethod()
+		public function testCallStaticOnTestedClass()
 		{
 			$this
 				->if($test = new withStatic())
@@ -1243,6 +1248,52 @@ namespace mageekguy\atoum\tests\units
 						$return3 = uniqid()
 					))
 						->isEqualTo(array($return1, $return2, $return3))
+			;
+		}
+
+		public function testNewMockInstance()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($mock = $test->newMockInstance('stdClass'))
+						->isInstanceOf('mock\stdClass')
+						->isInstanceOf('stdClass')
+					->object($test->newMockInstance('stdClass'))
+						->isInstanceOf('mock\stdClass')
+						->isInstanceOf('stdClass')
+						->isNotIdenticalTo($mock)
+					->object($test->newMockInstance('stdClass', 'foobar'))
+						->isInstanceOf('foobar\stdClass')
+						->isInstanceOf('stdClass')
+					->object($test->newMockInstance('stdClass', 'foo', 'bar'))
+						->isInstanceOf('foo\bar')
+						->isInstanceOf('stdClass')
+
+				->given($arguments = array($firstArgument = uniqid(), $secondArgument = rand(0, PHP_INT_MAX)))
+				->then
+					->object($mock = $test->newMockInstance('mageekguy\atoum\dummy', null, null, $arguments))
+						->isInstanceOf('mock\mageekguy\atoum\dummy')
+						->isInstanceOf('mageekguy\atoum\dummy')
+					->mock($mock)
+						->call('__construct')->withArguments($firstArgument, $secondArgument)->once
+
+				->given($arguments = array(uniqid(), rand(0, PHP_INT_MAX), $controller = new mock\controller()))
+				->then
+					->object($mock = $test->newMockInstance('mageekguy\atoum\dummy', null, null, $arguments))
+						->isInstanceOf('mock\mageekguy\atoum\dummy')
+						->isInstanceOf('mageekguy\atoum\dummy')
+					->object($mock->getMockController())->isIdenticalTo($controller)
+
+				->given(
+					$arguments = array(uniqid(), rand(0, PHP_INT_MAX)),
+					$controller = new mock\controller()
+				)
+				->then
+					->object($mock = $test->newMockInstance('mageekguy\atoum\dummy', null, null, $arguments))
+						->isInstanceOf('mock\mageekguy\atoum\dummy')
+						->isInstanceOf('mageekguy\atoum\dummy')
+					->object($mock->getMockController())->isIdenticalTo($controller)
 			;
 		}
 	}

@@ -411,26 +411,27 @@ abstract class test implements observable, \countable
 			->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); })
 			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $test; })
 			->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass); return $test; })
-			->setHandler('newMockInstance', function($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = array()) use ($test)
-			{
-				$test->getMockGenerator()->generate($class, $mockNamespace, $mockClass);
-
-				if ($mockNamespace === null)
+			->setHandler('newMockInstance', function($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = null) use ($test)
 				{
-					$mockNamespace = $test->getMockGenerator()->getDefaultNamespace();
+					$mockNamespace = trim($mockNamespace ?: $test->getMockGenerator()->getDefaultNamespace(), '\\');
+					$mockClass = trim($mockClass ?: $class, '\\');
+					$className = $mockNamespace . '\\' . $mockClass;
+
+					if (class_exists($className) === false)
+					{
+						$test->mockClass($class, $mockNamespace, $mockClass);
+					}
+
+					if ($constructorArguments !== null)
+					{
+						$reflectionClass = new \reflectionClass($className);
+
+						return $reflectionClass->newInstanceArgs($constructorArguments);
+					}
+
+					return new $className();
 				}
-
-				if ($mockClass === null)
-				{
-					$mockClass = rtrim(ltrim($class, '\\'), '\\');
-				}
-
-				$classname = rtrim($mockNamespace, '\\') . '\\' . ltrim($mockClass, '\\');
-
-				$reflectionClass = new \reflectionClass($classname);
-
-				return $reflectionClass->newInstanceArgs($constructorArguments);
-			})
+			)
 			->setHandler('dump', function() use ($test) { if ($test->debugModeIsEnabled() === true) { call_user_func_array('var_dump', func_get_args()); } return $test; })
 			->setHandler('stop', function() use ($test) { if ($test->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $test; })
 			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
@@ -440,7 +441,6 @@ abstract class test implements observable, \countable
 			->setPropertyHandler('exception', function() { return asserters\exception::getLastValue(); })
 		;
 
-		// Around testedInstance
 		$this->assertionManager
 			->setHandler('callStaticOnTestedClass', function() use ($test) {
 					$args = func_get_args();
