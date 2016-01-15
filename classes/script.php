@@ -417,12 +417,12 @@ abstract class script
 		return $this;
 	}
 
-	protected function canRun()
+	public function canRun()
 	{
 		return ($this->doRun === true);
 	}
 
-	protected function stopRun()
+	public function stopRun()
 	{
 		$this->doRun = false;
 
