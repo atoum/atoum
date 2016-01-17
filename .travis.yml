@@ -25,7 +25,6 @@ script:
   - bin/atoum +verbose
 before_deploy:
   - mkdir phar
-  - rm -f .atoum.php
   - php -n -dphar.readonly=Off scripts/phar/generator.php -d ./phar
   - php -n -ddate.timezone=Europe/Paris ./phar/atoum.phar --test-it -ncc +verbose
 deploy:
