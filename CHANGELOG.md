@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#556](https://github.com/atoum/atoum/pull/556) The autoloader now handles traits [@jubianchi]
+
 # 2.5.0 - 2016-01-08
 
 * [#539](https://github.com/atoum/atoum/pull/539) Add a `newMockInstance` helper method on test class [@Grummfy]
