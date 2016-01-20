@@ -126,6 +126,48 @@ class path extends atoum\test
 		;
 	}
 
+	public function testAbsolutizeWindows()
+	{
+		$this
+			->given($this->function->getcwd = $currentDirectory = 'C:\current\directory')
+
+			->if($this->newTestedInstance('C:\a\b', '\\'))
+			->then
+				->object($this->testedInstance->absolutize())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\a\b')
+
+			->if($this->newTestedInstance('..\a\b', '\\'))
+			->then
+				->object($this->testedInstance->absolutize())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\current\directory\..\a\b')
+
+			->if($this->newTestedInstance('..\..\..\a\b', '\\'))
+			->then
+				->object($this->testedInstance->absolutize())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\current\directory\..\..\..\a\b')
+
+			->if($this->newTestedInstance('a\b', '\\'))
+			->then
+				->object($this->testedInstance->absolutize())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\current\directory\a\b')
+
+			->if($this->newTestedInstance('.\a\b', '\\'))
+			->then
+				->object($this->testedInstance->absolutize())
+					->isTestedInstance($this->testedInstance)
+					->toString
+						->isEqualTo('C:\current\directory\.\a\b')
+		;
+	}
+
 	public function testGetAbsolutePath()
 	{
 		$this
@@ -170,6 +212,53 @@ class path extends atoum\test
 						->isInstanceOfTestedClass()
 						->toString
 							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'.'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+		;
+	}
+
+	public function testGetAbsolutePathWindows()
+	{
+		$this
+			->given($this->function->getcwd = $currentDirectory = 'C:\current\directory')
+
+				->if($this->newTestedInstance('C:\a\b', '\\'))
+				->then
+					->object($this->testedInstance->getAbsolutePath())
+						->isNotTestedInstance()
+						->isInstanceOfTestedClass()
+						->toString
+							->isEqualTo('C:\a\b')
+
+				->if($this->newTestedInstance('..\a\b', '\\'))
+				->then
+					->object($this->testedInstance->getAbsolutePath())
+						->isNotTestedInstance()
+						->isInstanceOfTestedClass()
+						->toString
+							->isEqualTo('C:\current\directory\..\a\b')
+
+				->if($this->newTestedInstance('..\..\..\a\b', '\\'))
+				->then
+					->object($this->testedInstance->getAbsolutePath())
+						->isNotTestedInstance()
+						->isInstanceOfTestedClass()
+						->toString
+							->isEqualTo('C:\current\directory\..\..\..\a\b')
+
+				->if($this->newTestedInstance('a\b', '\\'))
+				->then
+					->object($this->testedInstance->getAbsolutePath())
+						->isNotTestedInstance()
+						->isInstanceOfTestedClass()
+						->toString
+							->isEqualTo('C:\current\directory\a\b')
+
+				->if($this->newTestedInstance('.\a\b', '\\'))
+				->then
+					->object($this->testedInstance->getAbsolutePath())
+						->isNotTestedInstance()
+						->isInstanceOfTestedClass()
+						->toString
+							->isEqualTo('C:\current\directory\.\a\b')
 		;
 	}
 
@@ -248,6 +337,84 @@ class path extends atoum\test
 				->isTestedInstance()
 				->toString
 						->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+		;
+	}
+
+	public function testResolveWindows()
+	{
+		$this
+
+			->if($this->newTestedInstance('C:\a\b', '\\'))
+			->then
+				->object($this->testedInstance->resolve())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\a\b')
+
+			->if($this->newTestedInstance('C:\a\b\..', '\\'))
+			->then
+				->object($this->testedInstance->resolve())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\a')
+
+			->if($this->newTestedInstance('C:\a\b\..', '\\'))
+			->then
+				->object($this->testedInstance->resolve())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\\a')
+
+			->if($this->newTestedInstance('C:\a\b\.', '\\'))
+			->then
+				->object($this->testedInstance->resolve())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\a\b')
+
+			->if($this->newTestedInstance('C:\a\.\b', '\\'))
+			->then
+				->object($this->testedInstance->resolve())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\a\b')
+
+			->if($this->newTestedInstance('C:\\\\a\\\\\\\\.\\\\\\\\\\b', '\\'))
+			->then
+				->object($this->testedInstance->resolve())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\a\b')
+
+			->given($this->function->getcwd = 'C:\current\directory')
+
+			->if($this->newTestedInstance('a\b', '\\'))
+			->then
+				->object($this->testedInstance->resolve())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\current\directory\a\b')
+
+			->if($this->newTestedInstance('.\a\b', '\\'))
+			->then
+				->object($this->testedInstance->resolve())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\current\directory\a\b')
+
+			->if($this->newTestedInstance('..\a\b', '\\'))
+			->then
+				->object($this->testedInstance->resolve())
+					->isTestedInstance()
+					->toString
+						->isEqualTo('C:\current\a\b')
+
+			->if($this->newTestedInstance('..\..\a\b', '\\'))
+			->then
+				->object($this->testedInstance->resolve())
+				->isTestedInstance()
+				->toString
+						->isEqualTo('C:\a\b')
 		;
 	}
 
@@ -829,7 +996,16 @@ class path extends atoum\test
 			array('/a/b', '/', '/c/', '/', '../a/b'),
 			array('/a/b', '/', '/c/d', '/', '../../a/b'),
 			array('/a/b', '/', '/c/d/', '/', '../../a/b'),
-			array('/a/b', '/', '/', '/', './a/b')
+			array('/a/b', '/', '/', '/', './a/b'),
+
+			array('C:\a\b', '\\', 'C:\a\b', '\\', '.'),
+			array('C:\a\b', '\\', 'C:\a', '\\', '.\b'),
+			array('C:\a\b', '\\', 'C:\a\\', '\\', '.\b'),
+			array('C:\a\b', '\\', 'C:\c', '\\', '..\a\b'),
+			array('C:\a\b', '\\', 'C:\c\\', '\\', '..\a\b'),
+			array('C:\a\b', '\\', 'C:\c\d', '\\', '..\..\a\b'),
+			array('C:\a\b', '\\', 'C:\c\d\\', '\\', '..\..\a\b'),
+			array('C:\a\b', '\\', 'C:\\', '\\', '.\a\b')
 		);
 	}
 

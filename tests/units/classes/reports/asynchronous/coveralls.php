@@ -190,7 +190,7 @@ class coveralls extends atoum\test
 					__DIR__,
 					'coveralls',
 					'resources',
-					'2.json'
+					'2' . (defined('PHP_WINDOWS_VERSION_MAJOR') === true ? '-windows' : ''). '.json'
 				)
 			))
 			->and($coverage->setReflectionClassFactory(function() use ($class) { return $class; }))
@@ -207,7 +207,7 @@ class coveralls extends atoum\test
 					__DIR__,
 					'coveralls',
 					'resources',
-					'3.json'
+					'3' . (defined('PHP_WINDOWS_VERSION_MAJOR') === true ? '-windows' : ''). '.json'
 				)
 			))
 			->then

@@ -44,6 +44,8 @@ class path
 
 		$resolvedReferencePath = $reference->getResolvedPath();
 
+		$this->drive = null;
+
 		switch (true)
 		{
 			case $this->components === '/':

@@ -161,7 +161,7 @@ class coveralls extends atoum\reports\asynchronous
 			$source = $this->adapter->file_get_contents((string) $path->resolve());
 
 			$sources[] = array(
-				'name' => ltrim((string) $path->relativizeFrom($this->sourceDir), './'),
+				'name' => ltrim((string) $path->relativizeFrom($this->sourceDir), '.' . DIRECTORY_SEPARATOR),
 				'source' => $source,
 				'coverage' => $this->makeCoverageElement($coverage->getCoverageForClass($class))
 			);
