@@ -1,5 +1,9 @@
 # `dev-master`
 
+## Bugfix
+
+* [#561](https://github.com/atoum/atoum/pull/561) Use the fully qualified name when the return type is not `builtin` ([@GuillaumeDievart])
+
 # 2.5.1 - 2016-01-18
 
 * [#556](https://github.com/atoum/atoum/pull/556) The autoloader now handles traits [@jubianchi]
