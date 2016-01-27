@@ -613,7 +613,14 @@ class generator
 
 		if($method->getName() !== '__construct' && method_exists($method, 'hasReturnType') && $method->hasReturnType())
 		{
-			$returnTypeCode = ': ' . $method->getReturnType();
+			if($method->getReturnType()->isBuiltin())
+			{
+				$returnTypeCode = ': ' . $method->getReturnType();
+			}
+			else
+			{
+				$returnTypeCode = ': \\' . $method->getReturnType();
+			}
 		}
 
 		return $returnTypeCode;
