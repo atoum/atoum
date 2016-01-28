@@ -1,8 +1,8 @@
 # `dev-master`
 
-## Bugfix
+# 2.5.2 - 2016-01-28
 
-* [#561](https://github.com/atoum/atoum/pull/561) Use the fully qualified name when the return type is not `builtin` ([@GuillaumeDievart])
+* [#561](https://github.com/atoum/atoum/pull/561) Use the fully qualified name when the return type is not `builtin` [@GuillaumeDievart]
 
 # 2.5.1 - 2016-01-18
 
@@ -162,3 +162,4 @@
 [@mikaelrandy]: https://github.com/mikaelrandy
 [@kao98]: https://github.com/kao98
 [@Grummfy]: https://github.com/Grummfy
+[@GuillaumeDievart]: https://github.com/GuillaumeDievart
