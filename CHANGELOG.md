@@ -2,15 +2,15 @@
 
 # 2.5.2 - 2016-01-28
 
-* [#561](https://github.com/atoum/atoum/pull/561) Use the fully qualified name when the return type is not `builtin` [@GuillaumeDievart]
+* [#561](https://github.com/atoum/atoum/pull/561) Use the fully qualified name when the return type is not `builtin` ([@GuillaumeDievart])
 
 # 2.5.1 - 2016-01-18
 
-* [#556](https://github.com/atoum/atoum/pull/556) The autoloader now handles traits [@jubianchi]
+* [#556](https://github.com/atoum/atoum/pull/556) The autoloader now handles traits ([@jubianchi])
 
 # 2.5.0 - 2016-01-08
 
-* [#539](https://github.com/atoum/atoum/pull/539) Add a `newMockInstance` helper method on test class [@Grummfy]
+* [#539](https://github.com/atoum/atoum/pull/539) Add a `newMockInstance` helper method on test class ([@Grummfy])
 * [#548](https://github.com/atoum/atoum/pull/548) The `dateTime` asserter now supports `\dateTimeImmutable` ([@jubianchi])
 * [#540](https://github.com/atoum/atoum/pull/540) Assert on child arrays using the `phpArray` asserter ([@jubianchi])
 * [#541](https://github.com/atoum/atoum/pull/541) New `toArray` (along with `toArray` method on `phpString` and `object` asserters) and `iterator` asserters ([@jubianchi])
@@ -89,46 +89,46 @@
 
 ## BC break updates
 
-* [#420](https://github.com/atoum/atoum/pull/420) `atoum\test::beforeTestMethod` is called before the tested class is loaded (@mageekguy)
+* [#420](https://github.com/atoum/atoum/pull/420) `atoum\test::beforeTestMethod` is called before the tested class is loaded ([@mageekguy])
 
 ## Other updates
-* [#431](https://github.com/atoum/atoum/pull/431) Tested class should not be mock as an interface. (@mageekguy)
-* [#430](https://github.com/atoum/atoum/pull/430) Add `atoum\mock\generator::allIsInterface()` to definitely disable all parent classes' behaviors in mocks (@mageekguy)
-* [#427](https://github.com/atoum/atoum/pull/427) `atoum\asserters\mock::receive` is an alias to `atoum\asserters\mock::call` (@mageekguy)
+* [#431](https://github.com/atoum/atoum/pull/431) Tested class should not be mock as an interface. ([@mageekguy])
+* [#430](https://github.com/atoum/atoum/pull/430) Add `atoum\mock\generator::allIsInterface()` to definitely disable all parent classes' behaviors in mocks ([@mageekguy])
+* [#427](https://github.com/atoum/atoum/pull/427) `atoum\asserters\mock::receive` is an alias to `atoum\asserters\mock::call` ([@mageekguy])
 
 
 # 1.2.2 - 2015-01-12
 
-* [#415](https://github.com/atoum/atoum/pull/415) Fix a bug in the coverage report with excluded classes (@mageekguy)
-* [#406](https://github.com/atoum/atoum/pull/406) Fix a bug in the HTML coverage with stylesheet URLs (@jubianchi)
-* [#418](https://github.com/atoum/atoum/pull/418) Fix a bug when a mocked method returns a reference (@hywan)
+* [#415](https://github.com/atoum/atoum/pull/415) Fix a bug in the coverage report with excluded classes ([@mageekguy])
+* [#406](https://github.com/atoum/atoum/pull/406) Fix a bug in the HTML coverage with stylesheet URLs ([@jubianchi])
+* [#418](https://github.com/atoum/atoum/pull/418) Fix a bug when a mocked method returns a reference ([@hywan])
 
 # 1.2.1 - 2015-01-09
 
-* [#413](https://github.com/atoum/atoum/pull/413) Fix a bug in the exit code management (@mageekguy)
-* [#412](https://github.com/atoum/atoum/pull/412) Use semantics dates in `CHANGELOG.md` (@hywan)
+* [#413](https://github.com/atoum/atoum/pull/413) Fix a bug in the exit code management ([@mageekguy])
+* [#412](https://github.com/atoum/atoum/pull/412) Use semantics dates in `CHANGELOG.md` ([@hywan])
 
 # 1.2.0 - 2014-12-28
 
-* [#408](https://github.com/atoum/atoum/pull/408) Extract mock autoloader (@jubianchi)
-* [#403](https://github.com/atoum/atoum/pull/403) Fix a bug when setting the default mock namespace (@hywan)
-* [#387](https://github.com/atoum/atoum/pull/387) Support assertion without parenthesis on `dateInterval`, `error`, `extension` and `hash` asserters (@jubianchi)
-* [#401](https://github.com/atoum/atoum/pull/401) Use new Travis container infrastructure (@jubianchi)
-* [#405](https://github.com/atoum/atoum/pull/405) Add the Santa report and an example configuration file (@jubianchi)
-* [#394](https://github.com/atoum/atoum/pull/394) Mock generator now handles variadic arguments in method (@jubianchi)
-* [#398](https://github.com/atoum/atoum/pull/398) Replace broken documentation links (@jubianchi)
-* [#396](https://github.com/atoum/atoum/pull/396) Rename `match` to `matches` on the string asserter (@hywan)
-* [#385](https://github.com/atoum/atoum/pull/385) Rename the PHAR to `atoum.phar` (@hywan)
-* [#392](https://github.com/atoum/atoum/pull/392) Fix broken links in `README.md` (@evert)
-* [#391](https://github.com/atoum/atoum/pull/391) Add dates in `CHANGELOG.md` (@hywan)
-* [#379](https://github.com/atoum/atoum/pull/379) Fix `newTestedInstance` assertion when constructor contains a variable-length argument (@mageekguy)
+* [#408](https://github.com/atoum/atoum/pull/408) Extract mock autoloader ([@jubianchi])
+* [#403](https://github.com/atoum/atoum/pull/403) Fix a bug when setting the default mock namespace ([@hywan])
+* [#387](https://github.com/atoum/atoum/pull/387) Support assertion without parenthesis on `dateInterval`, `error`, `extension` and `hash` asserters ([@jubianchi])
+* [#401](https://github.com/atoum/atoum/pull/401) Use new Travis container infrastructure ([@jubianchi])
+* [#405](https://github.com/atoum/atoum/pull/405) Add the Santa report and an example configuration file ([@jubianchi])
+* [#394](https://github.com/atoum/atoum/pull/394) Mock generator now handles variadic arguments in method ([@jubianchi])
+* [#398](https://github.com/atoum/atoum/pull/398) Replace broken documentation links ([@jubianchi])
+* [#396](https://github.com/atoum/atoum/pull/396) Rename `match` to `matches` on the string asserter ([@hywan])
+* [#385](https://github.com/atoum/atoum/pull/385) Rename the PHAR to `atoum.phar` ([@hywan])
+* [#392](https://github.com/atoum/atoum/pull/392) Fix broken links in `README.md` ([@evert])
+* [#391](https://github.com/atoum/atoum/pull/391) Add dates in `CHANGELOG.md` ([@hywan])
+* [#379](https://github.com/atoum/atoum/pull/379) Fix `newTestedInstance` assertion when constructor contains a variable-length argument ([@mageekguy])
 
 # 1.1.0 - 2014-12-09
 
-* [#377](https://github.com/atoum/atoum/pull/377) Hide error when publishing report to coveralls.io fails (@jubianchi)
-* [#368](https://github.com/atoum/atoum/pull/368) Improve dataset key reporting in case of failure (@mageekguy)
-* [#376](https://github.com/atoum/atoum/pull/376) Add branch-alias (@stephpy, @hywan)
-* [#367](https://github.com/atoum/atoum/pull/367) Add the `isFinal` assertion on the `phpClass`/`class`/`testedClass` asserters (@mageekguy)
+* [#377](https://github.com/atoum/atoum/pull/377) Hide error when publishing report to coveralls.io fails ([@jubianchi])
+* [#368](https://github.com/atoum/atoum/pull/368) Improve dataset key reporting in case of failure ([@mageekguy])
+* [#376](https://github.com/atoum/atoum/pull/376) Add branch-alias ([@stephpy], [@hywan])
+* [#367](https://github.com/atoum/atoum/pull/367) Add the `isFinal` assertion on the `phpClass`/`class`/`testedClass` asserters ([@mageekguy])
 
 # 1.0.0 - 2014-12-01
 
@@ -163,3 +163,5 @@
 [@kao98]: https://github.com/kao98
 [@Grummfy]: https://github.com/Grummfy
 [@GuillaumeDievart]: https://github.com/GuillaumeDievart
+[@stephpy]: https://github.com/stephpy
+[@evert]: https://github.com/evert
