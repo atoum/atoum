@@ -45,6 +45,9 @@
 	[
 		"bin/atoum"
 	],
+	"config": {
+		"bin-dir": "bin"
+	},
 	"autoload":
 	{
 		"classmap": [ "classes/" ]
