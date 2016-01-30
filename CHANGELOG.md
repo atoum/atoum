@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#557](https://github.com/atoum/atoum/pull/557) The autoloader now handles traits [@jubianchi]
+
 # 1.2.2 - 2015-01-12
 
 * #415 Fix a bug in the coverage report with excluded classes (@mageekguy)
