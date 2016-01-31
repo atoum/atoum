@@ -9,7 +9,7 @@ However, it has been designed from the start with the following ideas in mind:
 * *Simplify* test development ;
 * Allow for writing *reliable, readable, and clear* unit tests ;
 
-To accomplish that, it massively uses capabilities provided by *PHP 5.3*, to give the developer *a whole new way* of writing unit tests.  
+To accomplish that, it massively uses capabilities provided by *PHP*, to give the developer *a whole new way* of writing unit tests.  
 Therefore, it can be installed and integrated inside an existing project extremely easily, since it is only a *single PHAR archive*, which is the one and only entry point for the developper.  
 Also, thanks to its *fluent interface*, it allows for writing unit tests in a fashion close to natural language.  
 It also makes it easier to implement stubbing within tests, thanks to intelligent uses of *anonymous functions and closures*.  
@@ -124,12 +124,12 @@ $runner->setTestGenerator($testGenerator);
 
 ## Prerequisites to use *atoum*
 
-*atoum* absolutely requires *PHP 5.3.3* or later to work.
+*atoum* absolutely requires *PHP `>= 5.3.3`* or later to work.
 On UNIX, in order to check whether you have the right PHP version, you just need to run the following command in your terminal:
 
-	# php -v | grep -oi 'php 5\.\(3\.\([3-9]\|[1-9][0-9]\{1,\}\)\|[4-9]\.[0-9]\+\)'
+	# php -v | grep -oE 'php 5\.3\.(?:[3-9]|[1-9][0-9])|5\.[4-6]\.[0-9]+|[5-7]\.[0-9]+\.[0-9]+'
 
-If `PHP 5.3.x` or equivalent gets displayed, then you have the right PHP version installed.
+If `PHP 5.6.x` or equivalent gets displayed, then you have the right PHP version installed.
 Should you want to use *atoum* using its PHAR archive, you also need [PHP](http://www.php.net) to be able to access the `phar` module, which is normally available by default.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal:
 
