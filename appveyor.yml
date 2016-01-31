@@ -1,0 +1,22 @@
+build: false
+shallow_clone: false
+
+platform: 'x86'
+
+clone_folder: C:\projects\atoum
+
+cache:
+    - c:\tools\php -> appveyor.yml
+
+install:
+  - cinst -y ansicon
+  - cinst -y php
+  - cd c:\tools\php
+  - copy php.ini-production php.ini
+  - echo date.timezone="UTC" >> php.ini
+  - SET PATH=C:\tools\php;%PATH%
+  - SET ANSICON=121x90
+
+test_script:
+  - cd C:\projects\atoum
+  - php bin\atoum --test-it +verbose

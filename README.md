@@ -1,4 +1,4 @@
-# *atoum* [![Build Status](https://secure.travis-ci.org/atoum/atoum.png?branch=master)](http://travis-ci.org/atoum/atoum) [![Coverage Status](https://coveralls.io/repos/atoum/atoum/badge.png?branch=master)](https://coveralls.io/r/atoum/atoum?branch=master)
+# *atoum* [![Build Status](https://secure.travis-ci.org/atoum/atoum.png?branch=master)](http://travis-ci.org/atoum/atoum) [![Build status](https://ci.appveyor.com/api/projects/status/ir4vt58yxkt615i8/branch/master?svg=true)](https://ci.appveyor.com/project/jubianchi/atoum/branch/master) [![Coverage Status](https://coveralls.io/repos/atoum/atoum/badge.png?branch=master)](https://coveralls.io/r/atoum/atoum?branch=master)
 
 ## A simple, modern and intuitive unit testing framework for PHP!
 
