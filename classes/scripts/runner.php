@@ -27,6 +27,7 @@ class runner extends atoum\script\configurable
 	protected $tags = array();
 	protected $methods = array();
 	protected $loop = false;
+	protected $loopRunner = null;
 
 	protected static $autorunner = true;
 	protected static $runnerFile = null;
@@ -37,6 +38,7 @@ class runner extends atoum\script\configurable
 
 		$this
 			->setRunner()
+			->setLoopRunner()
 			->setConfiguratorFactory()
 			->setDefaultReportFactory()
 		;
@@ -241,6 +243,18 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
+	public function setLoopRunner($loop = null)
+	{
+		$this->loopRunner = $loop ?: new loop\runner();
+
+		return $this;
+	}
+
+	public function getLoopRunner()
+	{
+		return $this->loopRunner;
+	}
+
 	public function enableLoopMode()
 	{
 		if ($this->loop !== null)
@@ -256,6 +270,11 @@ class runner extends atoum\script\configurable
 		$this->loop = null;
 
 		return $this;
+	}
+
+	public function isLoopModeEnabled()
+	{
+		return $this->loop === true;
 	}
 
 	public function testNamespaces(array $namespaces)
@@ -1182,75 +1201,9 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
-	protected function runAgain()
-	{
-		return ($this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '');
-	}
-
 	protected function loop()
 	{
-		$php = new php();
-		$php
-			->addOption('-f', $_SERVER['argv'][0])
-			->addArgument('--disable-loop-mode')
-		;
-
-		if ($this->cli->isTerminal() === true)
-		{
-			$php->addArgument('--force-terminal');
-		}
-
-		$addScoreFile = false;
-
-		foreach ($this->argumentsParser->getValues() as $argument => $values)
-		{
-			switch ($argument)
-			{
-				case '-l':
-				case '--loop':
-				case '--disable-loop-mode':
-					break;
-
-				case '-sf':
-				case '--score-file':
-					$addScoreFile = true;
-					break;
-
-				default:
-					if ($this->argumentsParser->argumentHasHandler($argument) === false)
-					{
-						$php->addArgument('-f', $argument);
-					}
-					else
-					{
-						$php->addArgument($argument, join(' ', $values));
-					}
-			}
-		}
-
-		if ($this->scoreFile === null)
-		{
-			$this->scoreFile = sys_get_temp_dir() . '/atoum.score';
-
-			@unlink($this->scoreFile);
-
-			$addScoreFile = true;
-		}
-
-		if ($addScoreFile === true)
-		{
-			$php->addArgument('--score-file', $this->scoreFile);
-		}
-
-		while ($this->canRun() === true)
-		{
-			passthru((string) $php);
-
-			if ($this->loop === false || $this->runAgain() === false)
-			{
-				$this->stopRun();
-			}
-		}
+		$this->getLoopRunner()->run($this);
 
 		return $this;
 	}
