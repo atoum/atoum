@@ -27,11 +27,12 @@ class runner extends atoum\script\configurable
 	protected $tags = array();
 	protected $methods = array();
 	protected $loop = false;
+	protected $looper;
 
 	protected static $autorunner = true;
 	protected static $runnerFile = null;
 
-	public function __construct($name, atoum\adapter $adapter = null)
+	public function __construct($name, atoum\adapter $adapter = null, atoum\scripts\runner\looper $looper = null)
 	{
 		parent::__construct($name, $adapter);
 
@@ -39,6 +40,7 @@ class runner extends atoum\script\configurable
 			->setRunner()
 			->setConfiguratorFactory()
 			->setDefaultReportFactory()
+			->setLooper($looper)
 		;
 	}
 
@@ -130,6 +132,18 @@ class runner extends atoum\script\configurable
 	public function getDefaultReportFactory()
 	{
 		return $this->defaultReportFactory;
+	}
+
+	public function setLooper(atoum\scripts\runner\looper $looper = null)
+	{
+		$this->looper = $looper ?: new atoum\scripts\runner\loopers\prompt($this->prompt, $this->outputWriter, $this->cli, $this->locale);
+
+		return $this;
+	}
+
+	public function getLooper()
+	{
+		return $this->looper;
 	}
 
 	public function autorun()
@@ -1182,11 +1196,6 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
-	protected function runAgain()
-	{
-		return ($this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '');
-	}
-
 	protected function loop()
 	{
 		$php = new php();
@@ -1246,7 +1255,7 @@ class runner extends atoum\script\configurable
 		{
 			passthru((string) $php);
 
-			if ($this->loop === false || $this->runAgain() === false)
+			if ($this->loop === false || $this->looper->runAgain() === false)
 			{
 				$this->stopRun();
 			}
