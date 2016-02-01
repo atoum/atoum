@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#567](https://github.com/atoum/atoum/pull/567) Extract loop logic from runner and add a looper interface ([@jubianchi], [@agallou])
+
 # 2.5.2 - 2016-01-28
 
 * [#561](https://github.com/atoum/atoum/pull/561) Use the fully qualified name when the return type is not `builtin` ([@GuillaumeDievart])
@@ -165,3 +167,4 @@
 [@GuillaumeDievart]: https://github.com/GuillaumeDievart
 [@stephpy]: https://github.com/stephpy
 [@evert]: https://github.com/evert
+[@agallou]: https://github.com/agallou
