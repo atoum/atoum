@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#569](https://github.com/atoum/atoum/pull/569) Use in-memory cache for resolved asserters ([@jubianchi])
 * [#567](https://github.com/atoum/atoum/pull/567) Extract loop logic from runner and add a looper interface ([@jubianchi], [@agallou])
 
 # 2.5.2 - 2016-01-28

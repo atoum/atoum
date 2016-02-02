@@ -15,6 +15,7 @@ class resolver
 	protected $baseClass = '';
 	protected $namespaces = array();
 	private $analyzer;
+	private $resolved = array();
 
 	public function __construct($baseClass = null, $namespace = null, analyzer $analyzer = null)
 	{
@@ -63,6 +64,10 @@ class resolver
 
 	public function resolve($asserter)
 	{
+		if (isset($this->resolved[$asserter])) {
+			return $this->resolved[$asserter];
+		}
+
 		if (false === $this->analyzer->isValidNamespace($asserter))
 		{
 			return null;
@@ -90,6 +95,8 @@ class resolver
 				break;
 			}
 		}
+
+		$this->resolved[$asserter] = $class;
 
 		return $class;
 	}
