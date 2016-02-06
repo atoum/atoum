@@ -111,6 +111,7 @@ class pusher extends atoum
 				$pusher = new testedClass(__FILE__),
 				$pusher->setTaggerEngine($taggerEngine = new \mock\mageekguy\atoum\scripts\tagger\engine()),
 				$pusher->setGit($git = new \mock\mageekguy\atoum\cli\commands\git()),
+				$pusher->setForceMode(true),
 				$pusher->setErrorWriter($errorWriter = new \mock\mageekguy\atoum\writers\std\err()),
 				$pusher->setInfoWriter($infoWriter = new \mock\mageekguy\atoum\writers\std\out()),
 				$this->calling($infoWriter)->write = $infoWriter
