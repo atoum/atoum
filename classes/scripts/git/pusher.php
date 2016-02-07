@@ -25,6 +25,7 @@ class pusher extends script\configurable
 	protected $workingDirectory = '';
 	protected $taggerEngine = null;
 	protected $git = null;
+	protected $forceMode = false;
 	protected $tagMajorVersion = false;
 	protected $tagMinorVersion = false;
 
@@ -110,6 +111,18 @@ class pusher extends script\configurable
 		return $this->git;
 	}
 
+	public function setForceMode($force=true)
+	{
+		$this->forceMode = $force;
+
+		return $this;
+	}
+
+	public function getForceMode()
+	{
+		return $this->forceMode;
+	}
+
 	public function tagMajorVersion()
 	{
 		$this->tagMajorVersion = true;
@@ -132,6 +145,13 @@ class pusher extends script\configurable
 	protected function setArgumentHandlers()
 	{
 		parent::setArgumentHandlers()
+			->addArgumentHandler(
+				function($script, $argument, $value) {
+					$this->setForceMode(true);
+				},
+				array('-f', '--force'),
+				$this->locale->_('Force execution by avoiding any confirmation')
+			)
 			->addArgumentHandler(
 				function($script, $argument, $remote) {
 					if (sizeof($remote) != 1)
@@ -199,6 +219,11 @@ class pusher extends script\configurable
 			}
 
 			$tag = $this->getNextVersion(trim($tag));
+
+			if ($this->getForceMode() === false && $this->prompt(sprintf($this->locale->_("You are about to push the '%s' version. Type 'Y' to confirm."), $tag)) !== 'Y')
+			{
+				return $this;
+			}
 
 			if (@file_put_contents($this->tagFile, $tag) === false)
 			{
