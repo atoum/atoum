@@ -31,7 +31,7 @@
 	],
 	"require":
 	{
-		"php": ">=5.3.3",
+		"php": ">=5.3.3,<7",
 		"ext-hash": "*",
 		"ext-json": "*",
 		"ext-session": "*",
@@ -45,6 +45,9 @@
 	[
 		"bin/atoum"
 	],
+	"config": {
+		"bin-dir": "bin"
+	},
 	"autoload":
 	{
 		"classmap": [ "classes/" ]
@@ -54,7 +57,7 @@
 	},
 	"extra": {
 		"branch-alias": {
-			"dev-master": "2.x-dev"
+			"2.1.x": "2.1.x-dev"
 		}
 	}
 }
