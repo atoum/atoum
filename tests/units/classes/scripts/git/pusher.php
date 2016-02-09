@@ -179,9 +179,9 @@ class pusher extends atoum
 						->once()
 					->call('tagVersion')
 						->before($this->mock($git)
-							->call('addAllAndCommit')->withArguments('Set version to DEVELOPMENT-0.0.1.')->once())
+							->call('addAllAndCommit')->withArguments('Set version to 2.0.x-dev.')->once())
 						->after($this->mock($taggerEngine)->call('setSrcDirectory')->withArguments($pusher->getWorkingDirectory())->once())
-						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev:' . ' DEVELOPMENT-0.0.1 $')->once()) // Don't remove concatenation operator to avoid tagger replace the string.
+						->after($this->mock($taggerEngine)->call('setVersion')->withArguments('$Rev:' . ' 2.0.x-dev $')->once()) // Don't remove concatenation operator to avoid tagger replace the string.
 							->once()
 
 			->if($pusher->tagPatchVersion())

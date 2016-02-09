@@ -386,7 +386,13 @@ class autoloader
 
 	protected static function exists($class)
 	{
-		return (class_exists($class, false) === true || interface_exists($class, false) === true);
+		return (
+			class_exists($class, false) === true ||
+			interface_exists($class, false) === true || (
+				version_compare(PHP_VERSION, '5.4.0') >= 0 &&
+				trait_exists($class, false) === true
+			)
+		);
 	}
 }
 
