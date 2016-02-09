@@ -1,4 +1,4 @@
-# 1.2.4 - 2016-02-09
+# 1.2.5 - 2016-02-09
 
 * [#571](https://github.com/atoum/atoum/pull/571) Add a constraint to avoid using atoum 1.2 on PHP 7 ([@jubianchi])
 
