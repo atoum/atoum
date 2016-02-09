@@ -1,3 +1,7 @@
+# 1.2.4 - 2016-02-09
+
+* [#571](https://github.com/atoum/atoum/pull/571) Add a constraint to avoid using atoum 1.2 on PHP 7 ([@jubianchi])
+
 # 1.2.3 - 2016-01-30
 
 * [#557](https://github.com/atoum/atoum/pull/557) The autoloader now handles traits ([@jubianchi])
