@@ -1,3 +1,7 @@
+# 2.0.2 - 2016-02-09
+
+* [#571](https://github.com/atoum/atoum/pull/571) Add a constraint to avoid using atoum 1.2 on PHP 7 ([@jubianchi])
+
 # 2.0.1 - 2015-02-27
 
 * [#440](https://github.com/atoum/atoum/pull/440) `--configurations` option should be handled first ([@jubianchi][jubianchi])
