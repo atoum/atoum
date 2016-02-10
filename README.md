@@ -61,7 +61,7 @@ $this
 	->then
 		->boolean($testedInstance->doSomething())->isTrue()
 		->mock($aMock)
-			->call('doOtherThing')->withArguments($testedInstance)->once() // Asserts that the doOtherTHing() method of $aMock was called once
+			->call('doOtherThing')->withArguments($testedInstance)->once() // Asserts that the doOtherThing() method of $aMock was called once
 ;
 ```
 
@@ -96,7 +96,7 @@ $this
 ```
 
 * *atoum* is able to produce several reports like TAP, clover, xUnit to be easily integrated with Jenkins or any other continuous integration tool,
-* *atoum* supports [data providers](http://docs.atoum.org/fr/latest/aide_ecriture.html#fournisseurs-de-donnees-data-provider),
+* *atoum* supports [data providers](http://docs.atoum.org/en/latest/written_help.html#data-providers),
 * *atoum* tests support autorun: just include the *atoum* runner and launch your test using `php path/to/test/file.php`,
 * *atoum*'s [configuration file](http://docs.atoum.org/en/latest/chapter3.html#configuration-files) is exclusively written in PHP (no XML, YAML or any other format) giving you the best flexibility:
 
@@ -274,7 +274,7 @@ However, if you want to further explore immediately *atoum*'s possibilities, we 
 * Running in your terminal, either the command `php atoum.phar -h`, or the command `php scripts/runner.php -h` ;
 * Exploring the contents of the `configurations` directory in *atoum*'s source, as it contains configuration file samples ;
 * Exploring the contents of the `tests/unit/classes` directory in *atoum*'s source, as it contains all of the unit tests ;
-* Read the [conference slides](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) about it, available online ;
+* Read the (french) [conference slides](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) about it, available online ;
 * Read the (french) [wiki](https://github.com/atoum/atoum/wiki) ;
 * Join the IRC channel *##atoum* on the *freenode* network ;
 * Ask questions by e-mail at the address *support[AT]atoum(DOT)org* ;
