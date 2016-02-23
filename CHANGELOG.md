@@ -3,6 +3,10 @@
 * [#569](https://github.com/atoum/atoum/pull/569) Use in-memory cache for resolved asserters ([@jubianchi])
 * [#567](https://github.com/atoum/atoum/pull/567) Extract loop logic from runner and add a looper interface ([@jubianchi], [@agallou])
 
+## Bugfix
+
+* [#578](https://github.com/atoum/atoum/pull/578) Fix arguments priority parsing when they have no priority ([@agallou])
+
 # 2.5.2 - 2016-01-28
 
 * [#561](https://github.com/atoum/atoum/pull/561) Use the fully qualified name when the return type is not `builtin` ([@GuillaumeDievart])

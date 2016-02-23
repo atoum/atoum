@@ -82,9 +82,12 @@ class parser implements \iteratorAggregate
 		uksort($values, function($arg1, $arg2) use ($priorities) {
 				switch (true)
 				{
-					case isset($priorities[$arg1]) === false:
-					case isset($priorities[$arg2]) === false:
-						return PHP_INT_MAX;
+					case isset($priorities[$arg1]) === false && isset($priorities[$arg2]) === false:
+						return 0;
+					case isset($priorities[$arg1]) === false && isset($priorities[$arg2]) === true:
+						return 1;
+					case isset($priorities[$arg2]) === false && isset($priorities[$arg1]) === true:
+						return -1;
 
 					default:
 						return ($priorities[$arg1] > $priorities[$arg2] ? -1 : ($priorities[$arg1] == $priorities[$arg2] ? 0 : 1));
