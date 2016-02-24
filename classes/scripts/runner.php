@@ -1228,7 +1228,17 @@ class runner extends atoum\script\configurable
 				default:
 					if ($this->argumentsParser->argumentHasHandler($argument) === false)
 					{
-						$php->addArgument('-f', $argument);
+						$min = null;
+						$closestArgument = $this->argumentsParser->getClosestArgument($argument, $min);
+
+						if ($closestArgument !== null && $min === 0)
+						{
+							$php->addArgument($closestArgument, join(' ', $values));
+						}
+						else
+						{
+							$php->addArgument('-f', $argument);
+						}
 					}
 					else
 					{
