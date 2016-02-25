@@ -5,6 +5,7 @@
 
 ## Bugfix
 
+* [#581](https://github.com/atoum/atoum/pull/578) Fix how arguments are passed when using loop mode ([@jubianchi])
 * [#578](https://github.com/atoum/atoum/pull/578) Fix arguments priority parsing when they have no priority ([@agallou])
 
 # 2.5.2 - 2016-01-28

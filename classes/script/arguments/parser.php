@@ -232,30 +232,7 @@ class parser implements \iteratorAggregate
 		}
 		else
 		{
-			$closestArgument = null;
-
-			if (self::isArgument($argument) === true)
-			{
-				$min = null;
-				$argumentMetaphone = metaphone($argument);
-				$availableArguments = array_keys($this->handlers);
-
-				natsort($availableArguments);
-
-				foreach ($availableArguments as $handlerArgument)
-				{
-					$levenshtein = levenshtein($argumentMetaphone, metaphone($handlerArgument));
-
-					if ($levenshtein < (strlen($argument) / 2))
-					{
-						if ($min === null || $levenshtein < $min)
-						{
-							$min = $levenshtein;
-							$closestArgument = $handlerArgument;
-						}
-					}
-				}
-			}
+			$closestArgument = $this->getClosestArgument($argument, $min);
 
 			switch (true)
 			{
@@ -275,6 +252,35 @@ class parser implements \iteratorAggregate
 		}
 
 		return $this;
+	}
+
+	public function getClosestArgument($argument, & $min = null)
+	{
+		$closestArgument = null;
+
+		if (self::isArgument($argument) === true)
+		{
+			$argumentMetaphone = metaphone($argument);
+			$availableArguments = array_keys($this->handlers);
+
+			natsort($availableArguments);
+
+			foreach ($availableArguments as $handlerArgument)
+			{
+				$levenshtein = levenshtein($argumentMetaphone, metaphone($handlerArgument));
+
+				if ($levenshtein < (strlen($argument) / 2))
+				{
+					if ($min === null || $levenshtein < $min)
+					{
+						$min = $levenshtein;
+						$closestArgument = $handlerArgument;
+					}
+				}
+			}
+		}
+
+		return $closestArgument;
 	}
 
 	public function invokeHandlers(atoum\script $script, $argument, array $values)

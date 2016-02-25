@@ -473,4 +473,44 @@ class parser extends atoum\test
 				->array($parser->getPriorities())->isEmpty()
 		;
 	}
+
+	public function testGetClosestArgument()
+	{
+		$this
+			->given(
+				$this->newTestedInstance,
+				$min = null
+			)
+			->if($this->testedInstance->addHandler(function($script, $argument, $values) {}, array('--an-argument')))
+			->then
+				->variable($this->testedInstance->getClosestArgument(uniqid('--'), $min))->isNull
+				->variable($min)->isNull
+			->given($min = null)
+			->then
+				->string($this->testedInstance->getClosestArgument('--a-argument', $min))->isEqualTo('--an-argument')
+				->integer($min)->isGreaterThan(0)
+			->given(
+				$this->newTestedInstance,
+				$min = null
+			)
+			->if(
+				$this->testedInstance->addHandler(function($script, $argument, $values) {}, array('--leave')),
+				$this->testedInstance->addHandler(function($script, $argument, $values) {}, array('--live'))
+			)
+			->then
+				->variable($this->testedInstance->getClosestArgument('--leeve', $min))->isEqualTo('--leave')
+				->integer($min)->isZero
+			->given(
+				$this->newTestedInstance,
+				$min = null
+			)
+			->if(
+				$this->testedInstance->addHandler(function($script, $argument, $values) {}, array('--live'), 2),
+				$this->testedInstance->addHandler(function($script, $argument, $values) {}, array('--leave'), 1)
+			)
+			->then
+				->variable($this->testedInstance->getClosestArgument('--leeve', $min))->isEqualTo('--leave')
+				->integer($min)->isZero
+		;
+	}
 }
