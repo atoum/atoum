@@ -5,6 +5,7 @@
 
 ## Bugfix
 
+* [#583](https://github.com/atoum/atoum/pull/578) Fix asserting on zeroes with the phpFloat asserter ([@jubianchi])
 * [#581](https://github.com/atoum/atoum/pull/578) Fix how arguments are passed when using loop mode ([@jubianchi])
 * [#578](https://github.com/atoum/atoum/pull/578) Fix arguments priority parsing when they have no priority ([@agallou])
 

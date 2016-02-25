@@ -201,9 +201,19 @@ class phpFloat extends atoum\test
 			->if($asserter->setWith(0.0001))
 			->then
 				->object($asserter->isNearlyEqualTo(- 0.0001, 0.0001))->isIdenticalTo($asserter)
+			->if($asserter->setWith(0.))
+			->then
+				->object($asserter->isNearlyEqualTo(0))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $lessValue) { $asserter->isNearlyEqualTo(0.0001); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
+			->if($asserter->setWith(0.0001))
+			->then
+				->exception(function() use ($asserter, & $lessValue) { $asserter->isNearlyEqualTo(0); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
 		;
 	}
-
 
 	/** @php 5.4 */
 	public function testIsNearlyEqualToWithINF()
