@@ -29,7 +29,7 @@ class cli extends report\fields\test\memory
 
 	public function __toString()
 	{
-			return $this->prompt .
+		return $this->prompt .
 			sprintf(
 				$this->locale->_('%1$s: %2$s.'),
 				$this->titleColorizer->colorize($this->locale->_('Memory usage')),
