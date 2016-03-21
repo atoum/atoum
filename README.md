@@ -153,7 +153,7 @@ If `Xdebug v2.2.x` or equivalent gets displayed, then the module is properly ins
 
 ### Step 1: Install *atoum*
 
-You just have to download [its PHAR archive](http://downloads.atoum.org/nightly/atoum.phar) and store it where you wish, for example under `/path/to/project/tests/atoum.phar`.  
+You just have to download [its PHAR archive](https://github.com/atoum/atoum/releases/download/2.6.0/atoum.phar) and store it where you wish, for example under `/path/to/project/tests/atoum.phar`.  
 This PHAR archive contains the latest development version to pass the totality of *atoum*'s unit tests.  
 *atoum*'s source code is also available via [the github repository](https://github.com/atoum/atoum).  
 To check if *atoum* works correctly with your configuration, you can execute all its unit tests.  
@@ -284,7 +284,7 @@ However, if you want to further explore immediately *atoum*'s possibilities, we 
 ### *atoum*'s PHAR archive seems to not be working
 
 In this case, the first thing you will want to do is confirm whether you have the latest version of the archive.  
-You just need to [download](http://downloads.atoum.org/nightly/atoum.phar) it again.  
+You just need to [download](https://github.com/atoum/atoum/releases/download/2.6.0/atoum.phar) it again.  
 If it still doesn't work, run the following command in a terminal window:
 
 	# php -n atoum.phar -v
