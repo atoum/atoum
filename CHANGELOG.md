@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#590](https://github.com/atoum/atoum/pull/590) The `dateTime` asserter now fully supports `\dateTimeImmutable` ([@fferriere])
+
 # 2.6.0 - 2016-03-08
 
 * [#569](https://github.com/atoum/atoum/pull/569) Use in-memory cache for resolved asserters ([@jubianchi])
@@ -177,3 +179,4 @@
 [@stephpy]: https://github.com/stephpy
 [@evert]: https://github.com/evert
 [@agallou]: https://github.com/agallou
+[@fferriere]: https://github.com/fferriere
