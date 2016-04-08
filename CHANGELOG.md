@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 2.6.1 - 2016-04-08
+
 * [#590](https://github.com/atoum/atoum/pull/590) The `dateTime` asserter now fully supports `\dateTimeImmutable` ([@fferriere])
 
 # 2.6.0 - 2016-03-08
