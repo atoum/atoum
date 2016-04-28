@@ -1,5 +1,9 @@
 # `dev-master`
 
+## Bugfix
+
+* [#593](https://github.com/atoum/atoum/pull/593) Assertions on PHP 7 exceptions/throwables/errors are now working correctly ([@jubianchi])
+
 # 2.6.1 - 2016-04-08
 
 * [#590](https://github.com/atoum/atoum/pull/590) The `dateTime` asserter now fully supports `\dateTimeImmutable` ([@fferriere])

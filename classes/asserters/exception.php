@@ -35,11 +35,23 @@ class exception extends asserters\object
 		{
 			$exception = null;
 
-			try
+			if (version_compare(PHP_VERSION, '7.0.0') >= 0)
 			{
-				$value($this->getTest());
+				try
+				{
+					$value($this->getTest());
+				}
+				catch (\throwable $exception) {}
 			}
-			catch (\exception $exception) {}
+			else
+			{
+				try
+				{
+					$value($this->getTest());
+				}
+				catch (\exception $exception) {}
+			}
+
 		}
 
 		parent::setWith($exception, false);
@@ -69,7 +81,7 @@ class exception extends asserters\object
 		}
 		catch (\logicException $exception)
 		{
-			if (self::classExists($value) === false || (strtolower(ltrim($value, '\\')) !== 'exception' && is_subclass_of($value, 'exception') === false))
+			if (self::classExists($value) === false || (strtolower(ltrim($value, '\\')) !== 'exception' && is_subclass_of($value, version_compare(PHP_VERSION, '7.0.0') >= 0 ? 'throwable' : 'exception') === false))
 			{
 				throw new exceptions\logic\invalidArgument('Argument of ' . __METHOD__ . '() must be a \exception instance or an exception class name');
 			}
@@ -153,7 +165,7 @@ class exception extends asserters\object
 
 	protected function check($value, $method)
 	{
-		if ($value instanceof \exception === false)
+		if (self::isThrowable($value) === false)
 		{
 			throw new exceptions\logic\invalidArgument('Argument of ' . __CLASS__ . '::' . $method . '() must be an exception instance');
 		}
