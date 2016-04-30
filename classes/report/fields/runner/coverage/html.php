@@ -52,6 +52,11 @@ class html extends report\fields\runner\coverage\cli
 			{
 				$this->cleanDestinationDirectory();
 
+				if ($this->adapter->is_dir($this->destinationDirectory) === false)
+				{
+					$this->adapter->mkdir($this->destinationDirectory, 0777, true);
+				}
+
 				$this->adapter->copy($this->templatesDirectory . DIRECTORY_SEPARATOR . 'screen.css', $this->destinationDirectory . DIRECTORY_SEPARATOR . 'screen.css');
 
 				$classes = $this->coverage->getClasses();
@@ -307,9 +312,6 @@ class html extends report\fields\runner\coverage\cli
 	{
 		$this->destinationDirectory = (string) $path;
 
-		if (!$this->adapter->is_dir($this->destinationDirectory)) {
-			$this->adapter->mkdir($this->destinationDirectory, 0777, true);
-		}
 		return $this;
 	}
 

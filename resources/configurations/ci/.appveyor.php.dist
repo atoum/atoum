@@ -1,0 +1,25 @@
+<?php
+
+use
+	mageekguy\atoum,
+	mageekguy\atoum\reports,
+	mageekguy\atoum\reports\telemetry,
+	mageekguy\atoum\writers\std
+;
+
+$script->addDefaultReport();
+
+if (file_exists(__DIR__ . '/vendor/autoload.php') === true)
+{
+	require_once __DIR__ . '/vendor/autoload.php';
+}
+
+if (class_exists('mageekguy\atoum\reports\telemetry') === true)
+{
+	$telemetry = new telemetry();
+	$telemetry->readProjectNameFromComposerJson(__DIR__ . '/composer.json');
+	$telemetry->addWriter(new std\out());
+	$runner->addReport($telemetry);
+}
+
+$script->testIt();

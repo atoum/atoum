@@ -6,17 +6,26 @@ platform: 'x86'
 clone_folder: C:\projects\atoum
 
 cache:
-    - c:\tools\php -> appveyor.yml
+  - c:\tools\php -> appveyor.yml
+
+init:
+  - SET PATH=C:\tools\php;%PATH%
+  - SET ANSICON=121x90
+  - SET COMPOSER_NO_INTERACTION=1
 
 install:
   - cinst -y ansicon
   - cinst -y php
   - cd c:\tools\php
-  - copy php.ini-production php.ini
+  - copy php.ini-production php.ini /Y
   - echo date.timezone="UTC" >> php.ini
-  - SET PATH=C:\tools\php;%PATH%
-  - SET ANSICON=121x90
+  - echo extension_dir=ext >> php.ini
+  - echo extension=php_openssl.dll >> php.ini
+  - appveyor DownloadFile https://getcomposer.org/composer.phar
+  - cd c:\projects\atoum
+  - php c:\tools\php\composer.phar require atoum/reports-extension:^2.0.1
+  - copy resources\configurations\ci\.appveyor.php.dist .atoum.php
 
 test_script:
   - cd C:\projects\atoum
-  - php bin\atoum --test-it +verbose
+  - php bin\atoum +verbose
