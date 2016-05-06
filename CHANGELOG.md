@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#596](https://github.com/atoum/atoum/pull/596) Test methods' tags are inherited from test classes ([@jubianchi])
+
 # 2.7.0 - 2016-06-20
 
 * [#594](https://github.com/atoum/atoum/pull/594) Add telemtry report to CI builds ([@jubianchi])

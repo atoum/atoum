@@ -907,12 +907,12 @@ abstract class test implements observable, \countable
 		{
 			foreach ($this->testMethods as $testMethodName => $annotations)
 			{
-				$tags[$testMethodName] = isset($annotations['tags']) === false ? $classTags : $annotations['tags'];
+				$tags[$testMethodName] = isset($annotations['tags']) === false ? $classTags : array_values(array_unique(array_merge($classTags, $annotations['tags'])));
 			}
 		}
 		else
 		{
-			$tags = isset($this->checkMethod($testMethodName)->testMethods[$testMethodName]['tags']) === false ? $classTags : $this->testMethods[$testMethodName]['tags'];
+			$tags = isset($this->checkMethod($testMethodName)->testMethods[$testMethodName]['tags']) === false ? $classTags : array_values(array_unique(array_merge($classTags, $this->testMethods[$testMethodName]['tags'])));
 		}
 
 		return $tags;
