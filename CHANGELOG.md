@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#594](https://github.com/atoum/atoum/pull/594) Add telemtry report to CI builds ([@jubianchi])
+
 ## Bugfix
 
 * [#593](https://github.com/atoum/atoum/pull/593) Assertions on PHP 7 exceptions/throwables/errors are now working correctly ([@jubianchi])
