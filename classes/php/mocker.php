@@ -3,8 +3,7 @@
 namespace mageekguy\atoum\php;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum
 ;
 
 abstract class mocker

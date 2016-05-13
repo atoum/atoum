@@ -3,9 +3,7 @@
 namespace mageekguy\atoum\php\tokenizer\iterators;
 
 use
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\php\tokenizer,
-	mageekguy\atoum\php\tokenizer\iterators
+	mageekguy\atoum\php\tokenizer
 ;
 
 class phpDefaultValue extends tokenizer\iterator

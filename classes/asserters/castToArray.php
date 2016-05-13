@@ -5,11 +5,10 @@ namespace mageekguy\atoum\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\tools,
-	mageekguy\atoum\asserters
+	mageekguy\atoum\tools
 ;
 
-class castToArray extends asserters\phpArray
+class castToArray extends phpArray
 {
 	protected $adapter = null;
 

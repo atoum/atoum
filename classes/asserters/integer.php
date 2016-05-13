@@ -2,12 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-use
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
-;
-
-class integer extends asserters\variable
+class integer extends variable
 {
 	public function __call($method, $arguments)
 	{

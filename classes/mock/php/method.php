@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\mock\php;
 
 use
-	mageekguy\atoum,
 	mageekguy\atoum\exceptions
 ;
 

@@ -3,13 +3,6 @@
 namespace mageekguy\atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\annotations,
 	mageekguy\atoum\tools\variable\analyzer
 ;
 
@@ -336,9 +329,9 @@ abstract class test implements observable, \countable
 		return $this->mockGenerator;
 	}
 
-	public function setMockAutoloader(atoum\autoloader\mock $autoloader = null)
+	public function setMockAutoloader(autoloader\mock $autoloader = null)
 	{
-		$this->mockAutoloader = $autoloader ?: new atoum\autoloader\mock();
+		$this->mockAutoloader = $autoloader ?: new autoloader\mock();
 
 		return $this;
 	}
@@ -370,7 +363,7 @@ abstract class test implements observable, \countable
 	public function setPhpExtensionFactory(\closure $factory = null)
 	{
 		$this->phpExtensionFactory = $factory ?: function($extensionName) {
-			return new atoum\php\extension($extensionName);
+			return new php\extension($extensionName);
 		};
 
 		return $this;
@@ -463,7 +456,7 @@ abstract class test implements observable, \countable
 			->setHandler('if', $returnTest)
 			->setHandler('and', $returnTest)
 			->setHandler('then', $returnTest)
-			->setHandler('given', $returnTest)
+			->setHandler('given', function() use($returnTest) { return $returnTest(); })
 			->setMethodHandler('define', $returnTest)
 			->setMethodHandler('let', $returnTest)
 		;
@@ -1033,7 +1026,7 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	public function removeObserver(atoum\observer $observer)
+	public function removeObserver(observer $observer)
 	{
 		$this->observers->detach($observer);
 
@@ -1206,7 +1199,7 @@ abstract class test implements observable, \countable
 					{
 						call_user_func($this->phpExtensionFactory, $mandatoryExtension)->requireExtension();
 					}
-					catch (atoum\php\exception $exception)
+					catch (php\exception $exception)
 					{
 						throw new test\exceptions\skip($exception->getMessage());
 					}
@@ -1895,7 +1888,7 @@ abstract class test implements observable, \countable
 		return $this->extensions;
 	}
 
-	public function removeExtension(atoum\extension $extension)
+	public function removeExtension(extension $extension)
 	{
 		$this->extensions->detach($extension);
 
@@ -1914,7 +1907,7 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	public function addExtension(atoum\extension $extension, atoum\extension\configuration $configuration = null)
+	public function addExtension(extension $extension, extension\configuration $configuration = null)
 	{
 		if ($this->extensions->contains($extension) === false)
 		{
@@ -1941,7 +1934,7 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	public function getExtensionConfiguration(atoum\extension $extension)
+	public function getExtensionConfiguration(extension $extension)
 	{
 		try
 		{

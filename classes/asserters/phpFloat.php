@@ -2,13 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-use
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\tools\diffs
-;
-
-class phpFloat extends asserters\integer
+class phpFloat extends integer
 {
 	public function setWith($value)
 	{

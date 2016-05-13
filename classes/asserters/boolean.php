@@ -2,12 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-use
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
-;
-
-class boolean extends asserters\variable
+class boolean extends variable
 {
 	public function __get($property)
 	{

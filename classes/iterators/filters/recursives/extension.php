@@ -2,10 +2,6 @@
 
 namespace mageekguy\atoum\iterators\filters\recursives;
 
-use
-	mageekguy\atoum
-;
-
 class extension extends \recursiveFilterIterator
 {
 	protected $acceptedExtensions = array();

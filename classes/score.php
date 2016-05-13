@@ -2,12 +2,6 @@
 
 namespace mageekguy\atoum;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions
-;
-
 class score
 {
 	protected $passNumber = 0;

@@ -3,16 +3,15 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum,
 	mageekguy\atoum\php,
 	mageekguy\atoum\test,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\asserters\adapter\call
 ;
 
-class phpFunction extends atoum\asserters\adapter\call
+class phpFunction extends adapter\call
 {
-	public function setWithTest(atoum\test $test)
+	public function setWithTest(test $test)
 	{
 		parent::setWithTest($test);
 

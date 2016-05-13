@@ -4,12 +4,11 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\test,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
 ;
 
-class extension extends atoum\asserter
+class extension extends asserter
 {
 	protected $name = null;
 	protected $phpExtensionFactory = null;

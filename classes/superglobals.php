@@ -2,10 +2,6 @@
 
 namespace mageekguy\atoum;
 
-use
-	mageekguy\atoum\exceptions
-;
-
 class superglobals
 {
 	protected $superglobals = array();

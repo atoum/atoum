@@ -4,7 +4,7 @@ namespace mageekguy\atoum\php;
 
 use
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\php\tokenizer,
+	mageekguy\atoum\php\tokenizer\token,
 	mageekguy\atoum\php\tokenizer\iterators
 ;
 
@@ -57,7 +57,7 @@ class tokenizer implements \iteratorAggregate
 					break;
 			}
 
-			$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+			$this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 		}
 
 		return $this;
@@ -83,7 +83,7 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				default:
-					$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+					$this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 					$this->tokens->next();
 			}
 
@@ -152,7 +152,7 @@ class tokenizer implements \iteratorAggregate
 					break;
 			}
 
-			$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+			$this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 
 			if ($token[0] === '}')
 			{
@@ -185,7 +185,7 @@ class tokenizer implements \iteratorAggregate
 					break;
 			}
 
-			$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+			$this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 
 			if ($token[0] === '}')
 			{
@@ -220,7 +220,7 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				default:
-					$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+					$this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 					$this->tokens->next();
 			}
 
@@ -240,7 +240,7 @@ class tokenizer implements \iteratorAggregate
 
 			$token = $this->tokens->current();
 
-			$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+			$this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 
 			$key = $this->tokens->key();
 		}
@@ -258,7 +258,7 @@ class tokenizer implements \iteratorAggregate
 
 			if ($token[0] === '(')
 			{
-				$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+				$this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 
 				$stack = 1;
 
@@ -279,7 +279,7 @@ class tokenizer implements \iteratorAggregate
 							$stack--;
 						}
 
-						$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+						$this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 					}
 				}
 			}

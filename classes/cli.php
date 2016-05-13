@@ -2,19 +2,15 @@
 
 namespace mageekguy\atoum;
 
-use
-	mageekguy\atoum
-;
-
 class cli
 {
 	protected $adapter = null;
 
 	private static $isTerminal = null;
 
-	public function __construct(atoum\adapter $adapter = null)
+	public function __construct(adapter $adapter = null)
 	{
-		$this->adapter = $adapter ?: new atoum\adapter();
+		$this->adapter = $adapter ?: new adapter();
 	}
 
 	public function isTerminal()

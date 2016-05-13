@@ -10,8 +10,6 @@ use
 	mageekguy\atoum\cli\progressBar,
 	mageekguy\atoum\cli\colorizer
 ;
-use mageekguy\atoum;
-
 
 class nyancat extends cli
 {

@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class constant extends atoum\asserter
+class constant extends asserter
 {
 	protected $diff = null;
 	protected $isSet = false;

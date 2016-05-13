@@ -2,11 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-use
-	mageekguy\atoum\asserters
-;
-
-class hash extends asserters\phpString
+class hash extends phpString
 {
 	public function __get($asserter)
 	{

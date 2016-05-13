@@ -6,11 +6,10 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\tools,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class utf8String extends asserters\phpString
+class utf8String extends phpString
 {
 	protected $adapter = null;
 

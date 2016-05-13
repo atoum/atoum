@@ -4,8 +4,7 @@ namespace mageekguy\atoum\test\adapter;
 
 use
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\test\adapter,
-	mageekguy\atoum\test\adapter\call
+	mageekguy\atoum\test\adapter
 ;
 
 class call
@@ -14,7 +13,7 @@ class call
 	protected $arguments = null;
 	protected $decorator = null;
 
-	public function __construct($function = null, array $arguments = null, call\decorator $decorator = null)
+	public function __construct($function = null, array $arguments = null, adapter\call\decorator $decorator = null)
 	{
 		if ($function !== null)
 		{
@@ -78,9 +77,9 @@ class call
 		return $this;
 	}
 
-	public function setDecorator(call\decorator $decorator = null)
+	public function setDecorator(adapter\call\decorator $decorator = null)
 	{
-		$this->decorator = $decorator ?: new call\decorator();
+		$this->decorator = $decorator ?: new adapter\call\decorator();
 
 		return $this;
 	}

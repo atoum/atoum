@@ -2,11 +2,6 @@
 
 namespace mageekguy\atoum;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
-;
-
 abstract class mailer
 {
 	protected $to = null;
@@ -17,12 +12,12 @@ abstract class mailer
 	protected $contentType = null;
 	protected $adapter = null;
 
-	public function __construct(atoum\adapter $adapter = null)
+	public function __construct(adapter $adapter = null)
 	{
-		$this->setAdapter($adapter ?: new atoum\adapter());
+		$this->setAdapter($adapter ?: new adapter());
 	}
 
-	public function setAdapter(atoum\adapter $adapter)
+	public function setAdapter(adapter $adapter)
 	{
 		$this->adapter = $adapter;
 

@@ -3,11 +3,10 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class phpArray extends asserters\variable implements \arrayAccess
+class phpArray extends variable implements \arrayAccess
 {
 	private $key = null;
 	private $innerAsserter = null;
@@ -41,7 +40,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 			default:
 				$asserter = parent::__get($asserter);
 
-				if ($asserter instanceof asserters\variable === false)
+				if ($asserter instanceof variable === false)
 				{
 					$this->resetInnerAsserter();
 

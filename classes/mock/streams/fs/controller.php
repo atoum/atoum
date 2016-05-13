@@ -4,7 +4,6 @@ namespace mageekguy\atoum\mock\streams\fs;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
 	mageekguy\atoum\mock\stream
 ;
 

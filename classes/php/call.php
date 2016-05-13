@@ -2,6 +2,10 @@
 
 namespace mageekguy\atoum\php;
 
+use
+	mageekguy\atoum\test\adapter\call
+;
+
 class call
 {
 	protected $function = '';

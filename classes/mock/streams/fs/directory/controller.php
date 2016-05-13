@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\mock\streams\fs\directory;
 
 use
-	mageekguy\atoum\exceptions,
 	mageekguy\atoum\mock\streams\fs
 ;
 

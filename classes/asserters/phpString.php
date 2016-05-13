@@ -2,14 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
-;
-
-class phpString extends asserters\variable
+class phpString extends variable
 {
 	protected $charlist = null;
 

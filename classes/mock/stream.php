@@ -4,8 +4,7 @@ namespace mageekguy\atoum\mock;
 
 use
 	mageekguy\atoum\adapter,
-	mageekguy\atoum\exceptions\logic,
-	mageekguy\atoum\exceptions\runtime
+	mageekguy\atoum\exceptions
 ;
 
 class stream
@@ -48,7 +47,7 @@ class stream
 
 		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, get_called_class(), 0) === false)
 		{
-			throw new runtime('Unable to register ' . $protocol . ' stream');
+			throw new exceptions\runtime('Unable to register ' . $protocol . ' stream');
 		}
 
 		$stream = static::findControllerForStream($name);
@@ -100,7 +99,7 @@ class stream
 			case 'unlink':
 			case 'url_stat':
 			case 'stat':
-				$this->streamController = static::getControllerFromArguments($arguments)->duplicate();
+				$this->streamController = static::getControllerFromArguments($method, $arguments)->duplicate();
 				break;
 		}
 
@@ -112,11 +111,11 @@ class stream
 		return new stream\controller($stream);
 	}
 
-	protected static function getControllerFromArguments(array $arguments)
+	protected static function getControllerFromArguments($method, array $arguments)
 	{
 		if (isset($arguments[0]) === false)
 		{
-			throw new logic('Argument 0 is undefined for function ' . $method . '()');
+			throw new exceptions\logic('Argument 0 is undefined for function ' . $method . '()');
 		}
 
 		$stream = static::findControllerForStream(static::setDirectorySeparator($arguments[0]));

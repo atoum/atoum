@@ -2,11 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-use
-	mageekguy\atoum\asserters
-;
-
-class phpResource extends asserters\variable
+class phpResource extends variable
 {
 	public function setWith($value)
 	{

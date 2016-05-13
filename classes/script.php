@@ -2,14 +2,6 @@
 
 namespace mageekguy\atoum;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\script,
-	mageekguy\atoum\writer,
-	mageekguy\atoum\writers,
-	mageekguy\atoum\exceptions
-;
-
 abstract class script
 {
 	const padding = '   ';
@@ -30,7 +22,7 @@ abstract class script
 	private $doRun = true;
 	private $help = array();
 
-	public function __construct($name, atoum\adapter $adapter = null)
+	public function __construct($name, adapter $adapter = null)
 	{
 		$this->name = (string) $name;
 
@@ -65,9 +57,9 @@ abstract class script
 		return rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 	}
 
-	public function setAdapter(atoum\adapter $adapter = null)
+	public function setAdapter(adapter $adapter = null)
 	{
-		$this->adapter = $adapter ?: new atoum\adapter();
+		$this->adapter = $adapter ?: new adapter();
 
 		return $this;
 	}
@@ -77,9 +69,9 @@ abstract class script
 		return $this->adapter;
 	}
 
-	public function setLocale(atoum\locale $locale = null)
+	public function setLocale(locale $locale = null)
 	{
-		$this->locale = $locale ?: new atoum\locale();
+		$this->locale = $locale ?: new locale();
 
 		return $this;
 	}
@@ -103,9 +95,9 @@ abstract class script
 		return $this->argumentsParser;
 	}
 
-	public function setCli(atoum\cli $cli = null)
+	public function setCli(cli $cli = null)
 	{
-		$this->cli = $cli ?: new atoum\cli();
+		$this->cli = $cli ?: new cli();
 
 		return $this;
 	}
@@ -120,7 +112,7 @@ abstract class script
 		return (sizeof($this->argumentsParser->getValues()) > 0);
 	}
 
-	public function setOutputWriter(atoum\writer $writer = null)
+	public function setOutputWriter(writer $writer = null)
 	{
 		$this->outputWriter = $writer ?: new writers\std\out($this->cli);
 
@@ -132,7 +124,7 @@ abstract class script
 		return $this->outputWriter;
 	}
 
-	public function setInfoWriter(atoum\writer $writer = null)
+	public function setInfoWriter(writer $writer = null)
 	{
 		if ($writer === null)
 		{
@@ -140,7 +132,7 @@ abstract class script
 			$writer
 				->addDecorator(new writer\decorators\rtrim())
 				->addDecorator(new writer\decorators\eol())
-				->addDecorator(new atoum\cli\clear())
+				->addDecorator(new cli\clear())
 			;
 		}
 
@@ -154,7 +146,7 @@ abstract class script
 		return $this->infoWriter;
 	}
 
-	public function setWarningWriter(atoum\writer $writer = null)
+	public function setWarningWriter(writer $writer = null)
 	{
 		if ($writer === null)
 		{
@@ -163,7 +155,7 @@ abstract class script
 				->addDecorator(new writer\decorators\trim())
 				->addDecorator(new writer\decorators\prompt($this->locale->_('Warning: ')))
 				->addDecorator(new writer\decorators\eol())
-				->addDecorator(new atoum\cli\clear())
+				->addDecorator(new cli\clear())
 			;
 		}
 
@@ -177,7 +169,7 @@ abstract class script
 		return $this->warningWriter;
 	}
 
-	public function setErrorWriter(atoum\writer $writer = null)
+	public function setErrorWriter(writer $writer = null)
 	{
 		if ($writer === null)
 		{
@@ -186,7 +178,7 @@ abstract class script
 				->addDecorator(new writer\decorators\trim())
 				->addDecorator(new writer\decorators\prompt($this->locale->_('Error: ')))
 				->addDecorator(new writer\decorators\eol())
-				->addDecorator(new atoum\cli\clear())
+				->addDecorator(new cli\clear())
 			;
 		}
 
@@ -200,7 +192,7 @@ abstract class script
 		return $this->errorWriter;
 	}
 
-	public function setHelpWriter(atoum\writer $writer = null)
+	public function setHelpWriter(writer $writer = null)
 	{
 		if ($writer === null)
 		{
@@ -220,7 +212,7 @@ abstract class script
 				->addDecorator($argumentColorizer)
 				->addDecorator(new writer\decorators\rtrim())
 				->addDecorator(new writer\decorators\eol())
-				->addDecorator(new atoum\cli\clear())
+				->addDecorator(new cli\clear())
 			;
 		}
 

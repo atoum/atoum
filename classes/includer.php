@@ -2,11 +2,6 @@
 
 namespace mageekguy\atoum;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\includer
-;
-
 class includer
 {
 	protected $adapter = null;
@@ -14,7 +9,7 @@ class includer
 
 	private $path = '';
 
-	public function __construct(atoum\adapter $adapter = null)
+	public function __construct(adapter $adapter = null)
 	{
 		$this->setAdapter($adapter);
 	}
@@ -26,9 +21,9 @@ class includer
 		return $this;
 	}
 
-	public function setAdapter(atoum\adapter $adapter = null)
+	public function setAdapter(adapter $adapter = null)
 	{
-		$this->adapter = $adapter ?: new atoum\adapter();
+		$this->adapter = $adapter ?: new adapter();
 
 		return $this;
 	}
