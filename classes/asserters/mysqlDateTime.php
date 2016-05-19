@@ -2,12 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-use
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
-;
-
-class mysqlDateTime extends asserters\dateTime
+class mysqlDateTime extends dateTime
 {
 	const mysqlDateTimeFormat = 'Y-m-d H:i:s';
 

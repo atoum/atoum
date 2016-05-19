@@ -4,17 +4,18 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\test,
+	mageekguy\atoum\asserter
 ;
 
-class error extends atoum\asserter
+class error extends asserter
 {
 	protected $score = null;
 	protected $message = null;
 	protected $type = null;
 	protected $messageIsPattern = false;
 
-	public function __construct(atoum\asserter\generator $generator = null, atoum\test\score $score = null, atoum\locale $locale = null)
+	public function __construct(asserter\generator $generator = null, test\score $score = null, atoum\locale $locale = null)
 	{
 		parent::__construct($generator, null, $locale);
 
@@ -36,7 +37,7 @@ class error extends atoum\asserter
 		}
 	}
 
-	public function setWithTest(atoum\test $test)
+	public function setWithTest(test $test)
 	{
 		$this->setScore($test->getScore());
 
@@ -51,9 +52,9 @@ class error extends atoum\asserter
 		;
 	}
 
-	public function setScore(atoum\test\score $score = null)
+	public function setScore(test\score $score = null)
 	{
-		$this->score = $score ?: new atoum\test\score();
+		$this->score = $score ?: new test\score();
 
 		return $this;
 	}

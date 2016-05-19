@@ -3,8 +3,7 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions,
+	mageekguy\atoum,
 	mageekguy\atoum\asserters\adapter,
 	mageekguy\atoum\test\adapter\call\decorators
 ;
@@ -13,7 +12,7 @@ class mock extends adapter
 {
 	public function setWith($mock)
 	{
-		if ($mock instanceof \mageekguy\atoum\mock\aggregator === false)
+		if ($mock instanceof atoum\mock\aggregator === false)
 		{
 			$this->fail($this->_('%s is not a mock', $this->getTypeOf($mock)));
 		}

@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\iterators\recursives\atoum;
 
 use
-	mageekguy\atoum,
 	mageekguy\atoum\iterators
 ;
 

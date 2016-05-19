@@ -3,8 +3,6 @@
 namespace mageekguy\atoum\iterators\recursives\directory;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
 	mageekguy\atoum\iterators\filters
 ;
 

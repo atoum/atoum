@@ -3,8 +3,6 @@
 namespace mageekguy\atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\tools\variable
 ;

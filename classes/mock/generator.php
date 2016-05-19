@@ -4,7 +4,6 @@ namespace mageekguy\atoum\mock;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock,
 	mageekguy\atoum\exceptions
 ;
 

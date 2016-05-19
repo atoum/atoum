@@ -3,11 +3,10 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class object extends asserters\variable
+class object extends variable
 {
 	public function __get($property)
 	{

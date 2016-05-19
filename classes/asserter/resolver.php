@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\asserter;
 
 use
-	mageekguy\atoum\test,
 	mageekguy\atoum\tools\variable\analyzer
 ;
 

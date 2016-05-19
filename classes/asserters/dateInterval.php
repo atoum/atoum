@@ -3,11 +3,10 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class dateInterval extends asserters\object
+class dateInterval extends object
 {
 	public function __toString()
 	{

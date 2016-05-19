@@ -2,10 +2,6 @@
 
 namespace mageekguy\atoum\mock\php\method;
 
-use
-	mageekguy\atoum
-;
-
 class argument
 {
 	protected $type = null;

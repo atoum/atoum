@@ -10,7 +10,7 @@ use
 	mageekguy\atoum\tools\diffs
 ;
 
-class variable extends atoum\asserter
+class variable extends asserter
 {
 	protected $diff = null;
 	protected $isSet = false;

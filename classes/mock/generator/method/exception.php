@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\mock\generator\method;
 
-use mageekguy\atoum;
+use 
+	mageekguy\atoum
+;
 
 class exception extends \exception implements atoum\exception {}

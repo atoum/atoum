@@ -6,7 +6,7 @@ class closure extends \recursiveFilterIterator
 {
 	protected $closures = array();
 
-	public function __construct(\iterator $iterator, $closure = null)
+	public function __construct(\recursiveIterator $iterator, $closure = null)
 	{
 		parent::__construct($iterator);
 

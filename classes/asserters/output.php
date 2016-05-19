@@ -5,11 +5,10 @@ namespace mageekguy\atoum\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\tools,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	mageekguy\atoum\asserter
 ;
 
-class output extends asserters\phpString
+class output extends phpString
 {
 	public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
 	{

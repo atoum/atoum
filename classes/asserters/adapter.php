@@ -4,14 +4,11 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\php,
-	mageekguy\atoum\test,
-	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters\adapter\call,
 	mageekguy\atoum\asserters\adapter\exceptions
 ;
 
-class adapter extends adapter\call
+class adapter extends call
 {
 	public function __get($property)
 	{

@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\fs;
 
 use
-	mageekguy\atoum,
 	mageekguy\atoum\fs\path\exception
 ;
 

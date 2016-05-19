@@ -2,12 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-use
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
-;
-
-class iterator extends asserters\object
+class iterator extends object
 {
 	public function __get($asserter)
 	{

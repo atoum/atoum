@@ -2,12 +2,6 @@
 
 namespace mageekguy\atoum;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\iterators,
-	mageekguy\atoum\exceptions
-;
-
 class runner implements observable
 {
 	const atoumVersionConstant = 'mageekguy\atoum\version';
@@ -115,9 +109,9 @@ class runner implements observable
 		return $this->score;
 	}
 
-	public function setTestGenerator(atoum\test\generator $generator = null)
+	public function setTestGenerator(test\generator $generator = null)
 	{
-		$this->testGenerator = $generator ?: new atoum\test\generator();
+		$this->testGenerator = $generator ?: new test\generator();
 
 		return $this;
 	}
@@ -260,7 +254,7 @@ class runner implements observable
 		{
 			$this->includer->includePath($path, function($path) { include_once($path); });
 		}
-		catch (atoum\includer\exception $exception)
+		catch (includer\exception $exception)
 		{
 			throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to use bootstrap file \'%s\''), $path));
 		}
@@ -275,9 +269,9 @@ class runner implements observable
 		return $this->defaultReportTitle;
 	}
 
-	public function setPhp(atoum\php $php = null)
+	public function setPhp(php $php = null)
 	{
-		$this->php = $php ?: new atoum\php();
+		$this->php = $php ?: new php();
 
 		return $this;
 	}
@@ -429,14 +423,14 @@ class runner implements observable
 		return $this->failIfSkippedMethods;
 	}
 
-	public function addObserver(atoum\observer $observer)
+	public function addObserver(observer $observer)
 	{
 		$this->observers->attach($observer);
 
 		return $this;
 	}
 
-	public function removeObserver(atoum\observer $observer)
+	public function removeObserver(observer $observer)
 	{
 		$this->observers->detach($observer);
 
@@ -727,7 +721,7 @@ class runner implements observable
 		return $this->findTestClasses($testBaseClass);
 	}
 
-	public function setReport(atoum\report $report)
+	public function setReport(report $report)
 	{
 		if ($this->reportSet === null)
 		{
@@ -739,7 +733,7 @@ class runner implements observable
 		return $this;
 	}
 
-	public function addReport(atoum\report $report)
+	public function addReport(report $report)
 	{
 		if ($this->reportSet === null || $this->reportSet->isOverridableBy($report))
 		{
@@ -751,7 +745,7 @@ class runner implements observable
 		return $this;
 	}
 
-	public function removeReport(atoum\report $report)
+	public function removeReport(report $report)
 	{
 		if ($this->reportSet === $report)
 		{
@@ -798,7 +792,7 @@ class runner implements observable
 		return $this->extensions;
 	}
 
-	public function removeExtension(atoum\extension $extension)
+	public function removeExtension(extension $extension)
 	{
 		$this->extensions->detach($extension);
 
@@ -818,7 +812,7 @@ class runner implements observable
 	}
 
 
-	public function addExtension(atoum\extension $extension, atoum\extension\configuration $configuration = null)
+	public function addExtension(extension $extension, extension\configuration $configuration = null)
 	{
 		if ($this->extensions->contains($extension) === false)
 		{
@@ -886,13 +880,13 @@ class runner implements observable
 					{
 						$this->includer->includePath($testPath, function($testPath) use ($runner) { include($testPath); });
 					}
-					catch (atoum\includer\exception $exception)
+					catch (includer\exception $exception)
 					{
 						throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $testPath));
 					}
 				}
 			}
-			catch (atoum\includer\exception $exception)
+			catch (includer\exception $exception)
 			{
 				if ($this->testGenerator === null)
 				{
@@ -906,7 +900,7 @@ class runner implements observable
 					{
 						$this->includer->includePath($testPath, $includer);
 					}
-					catch (atoum\includer\exception $exception)
+					catch (includer\exception $exception)
 					{
 						throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to generate test file \'%s\''), $testPath));
 					}

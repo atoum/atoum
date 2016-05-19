@@ -4,12 +4,10 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class testedClass extends asserters\phpClass
+class testedClass extends phpClass
 {
 	public function setWith($class)
 	{

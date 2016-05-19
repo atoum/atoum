@@ -4,7 +4,6 @@ namespace mageekguy\atoum\asserters\adapter;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\php,
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\tools\variable,

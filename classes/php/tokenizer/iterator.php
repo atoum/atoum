@@ -4,10 +4,10 @@ namespace mageekguy\atoum\php\tokenizer;
 
 use
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\php\tokenizer\iterator
+	mageekguy\atoum\php\tokenizer\iterator\value
 ;
 
-class iterator extends iterator\value
+class iterator extends value
 {
 	protected $key = null;
 	protected $size = 0;
@@ -188,7 +188,7 @@ class iterator extends iterator\value
 		return $this;
 	}
 
-	public function append(iterator\value $value)
+	public function append(value $value)
 	{
 		if ($value->parent !== null)
 		{

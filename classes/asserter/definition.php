@@ -3,8 +3,7 @@
 namespace mageekguy\atoum\asserter;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\tools
+	mageekguy\atoum
 ;
 
 interface definition
