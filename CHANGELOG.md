@@ -4,6 +4,7 @@
 
 ## Bugfix
 
+* [#600](https://github.com/atoum/atoum/pull/600) Reports override correctly when using -ulr/-utr ([@jubianchi])
 * [#593](https://github.com/atoum/atoum/pull/593) Assertions on PHP 7 exceptions/throwables/errors are now working correctly ([@jubianchi])
 
 # 2.6.1 - 2016-04-08
