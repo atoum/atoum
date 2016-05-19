@@ -725,7 +725,7 @@ class runner implements observable
 	{
 		if ($this->reportSet === null)
 		{
-			$this->removeReports()->addReport($report);
+			$this->removeReports($report)->addReport($report);
 
 			$this->reportSet = $report;
 		}
@@ -757,14 +757,32 @@ class runner implements observable
 		return $this->removeObserver($report);
 	}
 
-	public function removeReports()
+	public function removeReports(report $override = null)
 	{
-		foreach ($this->reports as $report)
+		if ($override === null)
 		{
-			$this->removeObserver($report);
+			foreach ($this->reports as $report)
+			{
+				$this->removeObserver($report);
+			}
+
+			$this->reports = new \splObjectStorage();
+
+		}
+		else
+		{
+			foreach ($this->reports as $report)
+			{
+				if ($report->isOverridableBy($override) === true)
+				{
+					continue;
+				}
+
+				$this->removeObserver($report);
+				$this->reports->detach($report);
+			}
 		}
 
-		$this->reports = new \splObjectStorage();
 		$this->reportSet = null;
 
 		return $this;

@@ -66,10 +66,6 @@ class cli extends report\fields\runner\event
 					case test::skipped:
 						$this->progressBar->refresh('-');
 						break;
-
-					case runner::runStop:
-						$this->progressBar->reset();
-						break;
 				}
 
 				$string = (string) $this->progressBar;

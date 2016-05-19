@@ -442,6 +442,29 @@ class runner extends atoum\test
 			->then
 				->array($runner->getReports())->isEqualTo(array($report1, $report2))
 				->array($runner->getObservers())->isEqualTo(array($report1, $report2))
+			->given(
+				$firstReport = new \mock\mageekguy\atoum\report(),
+				$secondReport = new \mock\mageekguy\atoum\report(),
+				$overrideReport = new \mock\mageekguy\atoum\report(),
+				$runner->removeReports()
+			)
+			->if(
+				$this->calling($firstReport)->isOverridableBy = function($report) use ($overrideReport) { return $report === $overrideReport; },
+				$this->calling($secondReport)->isOverridableBy = function($report) use ($overrideReport) { return $report !== $overrideReport; },
+				$runner->addReport($firstReport)
+			)
+			->when($runner->removeReports($secondReport))
+			->then
+				->array($runner->getReports())->isEmpty
+				->array($runner->getObservers())->isEmpty
+			->if(
+				$runner->addReport($firstReport),
+				$runner->addReport($secondReport)
+			)
+			->when($runner->removeReports($overrideReport))
+			->then
+				->array($runner->getReports())->isEqualTo(array($firstReport))
+				->array($runner->getObservers())->isEqualTo(array($firstReport))
 		;
 	}
 
