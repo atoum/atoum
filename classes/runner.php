@@ -867,6 +867,27 @@ class runner implements observable
 		return $this;
 	}
 
+	public function getExtension($classname)
+	{
+		$extensions = array();
+		foreach ($this->getExtensions() as $extension)
+		{
+			if (get_class($extension) != $classname)
+			{
+				continue;
+			}
+
+			$extensions[] = $extension;
+		}
+
+		if (1 != count($extensions))
+		{
+			throw new exceptions\logic\invalidArgument(sprintf("Extension '%s' not found", $classname));
+		}
+
+		return array_shift($extensions);
+	}
+
 	public static function isIgnored(test $test, array $namespaces, array $tags)
 	{
 		$isIgnored = $test->isIgnored();
