@@ -325,6 +325,20 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testGetAutoloaderFile()
+	{
+		$this
+			->if($runner = new testedClass())
+			->and($includer = new \mock\mageekguy\atoum\includer())
+			->and($includer->getMockController()->includePath = function() {})
+			->and($runner->setIncluder($includer))
+			->then
+				->object($runner->setAutoloaderFile($path = uniqid()))->isIdenticalTo($runner)
+				->string($runner->getAutoloaderFile())->isEqualTo($path)
+				->mock($includer)->call('includePath')->withArguments($path)->once()
+		;
+	}
+
 	public function testHasReports()
 	{
 		$this

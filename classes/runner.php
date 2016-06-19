@@ -30,6 +30,7 @@ class runner implements observable
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
 	protected $bootstrapFile = null;
+	protected $autoloaderFile = null;
 	protected $testDirectoryIterator = null;
 	protected $debugMode = false;
 	protected $xdebugConfig = null;
@@ -264,6 +265,22 @@ class runner implements observable
 		return $this;
 	}
 
+	public function setAutoloaderFile($path)
+	{
+		try
+		{
+			$this->includer->includePath($path, function($path) { include_once($path); });
+		}
+		catch (includer\exception $exception)
+		{
+			throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to use autoloader file \'%s\''), $path));
+		}
+
+		$this->autoloaderFile = $path;
+
+		return $this;
+	}
+
 	public function getDefaultReportTitle()
 	{
 		return $this->defaultReportTitle;
@@ -318,6 +335,11 @@ class runner implements observable
 	public function getBootstrapFile()
 	{
 		return $this->bootstrapFile;
+	}
+
+	public function getAutoloaderFile()
+	{
+		return $this->autoloaderFile;
 	}
 
 	public function getTestMethods(array $namespaces = array(), array $tags = array(), array $testMethods = array(), $testBaseClass = null)
@@ -552,6 +574,7 @@ class runner implements observable
 						->setAdapter($this->adapter)
 						->setLocale($this->locale)
 						->setBootstrapFile($this->bootstrapFile)
+						->setAutoloaderFile($this->autoloaderFile)
 					;
 
 					if ($this->debugMode === true)
