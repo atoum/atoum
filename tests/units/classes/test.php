@@ -69,6 +69,23 @@ namespace mageekguy\atoum\tests\units
 
 	/**
 	 * @ignore on
+	 * @tags first
+	 */
+	class inheritedTagsTest extends atoum\test
+	{
+		/**
+		 * @tags second third
+		 */
+		public function testMethod1() {}
+
+		/**
+		 * @tags first second third
+		 */
+		public function testMethod2() {}
+	}
+
+	/**
+	 * @ignore on
 	 */
 	class dataProviderTest extends atoum\test
 	{
@@ -753,12 +770,23 @@ namespace mageekguy\atoum\tests\units
 		public function testGetMethodTags()
 		{
 			$this
-				->if($test = new notemptyTest())
+				->if($test = new notEmptyTest())
 				->then
 					->array($test->getMethodTags('testMethod1'))->isEqualTo(array('test', 'method', 'one'))
 					->exception(function() use ($test, & $method) { $test->getMethodTags($method = uniqid()); })
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
+				->if($test = new inheritedTagsTest())
+				->then
+					->array($test->getMethodTags())->isEqualTo(array('testMethod1' => array('first', 'second', 'third'), 'testMethod2' => array('first', 'second', 'third')))
+					->array($test->getMethodTags('testMethod1'))->isEqualTo(array('first', 'second', 'third'))
+					->array($test->getMethodTags('testMethod2'))->isEqualTo(array('first', 'second', 'third'))
+				->if($test = new dataProviderTest())
+				->then
+					->array($test->getMethodTags())->isEqualTo(array('testMethod1' => array(), 'testMethod2' => array(), 'testMethod3' => array()))
+					->array($test->getMethodTags('testMethod1'))->isEqualTo(array())
+					->array($test->getMethodTags('testMethod2'))->isEqualTo(array())
+					->array($test->getMethodTags('testMethod3'))->isEqualTo(array())
 			;
 		}
 
