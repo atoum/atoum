@@ -1,29 +1,41 @@
 build: false
-shallow_clone: false
-
+shallow_clone: true
 platform: 'x86'
-
 clone_folder: C:\projects\atoum
 
+environment:
+  matrix:
+    - PHP_DOWNLOAD_FILE: php-5.4.44-nts-Win32-VC9-x86.zip
+    - PHP_DOWNLOAD_FILE: php-5.5.35-nts-Win32-VC11-x86.zip
+    - PHP_DOWNLOAD_FILE: php-5.6.21-nts-Win32-VC11-x86.zip
+    - PHP_DOWNLOAD_FILE: php-7.0.6-nts-Win32-VC14-x86.zip
+
 cache:
-  - c:\tools\php -> appveyor.yml
+  - c:\php -> appveyor.yml
+  - '%LOCALAPPDATA%\Composer'
 
 init:
-  - SET PATH=C:\tools\php;%PATH%
-  - SET ANSICON=121x90
+  - SET PATH=C:\php;%PATH%
   - SET COMPOSER_NO_INTERACTION=1
+  - SET PHP=1
 
 install:
-  - cinst -y ansicon
-  - cinst -y php
-  - cd c:\tools\php
+  - IF EXIST c:\php (SET PHP=0) ELSE (mkdir c:\php)
+  - cd c:\php
+  - IF %PHP%==1 appveyor DownloadFile http://windows.php.net/downloads/releases/archives/%PHP_DOWNLOAD_FILE%
+  - IF %PHP%==1 7z x %PHP_DOWNLOAD_FILE% -y > 7z.log
+  - IF %PHP%==1 echo @php %%~dp0composer.phar %%* > composer.bat
+  - appveyor DownloadFile https://getcomposer.org/composer.phar
   - copy php.ini-production php.ini /Y
   - echo date.timezone="UTC" >> php.ini
   - echo extension_dir=ext >> php.ini
   - echo extension=php_openssl.dll >> php.ini
+  - echo extension=php_curl.dll >> php.ini
+  - echo extension=php_mbstring.dll >> php.ini
+  - echo extension=php_fileinfo.dll >> php.ini
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   - cd c:\projects\atoum
-  - php c:\tools\php\composer.phar require atoum/reports-extension:^2.0.1
+  - php c:\php\composer.phar require atoum/reports-extension
   - copy resources\configurations\ci\.appveyor.php.dist .atoum.php
 
 test_script:
