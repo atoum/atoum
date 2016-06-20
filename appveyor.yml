@@ -10,6 +10,14 @@ environment:
     - PHP_DOWNLOAD_FILE: php-5.6.21-nts-Win32-VC11-x86.zip
     - PHP_DOWNLOAD_FILE: php-7.0.6-nts-Win32-VC14-x86.zip
 
+notifications:
+  - provider: Webhook
+    url: https://webhooks.gitter.im/e/46967a83f6bd0cd3b7ea
+    method: POST
+    on_build_success: true
+    on_build_failure: true
+    on_build_status_changed: true
+
 cache:
   - c:\php -> appveyor.yml
   - '%LOCALAPPDATA%\Composer'
