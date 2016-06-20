@@ -13,6 +13,12 @@ matrix:
     - php: hhvm-nightly
 notifications:
   irc: "irc.freenode.org##atoum"
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/bcb8350326a64f8fd270
+    on_success: change
+    on_failure: always
+    on_start: never
 env:
     global:
         - secure: "vJ1TnFhU9muqLwkiBd13lFqdPJIrwKJ5OJjR3/jQROWQsRO4NPd/I7OfdDKk\noJGYbgjGMw7bmBYI0xjhYfZAnrClwIBvn1Qx5x5UDGxTHC8ZP6xs49AGa37I\n7BJlWC7+nRwPmmLhoLsbut/O7Kkn8IkdJIeChHbdn8RHQIJTJ4Y="
