@@ -53,6 +53,7 @@ abstract class test implements observable, \countable
 	private $testMethodPrefix = null;
 	private $classEngine = null;
 	private $bootstrapFile = null;
+	private $autoloaderFile = null;
 	private $maxAsynchronousEngines = null;
 	private $asynchronousEngines = 0;
 	private $path = '';
@@ -801,6 +802,18 @@ abstract class test implements observable, \countable
 	public function getBootstrapFile()
 	{
 		return $this->bootstrapFile;
+	}
+
+	public function setAutoloaderFile($path)
+	{
+		$this->autoloaderFile = $path;
+
+		return $this;
+	}
+
+	public function getAutoloaderFile()
+	{
+		return $this->autoloaderFile;
 	}
 
 	public function setTestNamespace($testNamespace)

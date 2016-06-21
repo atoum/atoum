@@ -16,6 +16,8 @@ class runner extends atoum\script\configurable
 {
 	const defaultConfigFile = '.atoum.php';
 	const defaultBootstrapFile = '.bootstrap.atoum.php';
+	const defaultAutoloaderFile = '.autoloader.atoum.php';
+	const defaultComposerAutoloaderFile = 'vendor/autoload.php';
 
 	protected $runner = null;
 	protected $configuratorFactory = null;
@@ -41,6 +43,7 @@ class runner extends atoum\script\configurable
 			->setConfiguratorFactory()
 			->setDefaultReportFactory()
 			->setLooper($looper)
+			->setDefaultAutoloaderFiles()
 		;
 	}
 
@@ -477,6 +480,13 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
+	public function setAutoloaderFile($autoloaderFile)
+	{
+		$this->runner->setAutoloaderFile($autoloaderFile);
+
+		return $this;
+	}
+
 	public function enableDebugMode()
 	{
 		$this->runner->enableDebugMode();
@@ -571,6 +581,35 @@ class runner extends atoum\script\configurable
 			if ($this->adapter->is_file($defaultBootstrapFile) === true)
 			{
 				$this->setBootstrapFile($defaultBootstrapFile);
+
+				break;
+			}
+		}
+
+		return $this;
+	}
+
+	public function setDefaultAutoloaderFiles($startDirectory = null)
+	{
+		foreach (self::getSubDirectoryPath($startDirectory ?: $this->getDirectory()) as $directory)
+		{
+			$defaultAutoloaderFile = $directory . static::defaultAutoloaderFile;
+
+			if ($this->adapter->is_file($defaultAutoloaderFile) === true)
+			{
+				$this->setAutoloaderFile($defaultAutoloaderFile);
+
+				return $this;
+			}
+		}
+
+		foreach (self::getSubDirectoryPath($startDirectory ?: $this->getDirectory()) as $directory)
+		{
+			$composerAutoloaderFile = $directory . static::defaultComposerAutoloaderFile;
+
+			if ($this->adapter->is_file($composerAutoloaderFile) === true)
+			{
+				$this->setAutoloaderFile($composerAutoloaderFile);
 
 				break;
 			}
@@ -1000,11 +1039,25 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
+						$script->setAutoloaderFile($values[0]);
+					},
+					array('-af', '--autoloader-file'),
+					'<file>',
+					$this->locale->_('Include autoloader <file> before executing each test method'),
+					2
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) != 1)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
 						$script->setBootstrapFile($values[0]);
 					},
 					array('-bf', '--bootstrap-file'),
 					'<file>',
-					$this->locale->_('Include <file> before executing each test method'),
+					$this->locale->_('Include bootstrap <file> before executing each test method'),
 					2
 				)
 			->addArgumentHandler(
@@ -1134,6 +1187,13 @@ class runner extends atoum\script\configurable
 				{
 					$this->verbose($this->locale->_('Using \'%s\' configuration file…', $configFile));
 				}
+			}
+
+			$autoloaderFile = $this->runner->getAutoloaderFile();
+
+			if ($autoloaderFile !== null)
+			{
+				$this->verbose($this->locale->_('Using \'%s\' autoloader file…', $autoloaderFile));
 			}
 
 			$bootstrapFile = $this->runner->getBootstrapFile();

@@ -87,6 +87,52 @@ class concurrent extends atoum\test
 						'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
 					)->twice()
 					->call('__set')->withArguments('XDEBUG_CONFIG', $xdebugConfig)->twice()
+			->if($this->calling($test)->getAutoloaderFile = $autoloaderFile = uniqid())
+			->then
+				->object($engine->run($test))->isIdenticalTo($engine)
+				->mock($php)
+					->call('run')->withArguments(
+						'<?php ' .
+						'ob_start();' .
+						'require \'' . atoum\directory . '/classes/autoloader.php\';' .
+						'$includer = new mageekguy\atoum\includer();' .
+						'try { $includer->includePath(\'' . $autoloaderFile . '\'); }' .
+						'catch (mageekguy\atoum\includer\exception $exception)' .
+						'{ die(\'Unable to include autoloader file \\\'' . $autoloaderFile . '\\\'\'); }' .
+						'require \'' . $testPath . '\';' .
+						'$test = new ' . get_class($test) . '();' .
+						'$test->setLocale(new ' . get_class($test->getLocale()) . '(' . $test->getLocale()->get() . '));' .
+						'$test->setPhpPath(\'' . $phpPath . '\');' .
+						'$test->disableCodeCoverage();' .
+						'ob_end_clean();' .
+						'mageekguy\atoum\scripts\runner::disableAutorun();' .
+						'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
+					)->once
+			->if($this->calling($test)->getBootstrapFile = $bootstrapFile = uniqid())
+			->then
+				->object($engine->run($test))->isIdenticalTo($engine)
+				->mock($php)
+					->call('run')->withArguments(
+						'<?php ' .
+						'ob_start();' .
+						'require \'' . atoum\directory . '/classes/autoloader.php\';' .
+						'$includer = new mageekguy\atoum\includer();' .
+						'try { $includer->includePath(\'' . $autoloaderFile . '\'); }' .
+						'catch (mageekguy\atoum\includer\exception $exception)' .
+						'{ die(\'Unable to include autoloader file \\\'' . $autoloaderFile . '\\\'\'); }' .
+						'$includer = new mageekguy\atoum\includer();' .
+						'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
+						'catch (mageekguy\atoum\includer\exception $exception)' .
+						'{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }' .
+						'require \'' . $testPath . '\';' .
+						'$test = new ' . get_class($test) . '();' .
+						'$test->setLocale(new ' . get_class($test->getLocale()) . '(' . $test->getLocale()->get() . '));' .
+						'$test->setPhpPath(\'' . $phpPath . '\');' .
+						'$test->disableCodeCoverage();' .
+						'ob_end_clean();' .
+						'mageekguy\atoum\scripts\runner::disableAutorun();' .
+						'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
+					)->once
 		;
 	}
 

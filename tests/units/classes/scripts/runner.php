@@ -175,9 +175,14 @@ class runner extends atoum\test
 							'Force output as in terminal'
 						),
 						array(
+							array('-af', '--autoloader-file'),
+							'<file>',
+							'Include autoloader <file> before executing each test method'
+						),
+						array(
 							array('-bf', '--bootstrap-file'),
 							'<file>',
-							'Include <file> before executing each test method'
+							'Include bootstrap <file> before executing each test method'
 						),
 						array(
 							array('-ulr', '--use-light-report'),
@@ -352,9 +357,14 @@ class runner extends atoum\test
 							'Force output as in terminal'
 						),
 						array(
+							array('-af', '--autoloader-file'),
+							'<file>',
+							'Include autoloader <file> before executing each test method'
+						),
+						array(
 							array('-bf', '--bootstrap-file'),
 							'<file>',
-							'Include <file> before executing each test method'
+							'Include bootstrap <file> before executing each test method'
 						),
 						array(
 							array('-ulr', '--use-light-report'),

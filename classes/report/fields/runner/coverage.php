@@ -114,6 +114,18 @@ abstract class coverage extends report\field
 					'require \'' . \mageekguy\atoum\directory . '/classes/autoloader.php\';'
 				;
 
+				$autoloaderFile = $observable->getAutoloaderFile();
+
+				if ($autoloaderFile !== null)
+				{
+					$phpCode .=
+						'$includer = new mageekguy\atoum\includer();' .
+						'try { $includer->includePath(\'' . $autoloaderFile . '\'); }' .
+						'catch (mageekguy\atoum\includer\exception $exception)' .
+						'{ die(\'Unable to include autoloader file \\\'' . $autoloaderFile . '\\\'\'); }'
+					;
+				}
+
 				$bootstrapFile = $observable->getBootstrapFile();
 
 				if ($bootstrapFile !== null)

@@ -69,6 +69,18 @@ class concurrent extends test\engine
 				'require \'' . atoum\directory . '/classes/autoloader.php\';'
 			;
 
+			$autoloaderFile = $this->test->getAutoloaderFile();
+
+			if ($autoloaderFile !== null)
+			{
+				$phpCode .=
+					'$includer = new mageekguy\atoum\includer();' .
+					'try { $includer->includePath(\'' . $autoloaderFile . '\'); }' .
+					'catch (mageekguy\atoum\includer\exception $exception)' .
+					'{ die(\'Unable to include autoloader file \\\'' . $autoloaderFile . '\\\'\'); }'
+				;
+			}
+
 			$bootstrapFile = $this->test->getBootstrapFile();
 
 			if ($bootstrapFile !== null)
