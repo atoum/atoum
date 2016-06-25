@@ -835,14 +835,27 @@ class runner implements observable
 
 	public function removeExtension(extension $extension)
 	{
-		$this->extensions->detach($extension);
+		try {
+			$extension = $this->getExtension(get_class($extension));
 
-		return $this->removeObserver($extension);
+			$this->extensions->detach($extension);
+
+			$this->removeObserver($extension);
+		} catch (exceptions\logic\invalidArgument $e) {
+		}
+
+		return $this;
 	}
 
 	public function removeExtensionByClassName($classname)
 	{
-		return $this->removeExtension($this->getExtension($classname));
+		try {
+			$this->removeExtension($this->getExtension($classname));
+		} catch (exceptions\logic\invalidArgument $e) {
+		}
+
+		return $this;
+
 	}
 
 	public function removeExtensions()
