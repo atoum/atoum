@@ -507,25 +507,34 @@ class runner extends atoum\test
 		$this
 			->if($runner = new testedClass())
 			->then
-				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
+				->object($runner->getExtensions())->isInstanceOf('\mageekguy\atoum\iterators\classStorage')
+				->array(iterator_to_array($runner->getExtensions()))->isEmpty()
 				->array($runner->getObservers())->isEmpty()
 				->object($runner->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
-				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
+				->object($runner->getExtensions())->isInstanceOf('\mageekguy\atoum\iterators\classStorage')
+				->array(iterator_to_array($runner->getExtensions()))->isEmpty()
 				->array($runner->getObservers())->isEmpty()
 			->if($extension = new \mock\mageekguy\atoum\extension())
-			->and($otherExtension = new \mock\mageekguy\atoum\extension())
-			->and($runner->addExtension($extension)->addExtension($otherExtension))
+				->and($this->mockGenerator->generate('\mageekguy\atoum\extension', '\mock_extensions', 'other_extension'))
+				->and($otherExtension = new \mock_extensions\other_extension())
+				->and($runner->addExtension($extension)->addExtension($otherExtension))
 			->then
 				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension, $otherExtension))
 				->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
+			->if
 				->object($runner->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
-				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension, $otherExtension))
-				->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
-				->object($runner->removeExtension($extension))->isIdenticalTo($runner)
+			->then
 				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($otherExtension))
 				->array($runner->getObservers())->isEqualTo(array($otherExtension))
+			->if
+				->object($runner->removeExtension($extension))->isIdenticalTo($runner)
+			->then
+				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($otherExtension))
+				->array($runner->getObservers())->isEqualTo(array($otherExtension))
+			->if
 				->object($runner->removeExtension($otherExtension))->isIdenticalTo($runner)
-				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
+			->then
+				->array(iterator_to_array($runner->getExtensions()))->isEmpty()
 				->array($runner->getObservers())->isEmpty()
 		;
 	}
@@ -535,7 +544,8 @@ class runner extends atoum\test
 		$this
 			->if($runner = new testedClass())
 			->then
-				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
+				->object($runner->getExtensions())->isInstanceof('\mageekguy\atoum\iterators\classStorage')
+				->array(iterator_to_array($runner->getExtensions()))->isEmpty()
 				->array($runner->getObservers())->isEmpty()
 				->object($runner->removeExtensions())->isIdenticalTo($runner)
 				->object($runner->getExtensions())->isEqualTo(new \splObjectStorage())
