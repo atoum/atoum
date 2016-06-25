@@ -539,6 +539,39 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testRemoveExtensionByClassName()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->getExtensions())->isInstanceOf('\mageekguy\atoum\iterators\classStorage')
+				->array(iterator_to_array($runner->getExtensions()))->isEmpty()
+				->array($runner->getObservers())->isEmpty()
+			->if($extension = new \mock\mageekguy\atoum\extension())
+				->and($this->mockGenerator->generate('\mageekguy\atoum\extension', '\mock_extensions', 'other_extension'))
+				->and($otherExtension = new \mock_extensions\other_extension())
+				->and($runner->addExtension($extension)->addExtension($otherExtension))
+			->then
+				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension, $otherExtension))
+				->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
+			->if
+				->object($runner->removeExtensionByClassName('mock\mageekguy\atoum\extension'))->isIdenticalTo($runner)
+			->then
+				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($otherExtension))
+				->array($runner->getObservers())->isEqualTo(array($otherExtension))
+			->if
+				->object($runner->removeExtensionByClassName('mock\mageekguy\atoum\extension'))->isIdenticalTo($runner)
+			->then
+				->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($otherExtension))
+				->array($runner->getObservers())->isEqualTo(array($otherExtension))
+			->if
+				->object($runner->removeExtensionByClassName('mock_extensions\other_extension'))->isIdenticalTo($runner)
+			->then
+				->array(iterator_to_array($runner->getExtensions()))->isEmpty()
+				->array($runner->getObservers())->isEmpty()
+		;
+	}
+
 	public function testRemoveExtensions()
 	{
 		$this
