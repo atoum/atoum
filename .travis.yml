@@ -30,15 +30,14 @@ before_script:
   - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s/YouCoverallsProjectToken/$COVERALLS_REPO_TOKEN/ .atoum.php || true"
 script:
   - bin/atoum +verbose
-before_deploy:
-  - mkdir phar
-  - php -n -dphar.readonly=Off scripts/phar/generator.php -d ./phar
-  - php -n -ddate.timezone=Europe/Paris ./phar/atoum.phar --test-it -ncc +verbose
+  - mkdir ../phar
+  - php -n -dphar.readonly=Off scripts/phar/generator.php -d ../phar
+  - php -n -ddate.timezone=Europe/Paris ../phar/atoum.phar --test-it -ncc +verbose -c .atoum.php
 deploy:
   provider: releases
   api_key:
     secure: lmt12noTXqP/X7a71FffP/lIJR+9sX6vrE7gIdTHroMqfxh2x3u8w1NBs3+npa9lq00Fi2UZiWJY7BurdsTokM75ZqXZAjlC42KCZGLiXKMQZcei5nOdKhKWZ06FSVMFlxf6dhknsMgJjeNmDGVSXhDnN2ZuPnf68may/o/nLaA=
-  file: phar/atoum.phar
+  file: ../phar/atoum.phar
   skip_cleanup: true
   on:
     tags: true

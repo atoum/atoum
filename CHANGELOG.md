@@ -1,5 +1,9 @@
 # `dev-master`
 
+# 2.8.1 - 2016-07-01
+
+* [#611](https://github.com/atoum/atoum/pull/611) Exclude vendor and composer.lock from phar ([@jubianchi], [@agallou])
+
 # 2.8.0 - 2016-07-01
 
 * [#605](https://github.com/atoum/atoum/pull/605) Automatically include Composer's autoloader if it exists ([@jubianchi], [@agallou])

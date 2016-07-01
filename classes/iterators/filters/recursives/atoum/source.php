@@ -15,6 +15,8 @@ class source extends recursives\dot
 			case 'GPATH':
 			case 'GRTAGS':
 			case 'GTAGS':
+			case 'vendor':
+			case 'composer.lock':
 				return false;
 
 			default:
