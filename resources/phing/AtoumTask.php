@@ -103,10 +103,6 @@ class atoumTask extends task
 			throw new exception('AtoumTask depends on Xdebug being installed to gather code coverage information');
 		}
 
-		if ($this->telemetry && class_exists('\mageekguy\atoum\reports\telemetry') === false) {
-			throw new exception('AtoumTask depends on atoum/reports-extension being installed to enable telemetry report');
-		}
-
 		if ($this->atoumPharPath !== null)
 		{
 			require_once $this->atoumPharPath;
@@ -184,10 +180,14 @@ class atoumTask extends task
 
 		if ($this->telemetryEnabled())
 		{
+			if (class_exists('\mageekguy\atoum\reports\telemetry') === false) {
+				throw new exception('AtoumTask depends on atoum/reports-extension being installed to enable telemetry report');
+			}
+
 			$telemetry = new \mageekguy\atoum\reports\telemetry();
 			$telemetry->addWriter(new \mageekguy\atoum\writers\std\out());
 
-			if ($this->getTelemetryProjectName() !== '') {
+			if ($this->getTelemetryProjectName() !== null) {
 				$telemetry->setProjectName($this->getTelemetryProjectName());
 			}
 			$runner->addReport($telemetry);
