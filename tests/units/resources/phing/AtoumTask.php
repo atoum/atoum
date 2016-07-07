@@ -42,6 +42,8 @@ namespace tests\units
 					->variable($task->getCodeCoverageReportUrl())->isNull()
 					->variable($task->getCodeCoverageXunitPath())->isNull()
 					->variable($task->getCodeCoverageCloverPath())->isNull()
+					->variable($task->getTelemetry())->isNotTrue()
+					->variable($task->getTelemetryProjectName())->isNull()
 					->integer($task->getMaxChildren())->isZero()
 				->if($task = new testedClass($runner = new atoum\runner()))
 				->then
@@ -60,6 +62,8 @@ namespace tests\units
 					->variable($task->getCodeCoverageReportUrl())->isNull()
 					->variable($task->getCodeCoverageXunitPath())->isNull()
 					->variable($task->getCodeCoverageCloverPath())->isNull()
+					->variable($task->getTelemetry())->isNotTrue()
+					->variable($task->getTelemetryProjectName())->isNull()
 					->integer($task->getMaxChildren())->isZero()
 			;
 		}
@@ -541,6 +545,26 @@ namespace tests\units
 					->string($task->getCodeCoverageCloverPath())->isEqualTo($path)
 					->object($task->setCodeCoverageCloverPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
 					->string($task->getCodeCoverageCloverPath())->isEqualTo((string) $path)
+			;
+		}
+
+		public function testGetSetTelemetry()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+					->object($task->setTelemetry(true))->isIdenticalTo($task)
+					->boolean($task->getTelemetry())->isEqualTo(true)
+			;
+		}
+
+		public function testGetSetTelemetryProjectName()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+				->object($task->setTelemetryProjectName($projectName = uniqid() . '/' . uniqid()))->isIdenticalTo($task)
+				->string($task->getTelemetryProjectName())->isEqualTo($projectName)
 			;
 		}
 	}
