@@ -307,7 +307,7 @@ class phing extends realtime
 
 		$this->addField($runnerUncompletedField);
 
-		$runnerVoidField = new runner\tests\void\cli();
+		$runnerVoidField = new runner\tests\blank\cli();
 		$runnerVoidField
 			->setTitlePrompt($firstLevelPrompt)
 			->setTitleColorizer($voidTestColorizer)
