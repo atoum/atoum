@@ -237,6 +237,11 @@ class runner implements observable
 		return $this;
 	}
 
+	public function getMaxChildrenNumber()
+	{
+		return $this->maxChildrenNumber;
+	}
+
 	public function acceptTestFileExtensions(array $testFileExtensions)
 	{
 		$this->testDirectoryIterator->acceptExtensions($testFileExtensions);

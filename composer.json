@@ -53,9 +53,15 @@
 		"ext-mbstring": "Provides support for UTF-8 strings",
 		"atoum/stubs": "Provides IDE support (like autocompletion) for atoum"
 	},
-	"extra": {
-		"branch-alias": {
+	"extra":
+	{
+		"branch-alias":
+		{
 			"dev-master": "2.x-dev"
 		}
+	},
+	"config":
+	{
+		"bin-dir": "bin/"
 	}
 }

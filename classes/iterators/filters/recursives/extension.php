@@ -36,11 +36,9 @@ class extension extends \recursiveFilterIterator
 
 	public function accept()
 	{
-		$path = basename((string) $this->getInnerIterator()->current());
+		$path = $this->getInnerIterator()->current();
 
-		$extension = pathinfo($path, PATHINFO_EXTENSION);
-
-		return ($extension == '' || in_array($extension, $this->acceptedExtensions) === true);
+		return ($path->isDir()|| in_array($path->getExtension(), $this->acceptedExtensions) === true);
 	}
 
 	public function getChildren()

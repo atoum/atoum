@@ -40,16 +40,41 @@ class extension extends atoum\test
 	public function testAccept()
 	{
 		$this
-			->if($filter = new recursives\extension($innerIterator = new \mock\recursiveIterator(), array('php')))
-			->and($innerIterator->getMockController()->current = uniqid() . '.php')
+			->given(
+				$filter = new recursives\extension($innerIterator = new \mock\recursiveIterator(), array('php')),
+				$current = new \mock\splFileInfo(uniqid())
+			)
+			->if(
+				$this->calling($current)->getExtension = 'php',
+				$this->calling($current)->isDIr = false,
+				$innerIterator->getMockController()->current = $current
+			)
 			->then
 				->boolean($filter->accept())->isTrue()
-			->if($innerIterator->getMockController()->current = uniqid() . DIRECTORY_SEPARATOR . uniqid() . '.php')
-				->boolean($filter->accept())->isTrue()
-			->if($innerIterator->getMockController()->current = uniqid())
-				->boolean($filter->accept())->isTrue()
-			->if($innerIterator->getMockController()->current = uniqid() . '.' . uniqid())
+			->given($current = new \mock\splFileInfo(uniqid()))
+			->if(
+				$innerIterator->getMockController()->getExtension = uniqid(),
+				$this->calling($current)->isDIr = false,
+				$innerIterator->getMockController()->current = $current
+			)
+			->then
 				->boolean($filter->accept())->isFalse()
+			->given($current = new \mock\splFileInfo(uniqid()))
+			->if(
+				$innerIterator->getMockController()->getExtension = null,
+				$this->calling($current)->isDIr = false,
+				$innerIterator->getMockController()->current = $current
+			)
+			->then
+				->boolean($filter->accept())->isFalse()
+			->given($current = new \mock\splFileInfo(uniqid()))
+			->if(
+				$this->calling($current)->isDIr = true,
+				$innerIterator->getMockController()->current = $current
+			)
+			->then
+				->boolean($filter->accept())->isTrue()
+
 		;
 	}
 }
