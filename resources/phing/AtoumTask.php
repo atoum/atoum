@@ -180,12 +180,12 @@ class atoumTask extends task
 
 		if ($this->telemetryEnabled())
 		{
-			if (class_exists('\mageekguy\atoum\reports\telemetry') === false) {
+			if (class_exists('reports\telemetry') === false) {
 				throw new exception('AtoumTask depends on atoum/reports-extension being installed to enable telemetry report');
 			}
 
-			$telemetry = new \mageekguy\atoum\reports\telemetry();
-			$telemetry->addWriter(new \mageekguy\atoum\writers\std\out());
+			$telemetry = new reports\telemetry();
+			$telemetry->addWriter(new atoum\writers\std\out());
 
 			if ($this->getTelemetryProjectName() !== null) {
 				$telemetry->setProjectName($this->getTelemetryProjectName());

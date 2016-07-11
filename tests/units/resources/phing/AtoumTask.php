@@ -554,7 +554,7 @@ namespace tests\units
 				->given($task = new testedClass())
 				->then
 					->object($task->setTelemetry(true))->isIdenticalTo($task)
-					->boolean($task->getTelemetry())->isEqualTo(true)
+					->boolean($task->getTelemetry())->isTrue()
 			;
 		}
 
@@ -563,8 +563,20 @@ namespace tests\units
 			$this
 				->given($task = new testedClass())
 				->then
-				->object($task->setTelemetryProjectName($projectName = uniqid() . '/' . uniqid()))->isIdenticalTo($task)
-				->string($task->getTelemetryProjectName())->isEqualTo($projectName)
+					->object($task->setTelemetryProjectName($projectName = uniqid() . '/' . uniqid()))->isIdenticalTo($task)
+					->string($task->getTelemetryProjectName())->isEqualTo($projectName)
+			;
+		}
+
+		public function testTelemetryEnabled()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+					->boolean($task->telemetryEnabled())->isFalse()
+				->if($task->setTelemetry(true))
+				->then
+					->boolean($task->telemetryEnabled())->isTrue()
 			;
 		}
 	}
