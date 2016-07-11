@@ -1,6 +1,5 @@
 # `dev-master`
 
-# 2.9.0 - XXXX-XX-XX
 * [#612](https://github.com/atoum/atoum/pull/612) Add telemetry support to AtoumTask ([@oxman])
 
 # 2.8.1 - 2016-07-01
