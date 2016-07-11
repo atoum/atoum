@@ -26,6 +26,8 @@ class atoumTask extends task
 	private $codeCoverageTreemapUrl = null;
 	private $codeCoverageXunitPath = null;
 	private $codeCoverageCloverPath = null;
+	private $telemetry = false;
+	private $telemetryProjectName = null;
 	private $atoumPharPath = null;
 	private $atoumAutoloaderPath = null;
 	private $phpPath = null;
@@ -61,6 +63,11 @@ class atoumTask extends task
 	public function codeCoverageEnabled()
 	{
 		return ($this->codeCoverage === true || $this->codeCoverageReportPath !== null || $this->codeCoverageTreemapPath !== null);
+	}
+
+	public function telemetryEnabled()
+	{
+		return ($this->telemetry === true || $this->telemetryProjectName !== null);
 	}
 
 	public function createFileSet()
@@ -169,6 +176,21 @@ class atoumTask extends task
 			{
 				$report->addField($this->configureCoverageTreemapField($path, $coverageReportUrl));
 			}
+		}
+
+		if ($this->telemetryEnabled())
+		{
+			if (class_exists('reports\telemetry') === false) {
+				throw new exception('AtoumTask depends on atoum/reports-extension being installed to enable telemetry report');
+			}
+
+			$telemetry = new reports\telemetry();
+			$telemetry->addWriter(new atoum\writers\std\out());
+
+			if ($this->getTelemetryProjectName() !== null) {
+				$telemetry->setProjectName($this->getTelemetryProjectName());
+			}
+			$runner->addReport($telemetry);
 		}
 
 		if (($path = $this->codeCoverageXunitPath) !== null)
@@ -287,11 +309,35 @@ class atoumTask extends task
 		return $this->codeCoverage;
 	}
 
+	public function setTelemetry($telemetry)
+	{
+		$this->telemetry = (boolean) $telemetry;
+
+		return $this;
+	}
+
+	public function getTelemetry()
+	{
+		return $this->telemetry;
+	}
+
 	public function setAtoumPharPath($atoumPharPath)
 	{
 		$this->atoumPharPath = (string) $atoumPharPath;
 
 		return $this;
+	}
+
+	public function setTelemetryProjectName($telemetryProjectName)
+	{
+		$this->telemetryProjectName = (string) $telemetryProjectName;
+
+		return $this;
+	}
+
+	public function getTelemetryProjectName()
+	{
+		return $this->telemetryProjectName;
 	}
 
 	public function getAtoumPharPath()

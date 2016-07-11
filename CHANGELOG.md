@@ -1,5 +1,8 @@
 # `dev-master`
 
+# 2.9.0 - XXXX-XX-XX
+* [#612](https://github.com/atoum/atoum/pull/612) Add telemetry support to AtoumTask ([@oxman])
+
 # 2.8.1 - 2016-07-01
 
 * [#611](https://github.com/atoum/atoum/pull/611) Exclude vendor and composer.lock from phar ([@jubianchi], [@agallou])
@@ -202,3 +205,4 @@
 [@evert]: https://github.com/evert
 [@agallou]: https://github.com/agallou
 [@fferriere]: https://github.com/fferriere
+[@oxman]: https://github.com/blackprism
