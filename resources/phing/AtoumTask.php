@@ -28,6 +28,7 @@ class atoumTask extends task
 	private $codeCoverageCloverPath = null;
 	private $codeCoverageReportExtensionPath = null;
 	private $codeCoverageReportExtensionUrl = null;
+	private $branchAndPathCoverage = false;
 	private $telemetry = false;
 	private $telemetryProjectName = null;
 	private $atoumPharPath = null;
@@ -67,6 +68,11 @@ class atoumTask extends task
 		return ($this->codeCoverage === true || $this->codeCoverageReportPath !== null || $this->codeCoverageTreemapPath !== null);
 	}
 
+	public function branchAndPathCoverageEnabled()
+	{
+		return ($this->branchAndPathCoverage === true);
+	}
+
 	public function telemetryEnabled()
 	{
 		return ($this->telemetry === true || $this->telemetryProjectName !== null);
@@ -100,7 +106,7 @@ class atoumTask extends task
 
 	public function main()
 	{
-		if ($this->codeCoverage && extension_loaded('xdebug') === false)
+		if (($this->codeCoverage || $this->branchAndPathCoverage) && extension_loaded('xdebug') === false)
 		{
 			throw new exception('AtoumTask depends on Xdebug being installed to gather code coverage information');
 		}
@@ -158,6 +164,10 @@ class atoumTask extends task
 		else
 		{
 			$this->runner->enableCodeCoverage();
+
+			if ($this->branchAndPathCoverageEnabled() === true) {
+				$this->runner->enableBranchesAndPathsCoverage();
+			}
 
 			if (($path = $this->codeCoverageCloverPath) !== null)
 			{
@@ -317,6 +327,18 @@ class atoumTask extends task
 	public function getCodeCoverage()
 	{
 		return $this->codeCoverage;
+	}
+
+	public function setBranchAndPathCoverage($branchAndPathCoverage)
+	{
+		$this->branchAndPathCoverage = (boolean) $branchAndPathCoverage;
+
+		return $this;
+	}
+
+	public function getBranchAndPathCoverage()
+	{
+		return $this->branchAndPathCoverage;
 	}
 
 	public function setTelemetry($telemetry)

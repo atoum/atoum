@@ -552,6 +552,28 @@ namespace tests\units
 			;
 		}
 
+		public function testGetSetBranchAndPathCoverage()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+					->object($task->setBranchAndPathCoverage(true))->isIdenticalTo($task)
+					->boolean($task->getBranchAndPathCoverage())->isTrue()
+			;
+		}
+
+		public function testBranchAndPathCoverageEnabled()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+					->boolean($task->branchAndPathCoverageEnabled())->isFalse()
+				->if($task->setBranchAndPathCoverage(true))
+				->then
+					->boolean($task->branchAndPathCoverageEnabled())->isTrue()
+			;
+		}
+
 		public function testGetSetCodeCoverageReportExtensionPath()
 		{
 			$this
