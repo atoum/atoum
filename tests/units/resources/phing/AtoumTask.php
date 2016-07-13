@@ -42,6 +42,8 @@ namespace tests\units
 					->variable($task->getCodeCoverageReportUrl())->isNull()
 					->variable($task->getCodeCoverageXunitPath())->isNull()
 					->variable($task->getCodeCoverageCloverPath())->isNull()
+					->variable($task->getCodeCoverageReportExtensionPath())->isNull()
+					->variable($task->getCodeCoverageReportExtensionUrl())->isNull()
 					->variable($task->getTelemetry())->isNotTrue()
 					->variable($task->getTelemetryProjectName())->isNull()
 					->integer($task->getMaxChildren())->isZero()
@@ -62,6 +64,8 @@ namespace tests\units
 					->variable($task->getCodeCoverageReportUrl())->isNull()
 					->variable($task->getCodeCoverageXunitPath())->isNull()
 					->variable($task->getCodeCoverageCloverPath())->isNull()
+					->variable($task->getCodeCoverageReportExtensionPath())->isNull()
+					->variable($task->getCodeCoverageReportExtensionUrl())->isNull()
 					->variable($task->getTelemetry())->isNotTrue()
 					->variable($task->getTelemetryProjectName())->isNull()
 					->integer($task->getMaxChildren())->isZero()
@@ -545,6 +549,30 @@ namespace tests\units
 					->string($task->getCodeCoverageCloverPath())->isEqualTo($path)
 					->object($task->setCodeCoverageCloverPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
 					->string($task->getCodeCoverageCloverPath())->isEqualTo((string) $path)
+			;
+		}
+
+		public function testGetSetCodeCoverageReportExtensionPath()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+				->object($task->setCodeCoverageReportExtensionPath($path = uniqid()))->isIdenticalTo($task)
+				->string($task->getCodeCoverageReportExtensionPath())->isEqualTo($path)
+				->object($task->setCodeCoverageReportExtensionPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+				->string($task->getCodeCoverageReportExtensionPath())->isEqualTo((string) $path)
+			;
+		}
+
+		public function testGetSetCodeCoverageReportExtensionUrl()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+				->object($task->setCodeCoverageReportExtensionUrl($path = uniqid()))->isIdenticalTo($task)
+				->string($task->getCodeCoverageReportExtensionUrl())->isEqualTo($path)
+				->object($task->setCodeCoverageReportExtensionUrl($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+				->string($task->getCodeCoverageReportExtensionUrl())->isEqualTo((string) $path)
 			;
 		}
 
