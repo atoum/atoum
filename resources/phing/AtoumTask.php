@@ -180,7 +180,7 @@ class atoumTask extends task
 
 		if ($this->telemetryEnabled())
 		{
-			if (class_exists('reports\telemetry') === false) {
+			if (class_exists('mageekguy\atoum\reports\telemetry') === false) {
 				throw new exception('AtoumTask depends on atoum/reports-extension being installed to enable telemetry report');
 			}
 
