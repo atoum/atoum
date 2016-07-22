@@ -42,7 +42,8 @@ namespace tests\units
 					->variable($task->getCodeCoverageReportUrl())->isNull()
 					->variable($task->getCodeCoverageXunitPath())->isNull()
 					->variable($task->getCodeCoverageCloverPath())->isNull()
-					->variable($task->getTelemetry())->isNotTrue()
+					->boolean($task->getBranchAndPathCoverage())->isNotTrue()
+					->boolean($task->getTelemetry())->isNotTrue()
 					->variable($task->getTelemetryProjectName())->isNull()
 					->integer($task->getMaxChildren())->isZero()
 				->if($task = new testedClass($runner = new atoum\runner()))
@@ -62,7 +63,8 @@ namespace tests\units
 					->variable($task->getCodeCoverageReportUrl())->isNull()
 					->variable($task->getCodeCoverageXunitPath())->isNull()
 					->variable($task->getCodeCoverageCloverPath())->isNull()
-					->variable($task->getTelemetry())->isNotTrue()
+					->boolean($task->getBranchAndPathCoverage())->isNotTrue()
+					->boolean($task->getTelemetry())->isNotTrue()
 					->variable($task->getTelemetryProjectName())->isNull()
 					->integer($task->getMaxChildren())->isZero()
 			;
@@ -545,6 +547,28 @@ namespace tests\units
 					->string($task->getCodeCoverageCloverPath())->isEqualTo($path)
 					->object($task->setCodeCoverageCloverPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
 					->string($task->getCodeCoverageCloverPath())->isEqualTo((string) $path)
+			;
+		}
+
+		public function testGetSetBranchAndPathCoverage()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+					->object($task->setBranchAndPathCoverage(true))->isIdenticalTo($task)
+					->boolean($task->getBranchAndPathCoverage())->isTrue()
+			;
+		}
+
+		public function testBranchAndPathCoverageEnabled()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+					->boolean($task->branchAndPathCoverageEnabled())->isFalse()
+				->if($task->setBranchAndPathCoverage(true))
+				->then
+					->boolean($task->branchAndPathCoverageEnabled())->isTrue()
 			;
 		}
 
