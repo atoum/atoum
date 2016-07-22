@@ -1,6 +1,6 @@
 # `dev-master`
 
-* [#619](https://github.com/atoum/atoum/pull/619) Add ebpc support to AtoumTask for Phing ([@oxman])
+* [#619](https://github.com/atoum/atoum/pull/619) Add branches and paths coverage support to AtoumTask for Phing ([@oxman])
 * [#612](https://github.com/atoum/atoum/pull/612) Add telemetry support to AtoumTask ([@oxman])
 
 # 2.8.1 - 2016-07-01
