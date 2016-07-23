@@ -26,6 +26,8 @@ class atoumTask extends task
 	private $codeCoverageTreemapUrl = null;
 	private $codeCoverageXunitPath = null;
 	private $codeCoverageCloverPath = null;
+	private $codeCoverageReportExtensionPath = null;
+	private $codeCoverageReportExtensionUrl = null;
 	private $telemetry = false;
 	private $telemetryProjectName = null;
 	private $atoumPharPath = null;
@@ -170,6 +172,14 @@ class atoumTask extends task
 				$coverageHtmlField->setRootUrl($this->codeCoverageReportUrl ?: 'file://' . $path . '/index.html');
 
 				$report->addField($coverageHtmlField);
+			}
+
+			if (($path = $this->codeCoverageReportExtensionPath) !== null)
+			{
+				$coverage = new reports\coverage\html();
+				$coverage->addWriter(new atoum\writers\std\out());
+				$coverage->setOutPutDirectory($path);
+				$this->runner->addReport($coverage);
 			}
 
 			if (($path = $this->codeCoverageTreemapPath) !== null)
@@ -465,6 +475,30 @@ class atoumTask extends task
 	public function getCodeCoverageReportUrl()
 	{
 		return $this->codeCoverageReportUrl;
+	}
+
+	public function setCodeCoverageReportExtensionPath($codeCoverageReportExtensionPath)
+	{
+		$this->codeCoverageReportExtensionPath = (string) $codeCoverageReportExtensionPath;
+
+		return $this;
+	}
+
+	public function getCodeCoverageReportExtensionPath()
+	{
+		return $this->codeCoverageReportExtensionPath;
+	}
+
+	public function setCodeCoverageReportExtensionUrl($codeCoverageReportExtensionUrl)
+	{
+		$this->codeCoverageReportExtensionUrl = (string) $codeCoverageReportExtensionUrl;
+
+		return $this;
+	}
+
+	public function getCodeCoverageReportExtensionUrl()
+	{
+		return $this->codeCoverageReportExtensionUrl;
 	}
 
 	public function setMaxChildren($maxChildren)

@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#620](https://github.com/atoum/atoum/pull/620) Add HTML coverage report from [reports extension](https://github.com/atoum/reports-extension) to AtoumTask for Phing ([@oxman])
 * [#612](https://github.com/atoum/atoum/pull/612) Add telemetry support to AtoumTask ([@oxman])
 
 # 2.8.1 - 2016-07-01
@@ -94,14 +95,14 @@
 * [#491](https://github.com/atoum/atoum/pull/491) Fix `getTestMethodPrefix` when the prefix is `"0"` ([@remicollet])
 * [#384](https://github.com/atoum/atoum/pull/384) Short syntax for base assertions ([@jubianchi])
 
-# 2.2.0 - 2015-07-31 
+# 2.2.0 - 2015-07-31
 
 * [#467](https://github.com/atoum/atoum/pull/467) Hide classes and methods coverage details in CLI report ([@jubianchi])
 * [#474](https://github.com/atoum/atoum/pull/474) Add the method return type and parameter type in the mock generator ([@guillaumeDievart])
 * [#470](https://github.com/atoum/atoum/pull/470) Add `isNotEmpty` asserter on `array` ([@metalaka])
 * [#476](https://github.com/atoum/atoum/pull/476) Add relative url root choice for code coverage report ([@n-couet])
 
-# 2.1.0 - 2015-05-08 
+# 2.1.0 - 2015-05-08
 
 * [#459](https://github.com/atoum/atoum/issues/459) Support branches and paths coverage with [Xdebug](http://xdebug.org/) 2.3 ([@jubianchi])
 * [#436](https://github.com/atoum/atoum/issues/436) Support old-style constructors in mocks ([@jubianchi])
