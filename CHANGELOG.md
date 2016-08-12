@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 2.8.2 - 2016-08-12
+
 * [#620](https://github.com/atoum/atoum/pull/620) Add HTML coverage report from [reports extension](https://github.com/atoum/reports-extension) to AtoumTask for Phing ([@oxman])
 * [#612](https://github.com/atoum/atoum/pull/612) Add telemetry support to AtoumTask ([@oxman])
 
