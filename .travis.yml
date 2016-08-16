@@ -7,12 +7,10 @@ php:
   - 7.0
   - nightly
   - hhvm
-  - hhvm-nightly
 matrix:
   allow_failures:
     - php: nightly
     - php: hhvm
-    - php: hhvm-nightly
 notifications:
   irc: "irc.freenode.org##atoum"
   webhooks:
