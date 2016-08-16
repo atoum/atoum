@@ -6,7 +6,7 @@ class dot extends \recursiveFilterIterator
 {
 	public function __construct($mixed, \closure $iteratorFactory = null)
 	{
-		if ($mixed instanceof \recursiveIterator)
+		if ($mixed instanceof \RecursiveIterator)
 		{
 			parent::__construct($mixed);
 		}
