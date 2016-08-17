@@ -1,18 +1,25 @@
 language: php
-php:
-  - 5.3
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - nightly
-  - hhvm
-  - hhvm-nightly
 matrix:
+  include:
+    - php: 5.3
+    - php: 5.4
+    - php: 5.5
+    - php: 5.6
+    - php: 7.0
+    - php: nightly
+    - php: hhvm-3.12
+      sudo: required
+      dist: trusty
+      group: edge
+    - php: hhvm
+      sudo: required
+      dist: trusty
+      group: edge
   allow_failures:
     - php: nightly
+    - php: hhvm-3.12
     - php: hhvm
-    - php: hhvm-nightly
+  fast_finish: true
 notifications:
   irc: "irc.freenode.org##atoum"
   webhooks:
@@ -32,9 +39,12 @@ before_script:
   - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s/YouCoverallsProjectToken/$COVERALLS_REPO_TOKEN/ .atoum.php || true"
 script:
   - bin/atoum +verbose
-  - mkdir ../phar
-  - php -n -dphar.readonly=Off scripts/phar/generator.php -d ../phar
-  - php -n -ddate.timezone=Europe/Paris ../phar/atoum.phar --test-it -ncc +verbose -c .atoum.php
+  - |
+      if [[ $TRAVIS_PHP_VERSION = php* ]]; then
+        mkdir ../phar
+        php -n -dphar.readonly=Off scripts/phar/generator.php -d ../phar
+        php -n -ddate.timezone=Europe/Paris ../phar/atoum.phar --test-it -ncc +verbose -c .atoum.php
+      fi
 deploy:
   provider: releases
   api_key:

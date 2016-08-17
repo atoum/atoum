@@ -12,11 +12,6 @@ use
 
 class factory extends atoum\test
 {
-	public function testClass()
-	{
-		$this->testedClass->implements('iteratorAggregate');
-	}
-
 	public function test__construct()
 	{
 		$this

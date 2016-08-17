@@ -16,7 +16,7 @@ namespace tests\units
 
 	require_once __DIR__ . '/../../runner.php';
 
-	define('mageekguy\atoum\phing\task\path', atoum\mock\streams\fs\file::get());
+	define('mageekguy\atoum\phing\task\path', (string) atoum\mock\streams\fs\file::get());
 
 	require_once __DIR__ . '/../../../../resources/phing/AtoumTask.php';
 

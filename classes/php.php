@@ -41,6 +41,10 @@ class php extends cli\command
 			}
 		}
 
+		if (defined('HHVM_VERSION')) {
+			$phpPath .= ' --php';
+		}
+
 		return parent::setBinaryPath($phpPath);
 	}
 }

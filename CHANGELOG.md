@@ -1,5 +1,9 @@
 # `dev-master`
 
+* [#625](https://github.com/atoum/atoum/pull/625) Various HHVM compatibility issues solved ([@hywan])
+* [#625](https://github.com/atoum/atoum/pull/625) Isolation test execution engine is working on HHVM ([@hywan])
+* [#625](https://github.com/atoum/atoum/pull/625) `atoum\iterators\recursives\directory\factory` is no longer a aggregated iterator ([@hywan])
+
 # 2.8.2 - 2016-08-12
 
 * [#620](https://github.com/atoum/atoum/pull/620) Add HTML coverage report from [reports extension](https://github.com/atoum/reports-extension) to AtoumTask for Phing ([@oxman])
