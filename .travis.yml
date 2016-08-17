@@ -25,9 +25,12 @@ before_script:
   - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s/YouCoverallsProjectToken/$COVERALLS_REPO_TOKEN/ .atoum.php || true"
 script:
   - bin/atoum +verbose
-  - mkdir ../phar
-  - php -n -dphar.readonly=Off scripts/phar/generator.php -d ../phar
-  - php -n -ddate.timezone=Europe/Paris ../phar/atoum.phar --test-it -ncc +verbose -c .atoum.php
+  - |
+      if [[ $TRAVIS_PHP_VERSION = php* ]]; then
+        mkdir ../phar
+        php -n -dphar.readonly=Off scripts/phar/generator.php -d ../phar
+        php -n -ddate.timezone=Europe/Paris ../phar/atoum.phar --test-it -ncc +verbose -c .atoum.php
+      fi
 deploy:
   provider: releases
   api_key:
