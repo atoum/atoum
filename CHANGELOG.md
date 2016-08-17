@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#625](https://github.com/atoum/atoum/pull/625) Various HHVM compatibility issues solved ([@hywan])
 * [#625](https://github.com/atoum/atoum/pull/625) Isolation test execution engine is working on HHVM ([@hywan])
 * [#625](https://github.com/atoum/atoum/pull/625) `atoum\iterators\recursives\directory\factory` is no longer a aggregated iterator ([@hywan])
 
