@@ -239,8 +239,8 @@ class phing extends atoum\test
 			->then
 				->castToString($defaultField)->isEqualTo(
 						$defaultField->getTitlePrompt() . sprintf($defaultField->getLocale()->_('Code coverage value : %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
-						$defaultField->getClassPrompt() . sprintf($defaultField->getLocale()->_('Class %s : %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL .
-						$defaultField->getMethodPrompt() . sprintf($defaultField->getLocale()->_('     ::%s() : %3.2f%%'), $methodName, $scoreCoverage->getValueForMethod($className, $methodName) * 100.0) . PHP_EOL
+						$defaultField->getClassPrompt() . sprintf($defaultField->getLocale()->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL .
+						$defaultField->getMethodPrompt() . sprintf($defaultField->getLocale()->_('     ::%s(): %3.2f%%'), $methodName, $scoreCoverage->getValueForMethod($className, $methodName) * 100.0) . PHP_EOL
 					)
 				->castToString($customField)->isEqualTo(
 						$titlePrompt .
@@ -252,14 +252,14 @@ class phing extends atoum\test
 						PHP_EOL .
 						$classPrompt .
 						sprintf(
-							$locale->_('%s : %s'),
+							$locale->_('%s: %s'),
 							$titleColorizer->colorize(sprintf($locale->_('Class %s'), $className)),
 							$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className) * 100.0))
 						) .
 						PHP_EOL .
 						$methodPrompt .
 						sprintf(
-							$locale->_('%s : %s'),
+							$locale->_('%s: %s'),
 							$titleColorizer->colorize(sprintf($locale->_('     ::%s()'), $methodName)),
 							$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className, $methodName) * 100.0))
 						) .
