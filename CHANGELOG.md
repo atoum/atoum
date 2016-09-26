@@ -6,6 +6,7 @@
 
 ## Bugfix
 
+* [#633](https://github.com/atoum/atoum/pull/633) Mock generator correctly handles the `self` return type ([@jubianchi])
 * [#637](https://github.com/atoum/atoum/pull/637) Errors are displayed in the TAP report ([@jubianchi])
 
 # 2.8.2 - 2016-08-12
