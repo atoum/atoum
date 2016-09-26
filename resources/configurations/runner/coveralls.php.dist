@@ -38,6 +38,10 @@ $coverallsReport
 
 		return $branch;
 	})
+	/*
+	https://coveralls.zendesk.com/hc/en-us/articles/201774865-API-Introduction
+	> Setting service_name to "travis-ci" and service_job_id to the Travis Job ID will automatically look up the appropriate build and repository, and assign the job correctly on Coveralls.
+	*/
 	->setServiceName(getenv('TRAVIS') ? 'travis-ci' : null)
 	->setServiceJobId(getenv('TRAVIS_JOB_ID') ?: null)
 	->addDefaultWriter()

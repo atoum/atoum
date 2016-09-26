@@ -31,8 +31,8 @@ if (getenv('TRAVIS_PHP_VERSION') === '7.0')
 }
 else
 {
-	$sources = '/path/to/sources/directory';
-	$token = 'YouCoverallsProjectToken';
+	$sources = 'classes';
+	$token = getenv('COVERALLS_REPO_TOKEN') ?: null;
 	$coverallsReport = new reports\asynchronous\coveralls($sources, $token);
 
 	$defaultFinder = $coverallsReport->getBranchFinder();
