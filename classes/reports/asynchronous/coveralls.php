@@ -24,7 +24,7 @@ class coveralls extends atoum\reports\asynchronous
 	protected $serviceName;
 	protected $serviceJobId;
 
-	public function __construct($sourceDir, $repositoryToken, atoum\adapter $adapter = null)
+	public function __construct($sourceDir, $repositoryToken = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct();
 
@@ -126,15 +126,21 @@ class coveralls extends atoum\reports\asynchronous
 
 	protected function makeRootElement(score\coverage $coverage)
 	{
-		return array(
+		$root = array(
 			'service_name' => $this->serviceName,
 			'service_event_type' => static::defaultEvent,
 			'service_job_id' => $this->serviceJobId,
-			'repo_token' => $this->repositoryToken,
 			'run_at' => $this->adapter->date('Y-m-d H:i:s O'),
 			'source_files' => $this->makeSourceElement($coverage),
 			'git' => $this->makeGitElement()
 		);
+
+		if ($this->repositoryToken !== null)
+		{
+			$root['repo_token'] = $this->repositoryToken;
+		}
+
+		return $root;
 	}
 
 	protected function makeGitElement()

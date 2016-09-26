@@ -26,10 +26,19 @@ env:
         - secure: "vJ1TnFhU9muqLwkiBd13lFqdPJIrwKJ5OJjR3/jQROWQsRO4NPd/I7OfdDKk\noJGYbgjGMw7bmBYI0xjhYfZAnrClwIBvn1Qx5x5UDGxTHC8ZP6xs49AGa37I\n7BJlWC7+nRwPmmLhoLsbut/O7Kkn8IkdJIeChHbdn8RHQIJTJ4Y="
 sudo: false
 before_script:
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && phpenv config-rm xdebug.ini || true"
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && git clone https://github.com/derickr/xdebug.git || true"
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && cd xdebug || true"
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && git checkout issue1331-code-coverage-segfault || true"
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && phpize || true"
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && ./configure || true"
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && make || true"
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && echo \"zend_extension = $(pwd)/modules/xdebug.so\" > xdebug.ini || true"
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && echo \"xdebug.overload_var_dump = 0\" >> xdebug.ini || true"
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && phpenv config-add xdebug.ini || true"
+  - "[ \"$TRAVIS_PHP_VERSION\" != '5.3' ] && cd .. || true"
   - "[[ \"$TRAVIS_PHP_VERSION\" != '5.3' && \"$TRAVIS_PHP_VERSION\" != '5.4' ]] && composer require 'atoum/reports-extension:^2.0.1' || true"
   - "cp resources/configurations/ci/.travis.php.dist .atoum.php"
-  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s?/path/to/sources/directory?classes? .atoum.php || true"
-  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s/YouCoverallsProjectToken/$COVERALLS_REPO_TOKEN/ .atoum.php || true"
 script:
   - bin/atoum +verbose
   - mkdir ../phar
