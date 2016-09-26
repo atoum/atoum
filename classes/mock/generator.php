@@ -612,13 +612,22 @@ class generator
 
 		if($method->getName() !== '__construct' && method_exists($method, 'hasReturnType') && $method->hasReturnType())
 		{
-			if($method->getReturnType()->isBuiltin())
+			switch (true)
 			{
-				$returnTypeCode = ': ' . $method->getReturnType();
-			}
-			else
-			{
-				$returnTypeCode = ': \\' . $method->getReturnType();
+				case (string) $method->getReturnType() === 'self':
+					$returnTypeCode = ': \\' . $method->getDeclaringClass()->getName();
+					break;
+
+				case (string) $method->getReturnType() === 'parent':
+					$returnTypeCode = ': \\' . $method->getDeclaringClass()->getParentClass()->getName();
+					break;
+
+				case $method->getReturnType()->isBuiltin():
+					$returnTypeCode = ': ' . $method->getReturnType();
+					break;
+
+				default:
+					$returnTypeCode = ': \\' . $method->getReturnType();
 			}
 		}
 
