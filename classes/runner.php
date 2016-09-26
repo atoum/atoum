@@ -59,7 +59,7 @@ class runner implements observable
 
 		$this->observers = new \splObjectStorage();
 		$this->reports = new \splObjectStorage();
-		$this->extensions = new \splObjectStorage();
+		$this->extensions = new iterators\classStorage();
 	}
 
 	public function setAdapter(adapter $adapter = null)
@@ -835,9 +835,27 @@ class runner implements observable
 
 	public function removeExtension(extension $extension)
 	{
-		$this->extensions->detach($extension);
+		try {
+			$extension = $this->getExtension(get_class($extension));
 
-		return $this->removeObserver($extension);
+			$this->extensions->detach($extension);
+
+			$this->removeObserver($extension);
+		} catch (exceptions\logic\invalidArgument $e) {
+		}
+
+		return $this;
+	}
+
+	public function removeExtensionByClassName($classname)
+	{
+		try {
+			$this->removeExtension($this->getExtension($classname));
+		} catch (exceptions\logic\invalidArgument $e) {
+		}
+
+		return $this;
+
 	}
 
 	public function removeExtensions()
@@ -865,6 +883,21 @@ class runner implements observable
 		}
 
 		return $this;
+	}
+
+	public function getExtension($classname)
+	{
+		foreach ($this->getExtensions() as $extension)
+		{
+			if (get_class($extension) != $classname)
+			{
+				continue;
+			}
+
+			return $extension;
+		}
+
+		throw new exceptions\logic\invalidArgument(sprintf("Extension '%s' not found", $classname));
 	}
 
 	public static function isIgnored(test $test, array $namespaces, array $tags)

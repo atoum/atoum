@@ -33,6 +33,7 @@ class runner extends atoum\script\configurable
 
 	protected static $autorunner = true;
 	protected static $runnerFile = null;
+	protected static $configurationCallables = array();
 
 	public function __construct($name, atoum\adapter $adapter = null, atoum\scripts\runner\looper $looper = null)
 	{
@@ -245,6 +246,20 @@ class runner extends atoum\script\configurable
 		$runner = $this->runner;
 
 		return $this->includeConfigFile($path, function($path) use ($script, $runner) { include_once($path); });
+	}
+
+	public function useConfigCallable($callback)
+	{
+		if (!(is_callable($callback) && $callback instanceof \Closure) ){
+			throw new exceptions\logic\invalidArgument('The argument must be a closure');
+		}
+
+		$script = call_user_func($this->configuratorFactory, $this);
+		$runner = $this->runner;
+
+		$callback($script, $runner);
+
+		return $this;
 	}
 
 	public function testIt()
@@ -683,12 +698,21 @@ class runner extends atoum\script\configurable
 
 		static::$autorunner = new static($name);
 
+		foreach (static::$configurationCallables as $callable) {
+			static::$autorunner->useConfigCallable($callable);
+		}
+
 		return static::$autorunner;
 	}
 
 	public static function disableAutorun()
 	{
 		static::$autorunner = false;
+	}
+
+	public static function addConfigurationCallable($callable)
+	{
+		static::$configurationCallables[] = $callable;
 	}
 
 	protected function setArgumentHandlers()
