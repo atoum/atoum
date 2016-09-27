@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum;
 
+use mageekguy\atoum\extension\aggregator;
+
 class runner implements observable
 {
 	const atoumVersionConstant = 'mageekguy\atoum\version';
@@ -59,7 +61,7 @@ class runner implements observable
 
 		$this->observers = new \splObjectStorage();
 		$this->reports = new \splObjectStorage();
-		$this->extensions = new \splObjectStorage();
+		$this->extensions = new aggregator();
 	}
 
 	public function setAdapter(adapter $adapter = null)
@@ -828,13 +830,29 @@ class runner implements observable
 		return $reports;
 	}
 
+	public function getExtension($className)
+	{
+		foreach ($this->getExtensions() as $extension) if (get_class($extension) === $className)
+		{
+			return $extension;
+		}
+
+		throw new exceptions\logic\invalidArgument(sprintf('Extension %s is not loaded', $className));
+	}
+
 	public function getExtensions()
 	{
 		return $this->extensions;
 	}
 
-	public function removeExtension(extension $extension)
+	public function removeExtension($extension)
 	{
+		if (is_object($extension) === true)
+		{
+			$extension = get_class($extension);
+		}
+
+		$extension = $this->getExtension($extension);
 		$this->extensions->detach($extension);
 
 		return $this->removeObserver($extension);
@@ -847,22 +865,20 @@ class runner implements observable
 			$this->removeObserver($extension);
 		}
 
-		$this->extensions = new \splObjectStorage();
+		$this->extensions = new aggregator();
 
 		return $this;
 	}
-
 
 	public function addExtension(extension $extension, extension\configuration $configuration = null)
 	{
 		if ($this->extensions->contains($extension) === false)
 		{
 			$extension->setRunner($this);
-
-			$this->extensions->attach($extension, $configuration);
-
 			$this->addObserver($extension);
 		}
+
+		$this->extensions->attach($extension, $configuration);
 
 		return $this;
 	}

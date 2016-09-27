@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#634](https://github.com/atoum/atoum/pull/634) Only one extension of a kind can be loaded. Extensions can be unloaded ([@agallou], [@jubianchi])
 * [#619](https://github.com/atoum/atoum/pull/619) Add branches and paths coverage support to AtoumTask for Phing ([@oxman])
 
 # 2.8.2 - 2016-08-12
