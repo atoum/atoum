@@ -317,7 +317,7 @@ class tap extends atoum\test
 			->and($this->calling($test)->getClass = $class = uniqid())
 			->and($this->calling($test)->getCurrentMethod[1] = $method = uniqid())
 			->and($this->calling($test)->getCurrentMethod[2] = $otherMethod = uniqid())
-			->and($this->calling($score)->getLastErroredMethod[1] = array(
+			->and($this->calling($score)->getLastErroredMethod[1] = $firstError = array(
 					'case' => $case = uniqid(),
 					'dataSetKey' => $dataSetKey = uniqid(),
 					'dataSetProvider' => $dataSetProvider = uniqid(),
@@ -331,7 +331,7 @@ class tap extends atoum\test
 					'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
 				)
 			)
-			->and($this->calling($score)->getLastErroredMethod[2] = array(
+			->and($this->calling($score)->getLastErroredMethod[2] = $otherError = array(
 					'case' => null,
 					'dataSetKey' => null,
 					'dataSetProvider' => null,
@@ -345,6 +345,7 @@ class tap extends atoum\test
 					'errorLine' => null
 				)
 			)
+			->and($this->calling($score)->getErrors = array($firstError, $otherError))
 			->if($field = new testedClass())
 			->then
 				->castToString($field)->isEmpty()

@@ -56,22 +56,23 @@ class tap extends report\fields\event
 
 				case test::error:
 					$lastError = $observable->getScore()->getLastErroredMethod();
-					$lastErrorType = atoum\asserters\error::getAsString($lastError['type']);
 
-					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastError['class']) . '::' . trim($lastError['method']) . '()' . PHP_EOL . '# ' . $lastErrorType . ' : ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastError['message'])) . PHP_EOL;
-					$this->testLine .= '# ' . (isset($lastError['errorFile']) ? $lastError['errorFile'] : $lastError['file']) . ':' . (isset($lastError['errorLine']) ? $lastError['errorLine'] : $lastError['line']) . PHP_EOL;
+					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastError['class']) . '::' . trim($lastError['method']) . '()' . PHP_EOL;
+					$this->testLine .= $this->renderErrors($observable, trim($lastError['class']), trim($lastError['method']));
 					break;
 
 				case test::fail:
 					$lastFailAssertion = $observable->getScore()->getLastFailAssertion();
 					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastFailAssertion['class']) . '::' . trim($lastFailAssertion['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastFailAssertion['fail'])) . PHP_EOL;
 					$this->testLine .= '# ' . $lastFailAssertion['file'] . ':' . $lastFailAssertion['line'] . PHP_EOL;
+					$this->testLine .= $this->renderErrors($observable, trim($lastFailAssertion['class']), trim($lastFailAssertion['method']));
 					break;
 
 				case test::void:
 					$lastVoidMethod = $observable->getScore()->getLastVoidMethod();
 					$this->testLine = 'not ok ' . ++$this->testPoint . ' # TODO ' . trim($lastVoidMethod['class']) . '::' . trim($lastVoidMethod['method']) . '()' . PHP_EOL;
 					$this->testLine .= '# ' . $lastVoidMethod['file'] . PHP_EOL;
+					$this->testLine .= $this->renderErrors($observable, trim($lastVoidMethod['class']), trim($lastVoidMethod['method']));
 					break;
 
 				case test::uncompleted:
@@ -112,5 +113,20 @@ class tap extends report\fields\event
 		}
 
 		return $eventHandled;
+	}
+
+	private function renderErrors(atoum\observable $observable, $class, $method)
+	{
+		$errors = '';
+
+		foreach ($observable->getScore()->getErrors() as $error) if ($error['class'] === $class && $error['method'] === $method)
+		{
+			$errorType = atoum\asserters\error::getAsString($error['type']);
+
+			$errors .= '# ' . $errorType . ' : ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($error['message'])) . PHP_EOL;
+			$errors .= '# ' . (isset($error['errorFile']) ? $error['errorFile'] : $error['file']) . ':' . (isset($error['errorLine']) ? $error['errorLine'] : $error['line']) . PHP_EOL;
+		}
+
+		return $errors;
 	}
 }

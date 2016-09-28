@@ -3,6 +3,10 @@
 * [#634](https://github.com/atoum/atoum/pull/634) Only one extension of a kind can be loaded. Extensions can be unloaded ([@agallou], [@jubianchi])
 * [#619](https://github.com/atoum/atoum/pull/619) Add branches and paths coverage support to AtoumTask for Phing ([@oxman])
 
+## Bugfix
+
+* [#637](https://github.com/atoum/atoum/pull/637) Errors are displayed in the TAP report ([@jubianchi])
+
 # 2.8.2 - 2016-08-12
 
 * [#620](https://github.com/atoum/atoum/pull/620) Add HTML coverage report from [reports extension](https://github.com/atoum/reports-extension) to AtoumTask for Phing ([@oxman])
