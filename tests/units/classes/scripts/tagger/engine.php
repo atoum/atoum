@@ -16,7 +16,7 @@ class engine extends atoum\test
 	{
 		$this
 			->testedClass
-				->hasConstant('defaultVersionPattern')->isEqualTo('/\$Rev: [^ %]+ \$/')
+				->hasConstant('defaultVersionPattern')->isEqualTo('/\$Rev: ([^ %]+) \$/')
 		;
 	}
 
@@ -207,7 +207,7 @@ class engine extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to tag, path \'' . $file2 . '\' is unreadable')
+					->hasMessage('Unable to tag, path \'' . $file2 . '\' is not readable')
 			->if(
 				$adapter->resetCalls(),
 				$adapter->file_get_contents[2] = $contentOfFile2,
@@ -219,7 +219,7 @@ class engine extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to tag, path \'' . $file2 . '\' is unwritable')
+					->hasMessage('Unable to tag, path \'' . $file2 . '\' is not writable')
 			->if(
 				$adapter->resetCalls(),
 				$this->testedInstance->setDestinationDirectory($destinationDirectory = uniqid())

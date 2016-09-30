@@ -339,19 +339,24 @@ class pusher extends script\configurable
 		return preg_replace_callback($versionPattern, $increment(self::patchVersion), $tag);
 	}
 
-	private function tagSrcWith($tag)
+	private function tagSrcWith($tag, $tagChangelog = false)
 	{
 		$this->taggerEngine
 			->setVersion(sprintf(static::versionPattern, $tag))
 			->tagVersion()
 		;
 
+		if ($tagChangelog === true)
+		{
+			$this->taggerEngine->tagChangelog($tag);
+		}
+
 		return $this;
 	}
 
 	private function tagStableVersion($tag)
 	{
-		$this->tagSrcWith($tag);
+		$this->tagSrcWith($tag, true);
 
 		try
 		{
