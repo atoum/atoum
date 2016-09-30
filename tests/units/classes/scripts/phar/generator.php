@@ -267,14 +267,14 @@ class generator extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('COPYING file is missing in \'' . $generator->getOriginDirectory() . '\'')
+					->hasMessage('LICENSE file is missing in \'' . $generator->getOriginDirectory() . '\'')
 			->if($adapter->file_get_contents = function($file) use ($generator, & $description, & $licence, & $stub) {
 					switch ($file)
 					{
 						case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
 							return ($description = uniqid());
 
-						case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'COPYING':
+						case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'LICENSE':
 							return ($licence = uniqid());
 
 						case $generator->getStubFile():
