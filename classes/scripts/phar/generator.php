@@ -159,11 +159,11 @@ class generator extends atoum\script
 			throw new exceptions\runtime($this->locale->_('ABOUT file is missing in \'%s\'', $this->originDirectory));
 		}
 
-		$licence = @$this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING');
+		$licence = @$this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'LICENSE');
 
 		if ($licence === false)
 		{
-			throw new exceptions\runtime($this->locale->_('COPYING file is missing in \'%s\'', $this->originDirectory));
+			throw new exceptions\runtime($this->locale->_('LICENSE file is missing in \'%s\'', $this->originDirectory));
 		}
 
 		$stub = @$this->adapter->file_get_contents($this->stubFile);

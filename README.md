@@ -339,3 +339,25 @@ Looking for a roadmap?
 
 - [Here is](https://github.com/atoum/atoum/labels/In%20progress) the work in progress,
 - [And there](https://github.com/atoum/atoum/milestones/*) what will come in next releases.
+
+## Credits
+
+atoum has been created by [Frédéric Hardy]. It is now led by a strong community of contributors. You can find them 
+in the [committer list](https://github.com/atoum/atoum/graphs/contributors) or in the 
+[Contributors team](https://github.com/orgs/atoum/teams/contributors).
+
+We also would like to thank people who participated in the project in any way:
+
+* Mathieu Robin ([@MathRobin])
+* Geoffrey Bachelet ([@ubermuda])
+* Nathanaël Louison
+* Simon Jodet ([@simonjodet])
+
+## License
+
+atoum is released under the BSD-3-Clause License. See the bundled [LICENSE](LICENSE) file for details.
+
+[Frédéric Hardy]: https://github.com/mageekguy
+[@MathRobin]: https://github.com/MathRobin
+[@ubermuda]: https://github.com/ubermuda
+[@simonjodet]: https://github.com/simonjodet
