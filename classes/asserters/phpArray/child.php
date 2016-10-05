@@ -147,7 +147,7 @@ class child extends asserters\phpArray
 
     public function offsetGet($key)
     {
-        $asserter = new child($this);
+        $asserter = new self($this);
 
         return $asserter->setWith($this->valueIsSet()->value[$key]);
     }

@@ -13,12 +13,12 @@ class stream
     protected $streamController = null;
 
     protected static $adapter = null;
-    protected static $streams = array();
-    protected static $protocols = array();
+    protected static $streams = [];
+    protected static $protocols = [];
 
     public function __call($method, array $arguments)
     {
-        return call_user_func_array(array($this->setControllerForMethod($method, $arguments)->streamController, $method), $arguments);
+        return call_user_func_array([$this->setControllerForMethod($method, $arguments)->streamController, $method], $arguments);
     }
 
     public static function getAdapter()

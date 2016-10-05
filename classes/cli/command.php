@@ -9,12 +9,12 @@ class command
 {
     protected $adapter = null;
     protected $binaryPath = '';
-    protected $options = array();
-    protected $arguments = array();
-    protected $env = array();
+    protected $options = [];
+    protected $arguments = [];
+    protected $env = [];
 
     private $processus = null;
-    private $streams = array();
+    private $streams = [];
     private $stdOut = '';
     private $stdErr = '';
     private $exitCode = null;
@@ -90,8 +90,8 @@ class command
 
     public function reset()
     {
-        $this->options = array();
-        $this->arguments = array();
+        $this->options = [];
+        $this->arguments = [];
         $this->stdOut = '';
         $this->stdErr = '';
         $this->exitCode = null;
@@ -137,7 +137,7 @@ class command
 
     public function addArgument($argument, $value = null)
     {
-        $this->arguments[] = array($argument => $value ?: null);
+        $this->arguments[] = [$argument => $value ?: null];
 
         return $this;
     }
@@ -166,7 +166,7 @@ class command
                 $this->stdErr .= $this->adapter->stream_get_contents($this->streams[2]);
                 $this->adapter->fclose($this->streams[2]);
 
-                $this->streams = array();
+                $this->streams = [];
 
                 $this->exitCode = $processusStatus['exitcode'];
 
@@ -201,16 +201,16 @@ class command
             throw new command\exception('Unable to run \'' . $this . '\' because is currently running');
         }
 
-        $pipes = array(
-            1 => array('pipe', 'w'),
-            2 => array('pipe', 'w')
-        );
+        $pipes = [
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w']
+        ];
 
         if ($stdin != '') {
-            $pipes[0] = array('pipe', 'r');
+            $pipes[0] = ['pipe', 'r'];
         }
 
-        $this->processus = @call_user_func_array(array($this->adapter, 'proc_open'), array((string) $this, $pipes, & $this->streams, null, sizeof($this->env) <= 0 ? null : $this->env));
+        $this->processus = @call_user_func_array([$this->adapter, 'proc_open'], [(string) $this, $pipes, & $this->streams, null, sizeof($this->env) <= 0 ? null : $this->env]);
 
         if ($this->processus === false) {
             throw new command\exception('Unable to run \'' . $this . '\'');

@@ -40,7 +40,7 @@ class configurator extends atoum\test
                 ->mock($script)->call('setScoreFile')->withArguments($scoreFile)->once()
                 ->object($configurator->addDefaultReport())->isIdenticalTo($report)
                 ->mock($script)->call('addDefaultReport')->once()
-                ->object($configurator->noCodeCoverageForNamespaces($namespaces = array('foo', 'bar')))->isIdenticalTo($configurator)
+                ->object($configurator->noCodeCoverageForNamespaces($namespaces = ['foo', 'bar']))->isIdenticalTo($configurator)
                 ->mock($script)->call('excludeNamespacesFromCoverage')
                     ->withArguments($namespaces)->once()
                 ->object($configurator->noCodeCoverageForNamespaces('foo', 'bar'))->isIdenticalTo($configurator)

@@ -83,20 +83,20 @@ class manager extends atoum\test
                 return $defaultArg;
             }))
             ->then
-                ->array($this->testedInstance->{uniqid()}($arg = uniqid()))->isEqualTo(array($arg))
+                ->array($this->testedInstance->{uniqid()}($arg = uniqid()))->isEqualTo([$arg])
 
             ->if($this->testedInstance->setHandler($event, function ($arg) {
                 return $arg;
             }))
             ->then
-                ->array($this->testedInstance->{uniqid()}($arg = uniqid()))->isEqualTo(array($arg))
+                ->array($this->testedInstance->{uniqid()}($arg = uniqid()))->isEqualTo([$arg])
                 ->string($this->testedInstance->{$event}($eventArg = uniqid()))->isEqualTo($eventArg)
 
             ->if($this->testedInstance->setMethodHandler($methodEvent = uniqid(), function () use (& $methodReturn) {
                 return ($methodReturn = uniqid());
             }))
             ->then
-                ->array($this->testedInstance->{uniqid()}($arg = uniqid()))->isEqualTo(array($arg))
+                ->array($this->testedInstance->{uniqid()}($arg = uniqid()))->isEqualTo([$arg])
                 ->string($this->testedInstance->{$event}($eventArg = uniqid()))->isEqualTo($eventArg)
                 ->string($this->testedInstance->{$methodEvent}())->isEqualTo($methodReturn)
 
@@ -104,10 +104,10 @@ class manager extends atoum\test
                 return ($propertyReturn = uniqid());
             }))
             ->then
-                ->array($this->testedInstance->{uniqid()}($arg = uniqid()))->isEqualTo(array($arg))
+                ->array($this->testedInstance->{uniqid()}($arg = uniqid()))->isEqualTo([$arg])
                 ->string($this->testedInstance->{$event}($eventArg = uniqid()))->isEqualTo($eventArg)
                 ->string($this->testedInstance->{$methodEvent}())->isEqualTo($methodReturn)
-                ->array($this->testedInstance->{$propertyEvent}($arg = uniqid()))->isEqualTo(array($arg))
+                ->array($this->testedInstance->{$propertyEvent}($arg = uniqid()))->isEqualTo([$arg])
         ;
     }
 
@@ -235,13 +235,13 @@ class manager extends atoum\test
                 return $arg;
             }))
             ->then
-                ->array($this->testedInstance->invokeMethodHandler(uniqid(), array($defaultArg = uniqid())))->isEqualTo(array($defaultArg))
+                ->array($this->testedInstance->invokeMethodHandler(uniqid(), [$defaultArg = uniqid()]))->isEqualTo([$defaultArg])
 
             ->if($this->testedInstance->setMethodHandler($event = uniqid(), function ($eventArg) {
                 return $eventArg;
             }))
             ->then
-                ->string($this->testedInstance->invokeMethodHandler($event, array($eventArg = uniqid())))->isEqualTo($eventArg)
+                ->string($this->testedInstance->invokeMethodHandler($event, [$eventArg = uniqid()]))->isEqualTo($eventArg)
         ;
     }
 }

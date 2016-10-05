@@ -59,16 +59,16 @@ abstract class test implements observable, \countable
     private $class = '';
     private $classNamespace = '';
     private $observers = null;
-    private $tags = array();
-    private $phpVersions = array();
-    private $mandatoryExtensions = array();
-    private $dataProviders = array();
-    private $testMethods = array();
-    private $runTestMethods = array();
-    private $engines = array();
-    private $methodEngines = array();
-    private $methodsAreNotVoid = array();
-    private $executeOnFailure = array();
+    private $tags = [];
+    private $phpVersions = [];
+    private $mandatoryExtensions = [];
+    private $dataProviders = [];
+    private $testMethods = [];
+    private $runTestMethods = [];
+    private $engines = [];
+    private $methodEngines = [];
+    private $methodsAreNotVoid = [];
+    private $executeOnFailure = [];
     private $ignore = false;
     private $debugMode = false;
     private $xdebugConfig = null;
@@ -161,7 +161,7 @@ abstract class test implements observable, \countable
             $methodName = $publicMethod->getName();
 
             if ($testMethodFilter($methodName) == true) {
-                $this->testMethods[$methodName] = array();
+                $this->testMethods[$methodName] = [];
 
                 $annotationExtractor->extract($publicMethod->getDocComment());
 
@@ -472,7 +472,7 @@ abstract class test implements observable, \countable
                 $args = func_get_args();
                 $method = array_shift($args);
 
-                return call_user_func_array(array($test->getTestedClassName(), $method), $args);
+                return call_user_func_array([$test->getTestedClassName(), $method], $args);
             }
             )
         ;
@@ -555,7 +555,7 @@ abstract class test implements observable, \countable
                 $realKeyword = $assertionAliaser->resolveAlias($keyword, get_class($lastAsserter));
 
                 if ($realKeyword !== $keyword) {
-                    return call_user_func_array(array($lastAsserter, $realKeyword), $arguments);
+                    return call_user_func_array([$lastAsserter, $realKeyword], $arguments);
                 }
             }
 
@@ -617,7 +617,7 @@ abstract class test implements observable, \countable
 
     public function getMethodPhpVersions($testMethodName = null)
     {
-        $versions = array();
+        $versions = [];
 
         $classVersions = $this->getClassPhpVersions();
 
@@ -654,7 +654,7 @@ abstract class test implements observable, \countable
 
     public function getMandatoryMethodExtensions($testMethodName = null)
     {
-        $extensions = array();
+        $extensions = [];
 
         $mandatoryClassExtensions = $this->getMandatoryClassExtensions();
 
@@ -941,7 +941,7 @@ abstract class test implements observable, \countable
 
     public function getMethodTags($testMethodName = null)
     {
-        $tags = array();
+        $tags = [];
 
         $classTags = $this->getTags();
 
@@ -1014,14 +1014,14 @@ abstract class test implements observable, \countable
         return $this->path;
     }
 
-    public function getTaggedTestMethods(array $methods, array $tags = array())
+    public function getTaggedTestMethods(array $methods, array $tags = [])
     {
         return array_values(array_uintersect($methods, $this->getTestMethods($tags), 'strcasecmp'));
     }
 
-    public function getTestMethods(array $tags = array())
+    public function getTestMethods(array $tags = [])
     {
-        $testMethods = array();
+        $testMethods = [];
 
         foreach (array_keys($this->testMethods) as $methodName) {
             if ($this->methodIsIgnored($methodName, $tags) === false) {
@@ -1087,7 +1087,7 @@ abstract class test implements observable, \countable
         return $this->runTestMethods($this->getTestMethods());
     }
 
-    public function isIgnored(array $namespaces = array(), array $tags = array())
+    public function isIgnored(array $namespaces = [], array $tags = [])
     {
         $isIgnored = (sizeof($this) <= 0 || $this->ignore === true);
 
@@ -1113,7 +1113,7 @@ abstract class test implements observable, \countable
         return $this->runTestMethods($this->getTestMethods());
     }
 
-    public function methodIsIgnored($methodName, array $tags = array())
+    public function methodIsIgnored($methodName, array $tags = [])
     {
         $isIgnored = $this->checkMethod($methodName)->ignore;
 
@@ -1130,9 +1130,9 @@ abstract class test implements observable, \countable
         return $isIgnored;
     }
 
-    public function runTestMethods(array $methods, array $tags = array())
+    public function runTestMethods(array $methods, array $tags = [])
     {
-        $this->runTestMethods = $runTestMethods = array();
+        $this->runTestMethods = $runTestMethods = [];
 
         if (isset($methods['*']) === true) {
             $runTestMethods = $methods['*'];
@@ -1145,7 +1145,7 @@ abstract class test implements observable, \countable
         }
 
         if (in_array('*', $runTestMethods) === true) {
-            $runTestMethods = array();
+            $runTestMethods = [];
         }
 
         if (sizeof($runTestMethods) <= 0) {
@@ -1181,19 +1181,19 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    public function runTestMethod($testMethod, array $tags = array())
+    public function runTestMethod($testMethod, array $tags = [])
     {
         if ($this->methodIsIgnored($testMethod, $tags) === false) {
             $this->mockAutoloader->setMockGenerator($this->mockGenerator)->register();
 
-            set_error_handler(array($this, 'errorHandler'));
+            set_error_handler([$this, 'errorHandler']);
 
             ini_set('display_errors', 'stderr');
             ini_set('log_errors', 'Off');
             ini_set('log_errors_max_len', '0');
 
             $this->currentMethod = $testMethod;
-            $this->executeOnFailure = array();
+            $this->executeOnFailure = [];
 
             $this->phpFunctionMocker->setDefaultNamespace($this->getTestedClassNamespace());
             $this->phpConstantMocker->setDefaultNamespace($this->getTestedClassNamespace());
@@ -1294,7 +1294,7 @@ abstract class test implements observable, \countable
 
                         foreach ($data as $key => $arguments) {
                             if (is_array($arguments) === false) {
-                                $arguments = array($arguments);
+                                $arguments = [$arguments];
                             }
 
                             if (sizeof($arguments) < $numberOfArguments) {
@@ -1377,7 +1377,7 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    public function run(array $runTestMethods = array(), array $tags = array())
+    public function run(array $runTestMethods = [], array $tags = [])
     {
         if ($runTestMethods) {
             $this->runTestMethods(array_intersect($runTestMethods, $this->getTestMethods($tags)));
@@ -1689,10 +1689,10 @@ abstract class test implements observable, \countable
                     $key -= 1;
                 }
 
-                return array(
+                return [
                     $debugBacktrace[$key]['file'],
                     $debugBacktrace[$key]['line']
-                );
+                ];
             }
         }
 

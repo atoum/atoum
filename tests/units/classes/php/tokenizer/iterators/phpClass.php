@@ -40,7 +40,7 @@ class phpClass extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->appendConstant($constantIterator))->isTestedInstance
-                ->array($this->testedInstance->getConstants())->isEqualTo(array($constantIterator))
+                ->array($this->testedInstance->getConstants())->isEqualTo([$constantIterator])
                 ->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
         ;
     }
@@ -57,7 +57,7 @@ class phpClass extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->appendMethod($methodIterator))->isTestedInstance
-                ->array($this->testedInstance->getMethods())->isEqualTo(array($methodIterator))
+                ->array($this->testedInstance->getMethods())->isEqualTo([$methodIterator])
                 ->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
         ;
     }
@@ -74,7 +74,7 @@ class phpClass extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->appendProperty($propertyIterator))->isTestedInstance
-                ->array($this->testedInstance->getProperties())->isEqualTo(array($propertyIterator))
+                ->array($this->testedInstance->getProperties())->isEqualTo([$propertyIterator])
                 ->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
         ;
     }

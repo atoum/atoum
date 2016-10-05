@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\writers;
 
 use mageekguy\atoum;
+use mageekguy\atoum\mailers;
 use mageekguy\atoum\mock;
 use mageekguy\atoum\writers;
-use mageekguy\atoum\mailers;
 
 require_once __DIR__ . '/../../runner.php';
 

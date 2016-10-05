@@ -75,10 +75,10 @@ class report extends atoum\test
             ->if($report = new testedClass())
             ->then
                 ->object($report->addField($field = new \mock\mageekguy\atoum\report\field()))->isIdenticalTo($report)
-                ->array($report->getFields())->isIdenticalTo(array($field))
+                ->array($report->getFields())->isIdenticalTo([$field])
                 ->object($field->getLocale())->isIdenticalTo($report->getLocale())
                 ->object($report->addField($otherField = new \mock\mageekguy\atoum\report\field()))->isIdenticalTo($report)
-                ->array($report->getFields())->isIdenticalTo(array($field, $otherField))
+                ->array($report->getFields())->isIdenticalTo([$field, $otherField])
                 ->object($field->getLocale())->isIdenticalTo($report->getLocale())
                 ->object($otherField->getLocale())->isIdenticalTo($report->getLocale())
         ;

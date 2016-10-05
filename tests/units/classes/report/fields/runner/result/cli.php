@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\result;
 
 use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\runner\result\cli as testedClass;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -31,7 +31,7 @@ class cli extends atoum\test
                 ->variable($field->getFailNumber())->isNull()
                 ->variable($field->getErrorNumber())->isNull()
                 ->variable($field->getExceptionNumber())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
         ;
     }
 

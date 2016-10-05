@@ -2,9 +2,6 @@
 
 namespace mageekguy\atoum;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli;
-
 class php extends cli\command
 {
     public function setBinaryPath($phpPath = null)

@@ -2,12 +2,10 @@
 
 namespace mageekguy\atoum\reports\realtime;
 
-use mageekguy\atoum;
-use mageekguy\atoum\reports\realtime;
-use mageekguy\atoum\report\fields\runner;
-use mageekguy\atoum\report\fields\test;
 use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\report\fields\runner;
+use mageekguy\atoum\reports\realtime;
 
 class santa extends realtime
 {

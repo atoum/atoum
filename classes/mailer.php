@@ -107,7 +107,7 @@ abstract class mailer
 
     public function setContentType($type = 'text/plain', $charset = 'utf-8')
     {
-        $this->contentType = array($type, $charset);
+        $this->contentType = [$type, $charset];
 
         return $this;
     }

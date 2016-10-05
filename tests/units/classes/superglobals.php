@@ -12,7 +12,7 @@ class superglobals extends atoum\test
     public function test__get()
     {
         if (isset($GLOBALS['_SESSION']) === false) {
-            $GLOBALS['_SESSION'] = array();
+            $GLOBALS['_SESSION'] = [];
         }
 
         $this

@@ -2,24 +2,24 @@
 
 namespace mageekguy\atoum\report\fields\runner;
 
-use mageekguy\atoum\php;
 use mageekguy\atoum\adapter;
 use mageekguy\atoum\exceptions\runtime;
 use mageekguy\atoum\iterators;
 use mageekguy\atoum\observable;
-use mageekguy\atoum\runner;
+use mageekguy\atoum\php;
 use mageekguy\atoum\report;
+use mageekguy\atoum\runner;
 
 abstract class coverage extends report\field
 {
     protected $php = null;
     protected $adapter = null;
     protected $coverage = null;
-    protected $srcDirectories = array();
+    protected $srcDirectories = [];
 
     public function __construct()
     {
-        parent::__construct(array(runner::runStop));
+        parent::__construct([runner::runStop]);
 
         $this
             ->setPhp()
@@ -56,7 +56,7 @@ abstract class coverage extends report\field
         $srcDirectory = (string) $srcDirectory;
 
         if (isset($this->srcDirectories[$srcDirectory]) === false) {
-            $this->srcDirectories[$srcDirectory] = $filterClosure === null ? array() : array($filterClosure);
+            $this->srcDirectories[$srcDirectory] = $filterClosure === null ? [] : [$filterClosure];
         } elseif ($filterClosure !== null) {
             $this->srcDirectories[$srcDirectory][] = $filterClosure;
         }
@@ -71,7 +71,7 @@ abstract class coverage extends report\field
 
     public function getSrcDirectoryIterators()
     {
-        $iterators = array();
+        $iterators = [];
 
         foreach ($this->srcDirectories as $srcDirectory => $closures) {
             $iterators[] = $iterator = new \recursiveIteratorIterator(new iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
@@ -128,7 +128,7 @@ abstract class coverage extends report\field
                 $phpCode .=
                     '$data = array(\'classes\' => get_declared_classes());' .
                     'ob_start();' .
-                    'xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE' . ($observable->branchesAndPathsCoverageIsEnabled() === true ? ' | XDEBUG_CC_BRANCH_CHECK' : '')  . ');' .
+                    'xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE' . ($observable->branchesAndPathsCoverageIsEnabled() === true ? ' | XDEBUG_CC_BRANCH_CHECK' : '') . ');' .
                     'require_once \'%s\';' .
                     '$data[\'coverage\'] = xdebug_get_code_coverage();' .
                     'xdebug_stop_code_coverage();' .

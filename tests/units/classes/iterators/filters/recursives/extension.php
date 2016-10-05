@@ -5,8 +5,8 @@ namespace mageekguy\atoum\tests\units\iterators\filters\recursives;
 require __DIR__ . '/../../../../runner.php';
 
 use mageekguy\atoum;
-use mageekguy\atoum\mock;
 use mageekguy\atoum\iterators\filters\recursives;
+use mageekguy\atoum\mock;
 
 class extension extends atoum\test
 {
@@ -19,7 +19,7 @@ class extension extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($filter = new recursives\extension($recursiveIterator = new \mock\recursiveDirectoryIterator(uniqid()), $acceptedExtensions = array('php')))
+            ->if($filter = new recursives\extension($recursiveIterator = new \mock\recursiveDirectoryIterator(uniqid()), $acceptedExtensions = ['php']))
             ->then
                 ->object($filter->getInnerIterator())->isIdenticalTo($recursiveIterator)
                 ->array($filter->getAcceptedExtensions())->isEqualTo($acceptedExtensions)
@@ -40,7 +40,7 @@ class extension extends atoum\test
     public function testAccept()
     {
         $this
-            ->if($filter = new recursives\extension($innerIterator = new \mock\recursiveIterator(), array('php')))
+            ->if($filter = new recursives\extension($innerIterator = new \mock\recursiveIterator(), ['php']))
             ->and($innerIterator->getMockController()->current = uniqid() . '.php')
             ->then
                 ->boolean($filter->accept())->isTrue()

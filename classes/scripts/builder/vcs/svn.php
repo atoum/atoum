@@ -25,7 +25,7 @@ class svn extends builder\vcs
 
         $this->adapter->svn_auth_set_parameter(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true);
 
-        $nextRevisions = array();
+        $nextRevisions = [];
 
         foreach ($this->adapter->svn_log($this->repositoryUrl, $this->revision ?: 1, \SVN_REVISION_HEAD) as $log) {
             if (is_array($log) && isset($log['rev']) === true && $log['rev'] != $this->revision) {

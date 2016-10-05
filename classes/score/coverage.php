@@ -4,20 +4,19 @@ namespace mageekguy\atoum\score;
 
 use mageekguy\atoum;
 use mageekguy\atoum\score;
-use mageekguy\atoum\exceptions;
 
 class coverage implements \countable, \serializable
 {
     protected $adapter = null;
     protected $reflectionClassFactory = null;
-    protected $classes = array();
-    protected $methods = array();
-    protected $paths = array();
-    protected $branches = array();
-    protected $excludedMethods = array();
-    protected $excludedClasses = array();
-    protected $excludedNamespaces = array();
-    protected $excludedDirectories = array();
+    protected $classes = [];
+    protected $methods = [];
+    protected $paths = [];
+    protected $branches = [];
+    protected $excludedMethods = [];
+    protected $excludedClasses = [];
+    protected $excludedNamespaces = [];
+    protected $excludedDirectories = [];
 
     public function __construct(atoum\adapter $adapter = null, \closure $reflectionClassFactory = null)
     {
@@ -55,7 +54,7 @@ class coverage implements \countable, \serializable
 
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
                 $this->classes,
                 $this->methods,
                 $this->paths,
@@ -63,7 +62,7 @@ class coverage implements \countable, \serializable
                 $this->excludedClasses,
                 $this->excludedNamespaces,
                 $this->excludedDirectories
-            )
+            ]
         );
     }
 
@@ -106,38 +105,38 @@ class coverage implements \countable, \serializable
 
     public function reset()
     {
-        $this->classes = array();
-        $this->methods = array();
-        $this->paths = array();
-        $this->branches = array();
+        $this->classes = [];
+        $this->methods = [];
+        $this->paths = [];
+        $this->branches = [];
 
         return $this;
     }
 
     public function resetExcludedMethods()
     {
-        $this->excludedMethods = array();
+        $this->excludedMethods = [];
 
         return $this;
     }
 
     public function resetExcludedClasses()
     {
-        $this->excludedClasses = array();
+        $this->excludedClasses = [];
 
         return $this;
     }
 
     public function resetExcludedNamespaces()
     {
-        $this->excludedNamespaces = array();
+        $this->excludedNamespaces = [];
 
         return $this;
     }
 
     public function resetExcludedDirectories()
     {
-        $this->excludedDirectories = array();
+        $this->excludedDirectories = [];
 
         return $this;
     }
@@ -157,7 +156,7 @@ class coverage implements \countable, \serializable
 
                 if (isset($this->classes[$reflectedClassName]) === false) {
                     $this->classes[$reflectedClassName] = $reflectedClass->getFileName();
-                    $this->methods[$reflectedClassName] = array();
+                    $this->methods[$reflectedClassName] = [];
 
                     foreach ($reflectedClass->getMethods() as $method) {
                         if ($method->isAbstract() === false && $this->isInExcludedMethods($method->getName()) === false) {
@@ -174,7 +173,7 @@ class coverage implements \countable, \serializable
 
                                 if (isset($this->classes[$declaringClassName]) === false) {
                                     $this->classes[$declaringClassName] = $declaringClassFile;
-                                    $this->methods[$declaringClassName] = array();
+                                    $this->methods[$declaringClassName] = [];
                                 }
 
                                 if (isset($data[$declaringClassFile]) === true) {
@@ -447,7 +446,7 @@ class coverage implements \countable, \serializable
 
     public function getCoverageForClass($class)
     {
-        $coverage = array();
+        $coverage = [];
 
         $class = (string) $class;
 
@@ -460,7 +459,7 @@ class coverage implements \countable, \serializable
 
     public function getBranchesCoverageForClass($class)
     {
-        $coverage = array();
+        $coverage = [];
 
         $class = (string) $class;
 
@@ -473,7 +472,7 @@ class coverage implements \countable, \serializable
 
     public function getPathsCoverageForClass($class)
     {
-        $coverage = array();
+        $coverage = [];
 
         $class = (string) $class;
 
@@ -603,7 +602,7 @@ class coverage implements \countable, \serializable
     {
         $class = $this->getCoverageForClass($class);
 
-        return (isset($class[$method]) === false ? array() : $class[$method]);
+        return (isset($class[$method]) === false ? [] : $class[$method]);
     }
 
     public function excludeMethod($method)
@@ -724,7 +723,7 @@ class coverage implements \countable, \serializable
     {
         $declaringClass = $method->getDeclaringClass();
 
-        $traits = ($this->adapter->method_exists($declaringClass, 'getTraits') === false ? array() : $declaringClass->getTraits());
+        $traits = ($this->adapter->method_exists($declaringClass, 'getTraits') === false ? [] : $declaringClass->getTraits());
 
         if (sizeof($traits) > 0) {
             $methodFileName = $method->getFileName();

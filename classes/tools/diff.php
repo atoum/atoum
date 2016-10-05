@@ -90,10 +90,10 @@ class diff
 
     protected function diff($old, $new)
     {
-        $diff = array();
+        $diff = [];
 
         if (sizeof($old) > 0 || sizeof($new) > 0) {
-            $lengths = array();
+            $lengths = [];
             $maxLength = 0;
 
             foreach ($old as $oldKey => $oldValue) {
@@ -111,7 +111,7 @@ class diff
             }
 
             if ($maxLength == 0) {
-                $diff = array(array('-' => $old, '+' => $new));
+                $diff = [['-' => $old, '+' => $new]];
             } else {
                 $diff = array_merge(
                     $this->diff(array_slice($old, 0, $oldMaxLength), array_slice($new, 0, $newMaxLength)),

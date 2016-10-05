@@ -2,10 +2,10 @@
 
 namespace mageekguy\atoum\script;
 
-use mageekguy\atoum\writer;
-use mageekguy\atoum\writers;
 use mageekguy\atoum\reader;
 use mageekguy\atoum\readers\std;
+use mageekguy\atoum\writer;
+use mageekguy\atoum\writers;
 
 class prompt
 {

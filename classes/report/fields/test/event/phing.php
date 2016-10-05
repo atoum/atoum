@@ -4,7 +4,6 @@ namespace mageekguy\atoum\report\fields\test\event;
 
 use mageekguy\atoum;
 use mageekguy\atoum\report;
-use mageekguy\atoum\exceptions;
 
 class phing extends report\fields\test\event\cli
 {

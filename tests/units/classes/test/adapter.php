@@ -10,8 +10,8 @@ namespace
 namespace mageekguy\atoum\tests\units\test
 {
     use mageekguy\atoum\test;
-    use mageekguy\atoum\test\adapter\call;
     use mageekguy\atoum\test\adapter as testedClass;
+    use mageekguy\atoum\test\adapter\call;
 
     require_once __DIR__ . '/../../runner.php';
 
@@ -420,7 +420,7 @@ namespace mageekguy\atoum\tests\units\test
             $this
                 ->if($adapter = new testedClass())
                 ->and($adapter->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
-                ->and($this->calling($calls)->getTimeline = array())
+                ->and($this->calling($calls)->getTimeline = [])
                 ->then
                     ->array($adapter->getTimeline())->isEmpty()
                     ->mock($calls)->call('getTimeline')->withArguments(null, false)->once()
@@ -434,14 +434,14 @@ namespace mageekguy\atoum\tests\units\test
                 ->and($adapter->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
                 ->and($this->calling($calls)->addCall = $calls)
                 ->then
-                    ->object($adapter->addCall($method = uniqid(), $args = array(uniqid())))->isIdenticalTo($adapter)
+                    ->object($adapter->addCall($method = uniqid(), $args = [uniqid()]))->isIdenticalTo($adapter)
                     ->mock($calls)->call('addCall')->withArguments(new test\adapter\call($method, $args))->once()
-                    ->object($adapter->addCall($otherMethod = uniqid(), $otherArgs = array(uniqid(), uniqid())))->isIdenticalTo($adapter)
+                    ->object($adapter->addCall($otherMethod = uniqid(), $otherArgs = [uniqid(), uniqid()]))->isIdenticalTo($adapter)
                     ->mock($calls)->call('addCall')->withArguments(new test\adapter\call($otherMethod, $otherArgs))->once()
-                    ->object($adapter->addCall($method, $anotherArgs = array(uniqid())))->isIdenticalTo($adapter)
+                    ->object($adapter->addCall($method, $anotherArgs = [uniqid()]))->isIdenticalTo($adapter)
                     ->mock($calls)->call('addCall')->withArguments(new test\adapter\call($method, $anotherArgs))->once()
                 ->if($arg = 'foo')
-                ->and($arguments = array(& $arg))
+                ->and($arguments = [& $arg])
                 ->then
                     ->object($adapter->addCall($method, $arguments))->isIdenticalTo($adapter)
                     ->mock($calls)->call('addCall')->withArguments(new test\adapter\call($method, $arguments))->once()
@@ -543,9 +543,9 @@ namespace mageekguy\atoum\tests\units\test
                     ->integer($this->testedInstance->getCallsNumber())->isEqualTo(2)
                     ->integer($this->testedInstance->getCallsNumber(new call('md5')))->isEqualTo(2)
                     ->integer($this->testedInstance->getCallsNumber(new call('md5'), true))->isEqualTo(2)
-                    ->integer($this->testedInstance->getCallsNumber(new call('md5', array(1))))->isEqualTo(2)
-                    ->integer($this->testedInstance->getCallsNumber(new call('md5', array(1)), true))->isEqualTo(1)
-                    ->integer($this->testedInstance->getCallsNumber(new call('md5', array('1')), true))->isEqualTo(1)
+                    ->integer($this->testedInstance->getCallsNumber(new call('md5', [1])))->isEqualTo(2)
+                    ->integer($this->testedInstance->getCallsNumber(new call('md5', [1]), true))->isEqualTo(1)
+                    ->integer($this->testedInstance->getCallsNumber(new call('md5', ['1']), true))->isEqualTo(1)
             ;
         }
 
@@ -562,8 +562,8 @@ namespace mageekguy\atoum\tests\units\test
                 )
                 ->then
                     ->integer($this->testedInstance->getCallsNumberEqualTo(new call('md5')))->isEqualTo(3)
-                    ->integer($this->testedInstance->getCallsNumberEqualTo(new call('md5', array(1))))->isEqualTo(2)
-                    ->integer($this->testedInstance->getCallsNumberEqualTo(new call('md5', array('1'))))->isEqualTo(2)
+                    ->integer($this->testedInstance->getCallsNumberEqualTo(new call('md5', [1])))->isEqualTo(2)
+                    ->integer($this->testedInstance->getCallsNumberEqualTo(new call('md5', ['1'])))->isEqualTo(2)
             ;
         }
     }

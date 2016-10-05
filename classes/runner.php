@@ -23,7 +23,7 @@ class runner implements observable
     protected $observers = null;
     protected $reports = null;
     protected $reportSet = null;
-    protected $testPaths = array();
+    protected $testPaths = [];
     protected $testNumber = 0;
     protected $testMethodNumber = 0;
     protected $codeCoverage = true;
@@ -325,7 +325,7 @@ class runner implements observable
 
     public function getObservers()
     {
-        $observers = array();
+        $observers = [];
 
         foreach ($this->observers as $observer) {
             $observers[] = $observer;
@@ -344,9 +344,9 @@ class runner implements observable
         return $this->autoloaderFile;
     }
 
-    public function getTestMethods(array $namespaces = array(), array $tags = array(), array $testMethods = array(), $testBaseClass = null)
+    public function getTestMethods(array $namespaces = [], array $tags = [], array $testMethods = [], $testBaseClass = null)
     {
-        $classes = array();
+        $classes = [];
 
         foreach ($this->getDeclaredTestClasses($testBaseClass) as $testClass) {
             $test = new $testClass();
@@ -512,7 +512,7 @@ class runner implements observable
         return $this;
     }
 
-    public function run(array $namespaces = array(), array $tags = array(), array $runTestClasses = array(), array $runTestMethods = array(), $testBaseClass = null)
+    public function run(array $namespaces = [], array $tags = [], array $runTestClasses = [], array $runTestMethods = [], $testBaseClass = null)
     {
         $this->includeTestPaths();
 
@@ -541,7 +541,7 @@ class runner implements observable
 
         natsort($runTestClasses);
 
-        $tests = array();
+        $tests = [];
 
         foreach ($runTestClasses as $runTestClass) {
             $test = call_user_func($this->testFactory, $runTestClass);
@@ -620,7 +620,7 @@ class runner implements observable
 
     public function resetTestPaths()
     {
-        $this->testPaths = array();
+        $this->testPaths = [];
 
         return $this;
     }
@@ -655,7 +655,7 @@ class runner implements observable
     public function addTestsFromDirectory($directory)
     {
         try {
-            $paths = array();
+            $paths = [];
 
             foreach (new \recursiveIteratorIterator($this->testDirectoryIterator->getIterator($directory)) as $path) {
                 $paths[] = $path;
@@ -676,7 +676,7 @@ class runner implements observable
     public function addTestsFromPattern($pattern)
     {
         try {
-            $paths = array();
+            $paths = [];
 
             foreach (call_user_func($this->globIteratorFactory, rtrim($pattern, DIRECTORY_SEPARATOR)) as $path) {
                 $paths[] = $path;
@@ -772,7 +772,7 @@ class runner implements observable
 
     public function getReports()
     {
-        $reports = array();
+        $reports = [];
 
         foreach ($this->reports as $report) {
             $reports[] = $report;

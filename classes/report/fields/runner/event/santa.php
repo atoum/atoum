@@ -2,12 +2,9 @@
 
 namespace mageekguy\atoum\report\fields\runner\event;
 
-use mageekguy\atoum\test;
-use mageekguy\atoum\runner;
-use mageekguy\atoum\report;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\cli\progressBar;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\progressBar;
+use mageekguy\atoum\runner;
 
 class santa extends cli
 {
@@ -29,7 +26,7 @@ class santa extends cli
         $black = new colorizer('1;30');
         $brown = new colorizer('38;5;94');
 
-        $this->sprite = array(
+        $this->sprite = [
     '			_			',
     '		   {_}		   ',
     $red->colorize('		   / \\		   '),
@@ -48,7 +45,7 @@ class santa extends cli
     $red->colorize('		|___|___|		'),
     $red->colorize('		 |--|--|		 '),
     $brown->colorize('		(__)') . '`' . $brown->colorize('(__)		')
-    );
+    ];
     }
 
     protected function clear()

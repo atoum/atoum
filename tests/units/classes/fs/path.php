@@ -5,7 +5,6 @@ namespace mageekguy\atoum\tests\units\fs;
 require_once __DIR__ . '/../../runner.php';
 
 use mageekguy\atoum;
-use mageekguy\atoum\fs\path as testedClass;
 
 // See http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx for more informations
 class path extends atoum\test
@@ -92,35 +91,35 @@ class path extends atoum\test
                 ->object($this->testedInstance->absolutize())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR. 'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('../a/b', DIRECTORY_SEPARATOR))
             ->then
                 ->object($this->testedInstance->absolutize())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('../../../a/b', DIRECTORY_SEPARATOR))
             ->then
                 ->object($this->testedInstance->absolutize())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('a/b', DIRECTORY_SEPARATOR))
             ->then
                 ->object($this->testedInstance->absolutize())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('./a/b', DIRECTORY_SEPARATOR))
             ->then
                 ->object($this->testedInstance->absolutize())
                     ->isTestedInstance($this->testedInstance)
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'.'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . '.' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
         ;
     }
 
@@ -177,7 +176,7 @@ class path extends atoum\test
                         ->isNotTestedInstance()
                         ->isInstanceOfTestedClass()
                         ->toString
-                            ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                            ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
                 ->if($this->newTestedInstance('../a/b', DIRECTORY_SEPARATOR))
                 ->then
@@ -185,7 +184,7 @@ class path extends atoum\test
                         ->isNotTestedInstance()
                         ->isInstanceOfTestedClass()
                         ->toString
-                            ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                            ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
                 ->if($this->newTestedInstance('../../../a/b', DIRECTORY_SEPARATOR))
                 ->then
@@ -193,7 +192,7 @@ class path extends atoum\test
                         ->isNotTestedInstance()
                         ->isInstanceOfTestedClass()
                         ->toString
-                            ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                            ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
                 ->if($this->newTestedInstance('a/b', DIRECTORY_SEPARATOR))
                 ->then
@@ -201,7 +200,7 @@ class path extends atoum\test
                         ->isNotTestedInstance()
                         ->isInstanceOfTestedClass()
                         ->toString
-                            ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                            ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
                 ->if($this->newTestedInstance('./a/b', DIRECTORY_SEPARATOR))
                 ->then
@@ -209,7 +208,7 @@ class path extends atoum\test
                         ->isNotTestedInstance()
                         ->isInstanceOfTestedClass()
                         ->toString
-                            ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'.'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                            ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . '.' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
         ;
     }
 
@@ -269,14 +268,14 @@ class path extends atoum\test
                 ->object($this->testedInstance->resolve())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('/a/b/..', DIRECTORY_SEPARATOR))
             ->then
                 ->object($this->testedInstance->resolve())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a')
 
             ->if($this->newTestedInstance('/a/b/../..', DIRECTORY_SEPARATOR))
             ->then
@@ -290,21 +289,21 @@ class path extends atoum\test
                 ->object($this->testedInstance->resolve())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('/a/./b', DIRECTORY_SEPARATOR))
             ->then
                 ->object($this->testedInstance->resolve())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('//a////./////b', DIRECTORY_SEPARATOR))
             ->then
                 ->object($this->testedInstance->resolve())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->given($this->function->getcwd = '/current/directory')
 
@@ -313,28 +312,28 @@ class path extends atoum\test
                 ->object($this->testedInstance->resolve())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('./a/b', DIRECTORY_SEPARATOR))
             ->then
                 ->object($this->testedInstance->resolve())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('../a/b', DIRECTORY_SEPARATOR))
             ->then
                 ->object($this->testedInstance->resolve())
                     ->isTestedInstance()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('../../a/b', DIRECTORY_SEPARATOR))
             ->then
                 ->object($this->testedInstance->resolve())
                 ->isTestedInstance()
                 ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
         ;
     }
 
@@ -425,7 +424,7 @@ class path extends atoum\test
                     ->isNotTestedInstance()
                     ->isInstanceOfTestedClass()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('/a/b/..'))
             ->then
@@ -433,7 +432,7 @@ class path extends atoum\test
                     ->isNotTestedInstance()
                     ->isInstanceOfTestedClass()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a')
 
             ->if($this->newTestedInstance('/a/b/../..'))
             ->then
@@ -449,7 +448,7 @@ class path extends atoum\test
                     ->isNotTestedInstance()
                     ->isInstanceOfTestedClass()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('/a/./b'))
             ->then
@@ -457,7 +456,7 @@ class path extends atoum\test
                     ->isNotTestedInstance()
                     ->isInstanceOfTestedClass()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('//a////./////b'))
             ->then
@@ -465,7 +464,7 @@ class path extends atoum\test
                     ->isNotTestedInstance()
                     ->isInstanceOfTestedClass()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->given($this->function->getcwd = '/current/directory')
 
@@ -474,7 +473,7 @@ class path extends atoum\test
                     ->object($this->testedInstance->getResolvedPath())
                         ->isNotIdenticalTo($this->testedInstance)
                         ->toString
-                            ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                            ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('./a/b', DIRECTORY_SEPARATOR))
             ->then
@@ -482,7 +481,7 @@ class path extends atoum\test
                     ->isNotTestedInstance()
                     ->isInstanceOfTestedClass()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'directory' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('../a/b', DIRECTORY_SEPARATOR))
             ->then
@@ -490,7 +489,7 @@ class path extends atoum\test
                 ->isNotTestedInstance()
                 ->isInstanceOfTestedClass()
                 ->toString
-                    ->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                    ->isEqualTo(DIRECTORY_SEPARATOR . 'current' . DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
 
             ->if($this->newTestedInstance('../../a/b', DIRECTORY_SEPARATOR))
             ->then
@@ -498,7 +497,7 @@ class path extends atoum\test
                     ->isNotTestedInstance()
                     ->isInstanceOfTestedClass()
                     ->toString
-                        ->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
+                        ->isEqualTo(DIRECTORY_SEPARATOR . 'a' . DIRECTORY_SEPARATOR . 'b')
         ;
     }
 
@@ -990,25 +989,25 @@ class path extends atoum\test
 
     protected function testRelativizeFromDataProvider()
     {
-        return array(
-            array('/a/b', '/', '/a/b', '/', '.'),
-            array('/a/b', '/', '/a', '/', './b'),
-            array('/a/b', '/', '/a/', '/', './b'),
-            array('/a/b', '/', '/c', '/', '../a/b'),
-            array('/a/b', '/', '/c/', '/', '../a/b'),
-            array('/a/b', '/', '/c/d', '/', '../../a/b'),
-            array('/a/b', '/', '/c/d/', '/', '../../a/b'),
-            array('/a/b', '/', '/', '/', './a/b'),
+        return [
+            ['/a/b', '/', '/a/b', '/', '.'],
+            ['/a/b', '/', '/a', '/', './b'],
+            ['/a/b', '/', '/a/', '/', './b'],
+            ['/a/b', '/', '/c', '/', '../a/b'],
+            ['/a/b', '/', '/c/', '/', '../a/b'],
+            ['/a/b', '/', '/c/d', '/', '../../a/b'],
+            ['/a/b', '/', '/c/d/', '/', '../../a/b'],
+            ['/a/b', '/', '/', '/', './a/b'],
 
-            array('C:\a\b', '\\', 'C:\a\b', '\\', '.'),
-            array('C:\a\b', '\\', 'C:\a', '\\', '.\b'),
-            array('C:\a\b', '\\', 'C:\a\\', '\\', '.\b'),
-            array('C:\a\b', '\\', 'C:\c', '\\', '..\a\b'),
-            array('C:\a\b', '\\', 'C:\c\\', '\\', '..\a\b'),
-            array('C:\a\b', '\\', 'C:\c\d', '\\', '..\..\a\b'),
-            array('C:\a\b', '\\', 'C:\c\d\\', '\\', '..\..\a\b'),
-            array('C:\a\b', '\\', 'C:\\', '\\', '.\a\b')
-        );
+            ['C:\a\b', '\\', 'C:\a\b', '\\', '.'],
+            ['C:\a\b', '\\', 'C:\a', '\\', '.\b'],
+            ['C:\a\b', '\\', 'C:\a\\', '\\', '.\b'],
+            ['C:\a\b', '\\', 'C:\c', '\\', '..\a\b'],
+            ['C:\a\b', '\\', 'C:\c\\', '\\', '..\a\b'],
+            ['C:\a\b', '\\', 'C:\c\d', '\\', '..\..\a\b'],
+            ['C:\a\b', '\\', 'C:\c\d\\', '\\', '..\..\a\b'],
+            ['C:\a\b', '\\', 'C:\\', '\\', '.\a\b']
+        ];
     }
 
     protected function testGetRelativePathFromDataProvider()

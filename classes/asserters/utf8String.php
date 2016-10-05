@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum;
-use mageekguy\atoum\tools;
 use mageekguy\atoum\asserter;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\tools;
 
 class utf8String extends phpString
 {
@@ -141,6 +141,6 @@ class utf8String extends phpString
 
     protected function getLengthAsserter()
     {
-        return $this->generator->__call('integer', array(mb_strlen($this->valueIsSet()->value, 'UTF-8')));
+        return $this->generator->__call('integer', [mb_strlen($this->valueIsSet()->value, 'UTF-8')]);
     }
 }

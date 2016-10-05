@@ -9,13 +9,13 @@ class controller extends stream\controller
 {
     protected $adapter = null;
     protected $exists = true;
-    protected $stat = array();
+    protected $stat = [];
 
     public function __construct($path, atoum\adapter $adapter = null)
     {
         parent::__construct($path);
 
-        $this->setAdapter($adapter)->stat = array(
+        $this->setAdapter($adapter)->stat = [
             'dev' => 0,
             'ino' => 0,
             'mode' => 0,
@@ -29,7 +29,7 @@ class controller extends stream\controller
             'ctime' => 507769200,
             'blksize' => 0,
             'blocks' => 0
-        );
+        ];
 
         $this->stat[0] = & $this->stat['dev'];
         $this->stat[1] = & $this->stat['ino'];
@@ -131,9 +131,9 @@ class controller extends stream\controller
     public function stream_stat()
     {
         if ($this->nextCallIsOverloaded(__FUNCTION__) === true) {
-            return $this->invoke(__FUNCTION__, array());
+            return $this->invoke(__FUNCTION__, []);
         } else {
-            $this->addCall(__FUNCTION__, array());
+            $this->addCall(__FUNCTION__, []);
 
             return $this->getStat();
         }

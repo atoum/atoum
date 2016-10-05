@@ -5,8 +5,8 @@ namespace mageekguy\atoum\tests\units\scripts\git;
 require __DIR__ . '/../../../runner.php';
 
 use atoum;
-use atoum\scripts;
 use atoum\cli\commands;
+use atoum\scripts;
 use atoum\scripts\git\pusher as testedClass;
 
 class pusher extends atoum

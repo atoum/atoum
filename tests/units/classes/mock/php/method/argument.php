@@ -46,7 +46,7 @@ class argument extends atoum\test
                 ->castToString($this->testedInstance->isObject($type = uniqid()))->isEqualTo($type . ' $' . $name)
                 ->castToString($this->testedInstance->isUntyped()->setDefaultValue(__FUNCTION__))->isEqualTo('$' . $name . '=' . var_export(__FUNCTION__, true))
                 ->castToString($this->testedInstance->setDefaultValue($defaultValue = uniqid()))->isEqualTo('$' . $name . '=' . var_export($defaultValue, true))
-                ->castToString($this->testedInstance->setDefaultValue(array()))->isEqualTo('$' . $name . '=' . var_export(array(), true))
+                ->castToString($this->testedInstance->setDefaultValue([]))->isEqualTo('$' . $name . '=' . var_export([], true))
                 ->castToString($this->testedInstance->setDefaultValue(null))->isEqualTo('$' . $name . '=' . var_export(null, true))
             ->if(
                 $this->newTestedInstance($name = uniqid()),
@@ -56,7 +56,7 @@ class argument extends atoum\test
                 ->castToString($this->testedInstance)->isEqualTo('& $' . $name)
                 ->castToString($this->testedInstance->setDefaultValue(__FUNCTION__))->isEqualTo('& $' . $name . '=' . var_export(__FUNCTION__, true))
                 ->castToString($this->testedInstance->setDefaultValue($defaultValue = uniqid()))->isEqualTo('& $' . $name . '=' . var_export($defaultValue, true))
-                ->castToString($this->testedInstance->setDefaultValue(array()))->isEqualTo('& $' . $name . '=' . var_export(array(), true))
+                ->castToString($this->testedInstance->setDefaultValue([]))->isEqualTo('& $' . $name . '=' . var_export([], true))
                 ->castToString($this->testedInstance->setDefaultValue(null))->isEqualTo('& $' . $name . '=' . var_export(null, true))
         ;
     }

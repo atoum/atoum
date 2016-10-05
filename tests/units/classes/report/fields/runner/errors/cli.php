@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\errors;
 
 use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\runner;
 use mock\mageekguy\atoum as mock;
 
@@ -31,7 +31,7 @@ class cli extends atoum\test
                 ->object($field->getErrorColorizer())->isEqualTo(new colorizer())
                 ->object($field->getLocale())->isEqualTo(new locale())
                 ->variable($field->getRunner())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
         ;
     }
 
@@ -140,7 +140,7 @@ class cli extends atoum\test
             ->and($runner->getMockController()->getScore = $score = new mock\score())
             ->and($defaultField = new runner\errors\cli())
             ->and($customField = new runner\errors\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $errorPrompt = new prompt(uniqid()), $errorColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
-            ->and($score->getMockController()->getErrors = array())
+            ->and($score->getMockController()->getErrors = [])
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
             ->then
                 ->castToString($defaultField)->isEmpty()
@@ -153,8 +153,8 @@ class cli extends atoum\test
             ->if($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEmpty()
-            ->if($score->getMockController()->getErrors = $allErrors = array(
-                        array(
+            ->if($score->getMockController()->getErrors = $allErrors = [
+                        [
                             'case' => null,
                             'class' => $class = uniqid(),
                             'method' => $method = uniqid(),
@@ -164,8 +164,8 @@ class cli extends atoum\test
                             'message' => $message = uniqid(),
                             'errorFile' => $errorFile = uniqid(),
                             'errorLine' => $errorLine = rand(1, PHP_INT_MAX),
-                        ),
-                        array(
+                        ],
+                        [
                             'case' => null,
                             'class' => $otherClass = uniqid(),
                             'method' => $otherMethod = uniqid(),
@@ -175,8 +175,8 @@ class cli extends atoum\test
                             'message' => ($firstOtherMessage = uniqid()) . PHP_EOL . ($secondOtherMessage = uniqid()),
                             'errorFile' => $otherErrorFile = uniqid(),
                             'errorLine' => $otherErrorLine = rand(1, PHP_INT_MAX),
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($defaultField = new runner\errors\cli())
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
@@ -242,8 +242,8 @@ class cli extends atoum\test
                     $firstOtherMessage . PHP_EOL .
                     $secondOtherMessage . PHP_EOL
                 )
-            ->if($score->getMockController()->getErrors = $allErrors = array(
-                    array(
+            ->if($score->getMockController()->getErrors = $allErrors = [
+                    [
                         'case' => $case = uniqid(),
                         'class' => $class = uniqid(),
                         'method' => $method = uniqid(),
@@ -253,8 +253,8 @@ class cli extends atoum\test
                         'message' => $message = uniqid(),
                         'errorFile' => $errorFile = uniqid(),
                         'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
-                    ),
-                    array(
+                    ],
+                    [
                         'case' => $otherCase = uniqid(),
                         'class' => $otherClass = uniqid(),
                         'method' => $otherMethod = uniqid(),
@@ -264,8 +264,8 @@ class cli extends atoum\test
                         'message' => ($firstOtherMessage = uniqid()) . PHP_EOL . ($secondOtherMessage = uniqid()),
                         'errorFile' => $otherErrorFile = uniqid(),
                         'errorLine' => $otherErrorLine = rand(1, PHP_INT_MAX)
-                    )
-                )
+                    ]
+                ]
             )
             ->and($defaultField = new runner\errors\cli())
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
@@ -330,8 +330,8 @@ class cli extends atoum\test
                     $firstOtherMessage . PHP_EOL .
                     $secondOtherMessage . PHP_EOL
                 )
-            ->if($score->getMockController()->getErrors = $allErrors = array(
-                        array(
+            ->if($score->getMockController()->getErrors = $allErrors = [
+                        [
                             'case' => null,
                             'class' => $class = uniqid(),
                             'method' => $method = uniqid(),
@@ -341,8 +341,8 @@ class cli extends atoum\test
                             'message' => $message = uniqid(),
                             'errorFile' => $errorFile = uniqid(),
                             'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($defaultField = new runner\errors\cli())
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
@@ -389,8 +389,8 @@ class cli extends atoum\test
                     PHP_EOL .
                     $message . PHP_EOL
                 )
-            ->if($score->getMockController()->getErrors = $allErrors = array(
-                    array(
+            ->if($score->getMockController()->getErrors = $allErrors = [
+                    [
                         'case' => $case = uniqid(),
                         'class' => $class = uniqid(),
                         'method' => $method = uniqid(),
@@ -400,8 +400,8 @@ class cli extends atoum\test
                         'message' => $message = uniqid(),
                         'errorFile' => $errorFile = uniqid(),
                         'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
-                    )
-                )
+                    ]
+                ]
             )
             ->and($defaultField = new runner\errors\cli())
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
@@ -448,8 +448,8 @@ class cli extends atoum\test
                     PHP_EOL .
                     $message . PHP_EOL
                 )
-            ->if($score->getMockController()->getErrors = $allErrors = array(
-                    array(
+            ->if($score->getMockController()->getErrors = $allErrors = [
+                    [
                         'case' => null,
                         'class' => $class = uniqid(),
                         'method' => $method = uniqid(),
@@ -459,8 +459,8 @@ class cli extends atoum\test
                         'message' => $message = uniqid(),
                         'errorFile' => $errorFile = uniqid(),
                         'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
-                    )
-                )
+                    ]
+                ]
             )
             ->and($defaultField = new runner\errors\cli())
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
@@ -507,8 +507,8 @@ class cli extends atoum\test
                     PHP_EOL .
                     $message . PHP_EOL
                 )
-            ->if($score->getMockController()->getErrors = $allErrors = array(
-                    array(
+            ->if($score->getMockController()->getErrors = $allErrors = [
+                    [
                         'case' => $case = uniqid(),
                         'class' => $class = uniqid(),
                         'method' => $method = uniqid(),
@@ -518,8 +518,8 @@ class cli extends atoum\test
                         'message' => $message = uniqid(),
                         'errorFile' => null,
                         'errorLine' => null
-                    )
-                )
+                    ]
+                ]
             )
             ->and($defaultField = new runner\errors\cli())
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
@@ -566,8 +566,8 @@ class cli extends atoum\test
                     PHP_EOL .
                     $message . PHP_EOL
                 )
-            ->if($score->getMockController()->getErrors = $allErrors = array(
-                        array(
+            ->if($score->getMockController()->getErrors = $allErrors = [
+                        [
                             'case' => $case = uniqid(),
                             'class' => $class = uniqid(),
                             'method' => $method = uniqid(),
@@ -577,8 +577,8 @@ class cli extends atoum\test
                             'message' => $message = uniqid(),
                             'errorFile' => $errorFile = uniqid(),
                             'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($defaultField = new runner\errors\cli())
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
@@ -625,8 +625,8 @@ class cli extends atoum\test
                     PHP_EOL .
                     $message . PHP_EOL
                 )
-            ->if($score->getMockController()->getErrors = $allErrors = array(
-                        array(
+            ->if($score->getMockController()->getErrors = $allErrors = [
+                        [
                             'case' => null,
                             'class' => $class = uniqid(),
                             'method' => $method = uniqid(),
@@ -636,8 +636,8 @@ class cli extends atoum\test
                             'message' => $message = uniqid(),
                             'errorFile' => $errorFile = uniqid(),
                             'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($defaultField = new runner\errors\cli())
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
@@ -684,8 +684,8 @@ class cli extends atoum\test
                     PHP_EOL .
                     $message . PHP_EOL
                 )
-            ->if($score->getMockController()->getErrors = $allErrors = array(
-                        array(
+            ->if($score->getMockController()->getErrors = $allErrors = [
+                        [
                             'case' => $case = uniqid(),
                             'class' => $class = uniqid(),
                             'method' => $method = uniqid(),
@@ -695,8 +695,8 @@ class cli extends atoum\test
                             'message' => $message = uniqid(),
                             'errorFile' => $errorFile = uniqid(),
                             'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($defaultField = new runner\errors\cli())
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))

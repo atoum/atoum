@@ -7,7 +7,7 @@ use mageekguy\atoum\test\adapter;
 
 class calls implements \countable, \arrayAccess, \iteratorAggregate
 {
-    protected $calls = array();
+    protected $calls = [];
     protected $size = 0;
     protected $decorator = null;
 
@@ -72,7 +72,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     public function reset()
     {
-        $this->calls = array();
+        $this->calls = [];
         $this->size = 0;
 
         return $this;
@@ -273,7 +273,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     public function getTimeline()
     {
-        $timeline = array();
+        $timeline = [];
 
         foreach ($this as $innerCalls) {
             foreach ($innerCalls as $position => $call) {
@@ -314,7 +314,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
     {
         $key = self::getKey($mixed);
 
-        return (isset($this->calls[$key]) === false ? array() : $this->calls[$key]);
+        return (isset($this->calls[$key]) === false ? [] : $this->calls[$key]);
     }
 
     protected static function getKey(adapter\call $call)

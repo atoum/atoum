@@ -14,12 +14,12 @@ class treemap extends atoum\script\configurable
     protected $projectName = null;
     protected $projectUrl = null;
     protected $codeUrl = null;
-    protected $directories = array();
+    protected $directories = [];
     protected $htmlDirectory = null;
     protected $outputDirectory = null;
     protected $onlyJsonFile = false;
-    protected $analyzers = array();
-    protected $categorizers = array();
+    protected $analyzers = [];
+    protected $categorizers = [];
 
     public function __construct($name, atoum\adapter $adapter = null)
     {
@@ -155,7 +155,7 @@ class treemap extends atoum\script\configurable
 
                     $script->setProjectName(current($projectName));
                 },
-                array('-pn', '--project-name'),
+                ['-pn', '--project-name'],
                 '<string>',
                 $this->locale->_('Set project name <string>')
             )
@@ -167,7 +167,7 @@ class treemap extends atoum\script\configurable
 
                     $script->setProjectUrl(current($projectUrl));
                 },
-                array('-pu', '--project-url'),
+                ['-pu', '--project-url'],
                 '<string>',
                 $this->locale->_('Set project url <string>')
             )
@@ -179,7 +179,7 @@ class treemap extends atoum\script\configurable
 
                     $script->setCodeUrl(current($codeUrl));
                 },
-                array('-cu', '--code-url'),
+                ['-cu', '--code-url'],
                 '<string>',
                 $this->locale->_('Set code url <string>')
             )
@@ -193,7 +193,7 @@ class treemap extends atoum\script\configurable
                         $script->addDirectory($directory);
                     }
                 },
-                array('-d', '--directories'),
+                ['-d', '--directories'],
                 '<directory>...',
                 $this->locale->_('Scan all directories <directory>')
             )
@@ -205,7 +205,7 @@ class treemap extends atoum\script\configurable
 
                     $script->setOutputDirectory(current($outputDirectory));
                 },
-                array('-od', '--output-directory'),
+                ['-od', '--output-directory'],
                 '<directory>',
                 $this->locale->_('Generate treemap in directory <directory>')
             )
@@ -217,7 +217,7 @@ class treemap extends atoum\script\configurable
 
                     $script->getOnlyJsonFile(true);
                 },
-                array('-ojf', '--only-json-file'),
+                ['-ojf', '--only-json-file'],
                 null,
                 $this->locale->_('Generate only JSON file')
             )
@@ -229,7 +229,7 @@ class treemap extends atoum\script\configurable
 
                     $script->addAnalyzer(new analyzers\sloc());
                 },
-                array('--sloc'),
+                ['--sloc'],
                 null,
                 $this->locale->_('Count source line of code (SLOC)')
             )
@@ -241,7 +241,7 @@ class treemap extends atoum\script\configurable
 
                     $script->addAnalyzer(new analyzers\token());
                 },
-                array('--php-token'),
+                ['--php-token'],
                 null,
                 $this->locale->_('Count PHP tokens')
             )
@@ -253,7 +253,7 @@ class treemap extends atoum\script\configurable
 
                     $script->addAnalyzer(new analyzers\size());
                 },
-                array('--file-size'),
+                ['--file-size'],
                 null,
                 $this->locale->_('Get file size')
             )
@@ -265,7 +265,7 @@ class treemap extends atoum\script\configurable
 
                     $script->setHtmlDirectory(current($htmlDirectory));
                 },
-                array('-hd', '--html-directory'),
+                ['-hd', '--html-directory'],
                 '<directory>',
                 $this->locale->_('Use html files in <directory> to generate treemap')
             )
@@ -292,12 +292,12 @@ class treemap extends atoum\script\configurable
 
         $maxDepth = 1;
 
-        $nodes = array(
+        $nodes = [
             'name' => $this->projectName,
             'url' => $this->projectUrl,
             'path' => '',
-            'children' => array()
-        );
+            'children' => []
+        ];
 
         foreach ($this->directories as $rootDirectory) {
             try {
@@ -333,23 +333,23 @@ class treemap extends atoum\script\configurable
 
                         if ($childFound === false) {
                             $key = sizeof($node['children']);
-                            $node['children'][] = array(
+                            $node['children'][] = [
                                 'name' => $directory,
                                 'path' => $node['path'] . DIRECTORY_SEPARATOR . $directory,
-                                'children' => array()
-                            );
+                                'children' => []
+                            ];
                         }
 
                         $node = & $node['children'][$key];
                     }
                 }
 
-                $child = array(
+                $child = [
                     'name' => $file->getFilename(),
                     'path' => $node['path'] . DIRECTORY_SEPARATOR . $file->getFilename(),
-                    'metrics' => array(),
+                    'metrics' => [],
                     'type' => ''
-                );
+                ];
 
                 foreach ($this->analyzers as $analyzer) {
                     $child['metrics'][$analyzer->getMetricName()] = $analyzer->getMetricFromFile($file);
@@ -367,27 +367,27 @@ class treemap extends atoum\script\configurable
             }
         }
 
-        $data = array(
+        $data = [
             'codeUrl' => $this->codeUrl,
-            'metrics' => array(),
-            'categorizers' => array(),
+            'metrics' => [],
+            'categorizers' => [],
             'maxDepth' => $maxDepth,
             'nodes' => $nodes
-        );
+        ];
 
         foreach ($this->analyzers as $analyzer) {
-            $data['metrics'][] = array(
+            $data['metrics'][] = [
                 'name' => $analyzer->getMetricName(),
                 'label' => $analyzer->getMetricLabel()
-            );
+            ];
         }
 
         foreach ($this->categorizers as $categorizer) {
-            $data['categorizers'][] = array(
+            $data['categorizers'][] = [
                 'name' => $categorizer->getName(),
                 'minDepthColor' => $categorizer->getMinDepthColor(),
                 'maxDepthColor' => $categorizer->getMaxDepthColor()
-            );
+            ];
         }
 
         if (@file_put_contents($this->outputDirectory . DIRECTORY_SEPARATOR . self::dataFile, json_encode($data)) === false) {

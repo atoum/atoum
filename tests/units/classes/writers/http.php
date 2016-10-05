@@ -48,35 +48,35 @@ class http extends atoum\test
             ->then
                 ->object($writer->write($string = uniqid()))->isIdenticalTo($writer)
                 ->adapter($adapter)
-                    ->call('stream_context_create')->withArguments(array('http' => array('method'  => 'GET', 'header'  => '', 'content' => $string)))->once()
+                    ->call('stream_context_create')->withArguments(['http' => ['method'  => 'GET', 'header'  => '', 'content' => $string]])->once()
                     ->call('file_get_contents')->withArguments($url, false, $context)->once()
             ->if($writer->setMethod($method = uniqid()))
             ->and($adapter->resetCalls())
             ->then
                 ->object($writer->write($string = uniqid()))->isIdenticalTo($writer)
                 ->adapter($adapter)
-                    ->call('stream_context_create')->withArguments(array('http' => array('method'  => $method, 'header'  => '', 'content' => $string)))->once()
+                    ->call('stream_context_create')->withArguments(['http' => ['method'  => $method, 'header'  => '', 'content' => $string]])->once()
                     ->call('file_get_contents')->withArguments($url, false, $context)->once()
             ->if($writer->setParameter($param = uniqid()))
             ->and($adapter->resetCalls())
             ->then
                 ->object($writer->write($string = uniqid()))->isIdenticalTo($writer)
                 ->adapter($adapter)
-                    ->call('stream_context_create')->withArguments(array('http' => array('method'  => $method, 'header'  => '', 'content' => http_build_query(array($param => $string)))))->once()
+                    ->call('stream_context_create')->withArguments(['http' => ['method'  => $method, 'header'  => '', 'content' => http_build_query([$param => $string])]])->once()
                     ->call('file_get_contents')->withArguments($url, false, $context)->once()
             ->if($writer->addHeader($header = uniqid(), $value = uniqid()))
             ->and($adapter->resetCalls())
             ->then
                 ->object($writer->write($string = uniqid()))->isIdenticalTo($writer)
                 ->adapter($adapter)
-                    ->call('stream_context_create')->withArguments(array('http' => array('method'  => $method, 'header'  => $header . ': ' . $value, 'content' => http_build_query(array($param => $string)))))->once()
+                    ->call('stream_context_create')->withArguments(['http' => ['method'  => $method, 'header'  => $header . ': ' . $value, 'content' => http_build_query([$param => $string])]])->once()
                     ->call('file_get_contents')->withArguments($url, false, $context)->once()
             ->if($writer->addHeader($otherHeader = uniqid(), $otherValue = uniqid()))
             ->and($adapter->resetCalls())
             ->then
                 ->object($writer->write($string = uniqid()))->isIdenticalTo($writer)
                 ->adapter($adapter)
-                    ->call('stream_context_create')->withArguments(array('http' => array('method'  => $method, 'header'  => $header . ': ' . $value . "\r\n" . $otherHeader . ': ' . $otherValue, 'content' => http_build_query(array($param => $string)))))->once()
+                    ->call('stream_context_create')->withArguments(['http' => ['method'  => $method, 'header'  => $header . ': ' . $value . "\r\n" . $otherHeader . ': ' . $otherValue, 'content' => http_build_query([$param => $string])]])->once()
                     ->call('file_get_contents')->withArguments($url, false, $context)->once()
         ;
     }
@@ -117,10 +117,10 @@ class http extends atoum\test
             ->if($writer = new testedClass())
             ->then
                 ->object($writer->addHeader($name = uniqid(), $value = uniqid()))->isIdenticalTo($writer)
-                ->array($writer->getHeaders())->isEqualTo(array($name => $value))
+                ->array($writer->getHeaders())->isEqualTo([$name => $value])
             ->if($writer->addHeader($name, $value = uniqid()))
             ->then
-                ->array($writer->getHeaders())->isEqualTo(array($name => $value))
+                ->array($writer->getHeaders())->isEqualTo([$name => $value])
         ;
     }
 

@@ -42,7 +42,7 @@ class storage implements \countable, \iteratorAggregate
 
     public function getIterator()
     {
-        $adapters = array();
+        $adapters = [];
 
         foreach ($this->adapters as $instance) {
             $adapters[] = $instance;

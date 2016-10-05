@@ -7,7 +7,7 @@ use mageekguy\atoum
 
 class iterator implements \iterator, \countable
 {
-    protected $tags = array();
+    protected $tags = [];
 
     public function addTag($tag, atoum\template $template)
     {
@@ -56,7 +56,7 @@ class iterator implements \iterator, \countable
     public function __call($method, $arguments)
     {
         foreach ($this->tags as $innerTag) {
-            call_user_func_array(array($innerTag, $method), $arguments);
+            call_user_func_array([$innerTag, $method], $arguments);
         }
 
         return $this;

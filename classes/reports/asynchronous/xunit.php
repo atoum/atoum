@@ -4,14 +4,13 @@ namespace mageekguy\atoum\reports\asynchronous;
 
 use mageekguy\atoum;
 use mageekguy\atoum\exceptions;
-use mageekguy\atoum\report\fields;
 
 class xunit extends atoum\reports\asynchronous
 {
     const defaultTitle = 'atoum testsuite';
 
     protected $score = null;
-    protected $assertions = array();
+    protected $assertions = [];
 
     public function __construct(atoum\adapter $adapter = null)
     {
@@ -33,7 +32,7 @@ class xunit extends atoum\reports\asynchronous
             $method = $observable->getCurrentMethod();
 
             if (isset($this->assertions[$classname]) === false) {
-                $this->assertions[$classname] = array();
+                $this->assertions[$classname] = [];
             }
 
             $this->assertions[$classname][$method] = $observable->getScore()->getAssertionNumber() - array_sum($this->assertions[$classname]);
@@ -64,20 +63,20 @@ class xunit extends atoum\reports\asynchronous
                 $clname = ltrim($entry['class'], '\\');
 
                 if (isset($classes[$clname]) === false) {
-                    $classes[$clname] = array(
+                    $classes[$clname] = [
                         'errors' => array_filter($errors, $filterClass),
                         'excepts' => array_filter($excepts, $filterClass),
                         'fails' => array_filter($fails, $filterClass),
                         'durations' => array_filter($durations, $filterClass),
                         'uncomplete' => array_filter($uncomplete, $filterClass),
                         'skipped' => array_filter($skipped, $filterClass),
-                        'assertions' => isset($assertions[$clname]) ? $assertions[$clname] : array()
-                    );
+                        'assertions' => isset($assertions[$clname]) ? $assertions[$clname] : []
+                    ];
                 }
             }
         };
 
-        $classes = array();
+        $classes = [];
         $extractClasses($durations);
         $extractClasses($errors);
         $extractClasses($excepts);

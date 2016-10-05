@@ -2,13 +2,9 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
 
-use mageekguy\atoum\locale;
+use mageekguy\atoum\report\fields\runner\atoum\logo as testedClass;
 use mageekguy\atoum\runner;
 use mageekguy\atoum\runner\score;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\tests\units;
-use mageekguy\atoum\report\fields\runner\atoum\logo as testedClass;
 
 require_once __DIR__ . '/../../../../../runner.php';
 

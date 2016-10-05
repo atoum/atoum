@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\tests\units\reports\asynchronous;
 
 use mageekguy\atoum;
-use mageekguy\atoum\score;
 use mageekguy\atoum\mock;
 use mageekguy\atoum\reports\asynchronous\clover as testedClass;
 
@@ -73,28 +72,28 @@ class clover extends atoum\test
             ->and($observable = new \mock\mageekguy\atoum\runner())
             ->and($observable->getMockController()->getScore = $score)
             ->and($score->getMockController()->getCoverage = $coverage)
-            ->and($coverage->getMockController()->getClasses = array())
+            ->and($coverage->getMockController()->getClasses = [])
             ->and($filepath = join(
                 DIRECTORY_SEPARATOR,
-                array(
+                [
                     __DIR__,
                     'clover',
                     'resources',
                     '1.xml'
-                )
+                ]
             ))
             ->and($report = new testedClass($adapter))
             ->then
                 ->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
                 ->castToString($report)->isEqualToContentsOfFile($filepath)
-            ->if($coverage->getMockController()->getClasses = array())
+            ->if($coverage->getMockController()->getClasses = [])
             ->and($classController = new mock\controller())
             ->and($classController->disableMethodChecking())
             ->and($classController->__construct = function () {
             })
             ->and($classController->getName = $className = 'bar')
             ->and($classController->getFileName = $classFile = 'foo/bar.php')
-            ->and($classController->getTraits = array())
+            ->and($classController->getTraits = [])
             ->and($classController->getStartLine = 1)
             ->and($classController->getEndLine = 12)
             ->and($class = new \mock\reflectionClass(uniqid(), $classController))
@@ -107,14 +106,14 @@ class clover extends atoum\test
             ->and($methodController->getDeclaringClass = $class)
             ->and($methodController->getStartLine = 4)
             ->and($methodController->getEndLine = 8)
-            ->and($classController->getMethods = array(new \mock\reflectionMethod($className, $methodName, $methodController)))
-            ->and($coverage->getMockController()->getClasses = array(
+            ->and($classController->getMethods = [new \mock\reflectionMethod($className, $methodName, $methodController)])
+            ->and($coverage->getMockController()->getClasses = [
                 $className => $classFile,
                 'foo' => 'bar/foo.php'
-            ))
-            ->and($xdebugData = array(
+            ])
+            ->and($xdebugData = [
                 $classFile =>
-                array(
+                [
                     3 => 1,
                     4 => 1,
                     5 => 1,
@@ -122,16 +121,16 @@ class clover extends atoum\test
                     7 => 1,
                     8 => 1,
                     9 => 1
-                )
-            ))
+                ]
+            ])
             ->and($filepath = join(
                 DIRECTORY_SEPARATOR,
-                array(
+                [
                     __DIR__,
                     'clover',
                     'resources',
                     '2.xml'
-                )
+                ]
             ))
             ->and($coverage->setReflectionClassFactory(function () use ($class) {
                 return $class;

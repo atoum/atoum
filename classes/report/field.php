@@ -7,7 +7,7 @@ use mageekguy\atoum
 
 abstract class field
 {
-    protected $events = array();
+    protected $events = [];
     protected $locale = null;
 
     public function __construct(array $events = null)

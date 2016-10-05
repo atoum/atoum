@@ -35,12 +35,12 @@ class invoker extends atoum
                 return $md5 = uniqid();
             }, $call = rand(2, PHP_INT_MAX)))
             ->then
-                ->string($invoker->invoke(array($string = uniqid())))->isEqualTo(md5($string))
-                ->string($invoker->invoke(array($string = uniqid()), 0))->isEqualTo(md5($string))
-                ->string($invoker->invoke(array($string = uniqid()), 1))->isEqualTo($md5)
-                ->string($invoker->invoke(array($string = uniqid())))->isEqualTo(md5($string))
-                ->string($invoker->invoke(array($string = uniqid()), 0))->isEqualTo(md5($string))
-                ->string($invoker->invoke(array($string = uniqid()), $call))->isEqualTo($md5)
+                ->string($invoker->invoke([$string = uniqid()]))->isEqualTo(md5($string))
+                ->string($invoker->invoke([$string = uniqid()], 0))->isEqualTo(md5($string))
+                ->string($invoker->invoke([$string = uniqid()], 1))->isEqualTo($md5)
+                ->string($invoker->invoke([$string = uniqid()]))->isEqualTo(md5($string))
+                ->string($invoker->invoke([$string = uniqid()], 0))->isEqualTo(md5($string))
+                ->string($invoker->invoke([$string = uniqid()], $call))->isEqualTo($md5)
         ;
     }
 }

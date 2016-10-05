@@ -54,7 +54,7 @@ class phpFunction extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->appendArgument($argumentIterator))->isTestedInstance
-                ->array($this->testedInstance->getArguments())->isEqualTo(array($argumentIterator))
+                ->array($this->testedInstance->getArguments())->isEqualTo([$argumentIterator])
                 ->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
         ;
     }

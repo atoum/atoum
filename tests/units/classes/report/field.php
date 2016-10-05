@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\tests\units\report;
 
 use mageekguy\atoum;
-use mageekguy\atoum\report;
 
 require_once __DIR__ . '/../../runner.php';
 

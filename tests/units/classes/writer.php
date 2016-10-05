@@ -48,11 +48,11 @@ class writer extends atoum\test
             ->if($writer = new testedClass())
             ->then
                 ->object($writer->addDecorator($decorator1 = new \mock\mageekguy\atoum\writer\decorator()))->isIdenticalTo($writer)
-                ->array($writer->getDecorators())->isEqualTo(array($decorator1))
+                ->array($writer->getDecorators())->isEqualTo([$decorator1])
                 ->object($writer->addDecorator($decorator1))->isIdenticalTo($writer)
-                ->array($writer->getDecorators())->isEqualTo(array($decorator1, $decorator1))
+                ->array($writer->getDecorators())->isEqualTo([$decorator1, $decorator1])
                 ->object($writer->addDecorator($decorator2 = new \mock\mageekguy\atoum\writer\decorator()))->isIdenticalTo($writer)
-                ->array($writer->getDecorators())->isEqualTo(array($decorator1, $decorator1, $decorator2))
+                ->array($writer->getDecorators())->isEqualTo([$decorator1, $decorator1, $decorator2])
         ;
     }
 

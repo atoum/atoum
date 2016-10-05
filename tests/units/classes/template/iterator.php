@@ -97,8 +97,8 @@ class iterator extends atoum\test
             ->and($iterator->addTag($tag->getTag(), $template))
             ->then
                 ->object($iterator->build())->isIdenticalTo($iterator)
-                ->mock($tag)->call('build')->withArguments(array())->once()
-                ->object($iterator->build($tags = array(uniqid() => uniqid())))->isIdenticalTo($iterator)
+                ->mock($tag)->call('build')->withArguments([])->once()
+                ->object($iterator->build($tags = [uniqid() => uniqid()]))->isIdenticalTo($iterator)
                 ->mock($tag)->call('build')->withArguments($tags)->once()
         ;
     }

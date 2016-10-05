@@ -11,7 +11,7 @@ class factory implements \iteratorAggregate
     protected $iteratorFactory = null;
     protected $acceptDots = false;
     protected $extensionFilterFactory = null;
-    protected $acceptedExtensions = array('php');
+    protected $acceptedExtensions = ['php'];
 
     public function __construct(\closure $iteratorFactory = null, \closure $dotFilterFactory = null, \closure $extensionFilterFactory = null)
     {
@@ -105,7 +105,7 @@ class factory implements \iteratorAggregate
 
     public function acceptExtensions(array $extensions)
     {
-        $this->acceptedExtensions = array();
+        $this->acceptedExtensions = [];
 
         foreach ($extensions as $extension) {
             $this->acceptedExtensions[] = self::cleanExtension($extension);
@@ -116,7 +116,7 @@ class factory implements \iteratorAggregate
 
     public function acceptAllExtensions()
     {
-        return $this->acceptExtensions(array());
+        return $this->acceptExtensions([]);
     }
 
     public function refuseExtension($extension)

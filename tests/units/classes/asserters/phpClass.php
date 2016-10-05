@@ -321,7 +321,7 @@ class phpClass extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Argument of ' . $this->getTestedClassName() . '::isSubClassOf() must be a class name')
                     ->hasNestedException($exception)
-        
+
             ->if($this->calling($reflectionClass)->isSubclassOf = false)
             ->then
                 ->exception(function () use ($asserter, & $parentClass) {
@@ -654,7 +654,7 @@ class phpClass extends atoum\test
             )
             ->then
                 ->string($this->testedInstance->hasConstant($constant = uniqid()))->isEqualTo($asserter)
-                ->mock($generator)->call('getAsserterInstance')->withArguments('constant', array($constantObject))->once
+                ->mock($generator)->call('getAsserterInstance')->withArguments('constant', [$constantObject])->once
         ;
     }
 }

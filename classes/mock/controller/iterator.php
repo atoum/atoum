@@ -8,7 +8,7 @@ use mageekguy\atoum\mock
 class iterator implements \iteratorAggregate
 {
     protected $controller = null;
-    protected $filters = array();
+    protected $filters = [];
 
     public function __construct(mock\controller $controller = null)
     {
@@ -45,7 +45,7 @@ class iterator implements \iteratorAggregate
 
     public function getMethods()
     {
-        $methods = ($this->controller === null ? array() : $this->controller->getMethods());
+        $methods = ($this->controller === null ? [] : $this->controller->getMethods());
 
         foreach ($this->filters as $filter) {
             $methods = array_filter($methods, $filter);
@@ -70,7 +70,7 @@ class iterator implements \iteratorAggregate
 
     public function resetFilters()
     {
-        $this->filters = array();
+        $this->filters = [];
 
         return $this;
     }

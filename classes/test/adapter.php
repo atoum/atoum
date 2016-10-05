@@ -9,7 +9,7 @@ use mageekguy\atoum\test\adapter\invoker;
 class adapter extends atoum\adapter
 {
     protected $calls = null;
-    protected $invokers = array();
+    protected $invokers = [];
 
     private static $storage = null;
 
@@ -62,7 +62,7 @@ class adapter extends atoum\adapter
 
     public function __sleep()
     {
-        return array();
+        return [];
     }
 
     public function __toString()
@@ -150,14 +150,14 @@ class adapter extends atoum\adapter
 
     public function reset()
     {
-        $this->invokers = array();
+        $this->invokers = [];
 
         return $this->resetCalls();
     }
 
-    public function addCall($functionName, array $arguments = array())
+    public function addCall($functionName, array $arguments = [])
     {
-        $unreferencedArguments = array();
+        $unreferencedArguments = [];
 
         foreach ($arguments as $argument) {
             $unreferencedArguments[] = $argument;
@@ -168,7 +168,7 @@ class adapter extends atoum\adapter
         return $this;
     }
 
-    public function invoke($functionName, array $arguments = array())
+    public function invoke($functionName, array $arguments = [])
     {
         if (self::isLanguageConstruct($functionName) || (function_exists($functionName) === true && is_callable($functionName) === false)) {
             throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not invokable by an adapter');
@@ -262,7 +262,7 @@ class adapter extends atoum\adapter
         $filter = null;
 
         if (is_array($arguments) === true) {
-            if ($arguments === array()) {
+            if ($arguments === []) {
                 $filter = function ($callArguments) use ($arguments) {
                     return ($arguments === $callArguments);
                 };

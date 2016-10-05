@@ -10,7 +10,7 @@ class method
     protected $returnReference = false;
     protected $name = '';
     protected $isConstructor = false;
-    protected $arguments = array();
+    protected $arguments = [];
 
     public function __construct($name)
     {

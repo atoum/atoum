@@ -2,12 +2,10 @@
 
 namespace mageekguy\atoum\reports\asynchronous;
 
-use mageekguy\atoum;
 use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\reports;
-use mageekguy\atoum\report\fields\test;
 use mageekguy\atoum\report\fields\runner;
+use mageekguy\atoum\report\fields\test;
+use mageekguy\atoum\reports;
 
 class vim extends reports\asynchronous
 {

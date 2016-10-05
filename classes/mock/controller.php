@@ -2,15 +2,15 @@
 
 namespace mageekguy\atoum\mock;
 
+use mageekguy\atoum\exceptions;
 use mageekguy\atoum\mock;
 use mageekguy\atoum\test;
-use mageekguy\atoum\exceptions;
 use mageekguy\atoum\test\adapter\call\decorators;
 
 class controller extends test\adapter
 {
     protected $mockClass = null;
-    protected $mockMethods = array();
+    protected $mockMethods = [];
     protected $iterator = null;
     protected $autoBind = true;
 
@@ -201,7 +201,7 @@ class controller extends test\adapter
         self::$linker->unlink($this);
 
         $this->mockClass = null;
-        $this->mockMethods = array();
+        $this->mockMethods = [];
 
         return parent::reset();
     }
@@ -211,7 +211,7 @@ class controller extends test\adapter
         return self::$linker->getMock($this);
     }
 
-    public function invoke($method, array $arguments = array())
+    public function invoke($method, array $arguments = [])
     {
         $this->checkMethod($method);
 

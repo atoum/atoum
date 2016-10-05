@@ -6,7 +6,7 @@ use mageekguy\atoum\test\data\provider;
 
 class aggregator implements provider, \countable
 {
-    protected $providers = array();
+    protected $providers = [];
 
     public function __invoke()
     {
@@ -27,7 +27,7 @@ class aggregator implements provider, \countable
 
     public function generate()
     {
-        $data = array();
+        $data = [];
 
         foreach ($this->providers as $provider) {
             $data[] = $provider->generate();

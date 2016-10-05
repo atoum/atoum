@@ -5,7 +5,7 @@ namespace mageekguy\atoum;
 class configurator
 {
     protected $script = null;
-    protected $methods = array();
+    protected $methods = [];
 
     public function __construct(scripts\runner $script)
     {
@@ -37,7 +37,7 @@ class configurator
                 throw new exceptions\runtime\unexpectedValue('Method \'' . $method . '\' is unavailable');
             }
 
-            $return = call_user_func_array(array($this->script, $keyMethod), $arguments);
+            $return = call_user_func_array([$this->script, $keyMethod], $arguments);
 
             return ($return === $this->script ? $this : $return);
         }

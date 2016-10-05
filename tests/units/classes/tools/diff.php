@@ -112,34 +112,34 @@ class diff extends atoum
         $this
             ->if($this->newTestedInstance)
             ->then
-                ->array($this->testedInstance->make())->isEqualTo(array(''))
-                ->array($this->testedInstance->setActual($data = rand(0, 9))->make())->isEqualTo(array(
-                        array(
-                            '-' => array(''),
-                            '+' => array($data)
-                        )
-                    )
+                ->array($this->testedInstance->make())->isEqualTo([''])
+                ->array($this->testedInstance->setActual($data = rand(0, 9))->make())->isEqualTo([
+                        [
+                            '-' => [''],
+                            '+' => [$data]
+                        ]
+                    ]
                 )
-                ->array($this->testedInstance->setActual($data = uniqid())->make())->isEqualTo(array(
-                        array(
-                            '-' => array(''),
-                            '+' => array($data)
-                        )
-                    )
+                ->array($this->testedInstance->setActual($data = uniqid())->make())->isEqualTo([
+                        [
+                            '-' => [''],
+                            '+' => [$data]
+                        ]
+                    ]
                 )
-                ->array($this->testedInstance->setExpected($data)->make())->isEqualTo(array(
+                ->array($this->testedInstance->setExpected($data)->make())->isEqualTo([
                         $data
-                    )
+                    ]
                 )
-                ->array($this->testedInstance->setExpected('')->setActual(($firstLine = uniqid()). PHP_EOL . ($secondLine = uniqid()))->make())->isEqualTo(array(
-                        array(
-                            '-' => array(''),
-                            '+' => array(
+                ->array($this->testedInstance->setExpected('')->setActual(($firstLine = uniqid()) . PHP_EOL . ($secondLine = uniqid()))->make())->isEqualTo([
+                        [
+                            '-' => [''],
+                            '+' => [
                                 $firstLine,
                                 $secondLine
-                            )
-                        )
-                    )
+                            ]
+                        ]
+                    ]
                 )
         ;
     }

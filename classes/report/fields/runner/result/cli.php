@@ -2,11 +2,10 @@
 
 namespace mageekguy\atoum\report\fields\runner\result;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\report\fields;
+use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\observable;
+use mageekguy\atoum\report\fields;
 
 class cli extends fields\runner\result
 {

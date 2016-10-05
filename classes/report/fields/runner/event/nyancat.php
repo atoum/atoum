@@ -2,29 +2,27 @@
 
 namespace mageekguy\atoum\report\fields\runner\event;
 
-use mageekguy\atoum\test;
-use mageekguy\atoum\runner;
-use mageekguy\atoum\report;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\cli\progressBar;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\progressBar;
+use mageekguy\atoum\runner;
+use mageekguy\atoum\test;
 
 class nyancat extends cli
 {
-    protected $cat = array(
-        array(
+    protected $cat = [
+        [
             '  ,------,  ',
             ' ┓|      ^__^ ',
             ' ┗|    |｡◕‿‿◕｡| ',
             '  ╰Oo---Oo  ',
-        ),
-        array(
+        ],
+        [
             '  ,--------,',
             ' ┓|       ^__^',
             ' ┗|     |｡◕‿‿◕｡|',
             '  ╰o-O---o-O',
-        ),
-    );
+        ],
+    ];
     protected $curve = "`·.,¸,.·'¯";
     protected $offset = 0;
     protected $catColorizer;
@@ -38,14 +36,14 @@ class nyancat extends cli
 
         $this->catColorizer = new colorizer(32);
 
-        $this->rainbowColorizers = array(
+        $this->rainbowColorizers = [
             new colorizer(31),
             new colorizer(32),
             new colorizer(33),
             new colorizer(34),
             new colorizer(35),
             new colorizer(36)
-        );
+        ];
     }
 
     protected function clear()
@@ -58,7 +56,7 @@ class nyancat extends cli
 
     public function __toString()
     {
-        if (in_array($this->event, array(test::fail, test::error, test::exception, test::uncompleted))) {
+        if (in_array($this->event, [test::fail, test::error, test::exception, test::uncompleted])) {
             $this->catColorizer = new colorizer(31);
         }
 

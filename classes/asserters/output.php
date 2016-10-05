@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum;
-use mageekguy\atoum\tools;
 use mageekguy\atoum\asserter;
+use mageekguy\atoum\tools;
 
 class output extends phpString
 {

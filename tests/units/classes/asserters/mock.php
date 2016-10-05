@@ -3,11 +3,11 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use mageekguy\atoum;
+use mageekguy\atoum\asserter;
 use mageekguy\atoum\php;
 use mageekguy\atoum\test;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\tools\variable;
 use mageekguy\atoum\test\adapter\call\decorators;
+use mageekguy\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -299,7 +299,7 @@ class mock extends atoum\test
                 ->object($asserter->withArguments())->isIdenticalTo($asserter)
                 ->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
                 ->integer($asserter->getLastAssertionLine())->isEqualTo(__LINE__ - 2)
-                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array(), new decorators\addClass($mockClass)))
+                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, [], new decorators\addClass($mockClass)))
                 ->array($asserter->getBefore())->isEmpty
                 ->array($asserter->getAfter())->isEmpty
                 ->mock($manager)->call('add')->withArguments($asserter)->once
@@ -307,7 +307,7 @@ class mock extends atoum\test
                 ->object($asserter->withArguments($arg1 = uniqid()))->isIdenticalTo($asserter)
                 ->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
                 ->integer($asserter->getLastAssertionLine())->isEqualTo(__LINE__ - 2)
-                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg1),  new decorators\addClass($mockClass)))
+                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, [$arg1],  new decorators\addClass($mockClass)))
                 ->array($asserter->getBefore())->isEmpty
                 ->array($asserter->getAfter())->isEmpty
                 ->mock($manager)->call('add')->withArguments($asserter)->once
@@ -315,7 +315,7 @@ class mock extends atoum\test
                 ->object($asserter->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($asserter)
                 ->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
                 ->integer($asserter->getLastAssertionLine())->isEqualTo($line = __LINE__ - 2)
-                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg1, $arg2),  new decorators\addClass($mockClass)))
+                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, [$arg1, $arg2],  new decorators\addClass($mockClass)))
                 ->array($asserter->getBefore())->isEmpty
                 ->array($asserter->getAfter())->isEmpty
                 ->mock($manager)->call('add')->withArguments($asserter)->once
@@ -328,7 +328,7 @@ class mock extends atoum\test
             ->given($asserter = $this->newTestedInstance)
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->withAtLeastArguments(array(uniqid()));
+                    $asserter->withAtLeastArguments([uniqid()]);
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Mock is undefined')
@@ -340,7 +340,7 @@ class mock extends atoum\test
             ->if($asserter->setWith($mock))
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->withAtLeastArguments(array(uniqid()));
+                    $asserter->withAtLeastArguments([uniqid()]);
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Call is undefined')
@@ -350,7 +350,7 @@ class mock extends atoum\test
                 $asserter->call($function = uniqid())
             )
             ->then
-                ->object($asserter->withAtLeastArguments($arguments = array(1 => uniqid())))->isIdenticalTo($asserter)
+                ->object($asserter->withAtLeastArguments($arguments = [1 => uniqid()]))->isIdenticalTo($asserter)
                 ->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
                 ->integer($asserter->getLastAssertionLine())->isEqualTo($line = __LINE__ - 2)
                 ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, $arguments, new decorators\addClass($mockClass)))
@@ -358,7 +358,7 @@ class mock extends atoum\test
                 ->array($asserter->getAfter())->isEmpty
                 ->mock($manager)->call('add')->withArguments($asserter)->once
 
-                ->object($asserter->disableEvaluationChecking()->withAtLeastArguments($arguments = array(2 => uniqid(), 5 => uniqid())))->isIdenticalTo($asserter)
+                ->object($asserter->disableEvaluationChecking()->withAtLeastArguments($arguments = [2 => uniqid(), 5 => uniqid()]))->isIdenticalTo($asserter)
                 ->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
                 ->integer($asserter->getLastAssertionLine())->isEqualTo($line = __LINE__ - 2)
                 ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, $arguments, new decorators\addClass($mockClass)))
@@ -513,7 +513,7 @@ class mock extends atoum\test
                 ->object($asserter->withoutAnyArgument())->isIdenticalTo($asserter)
                 ->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
                 ->integer($asserter->getLastAssertionLine())->isEqualTo($line = __LINE__ - 2)
-                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array(), new decorators\addClass($mockClass)))
+                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, [], new decorators\addClass($mockClass)))
                 ->array($asserter->getBefore())->isEmpty
                 ->array($asserter->getAfter())->isEmpty
                 ->mock($manager)->call('add')->withArguments($asserter)->once
@@ -521,7 +521,7 @@ class mock extends atoum\test
                 ->object($asserter->withoutAnyArgument)->isIdenticalTo($asserter)
                 ->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
                 ->integer($asserter->getLastAssertionLine())->isEqualTo($line = __LINE__ - 2)
-                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array(), new decorators\addClass($mockClass)))
+                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, [], new decorators\addClass($mockClass)))
                 ->array($asserter->getBefore())->isEmpty
                 ->array($asserter->getAfter())->isEmpty
                 ->mock($manager)->call('add')->withArguments($asserter)->once
@@ -529,7 +529,7 @@ class mock extends atoum\test
                 ->object($asserter->wITHOUTaNYaRGument)->isIdenticalTo($asserter)
                 ->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
                 ->integer($asserter->getLastAssertionLine())->isEqualTo($line = __LINE__ - 2)
-                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array(), new decorators\addClass($mockClass)))
+                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, [], new decorators\addClass($mockClass)))
                 ->array($asserter->getBefore())->isEmpty
                 ->array($asserter->getAfter())->isEmpty
                 ->mock($manager)->call('add')->withArguments($asserter)->once

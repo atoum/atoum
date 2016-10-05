@@ -5,7 +5,6 @@ namespace mageekguy\atoum\test;
 use mageekguy\atoum;
 use mageekguy\atoum\fs\path;
 use mageekguy\atoum\template;
-use mageekguy\atoum\test\generator;
 
 class generator
 {
@@ -219,7 +218,7 @@ class generator
 
         $realTestClassRelativePath = substr($realTestClassPath->getRelativePathFrom($realTestClassesDirectory), 2);
 
-        $fullyQualifiedTestClassName = call_user_func_array($this->fullyQualifiedTestClassNameExtractor, array($this, $realTestClassRelativePath));
+        $fullyQualifiedTestClassName = call_user_func_array($this->fullyQualifiedTestClassNameExtractor, [$this, $realTestClassRelativePath]);
 
         $testClassTemplate = $this->templateParser->parseFile($this->templatesDirectory . DIRECTORY_SEPARATOR . 'testClass.php');
 
@@ -235,14 +234,14 @@ class generator
             $testClassTemplate->requireRunner->build();
         }
 
-        $fullyQualifiedTestedClassName = call_user_func_array($this->fullyQualifiedTestedClassNameExtractor, array($this, $fullyQualifiedTestClassName));
+        $fullyQualifiedTestedClassName = call_user_func_array($this->fullyQualifiedTestedClassNameExtractor, [$this, $fullyQualifiedTestClassName]);
 
         if ($this->adapter->class_exists($fullyQualifiedTestedClassName) === false) {
             $testClassTemplate->testMethods->testMethod->methodName = '__construct';
             $testClassTemplate->testMethods->testMethod->methodName->build();
             $testClassTemplate->testMethods->testMethod->build();
 
-            $testedClassPath = $this->pathFactory->build(call_user_func_array($this->testedClassPathExtractor, array($this, $fullyQualifiedTestedClassName)));
+            $testedClassPath = $this->pathFactory->build(call_user_func_array($this->testedClassPathExtractor, [$this, $fullyQualifiedTestedClassName]));
 
             $testedClassTemplate = $this->templateParser->parseFile($this->templatesDirectory . DIRECTORY_SEPARATOR . 'testedClass.php');
 

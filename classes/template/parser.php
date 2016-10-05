@@ -4,7 +4,6 @@ namespace mageekguy\atoum\template;
 
 use mageekguy\atoum;
 use mageekguy\atoum\exceptions;
-use mageekguy\atoum\template\parser;
 
 class parser
 {
@@ -81,7 +80,7 @@ class parser
 
         $currentTag = $root;
 
-        $stack = array();
+        $stack = [];
 
         $line = 1;
         $offset = 1;

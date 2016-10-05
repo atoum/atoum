@@ -8,8 +8,8 @@ use mageekguy\atoum\test\assertion
 class manager
 {
     protected $aliaser = null;
-    protected $propertyHandlers = array();
-    protected $methodHandlers = array();
+    protected $propertyHandlers = [];
+    protected $methodHandlers = [];
     protected $defaultHandler = null;
 
     public function __construct(assertion\aliaser $aliaser = null)
@@ -81,7 +81,7 @@ class manager
         return $this->invokeHandlerFrom($this->propertyHandlers, $event);
     }
 
-    public function invokeMethodHandler($event, array $arguments = array())
+    public function invokeMethodHandler($event, array $arguments = [])
     {
         return $this->invokeHandlerFrom($this->methodHandlers, $event, $arguments);
     }
@@ -93,7 +93,7 @@ class manager
         return $this;
     }
 
-    private function invokeHandlerFrom(array $handlers, $event, array $arguments = array())
+    private function invokeHandlerFrom(array $handlers, $event, array $arguments = [])
     {
         $handler = null;
 
@@ -115,7 +115,7 @@ class manager
                 return call_user_func_array($handler, $arguments);
 
             default:
-                return call_user_func_array($this->defaultHandler, array($realEvent, $arguments));
+                return call_user_func_array($this->defaultHandler, [$realEvent, $arguments]);
         }
     }
 }

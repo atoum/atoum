@@ -7,7 +7,7 @@ use mageekguy\atoum\php\tokenizer\iterators;
 
 class phpFunction extends tokenizer\iterator
 {
-    protected $arguments = array();
+    protected $arguments = [];
 
     public function getName()
     {
@@ -16,7 +16,7 @@ class phpFunction extends tokenizer\iterator
         $key = $this->findTag(T_FUNCTION);
 
         if ($key !== null) {
-            $this->goToNextTagWhichIsNot(array(T_WHITESPACE, T_COMMENT));
+            $this->goToNextTagWhichIsNot([T_WHITESPACE, T_COMMENT]);
 
             $token = $this->current();
 
@@ -30,7 +30,7 @@ class phpFunction extends tokenizer\iterator
 
     public function reset()
     {
-        $this->arguments = array();
+        $this->arguments = [];
 
         return parent::reset();
     }

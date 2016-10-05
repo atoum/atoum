@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
 use mageekguy\atoum\asserter;
+use mageekguy\atoum\test;
 
 class error extends asserter
 {

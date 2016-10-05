@@ -2,10 +2,9 @@
 
 namespace mageekguy\atoum\test\data\providers;
 
-use mageekguy\atoum\exceptions\logic;
+use mageekguy\atoum\exceptions\runtime;
 use mageekguy\atoum\mock\generator;
 use mageekguy\atoum\test\data\provider;
-use mageekguy\atoum\exceptions\runtime;
 
 class mock extends object
 {

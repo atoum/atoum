@@ -4,7 +4,7 @@ namespace mageekguy\atoum;
 
 class superglobals
 {
-    protected $superglobals = array();
+    protected $superglobals = [];
 
     public function __set($superglobal, $value)
     {

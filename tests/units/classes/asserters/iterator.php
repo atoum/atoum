@@ -86,7 +86,7 @@ class iterator extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $badSize = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(new \arrayIterator(array()))
+                $asserter->setWith(new \arrayIterator([]))
             )
             ->then
                 ->exception(function () use ($asserter, & $size) {
@@ -126,7 +126,7 @@ class iterator extends atoum\test
 
             ->if(
                 $this->calling($locale)->_ = $notEmpty = uniqid(),
-                $asserter->setWith(new \arrayIterator(array(uniqid())))
+                $asserter->setWith(new \arrayIterator([uniqid()]))
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -149,7 +149,7 @@ class iterator extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-            ->if($asserter->setWith(new \arrayIterator(array())))
+            ->if($asserter->setWith(new \arrayIterator([])))
             ->then
                 ->object($asserter->isEmpty())->isIdenticalTo($asserter)
         ;
@@ -172,7 +172,7 @@ class iterator extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $isEmpty = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(new \arrayIterator(array()))
+                $asserter->setWith(new \arrayIterator([]))
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -195,7 +195,7 @@ class iterator extends atoum\test
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($failMessage)
 
-                ->if($asserter->setWith(new \arrayIterator(array(uniqid()))))
+                ->if($asserter->setWith(new \arrayIterator([uniqid()])))
                 ->then
                     ->object($asserter->isNotEmpty())->isIdenticalTo($asserter)
         ;
@@ -212,12 +212,12 @@ class iterator extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Object is undefined')
 
-            ->if($asserter->setWith(new \arrayIterator(array())))
+            ->if($asserter->setWith(new \arrayIterator([])))
             ->then
                 ->object($integer = $asserter->size)->isInstanceOf('mageekguy\atoum\asserters\integer')
                 ->integer($integer->getValue())->isEqualTo(0)
 
-            ->if($asserter->setWith(new \arrayIterator(array(uniqid(), uniqid()))))
+            ->if($asserter->setWith(new \arrayIterator([uniqid(), uniqid()])))
             ->then
                 ->object($integer = $asserter->size)->isInstanceOf('mageekguy\atoum\asserters\integer')
                 ->integer($integer->getValue())->isEqualTo(2)
@@ -240,9 +240,9 @@ class iterator extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Object is undefined')
 
-            ->if($asserter->setWith(new \arrayIterator(array())))
+            ->if($asserter->setWith(new \arrayIterator([])))
             ->then
-                ->object($asserter->isEqualTo(new \arrayIterator(array())))->isIdenticalTo($asserter)
+                ->object($asserter->isEqualTo(new \arrayIterator([])))->isIdenticalTo($asserter)
 
             ->if($asserter->setWith($iterator = new \arrayIterator(range(1, 5))))
             ->then
@@ -281,7 +281,7 @@ class iterator extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Object is undefined')
 
-            ->if($asserter->setWith(new \arrayIterator(array())))
+            ->if($asserter->setWith(new \arrayIterator([])))
             ->then
                 ->object($asserter->isNotEqualTo(new \arrayIterator(range(1, 2))))->isIdenticalTo($asserter)
 
@@ -291,16 +291,16 @@ class iterator extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->isNotEqualTo(new \arrayIterator(array()));
+                    $asserter->isNotEqualTo(new \arrayIterator([]));
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is equal to %s', $asserter, $type)->once
-                ->mock($analyzer)->call('getTypeOf')->withArguments(new \arrayIterator(array()))->once
+                ->mock($analyzer)->call('getTypeOf')->withArguments(new \arrayIterator([]))->once
 
             ->if($asserter->setWith($iterator = new \arrayIterator(range(1, 5))))
             ->then
-                ->object($asserter->isNotEqualTo(new \arrayIterator(array())))->isIdenticalTo($asserter)
+                ->object($asserter->isNotEqualTo(new \arrayIterator([])))->isIdenticalTo($asserter)
 
                 ->exception(function () use ($asserter, $iterator) {
                     $asserter->isNotEqualTo($iterator);

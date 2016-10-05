@@ -2,11 +2,7 @@
 
 namespace mageekguy\atoum\report\fields\runner\failures;
 
-use mageekguy\atoum;
-use mageekguy\atoum\locale;
 use mageekguy\atoum\adapter;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\report\fields\runner;
 
 class execute extends runner\failures
@@ -27,7 +23,7 @@ class execute extends runner\failures
     public function __toString()
     {
         if ($this->runner !== null) {
-            $fails = array();
+            $fails = [];
 
             foreach ($this->runner->getScore()->getFailAssertions() as $fail) {
                 switch (true) {

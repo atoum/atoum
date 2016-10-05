@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\reports\realtime;
 
-use mageekguy\atoum\reports;
 use mageekguy\atoum\report\fields;
+use mageekguy\atoum\reports;
 
 class tap extends reports\realtime
 {

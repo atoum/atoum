@@ -205,6 +205,6 @@ class phpString extends variable
 
     protected function getLengthAsserter()
     {
-        return $this->generator->__call('integer', array(strlen($this->valueIsSet()->value)));
+        return $this->generator->__call('integer', [strlen($this->valueIsSet()->value)]);
     }
 }

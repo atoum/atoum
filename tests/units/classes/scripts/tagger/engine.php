@@ -3,8 +3,6 @@
 namespace mageekguy\atoum\tests\units\scripts\tagger;
 
 use mageekguy\atoum;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\scripts\tagger;
 
 require_once __DIR__ . '/../../../runner.php';
 
@@ -182,11 +180,11 @@ class engine extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Unable to tag, src iterator injector does not return an iterator')
             ->if(
-                $srcIterator = new \arrayIterator(array(
+                $srcIterator = new \arrayIterator([
                         $file1 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename1 = uniqid()),
                         $file2 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename2 = uniqid()),
                         $file3 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename3 = uniqid()),
-                    )
+                    ]
                 ),
                 $this->testedInstance->setSrcIteratorInjector(function ($directory) use ($srcIterator) {
                     return $srcIterator;

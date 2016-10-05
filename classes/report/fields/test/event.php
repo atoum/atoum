@@ -2,17 +2,14 @@
 
 namespace mageekguy\atoum\report\fields\test;
 
-use mageekguy\atoum;
-use mageekguy\atoum\test;
 use mageekguy\atoum\report;
-use mageekguy\atoum\test\cli;
-use mageekguy\atoum\exceptions;
+use mageekguy\atoum\test;
 
 abstract class event extends report\fields\event
 {
     public function __construct()
     {
-        parent::__construct(array(
+        parent::__construct([
                 test::runStart,
                 test::fail,
                 test::error,
@@ -23,7 +20,7 @@ abstract class event extends report\fields\event
                 test::runtimeException,
                 test::success,
                 test::runStop
-            )
+            ]
         );
     }
 }

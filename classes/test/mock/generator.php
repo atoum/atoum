@@ -23,7 +23,7 @@ class generator extends mock\generator
 
     public function __call($method, array $arguments)
     {
-        return call_user_func_array(array($this->test, $method), $arguments);
+        return call_user_func_array([$this->test, $method], $arguments);
     }
 
     public function setTest(atoum\test $test)

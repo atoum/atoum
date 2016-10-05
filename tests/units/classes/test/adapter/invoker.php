@@ -266,11 +266,11 @@ class invoker extends atoum\test
 
             ->if($this->testedInstance[2] = $mixed = uniqid())
             ->then
-                ->string($this->testedInstance->invoke(array(), 2))->isEqualTo($mixed)
+                ->string($this->testedInstance->invoke([], 2))->isEqualTo($mixed)
 
             ->if($this->testedInstance[] = $otherMixed = uniqid())
             ->then
-                ->string($this->testedInstance->invoke(array(), 3))->isEqualTo($otherMixed)
+                ->string($this->testedInstance->invoke([], 3))->isEqualTo($otherMixed)
 
             ->if(
                 $this->testedInstance[5] = uniqid(),
@@ -402,12 +402,12 @@ class invoker extends atoum\test
                 }, $call = rand(2, PHP_INT_MAX))
             )
             ->then
-                ->string($this->testedInstance->invoke(array($string = uniqid())))->isEqualTo(md5($string))
-                ->string($this->testedInstance->invoke(array($string = uniqid()), 0))->isEqualTo(md5($string))
-                ->string($this->testedInstance->invoke(array($string = uniqid()), 1))->isEqualTo($md5)
-                ->string($this->testedInstance->invoke(array($string = uniqid())))->isEqualTo(md5($string))
-                ->string($this->testedInstance->invoke(array($string = uniqid()), 0))->isEqualTo(md5($string))
-                ->string($this->testedInstance->invoke(array($string = uniqid()), $call))->isEqualTo($md5)
+                ->string($this->testedInstance->invoke([$string = uniqid()]))->isEqualTo(md5($string))
+                ->string($this->testedInstance->invoke([$string = uniqid()], 0))->isEqualTo(md5($string))
+                ->string($this->testedInstance->invoke([$string = uniqid()], 1))->isEqualTo($md5)
+                ->string($this->testedInstance->invoke([$string = uniqid()]))->isEqualTo(md5($string))
+                ->string($this->testedInstance->invoke([$string = uniqid()], 0))->isEqualTo(md5($string))
+                ->string($this->testedInstance->invoke([$string = uniqid()], $call))->isEqualTo($md5)
         ;
     }
 

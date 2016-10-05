@@ -3,19 +3,19 @@
 namespace mageekguy\atoum\asserters\adapter;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
 use mageekguy\atoum\asserter;
-use mageekguy\atoum\tools\variable;
 use mageekguy\atoum\asserters\adapter\call\exceptions;
+use mageekguy\atoum\test;
+use mageekguy\atoum\tools\variable;
 
 abstract class call extends atoum\asserter
 {
     protected $adapter = null;
     protected $call = null;
     protected $identicalCall = false;
-    protected $beforeCalls = array();
-    protected $afterCalls = array();
-    protected $trace = array('file' => null, 'line' => null);
+    protected $beforeCalls = [];
+    protected $afterCalls = [];
+    protected $trace = ['file' => null, 'line' => null];
     protected $manager = null;
 
     public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null, atoum\locale $locale = null)
@@ -197,7 +197,7 @@ abstract class call extends atoum\asserter
                 $failMessage = $this->__('%s is called %d time instead of %d', '%s is called %d times instead of %d', $callsNumber, $this->call, $callsNumber, $number);
 
                 if (sizeof($this->beforeCalls) > 0) {
-                    $beforeCalls = array();
+                    $beforeCalls = [];
 
                     foreach ($this->beforeCalls as $asserter) {
                         $beforeCalls[] = (string) $asserter->getCall();
@@ -207,7 +207,7 @@ abstract class call extends atoum\asserter
                 }
 
                 if (sizeof($this->afterCalls) > 0) {
-                    $afterCalls = array();
+                    $afterCalls = [];
 
                     foreach ($this->afterCalls as $asserter) {
                         $afterCalls[] = (string) $asserter->getCall();
@@ -314,8 +314,8 @@ abstract class call extends atoum\asserter
                 ->unsetArguments()
         ;
 
-        $this->beforeCalls = array();
-        $this->afterCalls = array();
+        $this->beforeCalls = [];
+        $this->afterCalls = [];
 
         return $this;
     }

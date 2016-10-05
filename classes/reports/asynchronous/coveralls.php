@@ -4,8 +4,8 @@ namespace mageekguy\atoum\reports\asynchronous;
 
 use mageekguy\atoum;
 use mageekguy\atoum\exceptions;
-use mageekguy\atoum\score;
 use mageekguy\atoum\report;
+use mageekguy\atoum\score;
 
 class coveralls extends atoum\reports\asynchronous
 {
@@ -121,14 +121,14 @@ class coveralls extends atoum\reports\asynchronous
 
     protected function makeRootElement(score\coverage $coverage)
     {
-        $root = array(
+        $root = [
             'service_name' => $this->serviceName,
             'service_event_type' => static::defaultEvent,
             'service_job_id' => $this->serviceJobId,
             'run_at' => $this->adapter->date('Y-m-d H:i:s O'),
             'source_files' => $this->makeSourceElement($coverage),
             'git' => $this->makeGitElement()
-        );
+        ];
 
         if ($this->repositoryToken !== null) {
             $root['repo_token'] = $this->repositoryToken;
@@ -140,7 +140,7 @@ class coveralls extends atoum\reports\asynchronous
     protected function makeGitElement()
     {
         $head = $this->adapter->exec('git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'');
-        $infos = array('head' => json_decode($head));
+        $infos = ['head' => json_decode($head)];
 
         $branch = call_user_func($this->getBranchFinder());
         if ($branch != null) {
@@ -152,17 +152,17 @@ class coveralls extends atoum\reports\asynchronous
 
     protected function makeSourceElement(score\coverage $coverage)
     {
-        $sources = array();
+        $sources = [];
 
         foreach ($coverage->getClasses() as $class => $file) {
             $path = new atoum\fs\path($file);
             $source = $this->adapter->file_get_contents((string) $path->resolve());
 
-            $sources[] = array(
+            $sources[] = [
                 'name' => ltrim((string) $path->relativizeFrom($this->sourceDir), '.' . DIRECTORY_SEPARATOR),
                 'source' => $source,
                 'coverage' => $this->makeCoverageElement($coverage->getCoverageForClass($class))
-            );
+            ];
         }
 
         return $sources;
@@ -170,7 +170,7 @@ class coveralls extends atoum\reports\asynchronous
 
     protected function makeCoverageElement(array $coverage)
     {
-        $cover = array();
+        $cover = [];
 
         foreach ($coverage as $method) {
             foreach ($method as $number => $line) {

@@ -2,7 +2,6 @@
 
 namespace mageekguy\atoum\writers\std;
 
-use mageekguy\atoum;
 use mageekguy\atoum\writers;
 
 class err extends writers\std

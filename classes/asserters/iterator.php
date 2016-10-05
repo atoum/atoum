@@ -71,7 +71,7 @@ class iterator extends object
 
     protected function size()
     {
-        return $this->generator->__call('integer', array(iterator_count($this->valueIsSet()->value)));
+        return $this->generator->__call('integer', [iterator_count($this->valueIsSet()->value)]);
     }
 
     protected static function isIterator($value)

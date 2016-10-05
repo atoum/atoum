@@ -9,7 +9,7 @@ class decorator
         $string = '';
 
         if ($arguments !== null && sizeof($arguments) > 0) {
-            $string = array();
+            $string = [];
 
             foreach ($arguments as $argument) {
                 switch ($type = gettype($argument)) {

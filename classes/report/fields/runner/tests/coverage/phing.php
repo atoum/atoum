@@ -2,10 +2,7 @@
 
 namespace mageekguy\atoum\report\fields\runner\tests\coverage;
 
-use mageekguy\atoum;
 use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\report;
 
 class phing extends report\fields\runner\tests\coverage\cli

@@ -194,7 +194,7 @@ class generator extends atoum\test
                 })
                     ->isInstanceOf('mageekguy\atoum\test\generator\exception')
                     ->hasMessage('Tests directory is undefined')
-            ->if($generator->setTestClassesDirectory($testsDirectory = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, array('a', 'b', 'c'))))
+            ->if($generator->setTestClassesDirectory($testsDirectory = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['a', 'b', 'c'])))
             ->then
                 ->exception(function () use ($generator) {
                     $generator->generate(uniqid());
@@ -209,13 +209,13 @@ class generator extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\test\generator\exception')
                     ->hasMessage('Test class namespace is undefined')
             ->if($generator->setTestClassNamespace($testClassNamespace = uniqid()))
-            ->and($testClassesDirectoryPath = new \mock\mageekguy\atoum\fs\path(DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, array('a', 'b', 'c'))))
+            ->and($testClassesDirectoryPath = new \mock\mageekguy\atoum\fs\path(DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['a', 'b', 'c'])))
             ->and($this->calling($testClassesDirectoryPath)->exists = true)
             ->and($this->calling($testClassesDirectoryPath)->getRealPath = $testClassesDirectoryPath)
-            ->and($testedClassPath = new \mock\mageekguy\atoum\fs\path(DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, array('x', 'y', 'z', 'f.php'))))
+            ->and($testedClassPath = new \mock\mageekguy\atoum\fs\path(DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['x', 'y', 'z', 'f.php'])))
             ->and($this->calling($testedClassPath)->putContents = $testedClassPath)
-            ->and($testClassPath = new \mock\mageekguy\atoum\fs\path(DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, array('a', 'b', 'c', 'd', 'e', 'f.php'))))
-            ->and($this->calling($testClassPath)->getRealParentDirectoryPath = new \mock\mageekguy\atoum\fs\path(DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, array('a', 'b', 'c', 'd', 'e'))))
+            ->and($testClassPath = new \mock\mageekguy\atoum\fs\path(DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['a', 'b', 'c', 'd', 'e', 'f.php'])))
+            ->and($this->calling($testClassPath)->getRealParentDirectoryPath = new \mock\mageekguy\atoum\fs\path(DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['a', 'b', 'c', 'd', 'e'])))
             ->and($this->calling($testClassPath)->getRealPath = $testClassPath)
             ->and($this->calling($testClassPath)->putContents = $testClassPath)
             ->and($this->calling($pathFactory)->build = function ($path) use ($testClassesDirectoryPath, $testClassPath, $testedClassPath) {

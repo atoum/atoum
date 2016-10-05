@@ -48,7 +48,7 @@ class classWithConstructor
     public $reference = null;
     public $array = null;
 
-    public function __construct($a, $b, $c, & $reference, $array = array())
+    public function __construct($a, $b, $c, & $reference, $array = [])
     {
         $this->a = $a;
         $this->b = $b;
@@ -181,7 +181,7 @@ class closure extends atoum
                 ->object($this->testedInstance->build(new \reflectionClass(__NAMESPACE__ . '\classWithConstructorWithVariadicArgument'), $instance))->isTestedInstance
                 ->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
                 ->object($builtInstance = $factory('a', 'b', 'c'))->isInstanceOf(__NAMESPACE__ . '\classWithConstructorWithVariadicArgument')
-                ->array($builtInstance->variadicArguments)->isEqualTo(array('a', 'b', 'c'))
+                ->array($builtInstance->variadicArguments)->isEqualTo(['a', 'b', 'c'])
         ;
     }
 

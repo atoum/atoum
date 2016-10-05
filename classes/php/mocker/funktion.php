@@ -125,7 +125,7 @@ class funktion extends mocker
 
     protected static function getParametersSignature(\reflectionFunction $function)
     {
-        $parameters = array();
+        $parameters = [];
 
         foreach (self::filterParameters($function) as $parameter) {
             $parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
@@ -146,7 +146,7 @@ class funktion extends mocker
 
     protected static function getParameters(\reflectionFunction $function)
     {
-        $parameters = array();
+        $parameters = [];
 
         foreach (self::filterParameters($function) as $parameter) {
             $parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
@@ -189,7 +189,7 @@ class funktion extends mocker
         $reflectedFunction = null;
 
         try {
-            $reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, array($function));
+            $reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, [$function]);
         } catch (\exception $exception) {
         }
 

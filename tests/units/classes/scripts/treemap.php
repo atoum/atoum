@@ -81,11 +81,11 @@ class treemap extends atoum\test
             ->if($treemap = new testedClass(uniqid()))
             ->then
                 ->object($treemap->addDirectory($directory = uniqid()))->isIdenticalTo($treemap)
-                ->array($treemap->getDirectories())->isEqualTo(array($directory))
+                ->array($treemap->getDirectories())->isEqualTo([$directory])
                 ->object($treemap->addDirectory($otherDirectory = uniqid()))->isIdenticalTo($treemap)
-                ->array($treemap->getDirectories())->isEqualTo(array($directory, $otherDirectory))
+                ->array($treemap->getDirectories())->isEqualTo([$directory, $otherDirectory])
                 ->object($treemap->addDirectory($directory))->isIdenticalTo($treemap)
-                ->array($treemap->getDirectories())->isEqualTo(array($directory, $otherDirectory))
+                ->array($treemap->getDirectories())->isEqualTo([$directory, $otherDirectory])
         ;
     }
 
@@ -131,9 +131,9 @@ class treemap extends atoum\test
             ->if($treemap = new testedClass(uniqid()))
             ->then
                 ->object($treemap->addAnalyzer($analyzer = new analyzer()))->isIdenticalTo($treemap)
-                ->array($treemap->getAnalyzers())->isEqualTo(array($analyzer))
+                ->array($treemap->getAnalyzers())->isEqualTo([$analyzer])
                 ->object($treemap->addAnalyzer($otherAnalyzer = new analyzer()))->isIdenticalTo($treemap)
-                ->array($treemap->getAnalyzers())->isEqualTo(array($analyzer, $otherAnalyzer))
+                ->array($treemap->getAnalyzers())->isEqualTo([$analyzer, $otherAnalyzer])
         ;
     }
 
@@ -143,9 +143,9 @@ class treemap extends atoum\test
             ->if($treemap = new testedClass(uniqid()))
             ->then
                 ->object($treemap->addCategorizer($categorizer = new categorizer(uniqid())))->isIdenticalTo($treemap)
-                ->array($treemap->getCategorizers())->isEqualTo(array($categorizer))
+                ->array($treemap->getCategorizers())->isEqualTo([$categorizer])
                 ->object($treemap->addCategorizer($otherCategorizer = new categorizer(uniqid())))->isIdenticalTo($treemap)
-                ->array($treemap->getCategorizers())->isEqualTo(array($categorizer, $otherCategorizer))
+                ->array($treemap->getCategorizers())->isEqualTo([$categorizer, $otherCategorizer])
         ;
     }
 

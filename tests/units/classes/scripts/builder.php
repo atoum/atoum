@@ -5,7 +5,6 @@ namespace mageekguy\atoum\tests\units\scripts;
 use mageekguy\atoum;
 use mageekguy\atoum\mock;
 use mageekguy\atoum\scripts;
-use mageekguy\atoum\scripts\builder\vcs;
 use mageekguy\atoum\scripts\builder as testedClass;
 
 require_once __DIR__ . '/../../runner.php';
@@ -255,7 +254,7 @@ class builder extends atoum\test
             ->if($builder = new testedClass(uniqid()))
             ->then
                 ->object($builder->addRunnerConfigurationFile($file = uniqid()))->isIdenticalTo($builder)
-                ->array($builder->getRunnerConfigurationFiles())->isEqualTo(array($file))
+                ->array($builder->getRunnerConfigurationFiles())->isEqualTo([$file])
         ;
     }
 
@@ -471,7 +470,7 @@ class builder extends atoum\test
             ->if($builder->enablePharCreation())
             ->and->mockGenerator->shunt('__construct')
             ->and($builder->setVcs($vcs = new \mock\mageekguy\atoum\scripts\builder\vcs()))
-            ->and($this->calling($vcs)->getNextRevisions = array())
+            ->and($this->calling($vcs)->getNextRevisions = [])
             ->and($this->calling($vcs)->exportRepository = function () {
             })
             ->then
@@ -500,7 +499,7 @@ class builder extends atoum\test
                 ->boolean($builder->createPhar())->isTrue()
             ->if($this->calling($vcs)->getNextRevisions = function () use (& $revision) {
                 static $i = 0;
-                return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX));
+                return ++$i > 1 ? [] : [$revision = rand(1, PHP_INT_MAX)];
             })
             ->and($builder->disableUnitTestChecking())
             ->and($this->calling($php)->getExitCode = rand(1, PHP_INT_MAX))
@@ -517,7 +516,7 @@ class builder extends atoum\test
             ->and($adapter->date = $date = uniqid())
             ->and($this->calling($vcs)->getNextRevisions = function () use (& $revision) {
                 static $i = 0;
-                return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX));
+                return ++$i > 1 ? [] : [$revision = rand(1, PHP_INT_MAX)];
             })
             ->and($this->resetMock($vcs))
             ->then
@@ -535,7 +534,7 @@ class builder extends atoum\test
             ->and($this->resetMock($taggerEngine))
             ->and($this->calling($vcs)->getNextRevisions = function () use (& $revision) {
                 static $i = 0;
-                return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX));
+                return ++$i > 1 ? [] : [$revision = rand(1, PHP_INT_MAX)];
             })
             ->then
                 ->boolean($builder->createPhar($tag = uniqid()))->isTrue()
@@ -553,7 +552,7 @@ class builder extends atoum\test
             ->and($this->resetMock($vcs))
             ->and($this->calling($vcs)->getNextRevisions = function () use (& $revision) {
                 static $i = 0;
-                return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX));
+                return ++$i > 1 ? [] : [$revision = rand(1, PHP_INT_MAX)];
             })
             ->then
                 ->boolean($builder->createPhar())->isTrue()
@@ -567,7 +566,7 @@ class builder extends atoum\test
             ->if($this->resetMock($vcs))
             ->and($this->calling($vcs)->getNextRevisions = function () use (& $revision) {
                 static $i = 0;
-                return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX));
+                return ++$i > 1 ? [] : [$revision = rand(1, PHP_INT_MAX)];
             })
             ->and($adapter->file_put_contents = false)
             ->then
@@ -578,10 +577,10 @@ class builder extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to save last revision in file \'' . $revisionFile . '\'')
             ->if($this->resetMock($vcs))
-            ->and($this->calling($vcs)->getNextRevisions[1] = array(1, 2, 3))
-            ->and($this->calling($vcs)->getNextRevisions[2] = array(2, 3))
-            ->and($this->calling($vcs)->getNextRevisions[3] = array(3))
-            ->and($this->calling($vcs)->getNextRevisions[4] = array())
+            ->and($this->calling($vcs)->getNextRevisions[1] = [1, 2, 3])
+            ->and($this->calling($vcs)->getNextRevisions[2] = [2, 3])
+            ->and($this->calling($vcs)->getNextRevisions[3] = [3])
+            ->and($this->calling($vcs)->getNextRevisions[4] = [])
             ->and($adapter->file_put_contents = function () {
             })
             ->and($adapter->resetCalls())
@@ -597,8 +596,8 @@ class builder extends atoum\test
                     ->call('setWorkingDirectory')->withArguments($workingDirectory)->atLeastOnce()
                     ->call('exportRepository')->atLeastOnce()
             ->if($this->resetMock($vcs))
-            ->and($this->calling($vcs)->getNextRevisions[1] = array(4))
-            ->and($this->calling($vcs)->getNextRevisions[2] = array())
+            ->and($this->calling($vcs)->getNextRevisions[1] = [4])
+            ->and($this->calling($vcs)->getNextRevisions[2] = [])
             ->and($adapter->file_get_contents = 1)
             ->and($adapter->resetCalls())
             ->then

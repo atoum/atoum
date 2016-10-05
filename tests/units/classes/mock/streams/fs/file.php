@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\tests\units\mock\streams\fs;
 
 use mageekguy\atoum;
-use mageekguy\atoum\mock\stream;
 use mageekguy\atoum\mock\streams\fs\file as testedClass;
 
 require_once __DIR__ . '/../../../../runner.php';

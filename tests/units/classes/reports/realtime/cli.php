@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\reports\realtime;
 
 use mageekguy\atoum;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\report\fields;
 use mageekguy\atoum\reports\realtime\cli as testedClass;
 
@@ -130,7 +130,7 @@ class cli extends atoum\test
             ->then
                 ->object($report->getLocale())->isEqualTo(new atoum\locale())
                 ->object($report->getAdapter())->isEqualTo(new atoum\adapter())
-                ->array($report->getFields())->isEqualTo(array(
+                ->array($report->getFields())->isEqualTo([
                         $atoumPathField,
                         $atoumVersionField,
                         $phpPathField,
@@ -151,7 +151,7 @@ class cli extends atoum\test
                         new fields\test\event\cli(),
                         $testDurationField,
                         $testMemoryField
-                    )
+                    ]
                 )
         ;
     }

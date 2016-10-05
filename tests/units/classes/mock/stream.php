@@ -2,9 +2,9 @@
 
 namespace mageekguy\atoum\tests\units\mock;
 
-use mageekguy\atoum\test;
 use mageekguy\atoum\adapter;
 use mageekguy\atoum\mock\stream as testedClass;
+use mageekguy\atoum\test;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -32,14 +32,14 @@ class stream extends test
     {
         $this
             ->if(testedClass::setAdapter($adapter = new test\adapter()))
-            ->and($adapter->stream_get_wrappers = array())
+            ->and($adapter->stream_get_wrappers = [])
             ->and($adapter->stream_wrapper_register = true)
             ->then
                 ->object($streamController = testedClass::get($stream = uniqid()))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
                 ->string($streamController->getPath())->isEqualTo(testedClass::defaultProtocol . '://' . testedClass::setDirectorySeparator($stream))
                 ->adapter($adapter)
                     ->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
-            ->if($adapter->stream_get_wrappers = array(testedClass::defaultProtocol))
+            ->if($adapter->stream_get_wrappers = [testedClass::defaultProtocol])
             ->then
                 ->object($streamController = testedClass::get())->isInstanceOf('mageekguy\atoum\mock\stream\controller')
                 ->string($streamController->getPath())->matches('#^' . testedClass::defaultProtocol . '://\w+$#')
@@ -51,13 +51,13 @@ class stream extends test
                 ->object(testedClass::get($otherStream = ($protocol = uniqid()) . '://' . uniqid()))->isNotIdenticalTo($streamController)
                 ->adapter($adapter)
                     ->call('stream_wrapper_register')->withArguments($protocol, 'mageekguy\atoum\mock\stream')->once()
-            ->if($adapter->stream_get_wrappers = array(testedClass::defaultProtocol, $protocol))
+            ->if($adapter->stream_get_wrappers = [testedClass::defaultProtocol, $protocol])
             ->then
                 ->object(testedClass::get($otherStream))->isIdenticalTo(testedClass::get($otherStream))
                 ->object(testedClass::get($otherStream))->isIdenticalTo(testedClass::get($otherStream))
                 ->adapter($adapter)
                     ->call('stream_wrapper_register')->withArguments($protocol, 'mageekguy\atoum\mock\stream')->once()
-            ->if($adapter->stream_get_wrappers = array())
+            ->if($adapter->stream_get_wrappers = [])
             ->and($adapter->stream_wrapper_register = false)
             ->then
                 ->exception(function () use ($protocol) {
@@ -72,7 +72,7 @@ class stream extends test
     {
         $this
             ->if(testedClass::setAdapter($adapter = new test\adapter()))
-            ->and($adapter->stream_get_wrappers = array())
+            ->and($adapter->stream_get_wrappers = [])
             ->and($adapter->stream_wrapper_register = true)
             ->and($stream = testedClass::get())
             ->then

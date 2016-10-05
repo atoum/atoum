@@ -90,7 +90,7 @@ class variable extends atoum\test
                     ->hasMessage('Actual is undefined')
             ->if($diff->setActual($reference))
             ->then
-                ->array($diff->make())->isEqualTo(array(self::dumpAsString($reference)))
+                ->array($diff->make())->isEqualTo([self::dumpAsString($reference)])
         ;
     }
 

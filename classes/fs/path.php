@@ -82,7 +82,7 @@ class path
             $this->absolutize();
         }
 
-        $components = array();
+        $components = [];
 
         foreach (explode('/', ltrim($this->components, '/')) as $component) {
             switch ($component) {

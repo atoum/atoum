@@ -31,18 +31,18 @@ class configurable extends atoum\test
                 ->object($configurable->getAdapter())->isEqualTo(new atoum\adapter())
                 ->object($configurable->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
                 ->array($configurable->getConfigFiles())->isEmpty()
-                ->array($configurable->getHelp())->isEqualTo(array(
-                        array(
-                            array('-h', '--help'),
+                ->array($configurable->getHelp())->isEqualTo([
+                        [
+                            ['-h', '--help'],
                             null,
                             'Display this help'
-                        ),
-                        array(
-                            array('-c', '--configurations'),
+                        ],
+                        [
+                            ['-c', '--configurations'],
                             '<file>...',
                             'Use all configuration files <file>'
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->if($configurable = new testedClass($name = uniqid(), $adapter = new atoum\adapter()))
             ->then
@@ -50,18 +50,18 @@ class configurable extends atoum\test
                 ->object($configurable->getAdapter())->isIdenticalTo($adapter)
                 ->object($configurable->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
                 ->array($configurable->getConfigFiles())->isEmpty()
-                ->array($configurable->getHelp())->isEqualTo(array(
-                        array(
-                            array('-h', '--help'),
+                ->array($configurable->getHelp())->isEqualTo([
+                        [
+                            ['-h', '--help'],
                             null,
                             'Display this help'
-                        ),
-                        array(
-                            array('-c', '--configurations'),
+                        ],
+                        [
+                            ['-c', '--configurations'],
                             '<file>...',
                             'Use all configuration files <file>'
-                        )
-                    )
+                        ]
+                    ]
                 )
         ;
     }
@@ -97,7 +97,7 @@ class configurable extends atoum\test
             ->then
                 ->object($configurable->useConfigFile($file = uniqid()))->isIdenticalTo($configurable)
                 ->mock($includer)->call('includePath')->withArguments($file)->once()
-                ->array($configurable->getConfigFiles())->isEqualTo(array($file))
+                ->array($configurable->getConfigFiles())->isEqualTo([$file])
         ;
     }
 
@@ -154,16 +154,16 @@ class configurable extends atoum\test
             ->array(testedClass::getSubDirectoryPath(''))->isEmpty()
             ->array(testedClass::getSubDirectoryPath('', '/'))->isEmpty()
             ->array(testedClass::getSubDirectoryPath('', '\\'))->isEmpty()
-            ->array(testedClass::getSubDirectoryPath('/', '/'))->isEqualTo(array('/'))
-            ->array(testedClass::getSubDirectoryPath('/foo', '/'))->isEqualTo(array('/', '/foo/'))
-            ->array(testedClass::getSubDirectoryPath('/foo/', '/'))->isEqualTo(array('/', '/foo/'))
-            ->array(testedClass::getSubDirectoryPath('/foo/bar', '/'))->isEqualTo(array('/', '/foo/', '/foo/bar/'))
-            ->array(testedClass::getSubDirectoryPath('/foo/bar/', '/'))->isEqualTo(array('/', '/foo/', '/foo/bar/'))
-            ->array(testedClass::getSubDirectoryPath('c:\\', '\\'))->isEqualTo(array('c:\\'))
-            ->array(testedClass::getSubDirectoryPath('c:\foo', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\'))
-            ->array(testedClass::getSubDirectoryPath('c:\foo\\', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\'))
-            ->array(testedClass::getSubDirectoryPath('c:\foo\bar', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\', 'c:\foo\bar\\'))
-            ->array(testedClass::getSubDirectoryPath('c:\foo\bar\\', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\', 'c:\foo\bar\\'))
+            ->array(testedClass::getSubDirectoryPath('/', '/'))->isEqualTo(['/'])
+            ->array(testedClass::getSubDirectoryPath('/foo', '/'))->isEqualTo(['/', '/foo/'])
+            ->array(testedClass::getSubDirectoryPath('/foo/', '/'))->isEqualTo(['/', '/foo/'])
+            ->array(testedClass::getSubDirectoryPath('/foo/bar', '/'))->isEqualTo(['/', '/foo/', '/foo/bar/'])
+            ->array(testedClass::getSubDirectoryPath('/foo/bar/', '/'))->isEqualTo(['/', '/foo/', '/foo/bar/'])
+            ->array(testedClass::getSubDirectoryPath('c:\\', '\\'))->isEqualTo(['c:\\'])
+            ->array(testedClass::getSubDirectoryPath('c:\foo', '\\'))->isEqualTo(['c:\\', 'c:\foo\\'])
+            ->array(testedClass::getSubDirectoryPath('c:\foo\\', '\\'))->isEqualTo(['c:\\', 'c:\foo\\'])
+            ->array(testedClass::getSubDirectoryPath('c:\foo\bar', '\\'))->isEqualTo(['c:\\', 'c:\foo\\', 'c:\foo\bar\\'])
+            ->array(testedClass::getSubDirectoryPath('c:\foo\bar\\', '\\'))->isEqualTo(['c:\\', 'c:\foo\\', 'c:\foo\bar\\'])
         ;
     }
 }

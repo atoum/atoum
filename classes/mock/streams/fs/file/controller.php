@@ -198,7 +198,7 @@ class controller extends fs\controller
         if ($this->nextCallIsOverloaded(__FUNCTION__) === true) {
             return $this->invoke(__FUNCTION__, func_get_args());
         } else {
-            $this->addCall(__FUNCTION__, array());
+            $this->addCall(__FUNCTION__, []);
 
             return $this->eof;
         }
@@ -207,9 +207,9 @@ class controller extends fs\controller
     public function stream_tell()
     {
         if ($this->nextCallIsOverloaded(__FUNCTION__) === true) {
-            return $this->invoke(__FUNCTION__, array());
+            return $this->invoke(__FUNCTION__, []);
         } else {
-            $this->addCall(__FUNCTION__, array());
+            $this->addCall(__FUNCTION__, []);
 
             return ($this->offset === null ? $this->pointer : $this->pointer - $this->offset);
         }
@@ -322,9 +322,9 @@ class controller extends fs\controller
     public function stream_close()
     {
         if ($this->nextCallIsOverloaded(__FUNCTION__) === true) {
-            return $this->invoke(__FUNCTION__, array());
+            return $this->invoke(__FUNCTION__, []);
         } else {
-            $this->addCall(__FUNCTION__, array());
+            $this->addCall(__FUNCTION__, []);
 
             return true;
         }
@@ -421,7 +421,7 @@ class controller extends fs\controller
         $this->read = false;
         $this->write = false;
 
-        switch (str_replace(array('b', 't'), '', $mode)) {
+        switch (str_replace(['b', 't'], '', $mode)) {
             case 'r':
             case 'x':
                 $this->read = true;
@@ -459,7 +459,7 @@ class controller extends fs\controller
 
     protected static function getRawOpenMode($mode)
     {
-        return str_replace(array('b', 't', '+'), '', $mode);
+        return str_replace(['b', 't', '+'], '', $mode);
     }
 
     protected static function checkOpenMode($mode)

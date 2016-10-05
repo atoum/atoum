@@ -5,8 +5,8 @@ namespace mageekguy\atoum\tests\units\iterators\filters\recursives\atoum;
 require __DIR__ . '/../../../../../runner.php';
 
 use mageekguy\atoum;
-use mageekguy\atoum\mock;
 use mageekguy\atoum\iterators\filters\recursives;
+use mageekguy\atoum\mock;
 
 class source extends atoum\test
 {

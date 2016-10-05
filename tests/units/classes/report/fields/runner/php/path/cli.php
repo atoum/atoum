@@ -3,10 +3,9 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\php\path;
 
 use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\tests\units;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\runner;
 
 require_once __DIR__ . '/../../../../../../runner.php';

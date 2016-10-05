@@ -7,15 +7,15 @@ use mageekguy\atoum\php\tokenizer\iterators;
 
 class phpNamespace extends tokenizer\iterator
 {
-    protected $constants = array();
-    protected $functions = array();
-    protected $classes = array();
+    protected $constants = [];
+    protected $functions = [];
+    protected $classes = [];
 
     public function reset()
     {
-        $this->functions = array();
-        $this->constants = array();
-        $this->classes = array();
+        $this->functions = [];
+        $this->constants = [];
+        $this->classes = [];
 
         return parent::reset();
     }

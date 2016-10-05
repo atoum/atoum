@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\test\adapter\call;
 
 use mageekguy\atoum\test\adapter\call;
-use mageekguy\atoum\test\adapter\call\arguments;
 
 class decorator
 {

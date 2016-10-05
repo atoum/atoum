@@ -6,9 +6,9 @@ require_once __DIR__ . '/../../constants.php';
 
 use mageekguy\atoum;
 use mageekguy\atoum\cli;
+use mageekguy\atoum\exceptions;
 use mageekguy\atoum\php;
 use mageekguy\atoum\writers;
-use mageekguy\atoum\exceptions;
 
 class runner extends atoum\script\configurable
 {
@@ -21,11 +21,11 @@ class runner extends atoum\script\configurable
     protected $configuratorFactory = null;
     protected $defaultReportFactory = null;
     protected $scoreFile = null;
-    protected $arguments = array();
-    protected $defaultArguments = array();
-    protected $namespaces = array();
-    protected $tags = array();
-    protected $methods = array();
+    protected $arguments = [];
+    protected $defaultArguments = [];
+    protected $namespaces = [];
+    protected $tags = [];
+    protected $methods = [];
     protected $loop = false;
     protected $looper;
 
@@ -199,7 +199,7 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function run(array $arguments = array())
+    public function run(array $arguments = [])
     {
         # Default bootstrap file MUST be included here because some arguments on the command line can include some tests which depends of this file.
         # So, this file must be included BEFORE argument parsing which is done in script::run().
@@ -670,7 +670,7 @@ class runner extends atoum\script\configurable
 
                         $script->version();
                     },
-                    array('-v', '--version'),
+                    ['-v', '--version'],
                     null,
                     $this->locale->_('Display version')
                 )
@@ -688,19 +688,19 @@ class runner extends atoum\script\configurable
                             $script->increaseVerbosityLevel();
                         }
                     },
-                    array('+verbose', '++verbose'),
+                    ['+verbose', '++verbose'],
                     null,
                     $this->locale->_('Enable verbose mode')
                 )
             ->addArgumentHandler(
                     function ($script, $argument, $values) {
                         if (sizeof($values) === 0) {
-                            $values = array(getcwd());
+                            $values = [getcwd()];
                         }
 
                         $script->init(current($values));
                     },
-                    array('--init'),
+                    ['--init'],
                     '<path/to/directory>',
                     $this->locale->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)', $this->getDirectory())
                 )
@@ -712,7 +712,7 @@ class runner extends atoum\script\configurable
 
                         $script->setPhpPath(reset($path));
                     },
-                    array('-p', '--php'),
+                    ['-p', '--php'],
                     '<path/to/php/binary>',
                     $this->locale->_('Path to PHP binary which must be used to run tests')
                 )
@@ -724,7 +724,7 @@ class runner extends atoum\script\configurable
 
                         $script->setDefaultReportTitle(reset($defaultReportTitle));
                     },
-                    array('-drt', '--default-report-title'),
+                    ['-drt', '--default-report-title'],
                     '<string>',
                     $this->locale->_('Define default report title with <string>')
                 )
@@ -736,7 +736,7 @@ class runner extends atoum\script\configurable
 
                         $script->setScoreFile(reset($file));
                     },
-                    array('-sf', '--score-file'),
+                    ['-sf', '--score-file'],
                     '<file>',
                     $this->locale->_('Save score in file <file>')
                 )
@@ -748,7 +748,7 @@ class runner extends atoum\script\configurable
 
                         $script->setMaxChildrenNumber(reset($maxChildrenNumber));
                     },
-                    array('-mcn', '--max-children-number'),
+                    ['-mcn', '--max-children-number'],
                     '<integer>',
                     $this->locale->_('Maximum number of sub-processus which will be run simultaneously')
                 )
@@ -760,7 +760,7 @@ class runner extends atoum\script\configurable
 
                         $script->disableCodeCoverage();
                     },
-                    array('-ncc', '--no-code-coverage'),
+                    ['-ncc', '--no-code-coverage'],
                     null,
                     $this->locale->_('Disable code coverage')
                 )
@@ -772,7 +772,7 @@ class runner extends atoum\script\configurable
 
                         $script->excludeDirectoriesFromCoverage($directories);
                     },
-                    array('-nccid', '--no-code-coverage-in-directories'),
+                    ['-nccid', '--no-code-coverage-in-directories'],
                     '<directory>...',
                     $this->locale->_('Disable code coverage in directories <directory>')
                 )
@@ -784,7 +784,7 @@ class runner extends atoum\script\configurable
 
                         $script->excludeNamespacesFromCoverage($namespaces);
                     },
-                    array('-nccfns', '--no-code-coverage-for-namespaces'),
+                    ['-nccfns', '--no-code-coverage-for-namespaces'],
                     '<namespace>...',
                     $this->locale->_('Disable code coverage for namespaces <namespace>')
                 )
@@ -796,7 +796,7 @@ class runner extends atoum\script\configurable
 
                         $script->excludeClassesFromCoverage($classes);
                     },
-                    array('-nccfc', '--no-code-coverage-for-classes'),
+                    ['-nccfc', '--no-code-coverage-for-classes'],
                     '<class>...',
                     $this->locale->_('Disable code coverage for classes <class>')
                 )
@@ -808,7 +808,7 @@ class runner extends atoum\script\configurable
 
                         $script->excludeMethodsFromCoverage($classes);
                     },
-                    array('-nccfm', '--no-code-coverage-for-methods'),
+                    ['-nccfm', '--no-code-coverage-for-methods'],
                     '<method>...',
                     $this->locale->_('Disable code coverage for methods <method>')
                 )
@@ -820,7 +820,7 @@ class runner extends atoum\script\configurable
 
                         $script->enableBranchesAndPathsCoverage();
                     },
-                    array('-ebpc', '--enable-branch-and-path-coverage'),
+                    ['-ebpc', '--enable-branch-and-path-coverage'],
                     null,
                     $this->locale->_('Enable branch and path coverage')
                 )
@@ -832,7 +832,7 @@ class runner extends atoum\script\configurable
 
                         $script->addTests($files);
                     },
-                    array('-f', '--files'),
+                    ['-f', '--files'],
                     '<file>...',
                     $this->locale->_('Execute all unit test files <file>')
                 )
@@ -844,7 +844,7 @@ class runner extends atoum\script\configurable
 
                         $script->addTestsFromDirectories($directories);
                     },
-                    array('-d', '--directories'),
+                    ['-d', '--directories'],
                     '<directory>...',
                     $this->locale->_('Execute unit test files in all <directory>')
                 )
@@ -856,7 +856,7 @@ class runner extends atoum\script\configurable
 
                         $script->acceptTestFileExtensions($extensions);
                     },
-                    array('-tfe', '--test-file-extensions'),
+                    ['-tfe', '--test-file-extensions'],
                     '<extension>...',
                     $this->locale->_('Execute unit test files with one of extensions <extension>')
                 )
@@ -868,7 +868,7 @@ class runner extends atoum\script\configurable
 
                         $script->addTestsFromPatterns($patterns);
                     },
-                    array('-g', '--glob'),
+                    ['-g', '--glob'],
                     '<pattern>...',
                     $this->locale->_('Execute unit test files which match <pattern>')
                 )
@@ -880,7 +880,7 @@ class runner extends atoum\script\configurable
 
                         $script->testTags($tags);
                     },
-                    array('-t', '--tags'),
+                    ['-t', '--tags'],
                     '<tag>...',
                     $this->locale->_('Execute only unit test with tags <tag>')
                 )
@@ -900,7 +900,7 @@ class runner extends atoum\script\configurable
                             $script->testMethod($method[0], $method[1]);
                         }
                     },
-                    array('-m', '--methods'),
+                    ['-m', '--methods'],
                     '<class::method>...',
                     $this->locale->_('Execute all <class::method>, * may be used as wildcard for class name or method name')
                 )
@@ -912,7 +912,7 @@ class runner extends atoum\script\configurable
 
                         $script->testNamespaces($namespaces);
                     },
-                    array('-ns', '--namespaces'),
+                    ['-ns', '--namespaces'],
                     '<namespace>...',
                     $this->locale->_('Execute all classes in all namespaces <namespace>')
                 )
@@ -924,7 +924,7 @@ class runner extends atoum\script\configurable
 
                         $script->enableLoopMode();
                     },
-                    array('-l', '--loop'),
+                    ['-l', '--loop'],
                     null,
                     $this->locale->_('Execute tests in an infinite loop')
                 )
@@ -936,7 +936,7 @@ class runner extends atoum\script\configurable
 
                         $script->disableLoopMode();
                     },
-                    array('--disable-loop-mode'),
+                    ['--disable-loop-mode'],
                     null,
                     null,
                     3
@@ -949,7 +949,7 @@ class runner extends atoum\script\configurable
 
                         $script->testIt();
                     },
-                    array('--test-it'),
+                    ['--test-it'],
                     null,
                     $this->locale->_('Execute atoum unit tests')
                 )
@@ -957,7 +957,7 @@ class runner extends atoum\script\configurable
                     function ($script, $argument, $values) {
                         $script->writeError('--test-all argument is deprecated, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead');
                     },
-                    array('--test-all'),
+                    ['--test-all'],
                     null,
                     $this->locale->_('DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead')
                 )
@@ -969,7 +969,7 @@ class runner extends atoum\script\configurable
 
                         \mageekguy\atoum\cli::forceTerminal();
                     },
-                    array('-ft', '--force-terminal'),
+                    ['-ft', '--force-terminal'],
                     null,
                     $this->locale->_('Force output as in terminal')
                 )
@@ -981,7 +981,7 @@ class runner extends atoum\script\configurable
 
                         $script->setAutoloaderFile($values[0]);
                     },
-                    array('-af', '--autoloader-file'),
+                    ['-af', '--autoloader-file'],
                     '<file>',
                     $this->locale->_('Include autoloader <file> before executing each test method'),
                     2
@@ -994,7 +994,7 @@ class runner extends atoum\script\configurable
 
                         $script->setBootstrapFile($values[0]);
                     },
-                    array('-bf', '--bootstrap-file'),
+                    ['-bf', '--bootstrap-file'],
                     '<file>',
                     $this->locale->_('Include bootstrap <file> before executing each test method'),
                     2
@@ -1010,7 +1010,7 @@ class runner extends atoum\script\configurable
 
                         $script->setReport($lightReport);
                     },
-                    array('-ulr', '--use-light-report'),
+                    ['-ulr', '--use-light-report'],
                     null,
                     $this->locale->_('Use "light" CLI report'),
                     PHP_INT_MAX
@@ -1026,7 +1026,7 @@ class runner extends atoum\script\configurable
 
                         $script->setReport($tapReport);
                     },
-                    array('-utr', '--use-tap-report'),
+                    ['-utr', '--use-tap-report'],
                     null,
                     $this->locale->_('Use TAP report'),
                     PHP_INT_MAX
@@ -1039,7 +1039,7 @@ class runner extends atoum\script\configurable
 
                         $script->enableDebugMode();
                     },
-                    array('--debug'),
+                    ['--debug'],
                     null,
                     $this->locale->_('Enable debug mode')
                 )
@@ -1051,7 +1051,7 @@ class runner extends atoum\script\configurable
 
                         $script->setXdebugConfig($values[0]);
                     },
-                    array('-xc', '--xdebug-config'),
+                    ['-xc', '--xdebug-config'],
                     null,
                     $this->locale->_('Set XDEBUG_CONFIG variable')
                 )
@@ -1059,7 +1059,7 @@ class runner extends atoum\script\configurable
                     function ($script, $argument, $values) {
                         $script->failIfVoidMethods();
                     },
-                    array('-fivm', '--fail-if-void-methods'),
+                    ['-fivm', '--fail-if-void-methods'],
                     null,
                     $this->locale->_('Make the test suite fail if there is at least one void test method')
                 )
@@ -1067,7 +1067,7 @@ class runner extends atoum\script\configurable
                     function ($script, $argument, $values) {
                         $script->failIfSkippedMethods();
                     },
-                    array('-fism', '--fail-if-skipped-methods'),
+                    ['-fism', '--fail-if-skipped-methods'],
                     null,
                     $this->locale->_('Make the test suite fail if there is at least one skipped test method')
                 )
@@ -1140,7 +1140,7 @@ class runner extends atoum\script\configurable
                 }
 
                 $methods = $this->methods;
-                $oldFailMethods = array();
+                $oldFailMethods = [];
 
                 if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score) {
                     $oldFailMethods = self::getFailMethods($oldScore);
@@ -1263,7 +1263,7 @@ class runner extends atoum\script\configurable
 
     private function getClassesOf($methods)
     {
-        return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
+        return sizeof($methods) <= 0 || isset($methods['*']) === true ? [] : array_keys($methods);
     }
 
     private function copy($from, $to)

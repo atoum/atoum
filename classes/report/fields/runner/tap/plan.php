@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\report\fields\runner\tap;
 
-use mageekguy\atoum\runner;
 use mageekguy\atoum\report;
+use mageekguy\atoum\runner;
 
 class plan extends report\field
 {
@@ -11,7 +11,7 @@ class plan extends report\field
 
     public function __construct()
     {
-        parent::__construct(array(runner::runStart));
+        parent::__construct([runner::runStart]);
     }
 
     public function __toString()

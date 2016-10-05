@@ -3,11 +3,11 @@
 namespace mageekguy\atoum\reports\realtime;
 
 use mageekguy\atoum;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\reports\realtime;
-use mageekguy\atoum\report\fields\test;
+use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\report\fields\runner;
+use mageekguy\atoum\report\fields\test;
+use mageekguy\atoum\reports\realtime;
 
 class phing extends realtime
 {
@@ -178,12 +178,12 @@ class phing extends realtime
         $exceptionColorizer = new colorizer('0;35');
         $exceptionPrompt = clone $secondLevelPrompt;
         $exceptionPrompt->setColorizer($exceptionColorizer);
-        
+
         $uncompletedTestColorizer = new colorizer('0;37');
         $uncompletedTestMethodPrompt = clone $secondLevelPrompt;
         $uncompletedTestMethodPrompt->setColorizer($uncompletedTestColorizer);
         $uncompletedTestOutputPrompt = new prompt('  ', $uncompletedTestColorizer);
-        
+
         $voidTestColorizer = new colorizer('0;34');
         $voidTestMethodPrompt = clone $secondLevelPrompt;
         $voidTestMethodPrompt->setColorizer($voidTestColorizer);
@@ -309,14 +309,14 @@ class phing extends realtime
         ;
 
         $this->addField($runnerVoidField);
-        
+
         $runnerSkippedField = new runner\tests\skipped\cli();
         $runnerSkippedField
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($skippedTestColorizer)
             ->setMethodPrompt($skippedTestMethodPrompt)
         ;
-        
+
         $this->addField($runnerSkippedField);
 
         if ($this->showProgress === true) {

@@ -2,7 +2,6 @@
 
 namespace mageekguy\atoum\report\fields\runner\failures\execute\unix;
 
-use mageekguy\atoum;
 use mageekguy\atoum\report\fields\runner\failures;
 
 class phpstorm extends failures\execute

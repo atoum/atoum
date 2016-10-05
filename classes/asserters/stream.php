@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\test;
 
 class stream extends atoum\asserter
 {

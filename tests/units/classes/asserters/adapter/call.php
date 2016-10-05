@@ -182,7 +182,7 @@ class call extends atoum
             ->given($this->newTestedInstance)
             ->then
                 ->object($this->testedInstance->before($asserter1 = new \mock\atoum\asserters\adapter\call()))->isTestedInstance
-                ->array($this->testedInstance->getBefore())->isEqualTo(array($asserter1))
+                ->array($this->testedInstance->getBefore())->isEqualTo([$asserter1])
                 ->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
                 ->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
 
@@ -191,7 +191,7 @@ class call extends atoum
                             $asserter3 = new \mock\atoum\asserters\adapter\call()
                         )
                     )->isTestedInstance
-                ->array($this->testedInstance->getBefore())->isEqualTo(array($asserter1, $asserter2, $asserter3))
+                ->array($this->testedInstance->getBefore())->isEqualTo([$asserter1, $asserter2, $asserter3])
                 ->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
                 ->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
         ;
@@ -203,7 +203,7 @@ class call extends atoum
             ->given($this->newTestedInstance)
             ->then
                 ->object($this->testedInstance->after($asserter1 = new \mock\atoum\asserters\adapter\call()))->isTestedInstance
-                ->array($this->testedInstance->getAfter())->isEqualTo(array($asserter1))
+                ->array($this->testedInstance->getAfter())->isEqualTo([$asserter1])
                 ->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
                 ->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
 
@@ -212,7 +212,7 @@ class call extends atoum
                             $asserter3 = new \mock\atoum\asserters\adapter\call()
                         )
                     )->isTestedInstance
-                ->array($this->testedInstance->getAfter())->isEqualTo(array($asserter1, $asserter2, $asserter3))
+                ->array($this->testedInstance->getAfter())->isEqualTo([$asserter1, $asserter2, $asserter3])
                 ->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
                 ->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
         ;

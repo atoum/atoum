@@ -289,27 +289,27 @@ class phpArray extends variable implements \arrayAccess
 
     public function isEqualTo($value, $failMessage = null)
     {
-        return $this->callAssertion(__FUNCTION__, array($value, $failMessage));
+        return $this->callAssertion(__FUNCTION__, [$value, $failMessage]);
     }
 
     public function isNotEqualTo($value, $failMessage = null)
     {
-        return $this->callAssertion(__FUNCTION__, array($value, $failMessage));
+        return $this->callAssertion(__FUNCTION__, [$value, $failMessage]);
     }
 
     public function isIdenticalTo($value, $failMessage = null)
     {
-        return $this->callAssertion(__FUNCTION__, array($value, $failMessage));
+        return $this->callAssertion(__FUNCTION__, [$value, $failMessage]);
     }
 
     public function isNotIdenticalTo($value, $failMessage = null)
     {
-        return $this->callAssertion(__FUNCTION__, array($value, $failMessage));
+        return $this->callAssertion(__FUNCTION__, [$value, $failMessage]);
     }
 
     public function isReferenceTo(& $reference, $failMessage = null)
     {
-        return $this->callAssertion(__FUNCTION__, array(& $reference, $failMessage));
+        return $this->callAssertion(__FUNCTION__, [& $reference, $failMessage]);
     }
 
     protected function containsValue($value, $failMessage, $strict)
@@ -410,7 +410,7 @@ class phpArray extends variable implements \arrayAccess
     {
         $this->valueIsSet();
 
-        $unknownValues = array();
+        $unknownValues = [];
 
         foreach ($values as $value) {
             if (in_array($value, $this->value, $strict) === false) {
@@ -439,7 +439,7 @@ class phpArray extends variable implements \arrayAccess
     {
         $this->valueIsSet();
 
-        $knownValues = array();
+        $knownValues = [];
 
         foreach ($values as $value) {
             if (in_array($value, $this->value, $strict) === true) {
@@ -471,18 +471,18 @@ class phpArray extends variable implements \arrayAccess
 
     protected function getKeysAsserter()
     {
-        return $this->generator->__call('phpArray', array(array_keys($this->valueIsSet()->value)));
+        return $this->generator->__call('phpArray', [array_keys($this->valueIsSet()->value)]);
     }
 
     protected function getSizeAsserter()
     {
-        return $this->generator->__call('integer', array(sizeof($this->valueIsSet()->value)));
+        return $this->generator->__call('integer', [sizeof($this->valueIsSet()->value)]);
     }
 
     protected function callAssertion($method, array $arguments)
     {
         if ($this->innerAsserterCanUse($method) === false) {
-            call_user_func_array(array('parent', $method), $arguments);
+            call_user_func_array(['parent', $method], $arguments);
         } else {
             $this->callInnerAsserterMethod($method, $arguments);
         }
@@ -497,7 +497,7 @@ class phpArray extends variable implements \arrayAccess
 
     protected function callInnerAsserterMethod($method, $arguments)
     {
-        call_user_func_array(array($this->innerAsserter->setWith($this->innerValue), $method), $arguments);
+        call_user_func_array([$this->innerAsserter->setWith($this->innerValue), $method], $arguments);
 
         $this->innerAsserterUsed = true;
 

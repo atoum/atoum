@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\report\fields\test;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
 use mageekguy\atoum\report;
+use mageekguy\atoum\test;
 
 abstract class run extends report\field
 {
@@ -12,7 +12,7 @@ abstract class run extends report\field
 
     public function __construct()
     {
-        parent::__construct(array(test::runStart));
+        parent::__construct([test::runStart]);
     }
 
     public function getTestClass()

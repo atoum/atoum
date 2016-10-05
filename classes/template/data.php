@@ -117,7 +117,7 @@ class data
 
     public function getByTag($tag)
     {
-        return array();
+        return [];
     }
 
     public function getById($id, $fromRoot = true)
@@ -137,6 +137,6 @@ class data
 
     public function getChildren()
     {
-        return array();
+        return [];
     }
 }

@@ -3,10 +3,9 @@
 namespace mageekguy\atoum\report\fields\test\event;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
-use mageekguy\atoum\runner;
 use mageekguy\atoum\report;
-use mageekguy\atoum\exceptions;
+use mageekguy\atoum\runner;
+use mageekguy\atoum\test;
 
 class tap extends report\fields\event
 {
@@ -15,7 +14,7 @@ class tap extends report\fields\event
 
     public function __construct()
     {
-        parent::__construct(array(
+        parent::__construct([
                 runner::runStart,
                 test::fail,
                 test::error,
@@ -25,7 +24,7 @@ class tap extends report\fields\event
                 test::exception,
                 test::runtimeException,
                 test::success
-            )
+            ]
         );
     }
 

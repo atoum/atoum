@@ -20,7 +20,7 @@ abstract class script
     protected $argumentsParser = null;
 
     private $doRun = true;
-    private $help = array();
+    private $help = [];
 
     public function __construct($name, adapter $adapter = null)
     {
@@ -258,7 +258,7 @@ abstract class script
     public function addArgumentHandler(\closure $handler, array $arguments, $values = null, $help = null, $priority = 0)
     {
         if ($help !== null) {
-            $this->help[] = array($arguments, $values, $help);
+            $this->help[] = [$arguments, $values, $help];
         }
 
         $this->argumentsParser->addHandler($handler, $arguments, $priority);
@@ -273,7 +273,7 @@ abstract class script
         return $this;
     }
 
-    public function run(array $arguments = array())
+    public function run(array $arguments = [])
     {
         $this->adapter->ini_set('log_errors_max_len', 0);
         $this->adapter->ini_set('log_errors', 'Off');
@@ -393,7 +393,7 @@ abstract class script
     {
         $this->argumentsParser->resetHandlers();
 
-        $this->help = array();
+        $this->help = [];
 
         return $this;
     }
@@ -422,7 +422,7 @@ abstract class script
     protected function writeHelpOptions()
     {
         if ($this->help) {
-            $arguments = array();
+            $arguments = [];
 
             foreach ($this->help as $help) {
                 if ($help[1] !== null) {

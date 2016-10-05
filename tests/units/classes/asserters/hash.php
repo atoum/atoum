@@ -56,7 +56,7 @@ class hash extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-            ->if($this->testedInstance->setWith('z'. substr(hash('sha1', uniqid()), 1)))
+            ->if($this->testedInstance->setWith('z' . substr(hash('sha1', uniqid()), 1)))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->isSha1();
@@ -122,7 +122,7 @@ class hash extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-            ->if($this->testedInstance->setWith('z'. substr(hash('sha256', uniqid()), 1)))
+            ->if($this->testedInstance->setWith('z' . substr(hash('sha256', uniqid()), 1)))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->isSha256();
@@ -188,7 +188,7 @@ class hash extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-            ->if($this->testedInstance->setWith('z'. substr(hash('sha512', uniqid()), 1)))
+            ->if($this->testedInstance->setWith('z' . substr(hash('sha512', uniqid()), 1)))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->isSha512();
@@ -254,7 +254,7 @@ class hash extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-            ->if($this->testedInstance->setWith('z'. substr(hash('md5', uniqid()), 1)))
+            ->if($this->testedInstance->setWith('z' . substr(hash('md5', uniqid()), 1)))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->isMd5();

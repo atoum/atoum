@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\scripts;
 
 use mageekguy\atoum;
-use mageekguy\atoum\iterators;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\iterators;
 
 class compiler extends atoum\script
 {
@@ -61,7 +61,7 @@ class compiler extends atoum\script
 
                     $script->help();
                 },
-                array('-h', '--help'),
+                ['-h', '--help'],
                 null,
                 'Display this help'
             )
@@ -73,7 +73,7 @@ class compiler extends atoum\script
 
                     $script->setSrcDirectory($values[0]);
                 },
-                array('-sd', '--src-directory'),
+                ['-sd', '--src-directory'],
                 '<directory>',
                 $this->locale->_('Source directory <dir>')
             )
@@ -85,7 +85,7 @@ class compiler extends atoum\script
 
                     $script->setDestinationFile($values[0]);
                 },
-                array('-df', '--destination-file'),
+                ['-df', '--destination-file'],
                 '<file>',
                 $this->locale->_('Destination file <file>')
             )
@@ -97,7 +97,7 @@ class compiler extends atoum\script
 
                     $script->setBootstrapFile($values[0]);
                 },
-                array('-bf', '--bootstrap-file'),
+                ['-bf', '--bootstrap-file'],
                 '<file>',
                 $this->locale->_('Bootstrap file <file>')
             )
@@ -106,7 +106,7 @@ class compiler extends atoum\script
 
     protected function doRun()
     {
-        $data = array();
+        $data = [];
 
         $srcDirectory = new atoum\fs\path($this->srcDirectory);
 

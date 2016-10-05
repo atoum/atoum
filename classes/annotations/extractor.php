@@ -4,7 +4,7 @@ namespace mageekguy\atoum\annotations;
 
 class extractor
 {
-    protected $handlers = array();
+    protected $handlers = [];
 
     public function extract($comments)
     {
@@ -39,7 +39,7 @@ class extractor
 
                         foreach ($this->handlers as $handlerAnnotation => $handlerValue) {
                             if ($annotation == strtolower($handlerAnnotation)) {
-                                call_user_func_array($handlerValue, array($value));
+                                call_user_func_array($handlerValue, [$value]);
                             }
                         }
                     }
@@ -73,7 +73,7 @@ class extractor
 
     public function resetHandlers()
     {
-        $this->handlers = array();
+        $this->handlers = [];
 
         return $this;
     }

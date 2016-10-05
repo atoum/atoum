@@ -3,12 +3,12 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\tests\coverage;
 
 use mageekguy\atoum;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\score;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
+use mageekguy\atoum\mock;
 use mageekguy\atoum\report\fields\runner\tests\coverage\phing as testedClass;
+use mageekguy\atoum\score;
 
 require_once __DIR__ . '/../../../../../../runner.php';
 
@@ -31,7 +31,7 @@ class phing extends atoum\test
                 ->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
                 ->object($field->getLocale())->isEqualTo(new locale())
                 ->variable($field->getCoverage())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
                 ->boolean($field->missingCodeCoverageIsShowed())->isTrue()
         ;
     }
@@ -187,7 +187,7 @@ class phing extends atoum\test
             ->and($classController->getFileName = function () use (& $classFile) {
                 return $classFile;
             })
-            ->and($classController->getTraits = array())
+            ->and($classController->getTraits = [])
             ->and($classController->getStartLine = 1)
             ->and($classController->getEndLine = 12)
             ->and($class = new \mock\reflectionClass(uniqid(), $classController))
@@ -204,30 +204,30 @@ class phing extends atoum\test
             })
             ->and($methodController->getStartLine = 6)
             ->and($methodController->getEndLine = 8)
-            ->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+            ->and($classController->getMethods = [new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)])
             ->and($className = uniqid())
             ->and($methodName = uniqid())
             ->and($scoreCoverage->setReflectionClassFactory(function () use ($class) {
                 return $class;
             }))
-            ->and($scoreCoverage->addXdebugDataForTest($this, $xdebugData = array(
+            ->and($scoreCoverage->addXdebugDataForTest($this, $xdebugData = [
                           ($classFile = uniqid()) =>
-                             array(
+                             [
                                 5 => 1,
                                 6 => 2,
                                 7 => 3,
                                 8 => 2,
                                 9 => 1
-                            ),
+                            ],
                           uniqid() =>
-                             array(
+                             [
                                 5 => 2,
                                 6 => 3,
                                 7 => 4,
                                 8 => 3,
                                 9 => 2
-                            )
-                        )
+                            ]
+                        ]
                     )
                 )
             ->and($defaultField = new testedClass())

@@ -26,10 +26,10 @@ class tap extends atoum\test
             ->then
                 ->object($report->getLocale())->isEqualTo(new atoum\locale())
                 ->object($report->getAdapter())->isEqualTo(new atoum\adapter())
-                ->array($report->getFields())->isEqualTo(array(
+                ->array($report->getFields())->isEqualTo([
                         $planField,
                         $eventField
-                    )
+                    ]
                 )
         ;
     }

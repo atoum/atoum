@@ -24,7 +24,7 @@ class void extends atoum\test
             ->if($field = new testedClass())
             ->then
                 ->variable($field->getRunner())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(runner::runStop))
+                ->array($field->getEvents())->isEqualTo([runner::runStop])
         ;
     }
 

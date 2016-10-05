@@ -38,7 +38,7 @@ class generator extends asserter\generator
         return $this->test;
     }
 
-    public function getAsserterInstance($asserter, array $arguments = array(), atoum\test $test = null)
+    public function getAsserterInstance($asserter, array $arguments = [], atoum\test $test = null)
     {
         return parent::getAsserterInstance($asserter, $arguments, $test ?: $this->test);
     }

@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\reports\asynchronous;
 
 use mageekguy\atoum;
-use mageekguy\atoum\runner;
 use mageekguy\atoum\report;
 use mageekguy\atoum\reports\asynchronous as reports;
+use mageekguy\atoum\runner;
 
 require_once __DIR__ . '/../../../runner.php';
 
@@ -85,11 +85,11 @@ class xunit extends atoum\test
             ->and($test->setScore($testScore))
             ->and($path = join(
                 DIRECTORY_SEPARATOR,
-                array(
+                [
                     __DIR__,
                     'xunit',
                     'resources'
-                )
+                ]
             ))
             ->and($testScore->addDuration(uniqid(), $class, $method, $duration = 1))
             ->and($testScore->addUncompletedMethod(uniqid(), $class, $otherMethod, $exitCode = 1, $output = 'output'))
@@ -102,7 +102,7 @@ class xunit extends atoum\test
             ->and($score->merge($testScore))
             ->and($report->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '1.xml')))
+                ->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, [$path, '1.xml']))
             ->if($adapter->get_class = $otherClass = 'otherClass')
             ->and($test->setScore($testScore = new atoum\test\score()))
             ->and($test->getMockController()->getCurrentMethod[4] = $otherMethod)
@@ -116,7 +116,7 @@ class xunit extends atoum\test
             ->and($report->handleEvent(atoum\test::afterTestMethod, $test))
             ->and($report->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '2.xml')))
+                ->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, [$path, '2.xml']))
             ->if($adapter->get_class = $thirdClassFqn = 'package\\thirdClass')
             ->and($test->setScore($testScore = new atoum\test\score()))
             ->and($test->getMockController()->getCurrentMethod[6] = $fourthMethod = 'fourthMethod')
@@ -125,7 +125,7 @@ class xunit extends atoum\test
             ->and($report->handleEvent(atoum\test::afterTestMethod, $test))
             ->and($report->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '3.xml')))
+                ->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, [$path, '3.xml']))
         ;
     }
 }

@@ -598,7 +598,7 @@ class iterator extends atoum\test
             ->then
                 ->object($this->testedInstance->append($innerIterator))->isTestedInstance
                 ->sizeOf($this->testedInstance)->isZero()
-                ->array($innerIterator->getSkipedValues())->isEqualTo(array($skipedValue))
+                ->array($innerIterator->getSkipedValues())->isEqualTo([$skipedValue])
             ->if(
                 $this->newTestedInstance,
                 $this->testedInstance->skipValue($skipedValue1 = uniqid()),
@@ -619,9 +619,9 @@ class iterator extends atoum\test
             ->if($this->newTestedInstance)
             ->then
                 ->object($this->testedInstance->skipValue($skipedValue = uniqid()))->isTestedInstance
-                ->array($this->testedInstance->getSkipedValues())->isEqualTo(array($skipedValue))
+                ->array($this->testedInstance->getSkipedValues())->isEqualTo([$skipedValue])
                 ->object($this->testedInstance->skipValue($skipedValue))->isTestedInstance
-                ->array($this->testedInstance->getSkipedValues())->isEqualTo(array($skipedValue))
+                ->array($this->testedInstance->getSkipedValues())->isEqualTo([$skipedValue])
         ;
     }
 
@@ -805,43 +805,43 @@ class iterator extends atoum\test
         $this
             ->if($this->newTestedInstance)
             ->then
-                ->object($this->testedInstance->goToNextTagWhichIsNot(array()))->isTestedInstance
+                ->object($this->testedInstance->goToNextTagWhichIsNot([]))->isTestedInstance
             ->if($this->testedInstance->append(new tokenizer\token(T_FUNCTION)))
             ->then
                 ->integer($this->testedInstance->key())->isZero()
-                ->object($this->testedInstance->goToNextTagWhichIsNot(array(T_WHITESPACE)))->isTestedInstance
+                ->object($this->testedInstance->goToNextTagWhichIsNot([T_WHITESPACE]))->isTestedInstance
                 ->variable($this->testedInstance->key())->isNull()
             ->if($this->testedInstance->append(new tokenizer\token(T_WHITESPACE)))
             ->then
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_STRING)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_STRING]))->isTestedInstance
                 ->integer($this->testedInstance->key())->isEqualTo(1)
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_WHITESPACE)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_WHITESPACE]))->isTestedInstance
                 ->variable($this->testedInstance->key())->isNull()
             ->if($this->testedInstance->append(new tokenizer\token(T_COMMENT)))
             ->then
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_STRING)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_STRING]))->isTestedInstance
                 ->integer($this->testedInstance->key())->isEqualTo(1)
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_WHITESPACE)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_WHITESPACE]))->isTestedInstance
                 ->integer($this->testedInstance->key())->isEqualTo(2)
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_COMMENT)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_COMMENT]))->isTestedInstance
                 ->integer($this->testedInstance->key())->isEqualTo(1)
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_WHITESPACE, T_COMMENT)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_WHITESPACE, T_COMMENT]))->isTestedInstance
                 ->variable($this->testedInstance->key())->isNull()
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_COMMENT, T_WHITESPACE)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_COMMENT, T_WHITESPACE]))->isTestedInstance
                 ->variable($this->testedInstance->key())->isNull()
             ->if($this->testedInstance->append(new tokenizer\token(T_STRING)))
             ->then
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_STRING)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_STRING]))->isTestedInstance
                 ->integer($this->testedInstance->key())->isEqualTo(1)
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_WHITESPACE)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_WHITESPACE]))->isTestedInstance
                 ->integer($this->testedInstance->key())->isEqualTo(2)
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_COMMENT)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_COMMENT]))->isTestedInstance
                 ->integer($this->testedInstance->key())->isEqualTo(1)
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_WHITESPACE, T_COMMENT)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_WHITESPACE, T_COMMENT]))->isTestedInstance
                 ->integer($this->testedInstance->key())->isEqualTo(3)
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_COMMENT, T_WHITESPACE)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_COMMENT, T_WHITESPACE]))->isTestedInstance
                 ->integer($this->testedInstance->key())->isEqualTo(3)
-                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot(array(T_COMMENT, T_WHITESPACE, T_STRING)))->isTestedInstance
+                ->object($this->testedInstance->rewind()->goToNextTagWhichIsNot([T_COMMENT, T_WHITESPACE, T_STRING]))->isTestedInstance
                 ->variable($this->testedInstance->key())->isNull()
         ;
     }

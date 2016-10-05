@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\scripts\phar;
 
 use mageekguy\atoum;
-use mageekguy\atoum\scripts;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\scripts;
 
 class stub extends scripts\runner
 {
@@ -174,13 +174,13 @@ class stub extends scripts\runner
 
         $this->writeMessage($this->locale->_('Checking if a new version is available on Github...'), false);
 
-        $httpContext = stream_context_create(array(
-            'http' => array(
+        $httpContext = stream_context_create([
+            'http' => [
                     'method' => 'GET',
                     'protocol_version' => '1.1',
                     'header' => "Accept: */*\r\nUser-Agent:atoum\r\nCache-Control: no-cache"
-            )
-        ));
+            ]
+        ]);
         $data = json_decode($this->adapter->file_get_contents(self::githubUpdateUrl, false, $httpContext), true);
 
         $this
@@ -411,7 +411,7 @@ class stub extends scripts\runner
 
                     $script->infos();
                 },
-                array('-i', '--infos'),
+                ['-i', '--infos'],
                 null,
                 $this->locale->_('Display informations, do not run any script')
             )
@@ -423,7 +423,7 @@ class stub extends scripts\runner
 
                     $script->signature();
                 },
-                array('-s', '--signature'),
+                ['-s', '--signature'],
                 null,
                 $this->locale->_('Display phar signature, do not run any script')
             )
@@ -435,7 +435,7 @@ class stub extends scripts\runner
 
                     $script->extractTo($values[0]);
                 },
-                array('-e', '--extract-to'),
+                ['-e', '--extract-to'],
                 '<directory>',
                 $this->locale->_('Extract all file from phar to <directory>, do not run any script')
             )
@@ -447,7 +447,7 @@ class stub extends scripts\runner
 
                     $script->extractResourcesTo($values[0]);
                 },
-                array('-er', '--extract-resources-to'),
+                ['-er', '--extract-resources-to'],
                 '<directory>',
                 $this->locale->_('Extract resources from phar to <directory>, do not run any script')
             )
@@ -462,7 +462,7 @@ class stub extends scripts\runner
 
                     $script->useScript($values[0]);
                 },
-                array('-u', '--use'),
+                ['-u', '--use'],
                 '<script> <args>',
                 $this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)'),
                 4
@@ -475,7 +475,7 @@ class stub extends scripts\runner
 
                     $script->listScripts();
                 },
-                array('-ls', '--list-scripts'),
+                ['-ls', '--list-scripts'],
                 null,
                 $this->locale->_('List available scripts')
             )
@@ -487,7 +487,7 @@ class stub extends scripts\runner
 
                     $script->update();
                 },
-                array('--update'),
+                ['--update'],
                 null,
                 $this->locale->_('Update atoum')
             )
@@ -499,7 +499,7 @@ class stub extends scripts\runner
 
                     $script->updateFromGithub();
                 },
-                array('--github-update'),
+                ['--github-update'],
                 null,
                 $this->locale->_('Update atoum from github')
             )
@@ -511,7 +511,7 @@ class stub extends scripts\runner
 
                     $script->listAvailableVersions();
                 },
-                array('-lav', '--list-available-versions'),
+                ['-lav', '--list-available-versions'],
                 null,
                 $this->locale->_('List available versions in the PHAR')
             )
@@ -523,7 +523,7 @@ class stub extends scripts\runner
 
                     $script->enableVersion($values[0]);
                 },
-                array('-ev', '--enable-version'),
+                ['-ev', '--enable-version'],
                 '<version>',
                 $this->locale->_('Enable version <version>')
             )
@@ -535,7 +535,7 @@ class stub extends scripts\runner
 
                     $script->deleteVersion($values[0]);
                 },
-                array('-dv', '--delete-version'),
+                ['-dv', '--delete-version'],
                 '<version>',
                 $this->locale->_('Delete version <version>')
             )

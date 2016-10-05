@@ -15,12 +15,12 @@ class resolver extends atoum
             ->given($this->newTestedInstance())
             ->then
                 ->string($this->testedInstance->getBaseClass())->isEqualTo('mageekguy\atoum\asserter')
-                ->array($this->testedInstance->getNamespaces())->isEqualTo(array('mageekguy\atoum\asserters'))
+                ->array($this->testedInstance->getNamespaces())->isEqualTo(['mageekguy\atoum\asserters'])
 
             ->given($this->newTestedInstance($baseClass = uniqid(), $namespace = uniqid()))
             ->then
                 ->string($this->testedInstance->getBaseClass())->isEqualTo($baseClass)
-                ->array($this->testedInstance->getNamespaces())->isEqualTo(array($namespace))
+                ->array($this->testedInstance->getNamespaces())->isEqualTo([$namespace])
         ;
     }
 
@@ -30,16 +30,16 @@ class resolver extends atoum
             ->given($this->newTestedInstance())
             ->then
                 ->object($this->testedInstance->addNamespace($namespace1 = uniqid()))->isTestedInstance
-                ->array($this->testedInstance->getNamespaces())->isEqualTo(array('mageekguy\atoum\asserters', $namespace1))
+                ->array($this->testedInstance->getNamespaces())->isEqualTo(['mageekguy\atoum\asserters', $namespace1])
 
                 ->object($this->testedInstance->addNamespace(($namespace2 = uniqid()) . '\\'))->isTestedInstance
-                ->array($this->testedInstance->getNamespaces())->isEqualTo(array('mageekguy\atoum\asserters', $namespace1, $namespace2))
+                ->array($this->testedInstance->getNamespaces())->isEqualTo(['mageekguy\atoum\asserters', $namespace1, $namespace2])
 
                 ->object($this->testedInstance->addNamespace('\\' . ($namespace3 = uniqid()) . '\\'))->isTestedInstance
-                ->array($this->testedInstance->getNamespaces())->isEqualTo(array('mageekguy\atoum\asserters', $namespace1, $namespace2, $namespace3))
+                ->array($this->testedInstance->getNamespaces())->isEqualTo(['mageekguy\atoum\asserters', $namespace1, $namespace2, $namespace3])
 
                 ->object($this->testedInstance->addNamespace('\\' . ($namespace4 = uniqid())))->isTestedInstance
-                ->array($this->testedInstance->getNamespaces())->isEqualTo(array('mageekguy\atoum\asserters', $namespace1, $namespace2, $namespace3, $namespace4))
+                ->array($this->testedInstance->getNamespaces())->isEqualTo(['mageekguy\atoum\asserters', $namespace1, $namespace2, $namespace3, $namespace4])
         ;
     }
 

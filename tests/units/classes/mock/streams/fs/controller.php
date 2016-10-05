@@ -3,10 +3,6 @@
 namespace mageekguy\atoum\tests\units\mock\streams\fs;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
-use mageekguy\atoum\dependence;
-use mageekguy\atoum\dependencies;
-use mageekguy\atoum\mock\stream;
 use mock\mageekguy\atoum\mock\streams\fs\controller as testedClass;
 
 require_once __DIR__ . '/../../../../runner.php';
@@ -25,7 +21,7 @@ class controller extends atoum\test
             ->then
                 ->integer($controller->getPermissions())->isZero()
                 ->object($controller->getAdapter())->isEqualTo(new atoum\adapter())
-                ->array($controller->getStat())->isEqualTo(array(
+                ->array($controller->getStat())->isEqualTo([
                         'dev' => 0,
                         'ino' => 0,
                         'mode' => 0,
@@ -52,7 +48,7 @@ class controller extends atoum\test
                         10 => 507769200,
                         11 => 0,
                         12 => 0
-                    )
+                    ]
                 )
         ;
     }

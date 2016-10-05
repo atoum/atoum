@@ -88,7 +88,7 @@ class generator
         return $this->resolver->resolve($asserter);
     }
 
-    public function getAsserterInstance($asserter, array $arguments = array(), atoum\test $test = null)
+    public function getAsserterInstance($asserter, array $arguments = [], atoum\test $test = null)
     {
         if (($asserterClass = $this->getAsserterClass($asserter)) === null) {
             throw new exceptions\logic\invalidArgument('Asserter \'' . $asserter . '\' does not exist');

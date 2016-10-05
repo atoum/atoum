@@ -5,7 +5,7 @@ namespace mageekguy\atoum;
 class includer
 {
     protected $adapter = null;
-    protected $errors = array();
+    protected $errors = [];
 
     private $path = '';
 
@@ -16,7 +16,7 @@ class includer
 
     public function resetErrors()
     {
-        $this->errors = array();
+        $this->errors = [];
 
         return $this;
     }
@@ -44,7 +44,7 @@ class includer
 
         $this->path = (string) $path;
 
-        $errorHandler = $this->adapter->set_error_handler(array($this, 'errorHandler'));
+        $errorHandler = $this->adapter->set_error_handler([$this, 'errorHandler']);
 
         $closure = $closure ?: function ($path) {
             include_once($path);
@@ -66,7 +66,7 @@ class includer
                     call_user_func_array($errorHandler, $error);
                 }
 
-                $this->errors = array();
+                $this->errors = [];
             }
         }
 
@@ -98,7 +98,7 @@ class includer
                 }
             }
 
-            $this->errors[] = array($error, $message, $file, $line, $context);
+            $this->errors[] = [$error, $message, $file, $line, $context];
         }
 
         return true;

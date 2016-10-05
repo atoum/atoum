@@ -4,8 +4,8 @@ namespace mageekguy\atoum\tests\units\mock;
 
 use mageekguy\atoum;
 use mageekguy\atoum\mock;
-use mageekguy\atoum\test\adapter\call\decorators;
 use mageekguy\atoum\mock\generator as testedClass;
+use mageekguy\atoum\test\adapter\call\decorators;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -220,7 +220,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__call'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__call'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -238,11 +238,11 @@ class generator extends atoum\test
                 ->when(function () use ($dummy) {
                     $dummy->bar();
                 })
-                    ->mock($calls)->call('addCall')->withArguments(new atoum\test\adapter\call('bar', array(), new decorators\addClass($dummy)))->once()
+                    ->mock($calls)->call('addCall')->withArguments(new atoum\test\adapter\call('bar', [], new decorators\addClass($dummy)))->once()
                 ->when(function () use ($dummy) {
                     $dummy->bar();
                 })
-                    ->mock($calls)->call('addCall')->withArguments(new atoum\test\adapter\call('bar', array(), new decorators\addClass($dummy)))->twice()
+                    ->mock($calls)->call('addCall')->withArguments(new atoum\test\adapter\call('bar', [], new decorators\addClass($dummy)))->twice()
         ;
     }
 
@@ -255,7 +255,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -273,7 +273,7 @@ class generator extends atoum\test
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
             ->and($reflectionClassController->isAbstract = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClass = new \mock\reflectionClass(null))
             ->and($generator->setReflectionClassFactory(function () use ($reflectionClass) {
@@ -313,7 +313,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -330,7 +330,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $realClass = uniqid())
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -346,7 +346,7 @@ class generator extends atoum\test
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
             ->and($reflectionClassController->isAbstract = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClass = new \mock\reflectionClass(null))
             ->and($generator->setReflectionClassFactory(function () use ($reflectionClass) {
@@ -386,7 +386,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array($realClass), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export([$realClass], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -404,7 +404,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -418,7 +418,7 @@ class generator extends atoum\test
             })
             ->and($otherReflectionMethodController->getName = $otherMethod = uniqid())
             ->and($otherReflectionMethodController->isConstructor = false)
-            ->and($otherReflectionMethodController->getParameters = array())
+            ->and($otherReflectionMethodController->getParameters = [])
             ->and($otherReflectionMethodController->isPublic = true)
             ->and($otherReflectionMethodController->isProtected = false)
             ->and($otherReflectionMethodController->isPrivate = false)
@@ -436,7 +436,7 @@ class generator extends atoum\test
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
             ->and($reflectionClassController->isAbstract = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod, $otherReflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod, $otherReflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClass = new \mock\reflectionClass(null))
             ->and($generator->setReflectionClassFactory(function () use ($reflectionClass) {
@@ -489,7 +489,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $otherMethod), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $otherMethod], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -507,7 +507,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -522,7 +522,7 @@ class generator extends atoum\test
             })
             ->and($otherReflectionMethodController->getName = $otherMethod = uniqid())
             ->and($otherReflectionMethodController->isConstructor = false)
-            ->and($otherReflectionMethodController->getParameters = array())
+            ->and($otherReflectionMethodController->getParameters = [])
             ->and($otherReflectionMethodController->isPublic = true)
             ->and($otherReflectionMethodController->isProtected = false)
             ->and($otherReflectionMethodController->isPrivate = false)
@@ -541,7 +541,7 @@ class generator extends atoum\test
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
             ->and($reflectionClassController->isAbstract = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod, $otherReflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod, $otherReflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClass = new \mock\reflectionClass(null))
             ->and($generator->setReflectionClassFactory(function () use ($reflectionClass) {
@@ -594,7 +594,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $otherMethod), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $otherMethod], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -611,7 +611,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -628,7 +628,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -672,7 +672,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -692,7 +692,7 @@ class generator extends atoum\test
                 return '__construct';
             })
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -709,7 +709,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -746,7 +746,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -767,7 +767,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->isConstructor = true)
             ->and($reflectionMethodController->isAbstract = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -783,7 +783,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -821,7 +821,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -840,7 +840,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = 'foo')
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -857,7 +857,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -904,7 +904,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', 'foo'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', 'foo'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -949,7 +949,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', 'foo'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', 'foo'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -968,7 +968,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = 'foo')
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -986,7 +986,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -1033,7 +1033,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', 'foo'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', 'foo'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1078,7 +1078,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', 'foo'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', 'foo'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1098,7 +1098,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->getName = 'clone')
             ->and($reflectionMethodController->isConstructor = false)
             ->and($reflectionMethodController->isAbstract = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -1112,7 +1112,7 @@ class generator extends atoum\test
             ->and($reflectionClassController->getName = $realClass)
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -1147,7 +1147,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1165,7 +1165,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->getName = $realClass = uniqid())
             ->and($reflectionMethodController->isConstructor = true)
             ->and($reflectionMethodController->isAbstract = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -1179,7 +1179,7 @@ class generator extends atoum\test
             ->and($reflectionClassController->getName = $realClass)
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -1217,7 +1217,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array($realClass), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export([$realClass], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1235,7 +1235,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isFinal = false)
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
@@ -1248,7 +1248,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = true)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->isInstantiable = false)
             ->and($reflectionClassController->implementsInterface = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -1297,7 +1297,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', '__call'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', '__call'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1355,7 +1355,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', 'getiterator', '__call'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', 'getiterator', '__call'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1366,7 +1366,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isFinal = false)
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
@@ -1379,7 +1379,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = true)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->isInstantiable = false)
             ->and($reflectionClassController->implementsInterface = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -1417,7 +1417,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1435,7 +1435,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isFinal = false)
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
@@ -1449,7 +1449,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = true)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->isInstantiable = false)
             ->and($reflectionClassController->implementsInterface = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -1498,7 +1498,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', '__call'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', '__call'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1556,7 +1556,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', 'getiterator', '__call'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', 'getiterator', '__call'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1567,7 +1567,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isFinal = false)
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
@@ -1580,7 +1580,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = true)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->isInstantiable = false)
             ->and($reflectionClassController->implementsInterface = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -1618,7 +1618,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1645,7 +1645,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array($reflectionParameter))
+            ->and($reflectionMethodController->getParameters = [$reflectionParameter])
             ->and($reflectionMethodController->isFinal = false)
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
@@ -1658,7 +1658,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = true)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->isInstantiable = false)
             ->and($reflectionClassController->implementsInterface = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -1707,7 +1707,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', '__call'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', '__call'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1738,7 +1738,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array($reflectionParameter))
+            ->and($reflectionMethodController->getParameters = [$reflectionParameter])
             ->and($reflectionMethodController->isFinal = false)
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
@@ -1751,7 +1751,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = true)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->isInstantiable = false)
             ->and($reflectionClassController->implementsInterface = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -1800,7 +1800,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', '__call'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', '__call'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1817,7 +1817,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $methodName = uniqid())
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isFinal = false)
             ->and($reflectionMethodController->isStatic = true)
             ->and($reflectionMethodController->returnsReference = false)
@@ -1830,7 +1830,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = true)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->isInstantiable = false)
             ->and($reflectionClassController->implementsInterface = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -1882,7 +1882,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array($methodName, '__construct', '__call'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export([$methodName, '__construct', '__call'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1943,7 +1943,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array($methodName, 'getiterator', '__construct', '__call'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export([$methodName, 'getiterator', '__construct', '__call'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -1975,7 +1975,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $methodName = uniqid())
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array($reflectionParameter))
+            ->and($reflectionMethodController->getParameters = [$reflectionParameter])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -1993,7 +1993,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -2043,7 +2043,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $methodName), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $methodName], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -2067,7 +2067,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $methodName = uniqid())
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -2086,7 +2086,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -2136,7 +2136,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $methodName), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $methodName], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -2161,7 +2161,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $methodName = uniqid())
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -2180,7 +2180,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -2230,7 +2230,7 @@ class generator extends atoum\test
                 "\t" . '}' . PHP_EOL .
                 "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                 "\t" . '{' . PHP_EOL .
-                "\t\t" . 'return ' . var_export(array('__construct', $methodName), true) . ';' . PHP_EOL .
+                "\t\t" . 'return ' . var_export(['__construct', $methodName], true) . ';' . PHP_EOL .
                 "\t" . '}' . PHP_EOL .
                 '}' . PHP_EOL .
                 '}'
@@ -2248,7 +2248,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $methodName = uniqid())
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -2265,7 +2265,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -2315,7 +2315,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $methodName), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $methodName], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -2333,7 +2333,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $methodName = uniqid())
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -2351,7 +2351,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -2401,7 +2401,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $methodName), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $methodName], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -2418,7 +2418,7 @@ class generator extends atoum\test
             })
             ->and($publicMethodController->getName = '__construct')
             ->and($publicMethodController->isConstructor = true)
-            ->and($publicMethodController->getParameters = array())
+            ->and($publicMethodController->getParameters = [])
             ->and($publicMethodController->isPublic = true)
             ->and($publicMethodController->isProtected = false)
             ->and($publicMethodController->isPrivate = false)
@@ -2434,7 +2434,7 @@ class generator extends atoum\test
             ->and($classController->isFinal = false)
             ->and($classController->isInterface = false)
             ->and($classController->isAbstract = true)
-            ->and($classController->getMethods = array($publicMethod))
+            ->and($classController->getMethods = [$publicMethod])
             ->and($classController->getConstructor = $publicMethod)
             ->and($class = new \mock\reflectionClass(null))
             ->and($generator->setReflectionClassFactory(function () use ($class) {
@@ -2482,7 +2482,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', '__call'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', '__call'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -2702,7 +2702,7 @@ class generator extends atoum\test
             ->and($constructor = new \mock\reflectionMethod())
             ->and($this->calling($constructor)->getName = '__construct')
             ->and($this->calling($constructor)->isConstructor = true)
-            ->and($this->calling($constructor)->getParameters = array($a, $b, $c))
+            ->and($this->calling($constructor)->getParameters = [$a, $b, $c])
             ->and($this->calling($constructor)->isPublic = true)
             ->and($this->calling($constructor)->isProtected = false)
             ->and($this->calling($constructor)->isPrivate = false)
@@ -2716,7 +2716,7 @@ class generator extends atoum\test
             ->and($this->calling($class)->isFinal = false)
             ->and($this->calling($class)->isInterface = false)
             ->and($this->calling($class)->isAbstract = false)
-            ->and($this->calling($class)->getMethods = array($constructor))
+            ->and($this->calling($class)->getMethods = [$constructor])
             ->and($this->calling($class)->getConstructor = $constructor)
             ->and($adapter = new atoum\test\adapter())
             ->and($adapter->class_exists = function ($class) use ($className) {
@@ -2753,7 +2753,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -2800,7 +2800,7 @@ class generator extends atoum\test
             ->and($constructor = new \mock\reflectionMethod())
             ->and($this->calling($constructor)->getName = '__construct')
             ->and($this->calling($constructor)->isConstructor = true)
-            ->and($this->calling($constructor)->getParameters = array($a, $b, $c))
+            ->and($this->calling($constructor)->getParameters = [$a, $b, $c])
             ->and($this->calling($constructor)->isPublic = true)
             ->and($this->calling($constructor)->isProtected = false)
             ->and($this->calling($constructor)->isPrivate = false)
@@ -2814,7 +2814,7 @@ class generator extends atoum\test
             ->and($this->calling($class)->isFinal = false)
             ->and($this->calling($class)->isInterface = false)
             ->and($this->calling($class)->isAbstract = false)
-            ->and($this->calling($class)->getMethods = array($constructor))
+            ->and($this->calling($class)->getMethods = [$constructor])
             ->and($this->calling($class)->getConstructor = $constructor)
             ->and($adapter = new atoum\test\adapter())
             ->and($adapter->class_exists = function ($class) use ($className) {
@@ -2851,7 +2851,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -2894,7 +2894,7 @@ class generator extends atoum\test
             })
             ->and($publicMethodController->getName = $publicMethodName = uniqid())
             ->and($publicMethodController->isConstructor = false)
-            ->and($publicMethodController->getParameters = array($parameter1, $parameter2))
+            ->and($publicMethodController->getParameters = [$parameter1, $parameter2])
             ->and($publicMethodController->isPublic = true)
             ->and($publicMethodController->isProtected = false)
             ->and($publicMethodController->isPrivate = false)
@@ -2908,7 +2908,7 @@ class generator extends atoum\test
             })
             ->and($protectedMethodController->getName = $protectedMethodName = uniqid())
             ->and($protectedMethodController->isConstructor = false)
-            ->and($protectedMethodController->getParameters = array())
+            ->and($protectedMethodController->getParameters = [])
             ->and($protectedMethodController->isPublic = false)
             ->and($protectedMethodController->isProtected = true)
             ->and($protectedMethodController->isPrivate = false)
@@ -2923,7 +2923,7 @@ class generator extends atoum\test
             ->and($classController->getName = $className = uniqid())
             ->and($classController->isFinal = false)
             ->and($classController->isInterface = false)
-            ->and($classController->getMethods = array($publicMethod, $protectedMethod))
+            ->and($classController->getMethods = [$publicMethod, $protectedMethod])
             ->and($classController->getConstructor = null)
             ->and($classController->isAbstract = false)
             ->and($class = new \mock\reflectionClass(null))
@@ -2978,7 +2978,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $publicMethodName, $protectedMethodName), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $publicMethodName, $protectedMethodName], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -3023,7 +3023,7 @@ class generator extends atoum\test
             })
             ->and($publicMethodController->getName = $publicMethodName = uniqid())
             ->and($publicMethodController->isConstructor = false)
-            ->and($publicMethodController->getParameters = array($parameter1, $parameter2))
+            ->and($publicMethodController->getParameters = [$parameter1, $parameter2])
             ->and($publicMethodController->isPublic = true)
             ->and($publicMethodController->isProtected = false)
             ->and($publicMethodController->isPrivate = false)
@@ -3037,7 +3037,7 @@ class generator extends atoum\test
             })
             ->and($protectedMethodController->getName = $protectedMethodName = uniqid())
             ->and($protectedMethodController->isConstructor = false)
-            ->and($protectedMethodController->getParameters = array())
+            ->and($protectedMethodController->getParameters = [])
             ->and($protectedMethodController->isPublic = false)
             ->and($protectedMethodController->isProtected = true)
             ->and($protectedMethodController->isPrivate = false)
@@ -3052,7 +3052,7 @@ class generator extends atoum\test
             ->and($classController->getName = $className = uniqid())
             ->and($classController->isFinal = false)
             ->and($classController->isInterface = false)
-            ->and($classController->getMethods = array($publicMethod, $protectedMethod))
+            ->and($classController->getMethods = [$publicMethod, $protectedMethod])
             ->and($classController->getConstructor = null)
             ->and($classController->isAbstract = false)
             ->and($class = new \mock\reflectionClass(null))
@@ -3107,7 +3107,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $publicMethodName, $protectedMethodName), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $publicMethodName, $protectedMethodName], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -3138,7 +3138,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array($reflectionParameter))
+            ->and($reflectionMethodController->getParameters = [$reflectionParameter])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -3155,7 +3155,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -3196,7 +3196,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -3225,7 +3225,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array($reflectionParameter))
+            ->and($reflectionMethodController->getParameters = [$reflectionParameter])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -3242,7 +3242,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -3283,7 +3283,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -3316,7 +3316,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = '__construct')
             ->and($reflectionMethodController->isConstructor = true)
-            ->and($reflectionMethodController->getParameters = array($reflectionParameter))
+            ->and($reflectionMethodController->getParameters = [$reflectionParameter])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -3333,7 +3333,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = $reflectionMethod)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -3371,7 +3371,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -3404,7 +3404,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $methodName = uniqid())
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array($reflectionParameter))
+            ->and($reflectionMethodController->getParameters = [$reflectionParameter])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -3421,7 +3421,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -3471,7 +3471,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $methodName), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $methodName], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -3503,7 +3503,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $methodName = uniqid())
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array($reflectionParameter))
+            ->and($reflectionMethodController->getParameters = [$reflectionParameter])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -3521,7 +3521,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -3571,7 +3571,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $methodName), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $methodName], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -3595,7 +3595,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $methodName = uniqid())
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -3614,7 +3614,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -3664,7 +3664,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $methodName), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $methodName], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -3682,7 +3682,7 @@ class generator extends atoum\test
             })
             ->and($reflectionMethodController->getName = $methodName = 'list')
             ->and($reflectionMethodController->isConstructor = false)
-            ->and($reflectionMethodController->getParameters = array())
+            ->and($reflectionMethodController->getParameters = [])
             ->and($reflectionMethodController->isPublic = true)
             ->and($reflectionMethodController->isProtected = false)
             ->and($reflectionMethodController->isPrivate = false)
@@ -3700,7 +3700,7 @@ class generator extends atoum\test
             })
             ->and($reflectionClassController->isFinal = false)
             ->and($reflectionClassController->isInterface = false)
-            ->and($reflectionClassController->getMethods = array($reflectionMethod))
+            ->and($reflectionClassController->getMethods = [$reflectionMethod])
             ->and($reflectionClassController->getConstructor = null)
             ->and($reflectionClassController->isAbstract = false)
             ->and($reflectionClass = new \mock\reflectionClass(null))
@@ -3750,7 +3750,7 @@ class generator extends atoum\test
                     "\t" . '}' . PHP_EOL .
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
-                    "\t\t" . 'return ' . var_export(array('__construct', $methodName), true) . ';' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct', $methodName], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -3785,7 +3785,7 @@ class generator extends atoum\test
     protected function testMethodIsMockableWithReservedWordDataProvider()
     {
         # See http://www.php.net/manual/en/reserved.keywords.php
-        return array(
+        return [
             '__halt_compiler',
             'abstract',
             'and',
@@ -3851,14 +3851,14 @@ class generator extends atoum\test
             'var',
             'while',
             'xor'
-        );
+        ];
     }
 
     protected function testMethodIsMockableWithReservedWordPHP7DataProvider()
     {
         # See http://www.php.net/manual/en/reserved.keywords.php
-        return array(
+        return [
             '__halt_compiler',
-        );
+        ];
     }
 }

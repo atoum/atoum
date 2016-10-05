@@ -18,14 +18,14 @@ class decorator extends atoum\test
             ->and($calls = new calls())
             ->then
                 ->string($decorator->decorate($calls))->isEmpty()
-            ->if($calls[] = $call1 = new call(uniqid(), array()))
+            ->if($calls[] = $call1 = new call(uniqid(), []))
             ->then
                 ->string($decorator->decorate($calls))->isEqualTo('[1] ' . $call1 . PHP_EOL)
             ->if($calls[] = $call2 = clone $call1)
             ->then
                 ->string($decorator->decorate($calls))->isEqualTo('[1] ' . $call1 . PHP_EOL . '[2] ' . $call2 . PHP_EOL)
             ->if($calls[] = $call3 = clone $call1)
-            ->and($calls[] = $call4 = new call(uniqid(), array(uniqid(), uniqid())))
+            ->and($calls[] = $call4 = new call(uniqid(), [uniqid(), uniqid()]))
             ->and($calls[] = $call5 = clone $call1)
             ->and($calls[] = $call6 = clone $call1)
             ->and($calls[] = $call7 = clone $call1)

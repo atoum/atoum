@@ -7,9 +7,9 @@ class report implements observer
     protected $locale = null;
     protected $adapter = null;
     protected $title = null;
-    protected $writers = array();
-    protected $fields = array();
-    protected $lastSetFields = array();
+    protected $writers = [];
+    protected $fields = [];
+    protected $lastSetFields = [];
 
     public function __construct()
     {
@@ -75,7 +75,7 @@ class report implements observer
 
     public function resetFields()
     {
-        $this->fields = array();
+        $this->fields = [];
 
         return $this;
     }
@@ -92,7 +92,7 @@ class report implements observer
 
     public function handleEvent($event, observable $observable)
     {
-        $this->lastSetFields = array();
+        $this->lastSetFields = [];
 
         foreach ($this->fields as $field) {
             if ($field->handleEvent($event, $observable) === true) {

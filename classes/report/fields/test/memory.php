@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\report\fields\test;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
 use mageekguy\atoum\report;
+use mageekguy\atoum\test;
 
 abstract class memory extends report\field
 {
@@ -12,7 +12,7 @@ abstract class memory extends report\field
 
     public function __construct()
     {
-        parent::__construct(array(test::runStop));
+        parent::__construct([test::runStop]);
     }
 
     public function getValue()

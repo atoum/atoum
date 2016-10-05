@@ -57,22 +57,22 @@ class phpArray extends atoum\test
                 ->object($this->testedInstance->error)->isInstanceOf($generator->error)
                 ->variable($this->testedInstance->getInnerAsserter())->isNull()
 
-            ->if($this->testedInstance->setWith(array(
-                        0 => array(
-                            0 => array(
-                                1 => array('foo', 'bar')
-                            ),
-                            1 => array(1, new \mock\object())
-                        ),
+            ->if($this->testedInstance->setWith([
+                        0 => [
+                            0 => [
+                                1 => ['foo', 'bar']
+                            ],
+                            1 => [1, new \mock\object()]
+                        ],
                         1 => 'foobar'
-                    )
+                    ]
                 )
             )
             ->then
-                ->object($this->testedInstance->phpArray[0][0][1]->isEqualTo(array('foo', 'bar')))->isTestedInstance
+                ->object($this->testedInstance->phpArray[0][0][1]->isEqualTo(['foo', 'bar']))->isTestedInstance
                 ->object($this->testedInstance->phpString[1]->isEqualTo('foobar'))->isTestedInstance
 
-            ->given($this->newTestedInstance->setWith(array($array1 = array('foo', 'bar'), $array2 = array(1, new \mock\object()))))
+            ->given($this->newTestedInstance->setWith([$array1 = ['foo', 'bar'], $array2 = [1, new \mock\object()]]))
             ->then
                 ->object($this->testedInstance->phpArray[0]->phpString[0]->isEqualTo('foo'))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
                 ->object($this->testedInstance->phpArray[1]->isEqualTo($array2))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
@@ -92,7 +92,7 @@ class phpArray extends atoum\test
                 ->variable($this->testedInstance->getInnerAsserter())->isNull()
                 ->variable($this->testedInstance->getInnerValue())->isNull()
 
-            ->if($this->testedInstance->setWith(array()))
+            ->if($this->testedInstance->setWith([]))
             ->then
                 ->object($this->testedInstance->reset())->isTestedInstance
                 ->variable($this->testedInstance->getValue())->isNull()
@@ -160,7 +160,7 @@ class phpArray extends atoum\test
                     ->hasMessage($notAnArray)
                 ->mock($locale)->call('_')->withArguments('%s is not an array', $type)->once
 
-                ->object($asserter->setWith($value = array()))->isIdenticalTo($asserter)
+                ->object($asserter->setWith($value = []))->isIdenticalTo($asserter)
                 ->array($asserter->getValue())->isEqualTo($value)
                 ->variable($asserter->getKey())->isNull()
                 ->variable($asserter->getInnerAsserter())->isNull()
@@ -198,7 +198,7 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $notAnArray = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array(1, 2, $object = new \mock\object(), clone $object))
+                $asserter->setWith([1, 2, $object = new \mock\object(), clone $object])
             )
             ->then
                 ->exception(function () use ($asserter, & $value) {
@@ -208,7 +208,7 @@ class phpArray extends atoum\test
                     ->hasMessage($notAnArray)
                 ->mock($locale)->call('_')->withArguments('Value %s at key %s is not an array', $type, 2)->once
 
-            ->if($asserter->setWith(array(1, 2, $object = new \mock\object(), clone $object)))
+            ->if($asserter->setWith([1, 2, $object = new \mock\object(), clone $object]))
             ->then
                 ->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
                 ->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
@@ -220,7 +220,7 @@ class phpArray extends atoum\test
                 ->setAnalyzer($analyzer)
             )
 
-            ->if($asserter->setWith($array = array($integer = rand(1, PHP_INT_MAX), 2, $innerArray = array(3, 4, 5, $object))))
+            ->if($asserter->setWith($array = [$integer = rand(1, PHP_INT_MAX), 2, $innerArray = [3, 4, 5, $object]]))
             ->then
                 ->object($asserter[2])
                     ->isIdenticalTo($asserter)
@@ -284,16 +284,16 @@ class phpArray extends atoum\test
             ->then
                 ->boolean(isset($asserter[rand(0, PHP_INT_MAX)]))->isFalse()
 
-            ->if($asserter->setWith(array()))
+            ->if($asserter->setWith([]))
             ->then
                 ->boolean(isset($asserter[rand(0, PHP_INT_MAX)]))->isFalse()
 
-            ->if($asserter->setWith(array(uniqid())))
+            ->if($asserter->setWith([uniqid()]))
             ->then
                 ->boolean(isset($asserter[0]))->isTrue()
                 ->boolean(isset($asserter[rand(1, PHP_INT_MAX)]))->isFalse()
 
-            ->if($asserter->setWith(array($key = uniqid() => uniqid())))
+            ->if($asserter->setWith([$key = uniqid() => uniqid()]))
             ->then
                 ->boolean(isset($asserter[$key]))->isTrue()
                 ->boolean(isset($asserter[0]))->isFalse()
@@ -318,7 +318,7 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $badSize = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array())
+                $asserter->setWith([])
             )
             ->then
                 ->exception(function () use ($asserter, & $size) {
@@ -352,7 +352,7 @@ class phpArray extends atoum\test
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
-            ->if($asserter->setWith(array(range(1, 5))))
+            ->if($asserter->setWith([range(1, 5)]))
             ->then
                 ->object($childAsserter = $asserter->child[0](function ($child) {
                     $child->hasSize(5);
@@ -360,7 +360,7 @@ class phpArray extends atoum\test
                 ->object($childAsserter->hasSize(1))->isIdenticalTo($asserter)
 
             ->given($asserter = $this->newTestedInstance)
-            ->if($asserter->setWith(array(array(range(1, 5), range(1, 3)))))
+            ->if($asserter->setWith([[range(1, 5), range(1, 3)]]))
             ->then
                 ->object($childAsserter = $asserter->child[0][1](function ($child) {
                     $child->hasSize(3);
@@ -385,7 +385,7 @@ class phpArray extends atoum\test
 
             ->if(
                 $this->calling($locale)->_ = $notEmpty = uniqid(),
-                $asserter->setWith(array(uniqid()))
+                $asserter->setWith([uniqid()])
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -408,7 +408,7 @@ class phpArray extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-            ->if($asserter->setWith(array()))
+            ->if($asserter->setWith([]))
             ->then
                 ->object($asserter->isEmpty())->isIdenticalTo($asserter)
         ;
@@ -431,7 +431,7 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $isEmpty = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array())
+                $asserter->setWith([])
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -454,7 +454,7 @@ class phpArray extends atoum\test
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($failMessage)
 
-                ->if($asserter->setWith(array(uniqid())))
+                ->if($asserter->setWith([uniqid()]))
                 ->then
                     ->object($asserter->isNotEmpty())->isIdenticalTo($asserter)
         ;
@@ -474,7 +474,7 @@ class phpArray extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith(array(uniqid(), uniqid(), $data = rand(1, PHP_INT_MAX), uniqid(), uniqid())))
+            ->if($asserter->setWith([uniqid(), uniqid(), $data = rand(1, PHP_INT_MAX), uniqid(), uniqid()]))
                 ->object($asserter->atKey(0))->isIdenticalTo($asserter)
                 ->object($asserter->atKey('0'))->isIdenticalTo($asserter)
                 ->object($asserter->atKey(1))->isIdenticalTo($asserter)
@@ -520,7 +520,7 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $notInArray = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array(uniqid(), uniqid(), $data = rand(1, PHP_INT_MAX), uniqid(), uniqid()))
+                $asserter->setWith([uniqid(), uniqid(), $data = rand(1, PHP_INT_MAX), uniqid(), uniqid()])
             )
             ->then
                 ->exception(function () use ($asserter, & $unknownValue) {
@@ -543,7 +543,7 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $notInArrayAtKey = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array(uniqid(), uniqid(), $data = rand(1, PHP_INT_MAX), uniqid(), uniqid()))
+                $asserter->setWith([uniqid(), uniqid(), $data = rand(1, PHP_INT_MAX), uniqid(), uniqid()])
             )
             ->then
                 ->exception(function () use ($asserter, $data) {
@@ -580,7 +580,7 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $notInArray = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array(1, 2, 3, 4, 5, '3'))
+                $asserter->setWith([1, 2, 3, 4, 5, '3'])
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -633,7 +633,7 @@ class phpArray extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith(array(uniqid(), uniqid(), $isInArray = uniqid(), uniqid(), uniqid())))
+            ->if($asserter->setWith([uniqid(), uniqid(), $isInArray = uniqid(), uniqid(), uniqid()]))
             ->then
                 ->object($asserter->notContains(uniqid()))->isIdenticalTo($asserter)
 
@@ -704,7 +704,7 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $strictlyNotInArray = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array(1, 2, 3, 4, 5, '6'))
+                $asserter->setWith([1, 2, 3, 4, 5, '6'])
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -750,7 +750,7 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->containsValues(array(6));
+                    $asserter->containsValues([6]);
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
@@ -758,27 +758,27 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $notContainsValues = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array(1, 2, 3, 4, 5))
+                $asserter->setWith([1, 2, 3, 4, 5])
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->containsValues(array(6));
+                    $asserter->containsValues([6]);
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notContainsValues)
                 ->mock($locale)->call('_')->withArguments('%s does not contain values %s', $asserter, $type)->once
-                ->mock($analyzer)->call('getTypeOf')->withArguments(array(6))->once
+                ->mock($analyzer)->call('getTypeOf')->withArguments([6])->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
-                    $asserter->containsValues(array(6), $failMessage = uniqid());
+                    $asserter->containsValues([6], $failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-                ->object($asserter->containsValues(array(1)))->isIdenticalTo($asserter)
-                ->object($asserter->containsValues(array('1')))->isIdenticalTo($asserter)
-                ->object($asserter->containsValues(array(1, 2, 4)))->isIdenticalTo($asserter)
-                ->object($asserter->containsValues(array('1', 2, '4')))->isIdenticalTo($asserter)
+                ->object($asserter->containsValues([1]))->isIdenticalTo($asserter)
+                ->object($asserter->containsValues(['1']))->isIdenticalTo($asserter)
+                ->object($asserter->containsValues([1, 2, 4]))->isIdenticalTo($asserter)
+                ->object($asserter->containsValues(['1', 2, '4']))->isIdenticalTo($asserter)
         ;
     }
 
@@ -791,7 +791,7 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->strictlyContainsValues(array(6));
+                    $asserter->strictlyContainsValues([6]);
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
@@ -799,28 +799,28 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $strictlyNotContainsValues = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array(1, 2, 3, 4, 5))
+                $asserter->setWith([1, 2, 3, 4, 5])
             )
                 ->then
                     ->exception(function () use ($asserter) {
-                        $asserter->strictlyContainsValues(array(1, '5'));
+                        $asserter->strictlyContainsValues([1, '5']);
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($strictlyNotContainsValues)
                 ->mock($locale)->call('_')->withArguments('%s does not contain strictly values %s', $asserter, $type)->once
-                ->mock($analyzer)->call('getTypeOf')->withArguments(array('5'))->once
+                ->mock($analyzer)->call('getTypeOf')->withArguments(['5'])->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
-                    $asserter->strictlyContainsValues(array('5'), $failMessage = uniqid());
+                    $asserter->strictlyContainsValues(['5'], $failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-                ->object($asserter->strictlyContainsValues(array(1)))->isIdenticalTo($asserter)
-                ->object($asserter->strictlyContainsValues(array(1, 2)))->isIdenticalTo($asserter)
-                ->object($asserter->strictlyContainsValues(array(1, 2, 3)))->isIdenticalTo($asserter)
-                ->object($asserter->strictlyContainsValues(array(1, 2, 3, 4)))->isIdenticalTo($asserter)
-                ->object($asserter->strictlyContainsValues(array(1, 2, 3, 4, 5)))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyContainsValues([1]))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyContainsValues([1, 2]))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyContainsValues([1, 2, 3]))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyContainsValues([1, 2, 3, 4]))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyContainsValues([1, 2, 3, 4, 5]))->isIdenticalTo($asserter)
         ;
     }
 
@@ -833,7 +833,7 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->notContainsValues(array(1, 6));
+                    $asserter->notContainsValues([1, 6]);
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
@@ -841,29 +841,29 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $containsValues = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array(1, 2, 3, 4, 5))
+                $asserter->setWith([1, 2, 3, 4, 5])
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->notContainsValues(array(1, 6));
+                    $asserter->notContainsValues([1, 6]);
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($containsValues)
                 ->mock($locale)->call('_')->withArguments('%s contains values %s', $asserter, $type)->once
-                ->mock($analyzer)->call('getTypeOf')->withArguments(array(1))->once
+                ->mock($analyzer)->call('getTypeOf')->withArguments([1])->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
-                    $asserter->notContainsValues(array(1, 6), $failMessage = uniqid());
+                    $asserter->notContainsValues([1, 6], $failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-                ->object($asserter->notContainsValues(array(6)))->isIdenticalTo($asserter)
-                ->object($asserter->notContainsValues(array('6')))->isIdenticalTo($asserter)
-                ->object($asserter->notContainsValues(array(6, 7)))->isIdenticalTo($asserter)
-                ->object($asserter->notContainsValues(array('6', '7')))->isIdenticalTo($asserter)
-                ->object($asserter->notContainsValues(array(6, 7, 8)))->isIdenticalTo($asserter)
-                ->object($asserter->notContainsValues(array('6', 7, '8')))->isIdenticalTo($asserter)
+                ->object($asserter->notContainsValues([6]))->isIdenticalTo($asserter)
+                ->object($asserter->notContainsValues(['6']))->isIdenticalTo($asserter)
+                ->object($asserter->notContainsValues([6, 7]))->isIdenticalTo($asserter)
+                ->object($asserter->notContainsValues(['6', '7']))->isIdenticalTo($asserter)
+                ->object($asserter->notContainsValues([6, 7, 8]))->isIdenticalTo($asserter)
+                ->object($asserter->notContainsValues(['6', 7, '8']))->isIdenticalTo($asserter)
         ;
     }
 
@@ -876,7 +876,7 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->strictlyNotContainsValues(array(1, 6));
+                    $asserter->strictlyNotContainsValues([1, 6]);
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
@@ -884,29 +884,29 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $containsStrictlyValues = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array(1, 2, 3, 4, 5))
+                $asserter->setWith([1, 2, 3, 4, 5])
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->strictlyNotContainsValues(array(1, '2', '4'));
+                    $asserter->strictlyNotContainsValues([1, '2', '4']);
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($containsStrictlyValues)
                 ->mock($locale)->call('_')->withArguments('%s contains strictly values %s', $asserter, $type)->once
-                ->mock($analyzer)->call('getTypeOf')->withArguments(array(1))->once
+                ->mock($analyzer)->call('getTypeOf')->withArguments([1])->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
-                    $asserter->strictlyNotContainsValues(array(1), $failMessage = uniqid());
+                    $asserter->strictlyNotContainsValues([1], $failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-                ->object($asserter->strictlyNotContainsValues(array('1')))->isIdenticalTo($asserter)
-                ->object($asserter->strictlyNotContainsValues(array('1', '2')))->isIdenticalTo($asserter)
-                ->object($asserter->strictlyNotContainsValues(array('1', '2', '3')))->isIdenticalTo($asserter)
-                ->object($asserter->strictlyNotContainsValues(array('1', '2', '3', '4')))->isIdenticalTo($asserter)
-                ->object($asserter->strictlyNotContainsValues(array('1', '2', '3', '4', '5')))->isIdenticalTo($asserter)
-                ->object($asserter->strictlyNotContainsValues(array('6', '7')))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyNotContainsValues(['1']))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyNotContainsValues(['1', '2']))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyNotContainsValues(['1', '2', '3']))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyNotContainsValues(['1', '2', '3', '4']))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyNotContainsValues(['1', '2', '3', '4', '5']))->isIdenticalTo($asserter)
+                ->object($asserter->strictlyNotContainsValues(['6', '7']))->isIdenticalTo($asserter)
         ;
     }
 
@@ -927,7 +927,7 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $notHasKey = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith(array())
+                $asserter->setWith([])
             )
             ->then
                 ->exception(function () use ($asserter, & $key) {
@@ -944,7 +944,7 @@ class phpArray extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-            ->if($asserter->setWith(array(uniqid(), uniqid(), uniqid(), uniqid(), uniqid(), '5' => uniqid())))
+            ->if($asserter->setWith([uniqid(), uniqid(), uniqid(), uniqid(), uniqid(), '5' => uniqid()]))
             ->then
                 ->object($asserter->hasKey(0))->isIdenticalTo($asserter)
                 ->object($asserter->hasKey(1))->isIdenticalTo($asserter)
@@ -970,7 +970,7 @@ class phpArray extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith(array()))
+            ->if($asserter->setWith([]))
             ->then
                 ->object($asserter->notHasKey(rand(-PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($asserter)
                 ->object($asserter->notHasKey(uniqid()))->isIdenticalTo($asserter)
@@ -978,7 +978,7 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $hasKey = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $keyType = uniqid(),
-                $asserter->setWith(array(uniqid(), uniqid(), uniqid(), uniqid(), uniqid()))
+                $asserter->setWith([uniqid(), uniqid(), uniqid(), uniqid(), uniqid()])
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -1008,37 +1008,37 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->notHasKeys(array(rand(0, PHP_INT_MAX)));
+                    $asserter->notHasKeys([rand(0, PHP_INT_MAX)]);
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith(array()))
+            ->if($asserter->setWith([]))
             ->then
                 ->object($asserter->notHasKeys(range(1, 5)))->isIdenticalTo($asserter)
-                ->object($asserter->notHasKeys(array(uniqid(), uniqid())))->isIdenticalTo($asserter)
+                ->object($asserter->notHasKeys([uniqid(), uniqid()]))->isIdenticalTo($asserter)
 
             ->if(
                 $this->calling($locale)->_ = $hasKeys = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $keysType = uniqid(),
-                $asserter->setWith(array(uniqid(), uniqid(), uniqid(), uniqid(), uniqid()))
+                $asserter->setWith([uniqid(), uniqid(), uniqid(), uniqid(), uniqid()])
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->notHasKeys(array(0, 'premier', '2'));
+                    $asserter->notHasKeys([0, 'premier', '2']);
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($hasKeys)
                 ->mock($locale)->call('_')->withArguments('%s has keys %s', $asserter, $keysType)->once
-                ->mock($analyzer)->call('getTypeOf')->withIdenticalArguments(array(0 => 0, 2 => '2'))->once
+                ->mock($analyzer)->call('getTypeOf')->withIdenticalArguments([0 => 0, 2 => '2'])->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
-                    $asserter->notHasKeys(array(0, 'premier', 2), $failMessage = uniqid());
+                    $asserter->notHasKeys([0, 'premier', 2], $failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-                ->object($asserter->notHasKeys(array(5, '6')))->isIdenticalTo($asserter)
+                ->object($asserter->notHasKeys([5, '6']))->isIdenticalTo($asserter)
         ;
     }
 
@@ -1051,7 +1051,7 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->hasKeys(array(rand(0, PHP_INT_MAX)));
+                    $asserter->hasKeys([rand(0, PHP_INT_MAX)]);
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
@@ -1059,34 +1059,34 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $notHasKeys = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $keysType = uniqid(),
-                $asserter->setWith(array())
+                $asserter->setWith([])
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->hasKeys(array(0, 1, 2));
+                    $asserter->hasKeys([0, 1, 2]);
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notHasKeys)
                 ->mock($locale)->call('_')->withArguments('%s has no keys %s', $asserter, $keysType)->once
-                ->mock($analyzer)->call('getTypeOf')->withIdenticalArguments(array(0, 1, 2))->once
+                ->mock($analyzer)->call('getTypeOf')->withIdenticalArguments([0, 1, 2])->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
-                    $asserter->hasKeys(array(0), $failMessage = uniqid());
+                    $asserter->hasKeys([0], $failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
 
-            ->if($asserter->setWith(array(uniqid(), uniqid(), uniqid(), uniqid(), uniqid())))
+            ->if($asserter->setWith([uniqid(), uniqid(), uniqid(), uniqid(), uniqid()]))
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->hasKeys(array(0, 'first', 2, 'second'));
+                    $asserter->hasKeys([0, 'first', 2, 'second']);
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notHasKeys)
                 ->mock($locale)->call('_')->withArguments('%s has no keys %s', $asserter, $keysType)->twice
-                ->mock($analyzer)->call('getTypeOf')->withIdenticalArguments(array(1 => 'first', 3 => 'second'))->once
+                ->mock($analyzer)->call('getTypeOf')->withIdenticalArguments([1 => 'first', 3 => 'second'])->once
 
-                ->object($asserter->hasKeys(array(0, 2, 4)))->isIdenticalTo($asserter)
+                ->object($asserter->hasKeys([0, 2, 4]))->isIdenticalTo($asserter)
         ;
     }
 
@@ -1101,15 +1101,15 @@ class phpArray extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith(array()))
+            ->if($asserter->setWith([]))
             ->then
                 ->object($array = $asserter->keys)->isInstanceOf('mageekguy\atoum\asserters\phpArray')
-                ->array($array->getValue())->isEqualTo(array())
+                ->array($array->getValue())->isEqualTo([])
 
-            ->if($asserter->setWith(array($key1 = uniqid() => uniqid(), $key2 = uniqid() => uniqid())))
+            ->if($asserter->setWith([$key1 = uniqid() => uniqid(), $key2 = uniqid() => uniqid()]))
             ->then
                 ->object($array = $asserter->keys)->isInstanceOf('mageekguy\atoum\asserters\phpArray')
-                ->array($array->getValue())->isEqualTo(array($key1, $key2))
+                ->array($array->getValue())->isEqualTo([$key1, $key2])
         ;
     }
 
@@ -1124,12 +1124,12 @@ class phpArray extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith(array()))
+            ->if($asserter->setWith([]))
             ->then
                 ->object($integer = $asserter->size)->isInstanceOf('mageekguy\atoum\asserters\integer')
                 ->integer($integer->getValue())->isEqualTo(0)
 
-            ->if($asserter->setWith(array(uniqid(), uniqid())))
+            ->if($asserter->setWith([uniqid(), uniqid()]))
             ->then
                 ->object($integer = $asserter->size)->isInstanceOf('mageekguy\atoum\asserters\integer')
                 ->integer($integer->getValue())->isEqualTo(2)
@@ -1147,14 +1147,14 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->isEqualTo(array());
+                    $asserter->isEqualTo([]);
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith(array()))
+            ->if($asserter->setWith([]))
             ->then
-                ->object($asserter->isEqualTo(array()))->isIdenticalTo($asserter)
+                ->object($asserter->isEqualTo([]))->isIdenticalTo($asserter)
 
             ->if($asserter->setWith($array = range(1, 5)))
             ->then
@@ -1217,12 +1217,12 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->isNotEqualTo(array());
+                    $asserter->isNotEqualTo([]);
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith(array()))
+            ->if($asserter->setWith([]))
             ->then
                 ->object($asserter->isNotEqualTo(range(1, 2)))->isIdenticalTo($asserter)
 
@@ -1232,16 +1232,16 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->isNotEqualTo(array());
+                    $asserter->isNotEqualTo([]);
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is equal to %s', $asserter, $type)->once
-                ->mock($analyzer)->call('getTypeOf')->withArguments(array())->once
+                ->mock($analyzer)->call('getTypeOf')->withArguments([])->once
 
             ->if($asserter->setWith($array = range(1, 5)))
             ->then
-                ->object($asserter->isNotEqualTo(array()))->isIdenticalTo($asserter)
+                ->object($asserter->isNotEqualTo([]))->isIdenticalTo($asserter)
 
                 ->exception(function () use ($asserter, $array) {
                     $asserter->isNotEqualTo($array);
@@ -1258,7 +1258,7 @@ class phpArray extends atoum\test
 
             ->if($asserter->integer)
             ->then
-                ->object($asserter->isNotEqualTo(array()))->isIdenticalTo($asserter)
+                ->object($asserter->isNotEqualTo([]))->isIdenticalTo($asserter)
 
                 ->exception(function () use ($asserter, $array) {
                     $asserter->isNotEqualTo($array);
@@ -1300,9 +1300,9 @@ class phpArray extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith(array($object = new \mock\object(), 2)))
+            ->if($asserter->setWith([$object = new \mock\object(), 2]))
             ->then
-                ->object($asserter->isIdenticalTo(array($object, 2)))->isIdenticalTo($asserter)
+                ->object($asserter->isIdenticalTo([$object, 2]))->isIdenticalTo($asserter)
 
             ->if(
                 $this->calling($locale)->_ = $localizedMessage = uniqid(),
@@ -1325,7 +1325,7 @@ class phpArray extends atoum\test
 
             ->if($asserter->integer)
             ->then
-                ->object($asserter->isIdenticalTo(array($object, 2)))->isIdenticalTo($asserter)
+                ->object($asserter->isIdenticalTo([$object, 2]))->isIdenticalTo($asserter)
 
                 ->exception(function () use ($asserter, & $notIdenticalValue) {
                     $asserter->isIdenticalTo($notIdenticalValue = uniqid());
@@ -1365,9 +1365,9 @@ class phpArray extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith($array = array(1, 2)))
+            ->if($asserter->setWith($array = [1, 2]))
             ->then
-                ->object($asserter->isNotIdenticalTo(array('1', 2)))->isIdenticalTo($asserter)
+                ->object($asserter->isNotIdenticalTo(['1', 2]))->isIdenticalTo($asserter)
 
             ->if(
                 $this->calling($locale)->_ = $localizedMessage = uniqid(),
@@ -1389,7 +1389,7 @@ class phpArray extends atoum\test
 
             ->if($asserter->integer)
             ->then
-                ->object($asserter->isNotIdenticalTo(array('1', 2)))->isIdenticalTo($asserter)
+                ->object($asserter->isNotIdenticalTo(['1', 2]))->isIdenticalTo($asserter)
                 ->mock($integerAsserter)->call('isNotIdenticalTo')->never
 
             ->if($asserter->integer[1])

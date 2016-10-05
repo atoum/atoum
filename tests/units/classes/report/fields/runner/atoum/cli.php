@@ -2,13 +2,12 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
 
+use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\locale;
+use mageekguy\atoum\report\fields\runner\atoum\cli as testedClass;
 use mageekguy\atoum\runner;
 use mageekguy\atoum\runner\score;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\tests\units;
-use mageekguy\atoum\report\fields\runner\atoum\cli as testedClass;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -30,7 +29,7 @@ class cli extends \mageekguy\atoum\test
                 ->variable($field->getAuthor())->isNull()
                 ->variable($field->getPath())->isNull()
                 ->variable($field->getVersion())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(runner::runStart))
+                ->array($field->getEvents())->isEqualTo([runner::runStart])
         ;
     }
 

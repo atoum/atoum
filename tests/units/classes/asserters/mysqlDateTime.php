@@ -3,8 +3,6 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\asserters\mysqlDateTime as sut;
 
 require_once __DIR__ . '/../../runner.php';
 

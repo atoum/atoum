@@ -2,11 +2,6 @@
 
 namespace mageekguy\atoum\report\fields\runner\atoum;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
-
 class logo extends cli
 {
     public function __toString()

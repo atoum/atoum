@@ -4,7 +4,7 @@ namespace mageekguy\atoum;
 
 class template extends template\data
 {
-    protected $children = array();
+    protected $children = [];
 
     public function __set($tag, $data)
     {
@@ -88,7 +88,7 @@ class template extends template\data
         return $this;
     }
 
-    public function build($mixed = array())
+    public function build($mixed = [])
     {
         foreach ($this->setWith($mixed)->children as $child) {
             $this->addData($child->getData());
@@ -107,7 +107,7 @@ class template extends template\data
         return ($child->parent === $this);
     }
 
-    public function addToParent($mixed = array())
+    public function addToParent($mixed = [])
     {
         $this->setWith($mixed);
 

@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\mock\stream;
 
-use mageekguy\atoum\test;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\test;
 
 class controller extends test\adapter
 {
@@ -37,7 +37,7 @@ class controller extends test\adapter
                 if ($value === false) {
                     $this->fopen = false;
                 } else {
-                    $this->stat = array('mode' => 33188);
+                    $this->stat = ['mode' => 33188];
                     $this->fopen = true;
                     $this->fread[1] = $value;
                     $this->fread[2] = false;
@@ -46,7 +46,7 @@ class controller extends test\adapter
                 return $this;
 
             case 'file_put_contents':
-                $this->stat = array('mode' => 33188);
+                $this->stat = ['mode' => 33188];
                 $this->fopen = true;
                 $this->fwrite = $value;
                 $this->fclose = true;
@@ -60,7 +60,7 @@ class controller extends test\adapter
                         $this->dir_closedir = true;
                         $this->dir_rewinddir = true;
                         $this->dir_readdir = false;
-                        $this->url_stat = array('mode' => 16877);
+                        $this->url_stat = ['mode' => 16877];
                         break;
 
                     case 'dir_readdir':
@@ -107,7 +107,7 @@ class controller extends test\adapter
         return basename($this->path);
     }
 
-    public function invoke($method, array $arguments = array())
+    public function invoke($method, array $arguments = [])
     {
         $method = static::mapMethod($method);
 

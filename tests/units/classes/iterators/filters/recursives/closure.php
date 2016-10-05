@@ -12,36 +12,36 @@ class closure extends atoum\test
     public function testAddClosure()
     {
         $this
-            ->if($filter = new testedClass(new \recursiveArrayIterator(array())))
+            ->if($filter = new testedClass(new \recursiveArrayIterator([])))
             ->then
                 ->object($filter->addClosure($closure = function () {
                 }))->isIdenticalTo($filter)
-                ->array($filter->getClosures())->isEqualTo(array($closure))
+                ->array($filter->getClosures())->isEqualTo([$closure])
                 ->object($filter->addClosure($otherClosure = function () {
                 }))->isIdenticalTo($filter)
-                ->array($filter->getClosures())->isEqualTo(array($closure, $otherClosure))
+                ->array($filter->getClosures())->isEqualTo([$closure, $otherClosure])
         ;
     }
 
     public function testAccept()
     {
         $this
-            ->if($array = array(
+            ->if($array = [
                     0,
                     1,
                     2,
-                    array(
+                    [
                         3,
-                        array(
+                        [
                             4,
                             5
-                        ),
+                        ],
                         6
-                    ),
+                    ],
                     7,
                     8,
                     9
-                )
+                ]
             )
             ->and($iterator = new \recursiveIteratorIterator(
                     new testedClass(
@@ -59,7 +59,7 @@ class closure extends atoum\test
             ->then
                 ->array(iterator_to_array($iterator, false))
                     ->hasSize(5)
-                    ->strictlyContainsValues(array(0, 2, 4, 6, 8))
-                    ->strictlyNotContainsValues(array(1, 3, 5, 7, 9));
+                    ->strictlyContainsValues([0, 2, 4, 6, 8])
+                    ->strictlyNotContainsValues([1, 3, 5, 7, 9]);
     }
 }

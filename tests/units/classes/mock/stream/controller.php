@@ -3,9 +3,6 @@
 namespace mageekguy\atoum\tests\units\mock\stream;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
-use mageekguy\atoum\dependence;
-use mageekguy\atoum\dependencies;
 use mageekguy\atoum\mock\stream;
 use mageekguy\atoum\mock\stream\controller as testedClass;
 

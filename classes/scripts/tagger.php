@@ -3,9 +3,8 @@
 namespace mageekguy\atoum\scripts;
 
 use mageekguy\atoum;
-use mageekguy\atoum\scripts;
 use mageekguy\atoum\exceptions;
-use mageekguy\atoum\scripts\tagger;
+use mageekguy\atoum\scripts;
 
 class tagger extends atoum\script
 {
@@ -46,7 +45,7 @@ class tagger extends atoum\script
 
                         $script->help();
                     },
-                    array('-h', '--help'),
+                    ['-h', '--help'],
                     null,
                     $this->locale->_('Display this help')
                 )
@@ -58,7 +57,7 @@ class tagger extends atoum\script
 
                         $engine->setVersion(current($version));
                     },
-                    array('-v', '--version'),
+                    ['-v', '--version'],
                     '<string>',
                     $this->locale->_('Use <string> as version value')
                 )
@@ -70,7 +69,7 @@ class tagger extends atoum\script
 
                         $engine->setVersionPattern(current($versionPattern));
                     },
-                    array('-vp', '--version-pattern'),
+                    ['-vp', '--version-pattern'],
                     '<regex>',
                     $this->locale->_('Use <regex> to set version in source files')
                 )
@@ -82,7 +81,7 @@ class tagger extends atoum\script
 
                         $engine->setSrcDirectory(current($directory));
                     },
-                    array('-s', '--src-directory'),
+                    ['-s', '--src-directory'],
                     '<directory>',
                     $this->locale->_('Use <directory> as source directory')
                 )
@@ -94,7 +93,7 @@ class tagger extends atoum\script
 
                         $engine->setDestinationDirectory(current($directory));
                     },
-                    array('-d', '--destination-directory'),
+                    ['-d', '--destination-directory'],
                     '<directory>',
                      $this->locale->_('Save tagged files in <directory>')
                 )

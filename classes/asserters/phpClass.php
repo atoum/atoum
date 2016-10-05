@@ -27,10 +27,10 @@ class phpClass extends atoum\asserter
     {
         switch (strtolower($method)) {
             case 'extends':
-                return call_user_func_array(array($this, 'isSubClassOf'), $arguments);
+                return call_user_func_array([$this, 'isSubClassOf'], $arguments);
 
             case 'implements':
-                return call_user_func_array(array($this, 'hasInterface'), $arguments);
+                return call_user_func_array([$this, 'hasInterface'], $arguments);
 
             default:
                 return parent::__call($method, $arguments);
@@ -140,7 +140,7 @@ class phpClass extends atoum\asserter
         } catch (\reflectionException $exception) {
             throw new exceptions\logic('Argument of ' . __METHOD__ . '() must be an interface name', null, $exception);
         }
-        
+
         return $this;
     }
 

@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\tap;
 
 use mageekguy\atoum;
-use mageekguy\atoum\runner;
 use mageekguy\atoum\report\fields\runner\tap\plan as testedClass;
+use mageekguy\atoum\runner;
 
 require __DIR__ . '/../../../../../runner.php';
 
@@ -20,7 +20,7 @@ class plan extends atoum\test
         $this
             ->if($field = new testedClass())
             ->then
-                ->array($field->getEvents())->isEqualTo(array(runner::runStart))
+                ->array($field->getEvents())->isEqualTo([runner::runStart])
         ;
     }
 

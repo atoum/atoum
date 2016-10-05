@@ -3,10 +3,9 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\exceptions;
 
 use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\tests\units;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\runner;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -31,7 +30,7 @@ class cli extends atoum\test
                 ->object($field->getExceptionColorizer())->isEqualTo(new colorizer())
                 ->object($field->getLocale())->isEqualTo(new locale())
                 ->variable($field->getRunner())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
         ;
     }
 
@@ -137,7 +136,7 @@ class cli extends atoum\test
     {
         $this
             ->if($score = new \mock\mageekguy\atoum\runner\score())
-            ->and($score->getMockController()->getExceptions = array())
+            ->and($score->getMockController()->getExceptions = [])
             ->and($runner = new atoum\runner())
             ->and($runner->setScore($score))
             ->and($field = new runner\exceptions\cli())
@@ -149,22 +148,22 @@ class cli extends atoum\test
             ->if($field->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($field)->isEmpty()
-            ->if($score->getMockController()->getExceptions = $exceptions = array(
-                        array(
+            ->if($score->getMockController()->getExceptions = $exceptions = [
+                        [
                             'class' => $class = uniqid(),
                             'method' => $method = uniqid(),
                             'file' => $file = uniqid(),
                             'line' => $line = uniqid(),
                             'value' => $value = uniqid()
-                        ),
-                        array(
+                        ],
+                        [
                             'class' => $otherClass = uniqid(),
                             'method' => $otherMethod = uniqid(),
                             'file' => $otherFile = uniqid(),
                             'line' => $otherLine = uniqid(),
                             'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
-                        ),
-                    )
+                        ],
+                    ]
                 )
             ->and($field = new runner\exceptions\cli())
             ->then

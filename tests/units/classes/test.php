@@ -18,7 +18,7 @@ namespace mageekguy\atoum
 
         public static function someOtherStaticMethod($return1, $return2, $return3)
         {
-            return array($return1, $return2, $return3);
+            return [$return1, $return2, $return3];
         }
     }
 
@@ -179,7 +179,7 @@ namespace mageekguy\atoum\tests\units
                     ->object($test->getFactoryBuilder())->isInstanceOf('mageekguy\atoum\factory\builder\closure')
                     ->boolean($test->isIgnored())->isTrue()
                     ->boolean($test->debugModeIsEnabled())->isFalse()
-                    ->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
+                    ->array($test->getAllTags())->isEqualTo($tags = ['empty', 'fake', 'dummy'])
                     ->array($test->getTags())->isEqualTo($tags)
                     ->array($test->getMethodTags())->isEmpty()
                     ->array($test->getDataProviders())->isEmpty()
@@ -493,7 +493,7 @@ namespace mageekguy\atoum\tests\units
                     ->string($test->getTestMethodPrefix())->isEqualTo($testMethodPrefix)
                     ->object($test->setTestMethodPrefix($testMethodPrefix = '/^test/i'))->isIdenticalTo($test)
                     ->string($test->getTestMethodPrefix())->isEqualTo($testMethodPrefix)
-                    ->object($test->setTestMethodPrefix($testMethodPrefix = ('_'.rand(0, PHP_INT_MAX))))->isIdenticalTo($test)
+                    ->object($test->setTestMethodPrefix($testMethodPrefix = ('_' . rand(0, PHP_INT_MAX))))->isIdenticalTo($test)
                     ->string($test->getTestMethodPrefix())->isEqualTo((string) $testMethodPrefix)
                     ->object($test->setTestMethodPrefix($testMethodPrefix = "_0"))->isIdenticalTo($test)
                     ->string($test->getTestMethodPrefix())->isEqualTo((string) $testMethodPrefix)
@@ -733,14 +733,14 @@ namespace mageekguy\atoum\tests\units
                     ->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
                     ->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
                     ->sizeOf($test)->isEqualTo(2)
-                    ->array($test->getTestMethods())->isEqualTo(array('testMethod1', 'testMethod2'))
-                    ->array($test->getTestMethods(array('method')))->isEqualTo(array('testMethod1', 'testMethod2'))
-                    ->array($test->getTestMethods(array('test')))->isEqualTo(array('testMethod1', 'testMethod2'))
-                    ->array($test->getTestMethods(array('two')))->isEqualTo(array('testMethod2'))
-                    ->array($test->getTestMethods(array(uniqid())))->isEmpty()
-                    ->array($test->getTestMethods(array('test', 'method')))->isEqualTo(array('testMethod1', 'testMethod2'))
-                    ->array($test->getTestMethods(array('test', 'method', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
-                    ->array($test->getTestMethods(array('test', 'method', 'two', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
+                    ->array($test->getTestMethods())->isEqualTo(['testMethod1', 'testMethod2'])
+                    ->array($test->getTestMethods(['method']))->isEqualTo(['testMethod1', 'testMethod2'])
+                    ->array($test->getTestMethods(['test']))->isEqualTo(['testMethod1', 'testMethod2'])
+                    ->array($test->getTestMethods(['two']))->isEqualTo(['testMethod2'])
+                    ->array($test->getTestMethods([uniqid()]))->isEmpty()
+                    ->array($test->getTestMethods(['test', 'method']))->isEqualTo(['testMethod1', 'testMethod2'])
+                    ->array($test->getTestMethods(['test', 'method', uniqid()]))->isEqualTo(['testMethod1', 'testMethod2'])
+                    ->array($test->getTestMethods(['test', 'method', 'two', uniqid()]))->isEqualTo(['testMethod1', 'testMethod2'])
             ;
         }
 
@@ -786,7 +786,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($test->setTags($tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
+                    ->object($test->setTags($tags = [uniqid(), uniqid()]))->isIdenticalTo($test)
                     ->array($test->getTags())->isEqualTo($tags)
             ;
         }
@@ -796,10 +796,10 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new notEmptyTest())
                 ->then
-                    ->object($test->setMethodTags('testMethod1', $tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
+                    ->object($test->setMethodTags('testMethod1', $tags = [uniqid(), uniqid()]))->isIdenticalTo($test)
                     ->array($test->getMethodTags('testMethod1'))->isEqualTo($tags)
                     ->exception(function () use ($test, & $method) {
-                        $test->setMethodTags($method = uniqid(), array());
+                        $test->setMethodTags($method = uniqid(), []);
                     })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
@@ -811,7 +811,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new notEmptyTest())
                 ->then
-                    ->array($test->getMethodTags('testMethod1'))->isEqualTo(array('test', 'method', 'one'))
+                    ->array($test->getMethodTags('testMethod1'))->isEqualTo(['test', 'method', 'one'])
                     ->exception(function () use ($test, & $method) {
                         $test->getMethodTags($method = uniqid());
                     })
@@ -819,15 +819,15 @@ namespace mageekguy\atoum\tests\units
                         ->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
                 ->if($test = new inheritedTagsTest())
                 ->then
-                    ->array($test->getMethodTags())->isEqualTo(array('testMethod1' => array('first', 'second', 'third'), 'testMethod2' => array('first', 'second', 'third')))
-                    ->array($test->getMethodTags('testMethod1'))->isEqualTo(array('first', 'second', 'third'))
-                    ->array($test->getMethodTags('testMethod2'))->isEqualTo(array('first', 'second', 'third'))
+                    ->array($test->getMethodTags())->isEqualTo(['testMethod1' => ['first', 'second', 'third'], 'testMethod2' => ['first', 'second', 'third']])
+                    ->array($test->getMethodTags('testMethod1'))->isEqualTo(['first', 'second', 'third'])
+                    ->array($test->getMethodTags('testMethod2'))->isEqualTo(['first', 'second', 'third'])
                 ->if($test = new dataProviderTest())
                 ->then
-                    ->array($test->getMethodTags())->isEqualTo(array('testMethod1' => array(), 'testMethod2' => array(), 'testMethod3' => array()))
-                    ->array($test->getMethodTags('testMethod1'))->isEqualTo(array())
-                    ->array($test->getMethodTags('testMethod2'))->isEqualTo(array())
-                    ->array($test->getMethodTags('testMethod3'))->isEqualTo(array())
+                    ->array($test->getMethodTags())->isEqualTo(['testMethod1' => [], 'testMethod2' => [], 'testMethod3' => []])
+                    ->array($test->getMethodTags('testMethod1'))->isEqualTo([])
+                    ->array($test->getMethodTags('testMethod2'))->isEqualTo([])
+                    ->array($test->getMethodTags('testMethod3'))->isEqualTo([])
             ;
         }
 
@@ -837,9 +837,9 @@ namespace mageekguy\atoum\tests\units
                 ->if($test = new notEmptyTest())
                 ->then
                     ->object($test->addMandatoryClassExtension($extension = uniqid()))->isIdenticalTo($test)
-                    ->array($test->getMandatoryClassExtensions())->isEqualTo(array($extension))
+                    ->array($test->getMandatoryClassExtensions())->isEqualTo([$extension])
                     ->object($test->addMandatoryClassExtension($otherExtension = uniqid()))->isIdenticalTo($test)
-                    ->array($test->getMandatoryClassExtensions())->isEqualTo(array($extension, $otherExtension))
+                    ->array($test->getMandatoryClassExtensions())->isEqualTo([$extension, $otherExtension])
             ;
         }
 
@@ -849,7 +849,7 @@ namespace mageekguy\atoum\tests\units
                 ->if($test = new notEmptyTest())
                 ->then
                     ->array($test->getMandatoryMethodExtensions('testMethod1'))->isEmpty()
-                    ->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array('mbstring', 'socket'))
+                    ->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(['mbstring', 'socket'])
             ;
         }
 
@@ -864,22 +864,22 @@ namespace mageekguy\atoum\tests\units
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
                     ->object($test->addMandatoryMethodExtension('testMethod1', $extension = uniqid()))->isIdenticalTo($test)
-                    ->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($extension), 'testMethod2' => array('mbstring', 'socket')))
-                    ->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo(array($extension))
-                    ->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array('mbstring', 'socket'))
+                    ->array($test->getMandatoryMethodExtensions())->isEqualTo(['testMethod1' => [$extension], 'testMethod2' => ['mbstring', 'socket']])
+                    ->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo([$extension])
+                    ->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(['mbstring', 'socket'])
                     ->object($test->addMandatoryMethodExtension('testMethod1', $otherExtension = uniqid()))->isIdenticalTo($test)
-                    ->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($extension, $otherExtension), 'testMethod2' => array('mbstring', 'socket')))
-                    ->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo(array($extension, $otherExtension))
-                    ->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array('mbstring', 'socket'))
+                    ->array($test->getMandatoryMethodExtensions())->isEqualTo(['testMethod1' => [$extension, $otherExtension], 'testMethod2' => ['mbstring', 'socket']])
+                    ->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo([$extension, $otherExtension])
+                    ->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(['mbstring', 'socket'])
                     ->object($test->addMandatoryMethodExtension('testMethod2', $anOtherExtension = uniqid()))->isIdenticalTo($test)
-                    ->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($extension, $otherExtension), 'testMethod2' => array('mbstring', 'socket', $anOtherExtension)))
-                    ->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo(array($extension, $otherExtension))
-                    ->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array('mbstring', 'socket', $anOtherExtension))
+                    ->array($test->getMandatoryMethodExtensions())->isEqualTo(['testMethod1' => [$extension, $otherExtension], 'testMethod2' => ['mbstring', 'socket', $anOtherExtension]])
+                    ->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo([$extension, $otherExtension])
+                    ->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(['mbstring', 'socket', $anOtherExtension])
                 ->if($test->addMandatoryClassExtension($classExtension = uniqid()))
                 ->then
-                    ->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($classExtension, $extension, $otherExtension), 'testMethod2' => array($classExtension, 'mbstring', 'socket', $anOtherExtension)))
-                    ->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo(array($classExtension, $extension, $otherExtension))
-                    ->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array($classExtension, 'mbstring', 'socket', $anOtherExtension))
+                    ->array($test->getMandatoryMethodExtensions())->isEqualTo(['testMethod1' => [$classExtension, $extension, $otherExtension], 'testMethod2' => [$classExtension, 'mbstring', 'socket', $anOtherExtension]])
+                    ->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo([$classExtension, $extension, $otherExtension])
+                    ->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo([$classExtension, 'mbstring', 'socket', $anOtherExtension])
             ;
         }
 
@@ -889,9 +889,9 @@ namespace mageekguy\atoum\tests\units
                 ->if($test = new notEmptyTest())
                 ->then
                     ->object($test->addClassPhpVersion('5.3'))->isIdenticalTo($test)
-                    ->array($test->getClassPhpVersions())->isEqualTo(array('5.3' => '>='))
+                    ->array($test->getClassPhpVersions())->isEqualTo(['5.3' => '>='])
                     ->object($test->addClassPhpVersion('5.4', '<='))->isIdenticalTo($test)
-                    ->array($test->getClassPhpVersions())->isEqualTo(array('5.3' => '>=', '5.4' => '<='))
+                    ->array($test->getClassPhpVersions())->isEqualTo(['5.3' => '>=', '5.4' => '<='])
             ;
         }
 
@@ -906,22 +906,22 @@ namespace mageekguy\atoum\tests\units
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
                     ->object($test->addMethodPhpVersion('testMethod1', '5.3'))->isIdenticalTo($test)
-                    ->array($test->getMethodPhpVersions())->isEqualTo(array('testMethod1' => array('5.3' => '>='), 'testMethod2' => array()))
-                    ->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(array('5.3' => '>='))
+                    ->array($test->getMethodPhpVersions())->isEqualTo(['testMethod1' => ['5.3' => '>='], 'testMethod2' => []])
+                    ->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(['5.3' => '>='])
                     ->array($test->getMethodPhpVersions('testMethod2'))->isEmpty()
                     ->object($test->addMethodPhpVersion('testMethod1', '5.4', '<='))->isIdenticalTo($test)
-                    ->array($test->getMethodPhpVersions())->isEqualTo(array('testMethod1' => array('5.3' => '>=', '5.4' => '<='), 'testMethod2' => array()))
-                    ->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(array('5.3' => '>=', '5.4' => '<='))
+                    ->array($test->getMethodPhpVersions())->isEqualTo(['testMethod1' => ['5.3' => '>=', '5.4' => '<='], 'testMethod2' => []])
+                    ->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(['5.3' => '>=', '5.4' => '<='])
                     ->array($test->getMethodPhpVersions('testMethod2'))->isEmpty()
                     ->object($test->addMethodPhpVersion('testMethod2', '5.4', '>='))->isIdenticalTo($test)
-                    ->array($test->getMethodPhpVersions())->isEqualTo(array('testMethod1' => array('5.3' => '>=', '5.4' => '<='), 'testMethod2' => array('5.4' => '>=')))
-                    ->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(array('5.3' => '>=', '5.4' => '<='))
-                    ->array($test->getMethodPhpVersions('testMethod2'))->isEqualTo(array('5.4' => '>='))
+                    ->array($test->getMethodPhpVersions())->isEqualTo(['testMethod1' => ['5.3' => '>=', '5.4' => '<='], 'testMethod2' => ['5.4' => '>=']])
+                    ->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(['5.3' => '>=', '5.4' => '<='])
+                    ->array($test->getMethodPhpVersions('testMethod2'))->isEqualTo(['5.4' => '>='])
                 ->if($test->addClassPhpVersion('5.5'))
                 ->then
-                    ->array($test->getMethodPhpVersions())->isEqualTo(array('testMethod1' => array('5.5' => '>=', '5.3' => '>=', '5.4' => '<='), 'testMethod2' => array('5.5' => '>=', '5.4' => '>=')))
-                    ->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(array('5.5' => '>=', '5.3' => '>=', '5.4' => '<='))
-                    ->array($test->getMethodPhpVersions('testMethod2'))->isEqualTo(array('5.5' => '>=', '5.4' => '>='))
+                    ->array($test->getMethodPhpVersions())->isEqualTo(['testMethod1' => ['5.5' => '>=', '5.3' => '>=', '5.4' => '<='], 'testMethod2' => ['5.5' => '>=', '5.4' => '>=']])
+                    ->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(['5.5' => '>=', '5.3' => '>=', '5.4' => '<='])
+                    ->array($test->getMethodPhpVersions('testMethod2'))->isEqualTo(['5.5' => '>=', '5.4' => '>='])
             ;
         }
 
@@ -1004,29 +1004,29 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->array($test->getTaggedTestMethods(array()))->isEmpty()
-                    ->array($test->getTaggedTestMethods(array(uniqid())))->isEmpty()
-                    ->array($test->getTaggedTestMethods(array(uniqid(), uniqid())))->isEmpty()
+                    ->array($test->getTaggedTestMethods([]))->isEmpty()
+                    ->array($test->getTaggedTestMethods([uniqid()]))->isEmpty()
+                    ->array($test->getTaggedTestMethods([uniqid(), uniqid()]))->isEmpty()
                 ->if($test = new notEmptyTest())
                 ->then
-                    ->array($test->getTaggedTestMethods(array()))->isEmpty()
-                    ->array($test->getTaggedTestMethods(array(uniqid())))->isEmpty()
-                    ->array($test->getTaggedTestMethods(array(uniqid(), uniqid())))->isEmpty()
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEmpty()
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid(), 'testMethod2')))->isEmpty()
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEmpty()
+                    ->array($test->getTaggedTestMethods([]))->isEmpty()
+                    ->array($test->getTaggedTestMethods([uniqid()]))->isEmpty()
+                    ->array($test->getTaggedTestMethods([uniqid(), uniqid()]))->isEmpty()
+                    ->array($test->getTaggedTestMethods([uniqid(), 'testMethod1', uniqid()]))->isEmpty()
+                    ->array($test->getTaggedTestMethods([uniqid(), 'testMethod1', uniqid(), 'testMethod2']))->isEmpty()
+                    ->array($test->getTaggedTestMethods([uniqid(), 'Testmethod1', uniqid(), 'Testmethod2']))->isEmpty()
                 ->if($test->ignore(false))
                 ->then
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEqualTo(array('testMethod1'))
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod2', uniqid())))->isEqualTo(array('testMethod2'))
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('Testmethod1', 'Testmethod2'))
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2'), array('one')))->isEqualTo(array('Testmethod1'))
+                    ->array($test->getTaggedTestMethods([uniqid(), 'testMethod1', uniqid()]))->isEqualTo(['testMethod1'])
+                    ->array($test->getTaggedTestMethods([uniqid(), 'testMethod2', uniqid()]))->isEqualTo(['testMethod2'])
+                    ->array($test->getTaggedTestMethods([uniqid(), 'Testmethod1', uniqid(), 'Testmethod2']))->isEqualTo(['Testmethod1', 'Testmethod2'])
+                    ->array($test->getTaggedTestMethods([uniqid(), 'Testmethod1', uniqid(), 'Testmethod2'], ['one']))->isEqualTo(['Testmethod1'])
                 ->if($test->ignoreMethod('testMethod1', true))
                 ->then
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEmpty()
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod2', uniqid())))->isEqualTo(array('testMethod2'))
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('Testmethod2'))
-                    ->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2'), array('one')))->isEmpty()
+                    ->array($test->getTaggedTestMethods([uniqid(), 'testMethod1', uniqid()]))->isEmpty()
+                    ->array($test->getTaggedTestMethods([uniqid(), 'testMethod2', uniqid()]))->isEqualTo(['testMethod2'])
+                    ->array($test->getTaggedTestMethods([uniqid(), 'Testmethod1', uniqid(), 'Testmethod2']))->isEqualTo(['Testmethod2'])
+                    ->array($test->getTaggedTestMethods([uniqid(), 'Testmethod1', uniqid(), 'Testmethod2'], ['one']))->isEmpty()
             ;
         }
 
@@ -1048,7 +1048,7 @@ namespace mageekguy\atoum\tests\units
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Data provider ' . get_class($test) . '::' . $dataProvider . '() is unknown')
                     ->object($test->setDataProvider('testMethod1', 'aDataProvider'))->isIdenticalTo($test)
-                    ->array($test->getDataProviders())->isEqualTo(array('testMethod1' => 'aDataProvider'))
+                    ->array($test->getDataProviders())->isEqualTo(['testMethod1' => 'aDataProvider'])
                 ->if($test = new dataProviderTest())
                 ->then
                     ->object($test->setDataProvider('testMethod2'))->isIdenticalTo($test)
@@ -1068,7 +1068,7 @@ namespace mageekguy\atoum\tests\units
                         ->hasMessage('Could not instanciate a mock from ' . $test->getMockGenerator()->getDefaultNamespace() . '\\SplFileInfo because SplFileInfo::__construct() has at least one mandatory argument')
                 ->if($test->getMockGenerator()->setDefaultNamespace('testMocks'))
                 ->then
-                    ->array($providers['testMethod2']())->isEqualTo(array(array(new \testMocks\splFileInfo())))
+                    ->array($providers['testMethod2']())->isEqualTo([[new \testMocks\splFileInfo()]])
                 ->if($test = new dataProviderTest())
                 ->then
                     ->exception(function () use ($test, & $dataProvider) {
@@ -1244,15 +1244,15 @@ namespace mageekguy\atoum\tests\units
                 ->if($test = new emptyTest())
                 ->then
                     ->object($test->addExtension($extension = new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
-                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($extension))
-                    ->array($test->getObservers())->isEqualTo(array($extension))
+                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo([$extension])
+                    ->array($test->getObservers())->isEqualTo([$extension])
                     ->mock($extension)
                         ->call('setTest')->withArguments($test)->once()
                 ->if($this->resetMock($extension))
                 ->then
                     ->object($test->addExtension($extension))->isIdenticalTo($test)
-                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($extension))
-                    ->array($test->getObservers())->isEqualTo(array($extension))
+                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo([$extension])
+                    ->array($test->getObservers())->isEqualTo([$extension])
                     ->mock($extension)
                         ->call('setTest')->once();
             ;
@@ -1272,14 +1272,14 @@ namespace mageekguy\atoum\tests\units
                 ->and($otherExtension = new \mock\mageekguy\atoum\extension())
                 ->and($test->addExtension($extension)->addExtension($otherExtension))
                 ->then
-                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($extension, $otherExtension))
-                    ->array($test->getObservers())->isEqualTo(array($extension, $otherExtension))
+                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo([$extension, $otherExtension])
+                    ->array($test->getObservers())->isEqualTo([$extension, $otherExtension])
                     ->object($test->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
-                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($extension, $otherExtension))
-                    ->array($test->getObservers())->isEqualTo(array($extension, $otherExtension))
+                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo([$extension, $otherExtension])
+                    ->array($test->getObservers())->isEqualTo([$extension, $otherExtension])
                     ->object($test->removeExtension($extension))->isIdenticalTo($test)
-                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($otherExtension))
-                    ->array($test->getObservers())->isEqualTo(array($otherExtension))
+                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo([$otherExtension])
+                    ->array($test->getObservers())->isEqualTo([$otherExtension])
                     ->object($test->removeExtension($otherExtension))->isIdenticalTo($test)
                     ->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
                     ->array($test->getObservers())->isEmpty()
@@ -1300,8 +1300,8 @@ namespace mageekguy\atoum\tests\units
                 ->and($otherExtension = new \mock\mageekguy\atoum\extension())
                 ->and($test->addExtension($extension)->addExtension($otherExtension))
                 ->then
-                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo(array($extension, $otherExtension))
-                    ->array($test->getObservers())->isEqualTo(array($extension, $otherExtension))
+                    ->array(iterator_to_array($test->getExtensions()))->isEqualTo([$extension, $otherExtension])
+                    ->array($test->getObservers())->isEqualTo([$extension, $otherExtension])
                     ->object($test->removeExtensions())->isIdenticalTo($test)
                     ->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
                     ->array($test->getObservers())->isEmpty()
@@ -1341,7 +1341,7 @@ namespace mageekguy\atoum\tests\units
                         $return2 = uniqid(),
                         $return3 = uniqid()
                     ))
-                        ->isEqualTo(array($return1, $return2, $return3))
+                        ->isEqualTo([$return1, $return2, $return3])
             ;
         }
 
@@ -1364,7 +1364,7 @@ namespace mageekguy\atoum\tests\units
                         ->isInstanceOf('foo\bar')
                         ->isInstanceOf('stdClass')
 
-                ->given($arguments = array($firstArgument = uniqid(), $secondArgument = rand(0, PHP_INT_MAX)))
+                ->given($arguments = [$firstArgument = uniqid(), $secondArgument = rand(0, PHP_INT_MAX)])
                 ->then
                     ->object($mock = $test->newMockInstance('mageekguy\atoum\dummy', null, null, $arguments))
                         ->isInstanceOf('mock\mageekguy\atoum\dummy')
@@ -1372,7 +1372,7 @@ namespace mageekguy\atoum\tests\units
                     ->mock($mock)
                         ->call('__construct')->withArguments($firstArgument, $secondArgument)->once
 
-                ->given($arguments = array(uniqid(), rand(0, PHP_INT_MAX), $controller = new mock\controller()))
+                ->given($arguments = [uniqid(), rand(0, PHP_INT_MAX), $controller = new mock\controller()])
                 ->then
                     ->object($mock = $test->newMockInstance('mageekguy\atoum\dummy', null, null, $arguments))
                         ->isInstanceOf('mock\mageekguy\atoum\dummy')
@@ -1380,7 +1380,7 @@ namespace mageekguy\atoum\tests\units
                     ->object($mock->getMockController())->isIdenticalTo($controller)
 
                 ->given(
-                    $arguments = array(uniqid(), rand(0, PHP_INT_MAX)),
+                    $arguments = [uniqid(), rand(0, PHP_INT_MAX)],
                     $controller = new mock\controller()
                 )
                 ->then

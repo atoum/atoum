@@ -2,9 +2,6 @@
 
 namespace mageekguy\atoum\scripts;
 
-use mageekguy\atoum;
-use mageekguy\atoum\scripts\git;
-
 require_once __DIR__ . '/../../classes/autoloader.php';
 
 $pusher = new git\pusher(__FILE__);

@@ -2,7 +2,6 @@
 
 namespace mageekguy\atoum\report\fields\runner\result\notifier;
 
-use mageekguy\atoum;
 use mageekguy\atoum\exceptions;
 use mageekguy\atoum\report\fields\runner\result\notifier;
 

@@ -3,12 +3,12 @@
 namespace mageekguy\atoum\tests\units\report\fields\test\run;
 
 use mageekguy\atoum;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\test\adapter;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
+use mageekguy\atoum\mock;
 use mageekguy\atoum\report\fields\test;
+use mageekguy\atoum\test\adapter;
 
 require_once __DIR__ . '/../../../../../runner.php';
 

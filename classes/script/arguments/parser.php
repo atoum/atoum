@@ -7,10 +7,10 @@ use mageekguy\atoum\exceptions;
 
 class parser implements \iteratorAggregate
 {
-    protected $values = array();
-    protected $handlers = array();
+    protected $values = [];
+    protected $handlers = [];
     protected $defaultHandler = null;
-    protected $priorities = array();
+    protected $priorities = [];
     protected $superglobals = null;
 
     public function __construct(atoum\superglobals $superglobals = null)
@@ -47,7 +47,7 @@ class parser implements \iteratorAggregate
 
     public function resetValues()
     {
-        $this->values = array();
+        $this->values = [];
 
         return $this;
     }
@@ -67,7 +67,7 @@ class parser implements \iteratorAggregate
         return new \arrayIterator($this->getValues());
     }
 
-    public function parse(atoum\script $script, array $array = array())
+    public function parse(atoum\script $script, array $array = [])
     {
         $this->init($array);
 
@@ -147,9 +147,9 @@ class parser implements \iteratorAggregate
 
     public function resetHandlers()
     {
-        $this->handlers = array();
+        $this->handlers = [];
         $this->defaultHandler = null;
-        $this->priorities = array();
+        $this->priorities = [];
 
         return $this;
     }
@@ -164,7 +164,7 @@ class parser implements \iteratorAggregate
         return (isset($this->handlers[$argument]) === true);
     }
 
-    public function init(array $array = array())
+    public function init(array $array = [])
     {
         if (sizeof($array) <= 0) {
             $array = array_slice($this->superglobals->_SERVER['argv'], 1);
@@ -183,7 +183,7 @@ class parser implements \iteratorAggregate
 
             $argument = $value;
 
-            $this->values[$argument] = array();
+            $this->values[$argument] = [];
 
             $arguments->next();
 
@@ -196,7 +196,7 @@ class parser implements \iteratorAggregate
                     $argument = $value;
 
                     if (isset($this->values[$argument]) === false) {
-                        $this->values[$argument] = array();
+                        $this->values[$argument] = [];
                     }
                 }
 

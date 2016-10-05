@@ -3,9 +3,6 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\result;
 
 use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\report\fields\runner\result\logo as testedClass;
 
 require_once __DIR__ . '/../../../../../runner.php';

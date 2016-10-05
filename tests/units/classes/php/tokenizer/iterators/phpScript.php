@@ -67,7 +67,7 @@ class phpScript extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->appendConstant($constantIterator))->isTestedInstance
-                ->array($this->testedInstance->getConstants())->isEqualTo(array($constantIterator))
+                ->array($this->testedInstance->getConstants())->isEqualTo([$constantIterator])
                 ->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
         ;
     }
@@ -80,10 +80,10 @@ class phpScript extends atoum\test
                 ->array($this->testedInstance->getConstants())->isEmpty()
             ->if($this->testedInstance->appendConstant($constantIterator = new iterators\phpConstant()))
             ->then
-                ->array($this->testedInstance->getConstants())->isEqualTo(array($constantIterator))
+                ->array($this->testedInstance->getConstants())->isEqualTo([$constantIterator])
             ->if($this->testedInstance->appendConstant($otherConstantIterator = new iterators\phpConstant()))
             ->then
-                ->array($this->testedInstance->getConstants())->isEqualTo(array($constantIterator, $otherConstantIterator))
+                ->array($this->testedInstance->getConstants())->isEqualTo([$constantIterator, $otherConstantIterator])
         ;
     }
 
@@ -117,7 +117,7 @@ class phpScript extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->appendClass($classIterator))->isTestedInstance
-                ->array($this->testedInstance->getClasses())->isEqualTo(array($classIterator))
+                ->array($this->testedInstance->getClasses())->isEqualTo([$classIterator])
                 ->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
         ;
     }
@@ -130,10 +130,10 @@ class phpScript extends atoum\test
                 ->array($this->testedInstance->getClasses())->isEmpty()
             ->if($this->testedInstance->appendClass($classIterator = new iterators\phpClass()))
             ->then
-                ->array($this->testedInstance->getClasses())->isEqualTo(array($classIterator))
+                ->array($this->testedInstance->getClasses())->isEqualTo([$classIterator])
             ->if($this->testedInstance->appendClass($otherClassIterator = new iterators\phpClass()))
             ->then
-                ->array($this->testedInstance->getClasses())->isEqualTo(array($classIterator, $otherClassIterator))
+                ->array($this->testedInstance->getClasses())->isEqualTo([$classIterator, $otherClassIterator])
         ;
     }
 
@@ -167,7 +167,7 @@ class phpScript extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->appendNamespace($namespaceIterator))->isTestedInstance
-                ->array($this->testedInstance->getNamespaces())->isEqualTo(array($namespaceIterator))
+                ->array($this->testedInstance->getNamespaces())->isEqualTo([$namespaceIterator])
                 ->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
         ;
     }
@@ -180,10 +180,10 @@ class phpScript extends atoum\test
                 ->array($this->testedInstance->getNamespaces())->isEmpty()
             ->if($this->testedInstance->appendNamespace($namespaceIterator = new iterators\phpNamespace()))
             ->then
-                ->array($this->testedInstance->getNamespaces())->isEqualTo(array($namespaceIterator))
+                ->array($this->testedInstance->getNamespaces())->isEqualTo([$namespaceIterator])
             ->if($this->testedInstance->appendNamespace($otherNamespaceIterator = new iterators\phpNamespace()))
             ->then
-                ->array($this->testedInstance->getNamespaces())->isEqualTo(array($namespaceIterator, $otherNamespaceIterator))
+                ->array($this->testedInstance->getNamespaces())->isEqualTo([$namespaceIterator, $otherNamespaceIterator])
         ;
     }
 
@@ -217,7 +217,7 @@ class phpScript extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->appendImportation($importationIterator))->isTestedInstance
-                ->array($this->testedInstance->getImportations())->isEqualTo(array($importationIterator))
+                ->array($this->testedInstance->getImportations())->isEqualTo([$importationIterator])
                 ->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
         ;
     }
@@ -230,10 +230,10 @@ class phpScript extends atoum\test
                 ->array($this->testedInstance->getImportations())->isEmpty()
             ->if($this->testedInstance->appendImportation($importationIterator = new iterators\phpImportation()))
             ->then
-                ->array($this->testedInstance->getImportations())->isEqualTo(array($importationIterator))
+                ->array($this->testedInstance->getImportations())->isEqualTo([$importationIterator])
             ->if($this->testedInstance->appendImportation($otherImportationIterator = new iterators\phpImportation()))
             ->then
-                ->array($this->testedInstance->getImportations())->isEqualTo(array($importationIterator, $otherImportationIterator))
+                ->array($this->testedInstance->getImportations())->isEqualTo([$importationIterator, $otherImportationIterator])
         ;
     }
 
@@ -267,7 +267,7 @@ class phpScript extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->appendFunction($functionIterator))->isTestedInstance
-                ->array($this->testedInstance->getFunctions())->isEqualTo(array($functionIterator))
+                ->array($this->testedInstance->getFunctions())->isEqualTo([$functionIterator])
                 ->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
         ;
     }
@@ -280,10 +280,10 @@ class phpScript extends atoum\test
                 ->array($this->testedInstance->getFunctions())->isEmpty()
             ->if($this->testedInstance->appendFunction($functionIterator = new iterators\phpFunction()))
             ->then
-                ->array($this->testedInstance->getFunctions())->isEqualTo(array($functionIterator))
+                ->array($this->testedInstance->getFunctions())->isEqualTo([$functionIterator])
             ->if($this->testedInstance->appendFunction($otherFunctionIterator = new iterators\phpFunction()))
             ->then
-                ->array($this->testedInstance->getFunctions())->isEqualTo(array($functionIterator, $otherFunctionIterator))
+                ->array($this->testedInstance->getFunctions())->isEqualTo([$functionIterator, $otherFunctionIterator])
         ;
     }
 

@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\report\fields\runner\tests\skipped;
 
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\report\fields\runner\tests\skipped;
 
 class cli extends skipped

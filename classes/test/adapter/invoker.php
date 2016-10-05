@@ -10,7 +10,7 @@ class invoker implements \arrayAccess, \countable
     protected $function = '';
     protected $bindClosureTo = null;
     protected $currentCall = null;
-    protected $closuresByCall = array();
+    protected $closuresByCall = [];
 
     public function __construct($function)
     {
@@ -178,7 +178,7 @@ class invoker implements \arrayAccess, \countable
         return $this;
     }
 
-    public function invoke(array $arguments = array(), $call = 0)
+    public function invoke(array $arguments = [], $call = 0)
     {
         if ($this->closureIsSetForCall($call) === false) {
             throw new exceptions\logic\invalidArgument('There is no closure defined for call ' . $call);

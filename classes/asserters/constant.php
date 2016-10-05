@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum;
-use mageekguy\atoum\tools;
 use mageekguy\atoum\asserter;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\tools;
 
 class constant extends asserter
 {
@@ -29,7 +29,7 @@ class constant extends asserter
     {
         switch (strtolower($method)) {
             case 'equalto':
-                return call_user_func_array(array($this, 'isEqualTo'), $arguments);
+                return call_user_func_array([$this, 'isEqualTo'], $arguments);
 
             default:
                 return parent::__call($method, $arguments);

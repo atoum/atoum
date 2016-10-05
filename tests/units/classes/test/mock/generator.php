@@ -45,7 +45,7 @@ class generator extends atoum
             })
             ->when($generator->{$property = uniqid()}())
             ->then
-                ->mock($test)->call('__call')->withArguments($property, array())->once()
+                ->mock($test)->call('__call')->withArguments($property, [])->once()
         ;
     }
 

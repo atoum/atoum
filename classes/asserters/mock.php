@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum;
-use mageekguy\atoum\asserters\adapter;
 use mageekguy\atoum\test\adapter\call\decorators;
 
 class mock extends adapter

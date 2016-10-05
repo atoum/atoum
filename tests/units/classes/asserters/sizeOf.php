@@ -41,7 +41,7 @@ class sizeOf extends atoum\test
         $this
             ->if($this->newTestedInstance)
             ->then
-                ->object($this->testedInstance->setWith(array()))->isTestedInstance
+                ->object($this->testedInstance->setWith([]))->isTestedInstance
                 ->boolean($this->testedInstance->wasSet())->isTrue()
                 ->integer($this->testedInstance->getValue())->isZero()
 

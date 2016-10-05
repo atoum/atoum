@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\tests\units\mock\stream;
 
-use mageekguy\atoum\test;
 use mageekguy\atoum\mock\stream;
+use mageekguy\atoum\test;
 
 require_once __DIR__ . '/../../../runner.php';
 

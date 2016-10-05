@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\factory\builder;
 
-use mageekguy\atoum\test;
 use mageekguy\atoum\factory;
+use mageekguy\atoum\test;
 
 class closure implements factory\builder
 {
@@ -18,7 +18,7 @@ class closure implements factory\builder
             $constructor = $class->getConstructor();
 
             if ($constructor === null || $constructor->isPublic() === true) {
-                $constructorParameters = $closureParameters = array();
+                $constructorParameters = $closureParameters = [];
 
                 if ($constructor !== null) {
                     $this->allArgumentsAreOptional = ($constructor->getNumberOfRequiredParameters() === 0);

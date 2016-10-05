@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units;
 
 use mageekguy\atoum;
-use mageekguy\atoum\mock\stream;
 use mageekguy\atoum\includer as testedClass;
+use mageekguy\atoum\mock\stream;
 
 require __DIR__ . '/../runner.php';
 
@@ -45,7 +45,7 @@ class includer extends atoum\test
             ->then
                 ->object($includer->resetErrors())->isIdenticalTo($includer)
                 ->array($includer->getErrors())->isEmpty()
-            ->if($includer->errorHandler(E_NOTICE, uniqid(), uniqid(), rand(1, PHP_INT_MAX), array()))
+            ->if($includer->errorHandler(E_NOTICE, uniqid(), uniqid(), rand(1, PHP_INT_MAX), []))
             ->then
                 ->object($includer->resetErrors())->isIdenticalTo($includer)
                 ->array($includer->getErrors())->isEmpty()
@@ -71,7 +71,7 @@ class includer extends atoum\test
                     ->hasMessage('Unable to include \'' . $unknownFile . '\'')
                 ->array($includer->getErrors())->isNotEmpty()
                 ->adapter($adapter)
-                    ->call('set_error_handler')->withArguments(array($includer, 'errorHandler'))->once()
+                    ->call('set_error_handler')->withArguments([$includer, 'errorHandler'])->once()
                     ->call('restore_error_handler')->once()
             ->if($file = stream::get())
             ->and($file->file_get_contents = $fileContents = uniqid())
@@ -79,7 +79,7 @@ class includer extends atoum\test
                 ->object($includer->includePath($file))->isIdenticalTo($includer)
                 ->output->isEqualTo($fileContents)
                 ->adapter($adapter)
-                    ->call('set_error_handler')->withArguments(array($includer, 'errorHandler'))->twice()
+                    ->call('set_error_handler')->withArguments([$includer, 'errorHandler'])->twice()
                     ->call('restore_error_handler')->twice()
                 ->array($includer->getErrors())->isEmpty()
             ->if($fileWithError = stream::get())
@@ -90,17 +90,17 @@ class includer extends atoum\test
                 ->integer($errors[0][0])->isEqualTo(E_USER_WARNING)
                 ->string($errors[0][1])->isEqualTo($message)
                 ->adapter($adapter)
-                    ->call('set_error_handler')->withArguments(array($includer, 'errorHandler'))->thrice()
+                    ->call('set_error_handler')->withArguments([$includer, 'errorHandler'])->thrice()
                     ->call('restore_error_handler')->thrice()
             ->if($fileWithError = stream::get())
             ->and($fileWithError->file_get_contents = '<?php @trigger_error(\'' . ($message = uniqid()) . '\', E_USER_WARNING); ?>')
-            ->and($errors = array())
+            ->and($errors = [])
             ->then
                 ->object($includer->includePath($fileWithError))->isIdenticalTo($includer)
                 ->array($includer->getErrors())->isEmpty()
                 ->array($errors)->isEmpty()
                 ->adapter($adapter)
-                    ->call('set_error_handler')->withArguments(array($includer, 'errorHandler'))->exactly(4)
+                    ->call('set_error_handler')->withArguments([$includer, 'errorHandler'])->exactly(4)
                     ->call('restore_error_handler')->exactly(4)
             ->if($adapter->set_error_handler = function ($errorHandler) {
                 set_error_handler($errorHandler);
@@ -114,7 +114,7 @@ class includer extends atoum\test
                 ->integer($errors[0][0])->isEqualTo(E_USER_WARNING)
                 ->string($errors[0][1])->isEqualTo($message)
                 ->adapter($adapter)
-                    ->call('set_error_handler')->withArguments(array($includer, 'errorHandler'))->exactly(5)
+                    ->call('set_error_handler')->withArguments([$includer, 'errorHandler'])->exactly(5)
                     ->call('restore_error_handler')->exactly(5)
         ;
     }
@@ -125,16 +125,16 @@ class includer extends atoum\test
             ->if($includer = new testedClass($adapter = new atoum\test\adapter()))
             ->and($adapter->error_reporting = E_ALL)
             ->then
-                ->boolean($includer->errorHandler($errno = E_NOTICE, $message = uniqid(), $file = uniqid(), $line = rand(1, PHP_INT_MAX), $context = array()))->isTrue()
-                ->array($includer->getErrors())->isEqualTo(array(
-                        array($errno, $message, $file, $line, $context)
-                    )
+                ->boolean($includer->errorHandler($errno = E_NOTICE, $message = uniqid(), $file = uniqid(), $line = rand(1, PHP_INT_MAX), $context = []))->isTrue()
+                ->array($includer->getErrors())->isEqualTo([
+                        [$errno, $message, $file, $line, $context]
+                    ]
                 )
-                ->boolean($includer->errorHandler($otherErrno = E_WARNING, $otherMessage = uniqid(), $otherFile = uniqid(), $otherLine = rand(1, PHP_INT_MAX), $otherContext = array()))->isTrue()
-                ->array($includer->getErrors())->isEqualTo(array(
-                        array($errno, $message, $file, $line, $context),
-                        array($otherErrno, $otherMessage, $otherFile, $otherLine, $otherContext)
-                    )
+                ->boolean($includer->errorHandler($otherErrno = E_WARNING, $otherMessage = uniqid(), $otherFile = uniqid(), $otherLine = rand(1, PHP_INT_MAX), $otherContext = []))->isTrue()
+                ->array($includer->getErrors())->isEqualTo([
+                        [$errno, $message, $file, $line, $context],
+                        [$otherErrno, $otherMessage, $otherFile, $otherLine, $otherContext]
+                    ]
                 )
                 ->if($includer->resetErrors())
                 ->then

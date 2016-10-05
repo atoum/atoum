@@ -11,9 +11,9 @@ class generator
 
     protected $adapter = null;
     protected $reflectionClassFactory = null;
-    protected $shuntedMethods = array();
-    protected $overloadedMethods = array();
-    protected $orphanizedMethods = array();
+    protected $shuntedMethods = [];
+    protected $overloadedMethods = [];
+    protected $orphanizedMethods = [];
     protected $shuntParentClassCalls = false;
     protected $allowUndefinedMethodsUsage = true;
     protected $allIsInterface = false;
@@ -177,7 +177,7 @@ class generator
             $code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : $this->generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);
         }
 
-        $this->shuntedMethods = $this->overloadedMethods = $this->orphanizedMethods = array();
+        $this->shuntedMethods = $this->overloadedMethods = $this->orphanizedMethods = [];
 
         $this->unshuntParentClassCalls();
 
@@ -245,7 +245,7 @@ class generator
     protected function generateClassMethodCode(\reflectionClass $class)
     {
         $mockedMethods = '';
-        $mockedMethodNames = array();
+        $mockedMethodNames = [];
         $className = $class->getName();
 
         if ($this->allIsInterface && strtolower($className) != $this->testedClass) {
@@ -423,7 +423,7 @@ class generator
     protected function generateInterfaceMethodCode(\reflectionClass $class, $addIteratorAggregate)
     {
         $mockedMethods = '';
-        $mockedMethodNames = array();
+        $mockedMethodNames = [];
         $hasConstructor = false;
 
         $methods = $class->getMethods(\reflectionMethod::IS_PUBLIC);
@@ -564,7 +564,7 @@ class generator
 
     protected function getParameters(\reflectionMethod $method)
     {
-        $parameters = array();
+        $parameters = [];
 
         $overload = $this->getOverload($method->getName());
 
@@ -583,7 +583,7 @@ class generator
 
     protected function getParametersSignature(\reflectionMethod $method, $forceMockController = false)
     {
-        $parameters = array();
+        $parameters = [];
 
         $mustBeNull = $this->isOrphanized($method->getName());
 
@@ -748,7 +748,7 @@ class generator
             self::generateMockControllerMethods() .
             self::generateDefaultConstructor(true) .
             self::generate__call() .
-            self::generateGetMockedMethod(array('__call')) .
+            self::generateGetMockedMethod(['__call']) .
             '}' . PHP_EOL .
             '}'
         ;
@@ -762,10 +762,10 @@ class generator
     protected static function getMethodNameReservedWordByVersion()
     {
         if (PHP_MAJOR_VERSION >= 7) {
-            return array('__halt_compiler');
+            return ['__halt_compiler'];
         }
 
-        return array(
+        return [
             '__halt_compiler',
             'abstract',
             'and',
@@ -831,6 +831,6 @@ class generator
             'var',
             'while',
             'xor',
-        );
+        ];
     }
 }

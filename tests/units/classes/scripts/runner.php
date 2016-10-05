@@ -4,10 +4,10 @@ namespace mageekguy\atoum\tests\units\scripts;
 
 use mageekguy\atoum;
 use mageekguy\atoum\cli;
-use mageekguy\atoum\writer;
 use mageekguy\atoum\mock\stream;
-use mock\mageekguy\atoum as mock;
 use mageekguy\atoum\scripts\runner as testedClass;
+use mageekguy\atoum\writer;
+use mock\mageekguy\atoum as mock;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -41,178 +41,178 @@ class runner extends atoum\test
                 ->variable($runner->getScoreFile())->isNull()
                 ->array($runner->getReports())->isEmpty()
                 ->array($runner->getArguments())->isEmpty()
-                ->array($runner->getHelp())->isEqualTo(array(
-                        array(
-                            array('-h', '--help'),
+                ->array($runner->getHelp())->isEqualTo([
+                        [
+                            ['-h', '--help'],
                             null,
                             'Display this help'
-                        ),
-                        array(
-                            array('-c', '--configurations'),
+                        ],
+                        [
+                            ['-c', '--configurations'],
                             '<file>...',
                             'Use all configuration files <file>'
-                        ),
-                        array(
-                            array('-v', '--version'),
+                        ],
+                        [
+                            ['-v', '--version'],
                             null,
                             'Display version'
-                        ),
-                        array(
-                            array('+verbose', '++verbose'),
+                        ],
+                        [
+                            ['+verbose', '++verbose'],
                             null,
                             'Enable verbose mode'
-                        ),
-                        array(
-                            array('--init'),
+                        ],
+                        [
+                            ['--init'],
                             '<path/to/directory>',
                             sprintf($runner->getLocale()->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)'), $runner->getDirectory())
-                        ),
-                        array(
-                            array('-p', '--php'),
+                        ],
+                        [
+                            ['-p', '--php'],
                             '<path/to/php/binary>',
                             'Path to PHP binary which must be used to run tests'
-                        ),
-                        array(
-                            array('-drt', '--default-report-title'),
+                        ],
+                        [
+                            ['-drt', '--default-report-title'],
                             '<string>',
                             'Define default report title with <string>'
-                        ),
-                        array(
-                            array('-sf', '--score-file'),
+                        ],
+                        [
+                            ['-sf', '--score-file'],
                             '<file>',
                             'Save score in file <file>'
-                        ),
-                        array(
-                            array('-mcn', '--max-children-number'),
+                        ],
+                        [
+                            ['-mcn', '--max-children-number'],
                             '<integer>',
                             'Maximum number of sub-processus which will be run simultaneously'
-                        ),
-                        array(
-                            array('-ncc', '--no-code-coverage'),
+                        ],
+                        [
+                            ['-ncc', '--no-code-coverage'],
                             null,
                             'Disable code coverage'
-                        ),
-                        array(
-                            array('-nccid', '--no-code-coverage-in-directories'),
+                        ],
+                        [
+                            ['-nccid', '--no-code-coverage-in-directories'],
                             '<directory>...',
                             'Disable code coverage in directories <directory>'
-                        ),
-                        array(
-                            array('-nccfns', '--no-code-coverage-for-namespaces'),
+                        ],
+                        [
+                            ['-nccfns', '--no-code-coverage-for-namespaces'],
                             '<namespace>...',
                             'Disable code coverage for namespaces <namespace>'
-                        ),
-                        array(
-                            array('-nccfc', '--no-code-coverage-for-classes'),
+                        ],
+                        [
+                            ['-nccfc', '--no-code-coverage-for-classes'],
                             '<class>...',
                             'Disable code coverage for classes <class>'
-                        ),
-                        array(
-                            array('-nccfm', '--no-code-coverage-for-methods'),
+                        ],
+                        [
+                            ['-nccfm', '--no-code-coverage-for-methods'],
                             '<method>...',
                             'Disable code coverage for methods <method>'
-                        ),
-                        array(
-                            array('-ebpc', '--enable-branch-and-path-coverage'),
+                        ],
+                        [
+                            ['-ebpc', '--enable-branch-and-path-coverage'],
                             null,
                             'Enable branch and path coverage'
-                        ),
-                        array(
-                            array('-f', '--files'),
+                        ],
+                        [
+                            ['-f', '--files'],
                             '<file>...',
                             'Execute all unit test files <file>'
-                        ),
-                        array(
-                            array('-d', '--directories'),
+                        ],
+                        [
+                            ['-d', '--directories'],
                             '<directory>...',
                             'Execute unit test files in all <directory>'
-                        ),
-                        array(
-                            array('-tfe', '--test-file-extensions'),
+                        ],
+                        [
+                            ['-tfe', '--test-file-extensions'],
                             '<extension>...',
                             'Execute unit test files with one of extensions <extension>'
-                        ),
-                        array(
-                            array('-g', '--glob'),
+                        ],
+                        [
+                            ['-g', '--glob'],
                             '<pattern>...',
                             'Execute unit test files which match <pattern>'
-                        ),
-                        array(
-                            array('-t', '--tags'),
+                        ],
+                        [
+                            ['-t', '--tags'],
                             '<tag>...',
                             'Execute only unit test with tags <tag>'
-                        ),
-                        array(
-                            array('-m', '--methods'),
+                        ],
+                        [
+                            ['-m', '--methods'],
                             '<class::method>...',
                             'Execute all <class::method>, * may be used as wildcard for class name or method name'
-                        ),
-                        array(
-                            array('-ns', '--namespaces'),
+                        ],
+                        [
+                            ['-ns', '--namespaces'],
                             '<namespace>...',
                             'Execute all classes in all namespaces <namespace>'
-                        ),
-                        array(
-                            array('-l', '--loop'),
+                        ],
+                        [
+                            ['-l', '--loop'],
                             null,
                             'Execute tests in an infinite loop'
-                        ),
-                        array(
-                            array('--test-it'),
+                        ],
+                        [
+                            ['--test-it'],
                             null,
                             'Execute atoum unit tests'
-                        ),
-                        array(
-                            array('--test-all'),
+                        ],
+                        [
+                            ['--test-all'],
                             null,
                             'DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead'
-                        ),
-                        array(
-                            array('-ft', '--force-terminal'),
+                        ],
+                        [
+                            ['-ft', '--force-terminal'],
                             null,
                             'Force output as in terminal'
-                        ),
-                        array(
-                            array('-af', '--autoloader-file'),
+                        ],
+                        [
+                            ['-af', '--autoloader-file'],
                             '<file>',
                             'Include autoloader <file> before executing each test method'
-                        ),
-                        array(
-                            array('-bf', '--bootstrap-file'),
+                        ],
+                        [
+                            ['-bf', '--bootstrap-file'],
                             '<file>',
                             'Include bootstrap <file> before executing each test method'
-                        ),
-                        array(
-                            array('-ulr', '--use-light-report'),
+                        ],
+                        [
+                            ['-ulr', '--use-light-report'],
                             null,
                             'Use "light" CLI report'
-                        ),
-                        array(
-                            array('-utr', '--use-tap-report'),
+                        ],
+                        [
+                            ['-utr', '--use-tap-report'],
                             null,
                             'Use TAP report'
-                        ),
-                        array(
-                            array('--debug'),
+                        ],
+                        [
+                            ['--debug'],
                             null,
                             'Enable debug mode'
-                        ),
-                        array(
-                            array('-xc', '--xdebug-config'),
+                        ],
+                        [
+                            ['-xc', '--xdebug-config'],
                             null,
                             'Set XDEBUG_CONFIG variable'
-                        ),
-                        array(
-                            array('-fivm', '--fail-if-void-methods'),
+                        ],
+                        [
+                            ['-fivm', '--fail-if-void-methods'],
                             null,
                             'Make the test suite fail if there is at least one void test method'
-                        ),
-                        array(
-                            array('-fism', '--fail-if-skipped-methods'),
+                        ],
+                        [
+                            ['-fism', '--fail-if-skipped-methods'],
                             null,
                             'Make the test suite fail if there is at least one skipped test method'
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->if($runner = new testedClass($name = uniqid(), $adapter = new atoum\adapter()))
             ->then
@@ -223,178 +223,178 @@ class runner extends atoum\test
                 ->object($runner->getRunner())->isInstanceOf('mageekguy\atoum\runner')
                 ->variable($runner->getScoreFile())->isNull()
                 ->array($runner->getArguments())->isEmpty()
-                ->array($runner->getHelp())->isEqualTo(array(
-                        array(
-                            array('-h', '--help'),
+                ->array($runner->getHelp())->isEqualTo([
+                        [
+                            ['-h', '--help'],
                             null,
                             'Display this help'
-                        ),
-                        array(
-                            array('-c', '--configurations'),
+                        ],
+                        [
+                            ['-c', '--configurations'],
                             '<file>...',
                             'Use all configuration files <file>'
-                        ),
-                        array(
-                            array('-v', '--version'),
+                        ],
+                        [
+                            ['-v', '--version'],
                             null,
                             'Display version'
-                        ),
-                        array(
-                            array('+verbose', '++verbose'),
+                        ],
+                        [
+                            ['+verbose', '++verbose'],
                             null,
                             'Enable verbose mode'
-                        ),
-                        array(
-                            array('--init'),
+                        ],
+                        [
+                            ['--init'],
                             '<path/to/directory>',
                             sprintf($runner->getLocale()->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)'), $runner->getDirectory())
-                        ),
-                        array(
-                            array('-p', '--php'),
+                        ],
+                        [
+                            ['-p', '--php'],
                             '<path/to/php/binary>',
                             'Path to PHP binary which must be used to run tests'
-                        ),
-                        array(
-                            array('-drt', '--default-report-title'),
+                        ],
+                        [
+                            ['-drt', '--default-report-title'],
                             '<string>',
                             'Define default report title with <string>'
-                        ),
-                        array(
-                            array('-sf', '--score-file'),
+                        ],
+                        [
+                            ['-sf', '--score-file'],
                             '<file>',
                             'Save score in file <file>'
-                        ),
-                        array(
-                            array('-mcn', '--max-children-number'),
+                        ],
+                        [
+                            ['-mcn', '--max-children-number'],
                             '<integer>',
                             'Maximum number of sub-processus which will be run simultaneously'
-                        ),
-                        array(
-                            array('-ncc', '--no-code-coverage'),
+                        ],
+                        [
+                            ['-ncc', '--no-code-coverage'],
                             null,
                             'Disable code coverage'
-                        ),
-                        array(
-                            array('-nccid', '--no-code-coverage-in-directories'),
+                        ],
+                        [
+                            ['-nccid', '--no-code-coverage-in-directories'],
                             '<directory>...',
                             'Disable code coverage in directories <directory>'
-                        ),
-                        array(
-                            array('-nccfns', '--no-code-coverage-for-namespaces'),
+                        ],
+                        [
+                            ['-nccfns', '--no-code-coverage-for-namespaces'],
                             '<namespace>...',
                             'Disable code coverage for namespaces <namespace>'
-                        ),
-                        array(
-                            array('-nccfc', '--no-code-coverage-for-classes'),
+                        ],
+                        [
+                            ['-nccfc', '--no-code-coverage-for-classes'],
                             '<class>...',
                             'Disable code coverage for classes <class>'
-                        ),
-                        array(
-                            array('-nccfm', '--no-code-coverage-for-methods'),
+                        ],
+                        [
+                            ['-nccfm', '--no-code-coverage-for-methods'],
                             '<method>...',
                             'Disable code coverage for methods <method>'
-                        ),
-                        array(
-                            array('-ebpc', '--enable-branch-and-path-coverage'),
+                        ],
+                        [
+                            ['-ebpc', '--enable-branch-and-path-coverage'],
                             null,
                             'Enable branch and path coverage'
-                        ),
-                        array(
-                            array('-f', '--files'),
+                        ],
+                        [
+                            ['-f', '--files'],
                             '<file>...',
                             'Execute all unit test files <file>'
-                        ),
-                        array(
-                            array('-d', '--directories'),
+                        ],
+                        [
+                            ['-d', '--directories'],
                             '<directory>...',
                             'Execute unit test files in all <directory>'
-                        ),
-                        array(
-                            array('-tfe', '--test-file-extensions'),
+                        ],
+                        [
+                            ['-tfe', '--test-file-extensions'],
                             '<extension>...',
                             'Execute unit test files with one of extensions <extension>'
-                        ),
-                        array(
-                            array('-g', '--glob'),
+                        ],
+                        [
+                            ['-g', '--glob'],
                             '<pattern>...',
                             'Execute unit test files which match <pattern>'
-                        ),
-                        array(
-                            array('-t', '--tags'),
+                        ],
+                        [
+                            ['-t', '--tags'],
                             '<tag>...',
                             'Execute only unit test with tags <tag>'
-                        ),
-                        array(
-                            array('-m', '--methods'),
+                        ],
+                        [
+                            ['-m', '--methods'],
                             '<class::method>...',
                             'Execute all <class::method>, * may be used as wildcard for class name or method name'
-                        ),
-                        array(
-                            array('-ns', '--namespaces'),
+                        ],
+                        [
+                            ['-ns', '--namespaces'],
                             '<namespace>...',
                             'Execute all classes in all namespaces <namespace>'
-                        ),
-                        array(
-                            array('-l', '--loop'),
+                        ],
+                        [
+                            ['-l', '--loop'],
                             null,
                             'Execute tests in an infinite loop'
-                        ),
-                        array(
-                            array('--test-it'),
+                        ],
+                        [
+                            ['--test-it'],
                             null,
                             'Execute atoum unit tests'
-                        ),
-                        array(
-                            array('--test-all'),
+                        ],
+                        [
+                            ['--test-all'],
                             null,
                             'DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead'
-                        ),
-                        array(
-                            array('-ft', '--force-terminal'),
+                        ],
+                        [
+                            ['-ft', '--force-terminal'],
                             null,
                             'Force output as in terminal'
-                        ),
-                        array(
-                            array('-af', '--autoloader-file'),
+                        ],
+                        [
+                            ['-af', '--autoloader-file'],
                             '<file>',
                             'Include autoloader <file> before executing each test method'
-                        ),
-                        array(
-                            array('-bf', '--bootstrap-file'),
+                        ],
+                        [
+                            ['-bf', '--bootstrap-file'],
                             '<file>',
                             'Include bootstrap <file> before executing each test method'
-                        ),
-                        array(
-                            array('-ulr', '--use-light-report'),
+                        ],
+                        [
+                            ['-ulr', '--use-light-report'],
                             null,
                             'Use "light" CLI report'
-                        ),
-                        array(
-                            array('-utr', '--use-tap-report'),
+                        ],
+                        [
+                            ['-utr', '--use-tap-report'],
                             null,
                             'Use TAP report'
-                        ),
-                        array(
-                            array('--debug'),
+                        ],
+                        [
+                            ['--debug'],
                             null,
                             'Enable debug mode'
-                        ),
-                        array(
-                            array('-xc', '--xdebug-config'),
+                        ],
+                        [
+                            ['-xc', '--xdebug-config'],
                             null,
                             'Set XDEBUG_CONFIG variable'
-                        ),
-                        array(
-                            array('-fivm', '--fail-if-void-methods'),
+                        ],
+                        [
+                            ['-fivm', '--fail-if-void-methods'],
                             null,
                             'Make the test suite fail if there is at least one void test method'
-                        ),
-                        array(
-                            array('-fism', '--fail-if-skipped-methods'),
+                        ],
+                        [
+                            ['-fism', '--fail-if-skipped-methods'],
                             null,
                             'Make the test suite fail if there is at least one skipped test method'
-                        )
-                    )
+                        ]
+                    ]
                 )
         ;
     }
@@ -404,9 +404,9 @@ class runner extends atoum\test
         $this
             ->if($runner = new testedClass($name = uniqid()))
             ->then
-                ->object($runner->setArguments(array()))->isIdenticalTo($runner)
+                ->object($runner->setArguments([]))->isIdenticalTo($runner)
                 ->array($runner->getArguments())->isEmpty()
-                ->object($runner->setArguments($arguments = array(uniqid(), uniqid(), uniqid())))->isIdenticalTo($runner)
+                ->object($runner->setArguments($arguments = [uniqid(), uniqid(), uniqid()]))->isIdenticalTo($runner)
                 ->array($runner->getArguments())->isEqualTo($arguments)
         ;
     }
@@ -454,7 +454,7 @@ class runner extends atoum\test
             ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
             ->then
                 ->object($report = $runner->addDefaultReport())->isInstanceOf('mageekguy\atoum\reports\realtime\cli')
-                ->array($report->getWriters())->isEqualTo(array(new atoum\writers\std\out()))
+                ->array($report->getWriters())->isEqualTo([new atoum\writers\std\out()])
         ;
     }
 
@@ -464,9 +464,9 @@ class runner extends atoum\test
             ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
             ->then
                 ->object($runner->addReport($report = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($report))
+                ->array($runner->getReports())->isEqualTo([$report])
                 ->object($runner->addReport($otherReport = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($report, $otherReport))
+                ->array($runner->getReports())->isEqualTo([$report, $otherReport])
         ;
     }
 
@@ -476,12 +476,12 @@ class runner extends atoum\test
             ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
             ->then
                 ->object($runner->setReport($report = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($report))
+                ->array($runner->getReports())->isEqualTo([$report])
                 ->object($runner->setReport($otherReport = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($otherReport))
+                ->array($runner->getReports())->isEqualTo([$otherReport])
             ->if($runner->addReport($report))
             ->then
-                ->array($runner->getReports())->isEqualTo(array($otherReport))
+                ->array($runner->getReports())->isEqualTo([$otherReport])
         ;
     }
 
@@ -490,10 +490,10 @@ class runner extends atoum\test
         $this
             ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
             ->then
-                ->object($runner->testNamespaces(array()))->isIdenticalTo($runner)
+                ->object($runner->testNamespaces([]))->isIdenticalTo($runner)
                 ->array($runner->getTestedNamespaces())->isEmpty()
-                ->object($runner->testNamespaces(array('foo', '\bar', 'foo\bar\\', '\this\is\a\namespace\\')))->isIdenticalTo($runner)
-                ->array($runner->getTestedNamespaces())->isEqualTo(array('foo', 'bar', 'foo\bar', 'this\is\a\namespace'))
+                ->object($runner->testNamespaces(['foo', '\bar', 'foo\bar\\', '\this\is\a\namespace\\']))->isIdenticalTo($runner)
+                ->array($runner->getTestedNamespaces())->isEqualTo(['foo', 'bar', 'foo\bar', 'this\is\a\namespace'])
         ;
     }
 
@@ -548,7 +548,7 @@ class runner extends atoum\test
             ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
             ->and($this->calling($runner)->getCoverage = $coverage = new \mock\mageekguy\atoum\score\coverage())
             ->then
-                ->object($script->excludeNamespacesFromCoverage(array('foo', 'bar')))->isIdenticalTo($script)
+                ->object($script->excludeNamespacesFromCoverage(['foo', 'bar']))->isIdenticalTo($script)
                 ->mock($coverage)->call('excludeNamespace')
                     ->withArguments('foo')->once()
                     ->withArguments('bar')->once()
@@ -562,7 +562,7 @@ class runner extends atoum\test
             ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
             ->and($this->calling($runner)->getCoverage = $coverage = new \mock\mageekguy\atoum\score\coverage())
             ->then
-                ->object($script->excludeDirectoriesFromCoverage(array('foo', 'bar')))->isIdenticalTo($script)
+                ->object($script->excludeDirectoriesFromCoverage(['foo', 'bar']))->isIdenticalTo($script)
                 ->mock($coverage)->call('excludeDirectory')
                     ->withArguments('foo')->once()
                     ->withArguments('bar')->once()
@@ -576,7 +576,7 @@ class runner extends atoum\test
             ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
             ->and($this->calling($runner)->getCoverage = $coverage = new \mock\mageekguy\atoum\score\coverage())
             ->then
-                ->object($script->excludeClassesFromCoverage(array('foo', 'bar')))->isIdenticalTo($script)
+                ->object($script->excludeClassesFromCoverage(['foo', 'bar']))->isIdenticalTo($script)
                 ->mock($coverage)->call('excludeClass')
                     ->withArguments('foo')->once()
                     ->withArguments('bar')->once()
@@ -600,7 +600,7 @@ class runner extends atoum\test
             ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
             ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
             ->then
-                ->object($script->addTests(array($testPath1 = uniqid(), $testPath2 = uniqid())))->isIdenticalTo($script)
+                ->object($script->addTests([$testPath1 = uniqid(), $testPath2 = uniqid()]))->isIdenticalTo($script)
                 ->mock($runner)
                     ->call('addTest')
                         ->withArguments($testPath1)->once()
@@ -627,7 +627,7 @@ class runner extends atoum\test
             ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
             ->and($this->calling($runner)->addTestsFromDirectory->doesNothing())
             ->then
-                ->object($script->addTestsFromDirectories(array($directory1 = uniqid(), $directory2 = uniqid())))->isIdenticalTo($script)
+                ->object($script->addTestsFromDirectories([$directory1 = uniqid(), $directory2 = uniqid()]))->isIdenticalTo($script)
                 ->mock($runner)
                     ->call('addTestsFromDirectory')
                         ->withArguments($directory1)->once()
@@ -654,7 +654,7 @@ class runner extends atoum\test
             ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
             ->and($this->calling($runner)->addTestsFromPattern->doesNothing())
             ->then
-                ->object($script->addTestsFromPatterns(array($pattern1 = uniqid(), $pattern2 = uniqid())))->isIdenticalTo($script)
+                ->object($script->addTestsFromPatterns([$pattern1 = uniqid(), $pattern2 = uniqid()]))->isIdenticalTo($script)
                 ->mock($runner)
                     ->call('addTestsFromPattern')
                         ->withArguments($pattern1)->once()
@@ -669,7 +669,7 @@ class runner extends atoum\test
             ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
             ->and($this->calling($runner)->acceptTestFileExtensions->doesNothing())
             ->then
-                ->object($script->acceptTestFileExtensions($testFileExtensions = array(uniqid(), uniqid())))->isIdenticalTo($script)
+                ->object($script->acceptTestFileExtensions($testFileExtensions = [uniqid(), uniqid()]))->isIdenticalTo($script)
                 ->mock($runner)->call('acceptTestFileExtensions')->withArguments($testFileExtensions)->once()
         ;
     }
@@ -795,10 +795,10 @@ class runner extends atoum\test
             ->then
                 ->object($runner->addDefaultArguments($arg1 = uniqid()))->isInstanceOf($runner)
                 ->boolean($runner->hasDefaultArguments())->isTrue()
-                ->array($runner->getDefaultArguments())->isEqualTo(array($arg1))
+                ->array($runner->getDefaultArguments())->isEqualTo([$arg1])
                 ->object($runner->addDefaultArguments($arg2 = uniqid(), $arg3 = uniqid()))->isInstanceOf($runner)
                 ->boolean($runner->hasDefaultArguments())->isTrue()
-                ->array($runner->getDefaultArguments())->isEqualTo(array($arg1, $arg2, $arg3))
+                ->array($runner->getDefaultArguments())->isEqualTo([$arg1, $arg2, $arg3])
         ;
     }
 
@@ -1009,8 +1009,8 @@ class runner extends atoum\test
             ->and($this->calling($errorWriter)->clear = $errorWriter)
             ->and($this->calling($errorWriter)->write = $errorWriter)
             ->and($runner = new mock\runner())
-            ->and($this->calling($runner)->getTestPaths = array())
-            ->and($this->calling($runner)->getDeclaredTestClasses = array())
+            ->and($this->calling($runner)->getTestPaths = [])
+            ->and($this->calling($runner)->getDeclaredTestClasses = [])
             ->and($this->calling($runner)->run = function () {
             })
             ->and($script = new testedClass($name = uniqid()))
@@ -1042,7 +1042,7 @@ class runner extends atoum\test
             })
             ->then
                 ->boolean($script->autorun())->isTrue()
-            ->if($_SERVER['argv'] = array())
+            ->if($_SERVER['argv'] = [])
             ->then
                 ->boolean($script->autorun())->isTrue()
             ->if($_SERVER['argv'][0] = $script->getName())

@@ -29,7 +29,7 @@ class phpNamespace extends atoum\test
                     ->append($token2 = new tokenizer\token(uniqid()))
             )
             ->object($this->testedInstance->appendClass($phpClass))->isTestedInstance
-            ->array($this->testedInstance->getClasses())->isEqualTo(array($phpClass))
+            ->array($this->testedInstance->getClasses())->isEqualTo([$phpClass])
             ->castToString($this->testedInstance)->isEqualTo($token1 . $token2)
         ;
     }

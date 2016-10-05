@@ -36,9 +36,9 @@ class addClass extends atoum\test
             ->then
                 ->string($decorator->decorate(new call()))->isEmpty()
                 ->string($decorator->decorate(new call($function = uniqid())))->isEqualTo($class . '::' . $function . '(*)')
-                ->string($decorator->decorate(new call(null, array())))->isEmpty()
-                ->string($decorator->decorate(new call($function = uniqid(), array())))->isEqualTo($class . '::' . $function . '()')
-                ->string($decorator->decorate(new call($function = uniqid(), $arguments = array(uniqid(), uniqid()))))->isEqualTo($class . '::' . $function . '(' . $decorator->getArgumentsDecorator()->decorate($arguments) . ')')
+                ->string($decorator->decorate(new call(null, [])))->isEmpty()
+                ->string($decorator->decorate(new call($function = uniqid(), [])))->isEqualTo($class . '::' . $function . '()')
+                ->string($decorator->decorate(new call($function = uniqid(), $arguments = [uniqid(), uniqid()])))->isEqualTo($class . '::' . $function . '(' . $decorator->getArgumentsDecorator()->decorate($arguments) . ')')
         ;
     }
 }

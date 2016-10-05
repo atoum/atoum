@@ -29,7 +29,7 @@ class integer extends variable
                 return parent::__call($method, $arguments);
         }
 
-        return call_user_func_array(array($this, $assertion), $arguments);
+        return call_user_func_array([$this, $assertion], $arguments);
     }
 
     public function __get($property)

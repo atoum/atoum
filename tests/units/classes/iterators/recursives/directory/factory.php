@@ -20,13 +20,13 @@ class factory extends atoum\test
         $this
             ->if($iterator = new testedClass())
                 ->boolean($iterator->dotsAreAccepted())->isFalse()
-                ->array($iterator->getAcceptedExtensions())->isEqualTo(array('php'))
+                ->array($iterator->getAcceptedExtensions())->isEqualTo(['php'])
                 ->object($iteratorFactory = $iterator->getIteratorFactory())->isInstanceOf('closure')
                 ->object($defaultIterator = $iteratorFactory(__DIR__))->isEqualTo(new \recursiveDirectoryIterator(__DIR__))
                 ->object($dotFilterFactory = $iterator->getDotFilterFactory())->isInstanceOf('closure')
                 ->object($dotFilterFactory($defaultIterator))->isEqualTo(new filters\recursives\dot($defaultIterator))
                 ->object($extensionFilterIterator = $iterator->getExtensionFilterFactory())->isInstanceOf('closure')
-                ->object($extensionFilterIterator($defaultIterator, $extensions = array('foo')))->isEqualTo(new filters\recursives\extension($defaultIterator, $extensions))
+                ->object($extensionFilterIterator($defaultIterator, $extensions = ['foo']))->isEqualTo(new filters\recursives\extension($defaultIterator, $extensions))
 
             ->if($iterator = new testedClass($iteratorFactory = function () {
             }, $dotFilterFactory = function () {
@@ -34,7 +34,7 @@ class factory extends atoum\test
             }))
             ->then
                 ->boolean($iterator->dotsAreAccepted())->isFalse()
-                ->array($iterator->getAcceptedExtensions())->isEqualTo(array('php'))
+                ->array($iterator->getAcceptedExtensions())->isEqualTo(['php'])
                 ->object($iterator->getIteratorFactory())->isIdenticalTo($iteratorFactory)
                 ->object($iterator->getDotFilterFactory())->isIdenticalTo($dotFilterFactory)
                 ->object($iterator->getExtensionFilterFactory())->isIdenticalTo($extensionFilterFactory)
@@ -85,7 +85,7 @@ class factory extends atoum\test
                 ->object($defaultFactory = $iterator->getExtensionFilterFactory())
                     ->isInstanceOf('closure')
                     ->isNotIdenticalTo($factory)
-                ->object($defaultFactory($iterator = new \recursiveDirectoryIterator(__DIR__), $extensions = array('foo')))->isEqualTo(new filters\recursives\extension($iterator, $extensions))
+                ->object($defaultFactory($iterator = new \recursiveDirectoryIterator(__DIR__), $extensions = ['foo']))->isEqualTo(new filters\recursives\extension($iterator, $extensions))
         ;
     }
 
@@ -94,10 +94,10 @@ class factory extends atoum\test
         $this
             ->if($iterator = new testedClass())
             ->then
-                ->object($iterator->acceptExtensions($extensions = array(uniqid())))->isIdenticalTo($iterator)
+                ->object($iterator->acceptExtensions($extensions = [uniqid()]))->isIdenticalTo($iterator)
                 ->array($iterator->getAcceptedExtensions())->isEqualTo($extensions)
-                ->object($iterator->acceptExtensions($extensions = array('.' . ($extension = uniqid()))))->isIdenticalTo($iterator)
-                ->array($iterator->getAcceptedExtensions())->isEqualTo(array($extension))
+                ->object($iterator->acceptExtensions($extensions = ['.' . ($extension = uniqid())]))->isIdenticalTo($iterator)
+                ->array($iterator->getAcceptedExtensions())->isEqualTo([$extension])
         ;
     }
 
@@ -118,10 +118,10 @@ class factory extends atoum\test
             ->then
                 ->object($iterator->refuseExtension('php'))->isIdenticalTo($iterator)
                 ->array($iterator->getAcceptedExtensions())->isEmpty()
-            ->if($iterator->acceptExtensions(array('php', 'txt', 'xml')))
+            ->if($iterator->acceptExtensions(['php', 'txt', 'xml']))
             ->then
                 ->object($iterator->refuseExtension('txt'))->isIdenticalTo($iterator)
-                ->array($iterator->getAcceptedExtensions())->isEqualTo(array('php', 'xml'))
+                ->array($iterator->getAcceptedExtensions())->isEqualTo(['php', 'xml'])
         ;
     }
 
@@ -174,14 +174,14 @@ class factory extends atoum\test
                 ->mock($filterIterator->getInnerIterator())
                     ->call('__construct')->withArguments($path)->once()
             ->if($iterator->refuseDots())
-            ->and($iterator->acceptExtensions(array()))
+            ->and($iterator->acceptExtensions([]))
             ->then
                 ->object($filterIterator = $iterator->getIterator($path = uniqid()))->isIdenticalTo($dotFilterIterator)
                 ->object($filterIterator->getInnerIterator())->isIdenticalTo($recursiveDirectoryIterator)
                 ->mock($filterIterator->getInnerIterator())
                     ->call('__construct')->withArguments($path)->once()
             ->if($iterator->acceptDots())
-            ->and($iterator->acceptExtensions(array()))
+            ->and($iterator->acceptExtensions([]))
             ->then
                 ->object($filterIterator = $iterator->getIterator($path = uniqid()))->isIdenticalTo($recursiveDirectoryIterator)
                 ->mock($filterIterator)

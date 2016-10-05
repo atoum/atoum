@@ -3,9 +3,8 @@
 namespace mageekguy\atoum\test\data\providers;
 
 use mageekguy\atoum\exceptions\logic;
-use mageekguy\atoum\mock\generator;
-use mageekguy\atoum\test\data\provider;
 use mageekguy\atoum\exceptions\runtime;
+use mageekguy\atoum\test\data\provider;
 
 class object implements provider
 {
@@ -23,7 +22,7 @@ class object implements provider
 
     public function __sleep()
     {
-        return array('class');
+        return ['class'];
     }
 
     public function getClass()

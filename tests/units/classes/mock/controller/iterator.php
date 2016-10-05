@@ -122,10 +122,10 @@ class iterator extends atoum\test
             ->then
                 ->object($iterator->addFilter($filter = function () {
                 }))->isIdenticalTo($iterator)
-                ->array($iterator->getFilters())->isIdenticalTo(array($filter))
+                ->array($iterator->getFilters())->isIdenticalTo([$filter])
                 ->object($iterator->addFilter($otherFilter = function () {
                 }))->isIdenticalTo($iterator)
-                ->array($iterator->getFilters())->isIdenticalTo(array($filter, $otherFilter))
+                ->array($iterator->getFilters())->isIdenticalTo([$filter, $otherFilter])
         ;
     }
 
@@ -137,12 +137,12 @@ class iterator extends atoum\test
                 ->array($iterator->getMethods())->isEmpty()
             ->if($controller->control($mock = new \mock\mageekguy\atoum\tests\units\mock\controller\foo()))
             ->then
-                ->array($iterator->getMethods())->isEqualTo(array('doessomething', 'doessomethingelse'))
+                ->array($iterator->getMethods())->isEqualTo(['doessomething', 'doessomethingelse'])
             ->if($iterator->addFilter(function ($method) {
                 return true;
             }))
             ->then
-                ->array($iterator->getMethods())->isEqualTo(array('doessomething', 'doessomethingelse'))
+                ->array($iterator->getMethods())->isEqualTo(['doessomething', 'doessomethingelse'])
             ->if($iterator->addFilter(function ($method) {
                 return false;
             }))
@@ -152,7 +152,7 @@ class iterator extends atoum\test
                 return (strtolower($name) == 'doessomething');
             }))
             ->then
-                ->array($iterator->getMethods())->isEqualTo(array('doessomething'))
+                ->array($iterator->getMethods())->isEqualTo(['doessomething'])
         ;
     }
 

@@ -3,14 +3,14 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\coverage;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
+use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\locale;
-use mageekguy\atoum\template;
 use mageekguy\atoum\mock;
 use mageekguy\atoum\mock\stream;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\report\fields\runner\coverage\html as testedClass;
+use mageekguy\atoum\template;
+use mageekguy\atoum\test;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -40,7 +40,7 @@ class html extends atoum\test
                 ->object($field->getTemplateParser())->isInstanceOf('mageekguy\atoum\template\parser')
                 ->variable($field->getCoverage())->isNull()
                 ->array($field->getSrcDirectories())->isEmpty()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
         ;
     }
 
@@ -53,32 +53,32 @@ class html extends atoum\test
             ->if($coverage = new \mock\mageekguy\atoum\score\coverage())
             ->and($coverageController = $coverage->getMockController())
             ->and($coverageController->count = rand(1, PHP_INT_MAX))
-            ->and($coverageController->getClasses = array(
+            ->and($coverageController->getClasses = [
                         $className = uniqid() => $classFile = uniqid()
-                    )
+                    ]
                 )
-            ->and($coverageController->getMethods = array(
+            ->and($coverageController->getMethods = [
                         $className =>
-                            array(
+                            [
                                 $method1Name = uniqid() =>
-                                    array(
+                                    [
                                         5 => 1,
                                         6 => 1,
                                         7 => -1,
                                         8 => 1,
                                         9 => -2
-                                    ),
+                                    ],
                                 $method3Name = uniqid() =>
-                                    array(
+                                    [
                                         10 => -2
-                                    ),
+                                    ],
                                 $method4Name = uniqid() =>
-                                    array(
+                                    [
                                         11 => 1,
                                         12 => -2
-                                    )
-                            )
-                    )
+                                    ]
+                            ]
+                    ]
                 )
             ->and($coverageController->getValue = $coverageValue = rand(1, 10) / 10)
             ->and($coverageController->getValueForClass = $classCoverageValue = rand(1, 10) / 10)
@@ -176,7 +176,7 @@ class html extends atoum\test
             ->and($reflectedMethod4Controller->getDeclaringClass = $reflectedClass)
             ->and($reflectedMethod4Controller->getStartLine = 11)
             ->and($reflectedMethod4 = new \mock\reflectionMethod(uniqid(), uniqid(), $reflectedMethod4Controller))
-            ->and($reflectedClassController->getMethods = array($reflectedMethod1, $reflectedMethod2, $reflectedMethod3, $reflectedMethod4))
+            ->and($reflectedClassController->getMethods = [$reflectedMethod1, $reflectedMethod2, $reflectedMethod3, $reflectedMethod4])
             ->and($templateParser = new \mock\mageekguy\atoum\template\parser())
             ->and($field = new \mock\mageekguy\atoum\report\fields\runner\coverage\html($projectName = uniqid(), $destinationDirectory = uniqid()))
             ->and($field
@@ -253,7 +253,7 @@ class html extends atoum\test
                     ->call('__get')->withArguments('coverageAvailable')->once()
                     ->call('__get')->withArguments('classCoverage')->once()
                 ->mock($coverageAvailableTemplate)
-                    ->call('build')->withArguments(array('coverageValue' => round($coverageValue * 100, 2)))->once()
+                    ->call('build')->withArguments(['coverageValue' => round($coverageValue * 100, 2)])->once()
                 ->mock($classTemplate)
                     ->call('__set')->withArguments('rootUrl', $rootUrl)->once()
                     ->call('__set')->withArguments('projectName', $projectName)->once()
@@ -266,7 +266,7 @@ class html extends atoum\test
                     ->call('__set')->withArguments('classUrl', str_replace('\\', '/', $className) . testedClass::htmlExtensionFile)->once()
                     ->call('build')->once()
                 ->mock($classCoverageAvailableTemplate)
-                    ->call('build')->withArguments(array('classCoverageValue' => round($classCoverageValue * 100, 2)))->once()
+                    ->call('build')->withArguments(['classCoverageValue' => round($classCoverageValue * 100, 2)])->once()
                     ->call('resetData')->atLeastOnce()
                 ->mock($methodsTemplate)
                     ->call('build')->once()
@@ -401,33 +401,33 @@ class html extends atoum\test
                 ->array($field->getSrcDirectoryIterators())->isEmpty()
             ->if($field->addSrcDirectory($directory = __DIR__))
             ->then
-                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory)))))
+                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo([new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory)))])
                 ->array(current($iterators)->getClosures())->isEmpty()
             ->if($field->addSrcDirectory($directory, $closure = function () {
             }))
             ->then
-                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory)))))
-                ->array(current($iterators)->getClosures())->isEqualTo(array($closure))
+                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo([new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory)))])
+                ->array(current($iterators)->getClosures())->isEqualTo([$closure])
             ->if($field->addSrcDirectory($otherDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..', $otherClosure = function () {
             }))
             ->then
-                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(
+                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo([
                             new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory))),
                             new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($otherDirectory)))
-                    )
+                    ]
                 )
-                ->array(current($iterators)->getClosures())->isEqualTo(array($closure))
-                ->array(next($iterators)->getClosures())->isEqualTo(array($otherClosure))
+                ->array(current($iterators)->getClosures())->isEqualTo([$closure])
+                ->array(next($iterators)->getClosures())->isEqualTo([$otherClosure])
             ->if($field->addSrcDirectory($otherDirectory, $anOtherClosure = function () {
             }))
             ->then
-                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(
+                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo([
                             new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory))),
                             new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($otherDirectory)))
-                    )
+                    ]
                 )
-                ->array(current($iterators)->getClosures())->isEqualTo(array($closure))
-                ->array(next($iterators)->getClosures())->isEqualTo(array($otherClosure, $anOtherClosure))
+                ->array(current($iterators)->getClosures())->isEqualTo([$closure])
+                ->array(next($iterators)->getClosures())->isEqualTo([$otherClosure, $anOtherClosure])
         ;
     }
 

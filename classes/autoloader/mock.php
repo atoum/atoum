@@ -29,7 +29,7 @@ class mock
     {
         return $this->mockGenerator;
     }
-    
+
     public function setAdapter(atoum\adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new atoum\adapter();
@@ -44,7 +44,7 @@ class mock
 
     public function register()
     {
-        if ($this->adapter->spl_autoload_register(array($this, 'requireClass'), true, true) === false) {
+        if ($this->adapter->spl_autoload_register([$this, 'requireClass'], true, true) === false) {
             throw new exceptions\runtime('Unable to register mock autoloader');
         }
 
@@ -53,7 +53,7 @@ class mock
 
     public function unregister()
     {
-        if ($this->adapter->spl_autoload_unregister(array($this, 'requireClass')) === false) {
+        if ($this->adapter->spl_autoload_unregister([$this, 'requireClass']) === false) {
             throw new exceptions\runtime('Unable to unregister mock autoloader');
         }
 

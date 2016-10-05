@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\result\notifier;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test\adapter;
 use mageekguy\atoum\exceptions;
 use mageekguy\atoum\report\fields\runner\result\notifier\image as testedClass;
+use mageekguy\atoum\test\adapter;
 
 require_once __DIR__ . '/../../../../../runner.php';
 

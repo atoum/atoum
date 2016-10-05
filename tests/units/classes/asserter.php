@@ -108,9 +108,9 @@ class asserter extends atoum
         $this
             ->if($this->newTestedInstance)
             ->then
-                ->object($this->testedInstance->setWithArguments(array()))->isTestedInstance
+                ->object($this->testedInstance->setWithArguments([]))->isTestedInstance
                 ->mock($this->testedInstance)->call('setWith')->never()
-                ->object($this->testedInstance->setWithArguments(array($argument = uniqid())))->isTestedInstance
+                ->object($this->testedInstance->setWithArguments([$argument = uniqid()]))->isTestedInstance
                 ->mock($this->testedInstance)->call('setWith')->withArguments($argument)->once
         ;
     }

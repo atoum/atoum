@@ -36,7 +36,7 @@ class gedit extends atoum\test
                 ->castToString($field)->isEmpty()
                 ->adapter($adapter)->call('system')->never()
             ->if($score = new \mock\mageekguy\atoum\runner\score())
-            ->and($score->getMockController()->getErrors = array())
+            ->and($score->getMockController()->getErrors = [])
             ->and($runner = new atoum\runner())
             ->and($runner->setScore($score))
             ->and($field->handleEvent(atoum\runner::runStart, $runner))
@@ -47,8 +47,8 @@ class gedit extends atoum\test
             ->then
                 ->castToString($field)->isEmpty()
                 ->adapter($adapter)->call('system')->never()
-            ->if($score->getMockController()->getFailAssertions = $fails = array(
-                        array(
+            ->if($score->getMockController()->getFailAssertions = $fails = [
+                        [
                             'case' => null,
                             'dataSetKey' => null,
                             'class' => $class = uniqid(),
@@ -57,8 +57,8 @@ class gedit extends atoum\test
                             'line' => $line = rand(1, PHP_INT_MAX),
                             'asserter' => $asserter = uniqid(),
                             'fail' => $fail = uniqid()
-                        ),
-                        array(
+                        ],
+                        [
                             'case' => null,
                             'dataSetKey' => null,
                             'class' => $otherClass = uniqid(),
@@ -67,8 +67,8 @@ class gedit extends atoum\test
                             'line' => $otherLine = rand(1, PHP_INT_MAX),
                             'asserter' => $otherAsserter = uniqid(),
                             'fail' => $otherFail = uniqid()
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($field->handleEvent(atoum\runner::runStop, $runner))
             ->then

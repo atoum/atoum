@@ -2,10 +2,10 @@
 
 namespace mageekguy\atoum\asserters;
 
+use mageekguy\atoum\asserters\adapter\call;
+use mageekguy\atoum\exceptions;
 use mageekguy\atoum\php;
 use mageekguy\atoum\test;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\asserters\adapter\call;
 
 class phpFunction extends adapter\call
 {
@@ -49,7 +49,7 @@ class phpFunction extends adapter\call
 
     public function wasCalledWithoutAnyArgument()
     {
-        return $this->setArguments(array());
+        return $this->setArguments([]);
     }
 
     protected function setFunction($function)

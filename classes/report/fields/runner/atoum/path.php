@@ -12,7 +12,7 @@ abstract class path extends report\field
 
     public function __construct()
     {
-        parent::__construct(array(runner::runStart));
+        parent::__construct([runner::runStart]);
     }
 
     public function getPath()

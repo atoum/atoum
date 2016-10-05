@@ -4,8 +4,6 @@ namespace mageekguy\atoum\scripts;
 
 use mageekguy\atoum;
 use mageekguy\atoum\exceptions;
-use mageekguy\atoum\scripts\phar;
-use mageekguy\atoum\scripts\builder;
 
 class builder extends atoum\script\configurable
 {
@@ -31,7 +29,7 @@ class builder extends atoum\script\configurable
     protected $pharCreationEnabled = true;
     protected $checkUnitTests = true;
     protected $reportTitle = null;
-    protected $runnerConfigurationFiles = array();
+    protected $runnerConfigurationFiles = [];
 
     public function __construct($name, atoum\adapter $adapter = null)
     {
@@ -478,7 +476,7 @@ class builder extends atoum\script\configurable
                         $script->addRunnerConfigurationFile($file);
                     }
                 },
-                array('-rc', '--runner-configuration-files'),
+                ['-rc', '--runner-configuration-files'],
                 '<file>',
                  $this->locale->_('Use <file> as configuration file for runner')
             )
@@ -490,7 +488,7 @@ class builder extends atoum\script\configurable
 
                     $script->setPhpPath(current($path));
                 },
-                array('-p', '--php'),
+                ['-p', '--php'],
                 '<path>',
                 $this->locale->_('Path to PHP binary')
             )
@@ -502,7 +500,7 @@ class builder extends atoum\script\configurable
 
                     $script->setWorkingDirectory(current($directory));
                 },
-                array('-w', '--working-directory'),
+                ['-w', '--working-directory'],
                 '<directory>',
                 $this->locale->_('Checkout file from repository in <directory>')
             )
@@ -514,7 +512,7 @@ class builder extends atoum\script\configurable
 
                     $script->setDestinationDirectory(current($directory));
                 },
-                array('-d', '--destination-directory'),
+                ['-d', '--destination-directory'],
                 '<directory>',
                 $this->locale->_('Save phar in <directory>')
 
@@ -527,7 +525,7 @@ class builder extends atoum\script\configurable
 
                     $script->setScoreDirectory(current($directory));
                 },
-                array('-sd', '--score-directory'),
+                ['-sd', '--score-directory'],
                 '<directory>',
                 $this->locale->_('Save score in <directory>')
             )
@@ -539,7 +537,7 @@ class builder extends atoum\script\configurable
 
                     $script->setErrorsDirectory(current($directory));
                 },
-                array('-ed', '--errors-directory'),
+                ['-ed', '--errors-directory'],
                 '<directory>',
                 $this->locale->_('Save errors in <directory>')
             )
@@ -551,7 +549,7 @@ class builder extends atoum\script\configurable
 
                     $script->getVcs()->setRepositoryUrl(current($url));
                 },
-                array('-r', '--repository-url'),
+                ['-r', '--repository-url'],
                 '<url>',
                 $this->locale->_('Url of repository')
             )
@@ -563,7 +561,7 @@ class builder extends atoum\script\configurable
 
                     $script->setRevisionFile(current($file));
                 },
-                array('-rf', '--revision-file'),
+                ['-rf', '--revision-file'],
                 '<file>',
                 $this->locale->_('Save last revision in <file>')
             )
@@ -575,7 +573,7 @@ class builder extends atoum\script\configurable
 
                     $script->setVersion(current($version));
                 },
-                array('-v', '--version'),
+                ['-v', '--version'],
                 '<string>',
                 $this->locale->_('Version <string> will be used as version name')
             )
@@ -587,7 +585,7 @@ class builder extends atoum\script\configurable
 
                     $script->setUnitTestRunnerScript(current($unitTestRunnerScript));
                 },
-                array('-utrs', '--unit-test-runner-script')
+                ['-utrs', '--unit-test-runner-script']
             )
             ->addArgumentHandler(
                 function ($script, $argument, $pharGeneratorScript) {
@@ -597,7 +595,7 @@ class builder extends atoum\script\configurable
 
                     $script->setPharGeneratorScript(current($pharGeneratorScript));
                 },
-                array('-pgs', '--phar-generator-script')
+                ['-pgs', '--phar-generator-script']
             )
             ->addArgumentHandler(
                 function ($script, $argument, $reportTitle) {
@@ -607,7 +605,7 @@ class builder extends atoum\script\configurable
 
                     $script->setReportTitle(current($reportTitle));
                 },
-                array('-rt', '--report-title')
+                ['-rt', '--report-title']
             )
         ;
     }

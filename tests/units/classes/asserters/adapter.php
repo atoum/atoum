@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
 use mageekguy\atoum\asserter;
+use mageekguy\atoum\test;
 use mageekguy\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
@@ -110,7 +110,7 @@ class adapter extends atoum\test
 
             ->if($this->testedInstance->withArguments())
             ->then
-                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array()))
+                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, []))
                 ->object($this->testedInstance->disableEvaluationChecking()->call($function = uniqid()))->isTestedInstance
                 ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function))
         ;
@@ -139,11 +139,11 @@ class adapter extends atoum\test
             ->if($this->testedInstance->call($function = uniqid()))
             ->then
                 ->object($this->testedInstance->withArguments())->isTestedInstance
-                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array()))
+                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, []))
                 ->object($this->testedInstance->withArguments($arg1 = uniqid()))->isTestedInstance
-                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array($arg1)))
+                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, [$arg1]))
                 ->object($this->testedInstance->disableEvaluationChecking()->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isTestedInstance
-                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array($arg1, $arg2)))
+                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, [$arg1, $arg2]))
         ;
     }
 
@@ -175,7 +175,7 @@ class adapter extends atoum\test
 
             ->if($this->testedInstance->disableEvaluationChecking()->withArguments($arg = uniqid()))
             ->then
-                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array($arg)))
+                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, [$arg]))
                 ->object($this->testedInstance->withAnyArguments())->isTestedInstance
                 ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function))
         ;
@@ -204,7 +204,7 @@ class adapter extends atoum\test
             ->if($this->testedInstance->call($function = uniqid()))
             ->then
                 ->object($this->testedInstance->disableEvaluationChecking()->withoutAnyArgument())->isTestedInstance
-                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, array()))
+                ->object($this->testedInstance->getCall())->isEqualTo(new test\adapter\call($function, []))
         ;
     }
 

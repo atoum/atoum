@@ -7,15 +7,15 @@ use mageekguy\atoum\php\tokenizer\iterators;
 
 class phpClass extends tokenizer\iterator
 {
-    protected $methods = array();
-    protected $constants = array();
-    protected $properties = array();
+    protected $methods = [];
+    protected $constants = [];
+    protected $properties = [];
 
     public function reset()
     {
-        $this->methods = array();
-        $this->constants = array();
-        $this->properties = array();
+        $this->methods = [];
+        $this->constants = [];
+        $this->properties = [];
 
         return parent::reset();
     }

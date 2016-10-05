@@ -3,10 +3,10 @@
 namespace mageekguy\atoum\scripts\git;
 
 use mageekguy\atoum;
+use mageekguy\atoum\cli\commands;
+use mageekguy\atoum\exceptions;
 use mageekguy\atoum\script;
 use mageekguy\atoum\scripts;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\cli\commands;
 
 class pusher extends script\configurable
 {
@@ -144,7 +144,7 @@ class pusher extends script\configurable
                 function ($script, $argument, $value) {
                     $this->setForceMode(true);
                 },
-                array('-f', '--force'),
+                ['-f', '--force'],
                 $this->locale->_('Force execution by avoiding any confirmation')
             )
             ->addArgumentHandler(
@@ -155,7 +155,7 @@ class pusher extends script\configurable
 
                     $script->setRemote(reset($remote));
                 },
-                array('-tr', '--to-remote'),
+                ['-tr', '--to-remote'],
                 '<string>',
                 $this->locale->_('<string> will be used as remote')
             )
@@ -167,7 +167,7 @@ class pusher extends script\configurable
 
                     $script->setTagFile(reset($tagFile));
                 },
-                array('-tf', '--tag-file'),
+                ['-tf', '--tag-file'],
                 '<path>',
                 $this->locale->_('File <path> will be used to store last tag')
             )
@@ -175,7 +175,7 @@ class pusher extends script\configurable
                 function ($script, $argument, $value) {
                     $script->tagMajorVersion();
                 },
-                array('-MR', '--major-release'),
+                ['-MR', '--major-release'],
                 null,
                 $this->locale->_('Tag a new major version')
             )
@@ -183,7 +183,7 @@ class pusher extends script\configurable
                 function ($script, $argument, $value) {
                     $script->tagMinorVersion();
                 },
-                array('-mr', '--minor-release'),
+                ['-mr', '--minor-release'],
                 null,
                 $this->locale->_('Tag a new minor version')
             )
@@ -191,7 +191,7 @@ class pusher extends script\configurable
                 function ($script, $argument, $value) {
                     $script->tagPatchVersion();
                 },
-                array('-pr', '--patch-release'),
+                ['-pr', '--patch-release'],
                 null,
                 $this->locale->_('Tag a new patch version')
             )

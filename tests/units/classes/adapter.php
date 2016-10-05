@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\tests\units;
 
 use atoum;
-use mageekguy\atoum\adapter as testedClass;
 
 require_once __DIR__ . '/../runner.php';
 
@@ -16,6 +15,6 @@ class adapter extends atoum
 
     public function testInvoke()
     {
-        $this->string($this->newTestedInstance->invoke('md5', array($hash = uniqid())))->isEqualTo(md5($hash));
+        $this->string($this->newTestedInstance->invoke('md5', [$hash = uniqid()]))->isEqualTo(md5($hash));
     }
 }

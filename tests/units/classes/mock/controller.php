@@ -4,9 +4,8 @@ namespace mageekguy\atoum\tests\units\mock;
 
 use mageekguy\atoum;
 use mageekguy\atoum\mock;
-use mageekguy\atoum\test\adapter;
-use mageekguy\atoum\test\adapter\invoker;
 use mageekguy\atoum\mock\controller as testedClass;
+use mageekguy\atoum\test\adapter;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -312,10 +311,10 @@ class controller extends atoum\test
                 ->array($mockController->getIterator()->getFilters())->isEmpty()
                 ->object($mockController->methods($filter = function () {
                 }))->isEqualTo($mockController->getIterator())
-                ->array($mockController->getIterator()->getFilters())->isEqualTo(array($filter))
+                ->array($mockController->getIterator()->getFilters())->isEqualTo([$filter])
                 ->object($mockController->methods($otherFilter = function () {
                 }))->isEqualTo($mockController->getIterator())
-                ->array($mockController->getIterator()->getFilters())->isEqualTo(array($otherFilter))
+                ->array($mockController->getIterator()->getFilters())->isEqualTo([$otherFilter])
         ;
     }
 
@@ -326,9 +325,9 @@ class controller extends atoum\test
             ->and($mockController->control(new \mock\mageekguy\atoum\tests\units\mock\with__callAndOtherMethods()))
             ->then
                 ->object($mockController->methodsMatching('/Else$/i'))->isEqualTo($mockController->getIterator())
-                ->array($mockController->getIterator()->getMethods())->isEqualTo(array('doessomethingelse'))
+                ->array($mockController->getIterator()->getMethods())->isEqualTo(['doessomethingelse'])
                 ->object($mockController->methodsMatching('/^doesSomething/i'))->isEqualTo($mockController->getIterator())
-                ->array($mockController->getIterator()->getMethods())->isEqualTo(array('doessomething', 'doessomethingelse'))
+                ->array($mockController->getIterator()->getMethods())->isEqualTo(['doessomething', 'doessomethingelse'])
         ;
     }
 
@@ -426,7 +425,7 @@ class controller extends atoum\test
             ->and($method = uniqid())
             ->then
                 ->exception(function () use ($mockController, $method) {
-                    $mockController->invoke($method, array());
+                    $mockController->invoke($method, []);
                 }
                 )
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -440,23 +439,23 @@ class controller extends atoum\test
             ->and($argument3 = uniqid())
             ->then
                 ->string($mockController->invoke('test'))->isEqualTo($return)
-                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test', array()))->once()
-                ->string($mockController->invoke('test', array($argument1)))->isEqualTo($return)
-                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test', array($argument1)))->once()
-                ->string($mockController->invoke('test', array($argument1, $argument2)))->isEqualTo($return)
-                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test', array($argument1, $argument2)))->once()
-                ->string($mockController->invoke('test', array($argument1, $argument2, $argument3)))->isEqualTo($return)
-                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test', array($argument1, $argument2, $argument3)))->once()
+                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test', []))->once()
+                ->string($mockController->invoke('test', [$argument1]))->isEqualTo($return)
+                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test', [$argument1]))->once()
+                ->string($mockController->invoke('test', [$argument1, $argument2]))->isEqualTo($return)
+                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test', [$argument1, $argument2]))->once()
+                ->string($mockController->invoke('test', [$argument1, $argument2, $argument3]))->isEqualTo($return)
+                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test', [$argument1, $argument2, $argument3]))->once()
             ->if($mockController->test2 = function () use ($return) {
                 return $return;
             })
             ->then
-                ->string($mockController->invoke('test2', array($argument1)))->isEqualTo($return)
-                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test2', array($argument1)))->once()
-                ->string($mockController->invoke('test2', array($argument1, $argument2)))->isEqualTo($return)
-                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test2', array($argument1, $argument2)))->once()
-                ->string($mockController->invoke('test2', array($argument1, $argument2, $argument3)))->isEqualTo($return)
-                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test2', array($argument1, $argument2, $argument3)))->once()
+                ->string($mockController->invoke('test2', [$argument1]))->isEqualTo($return)
+                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test2', [$argument1]))->once()
+                ->string($mockController->invoke('test2', [$argument1, $argument2]))->isEqualTo($return)
+                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test2', [$argument1, $argument2]))->once()
+                ->string($mockController->invoke('test2', [$argument1, $argument2, $argument3]))->isEqualTo($return)
+                ->mock($calls)->call('addCall')->withArguments(new adapter\call('test2', [$argument1, $argument2, $argument3]))->once()
             ->if($mockController = new testedClass())
             ->and($mockController->control($mock = new \mock\mageekguy\atoum\tests\units\mock\bar()))
             ->then
@@ -501,7 +500,7 @@ class controller extends atoum\test
             ->and($mockController->control($mock))
             ->and($mockController->{$method = __FUNCTION__} = function () {
             })
-            ->and($mockController->invoke($method, array()))
+            ->and($mockController->invoke($method, []))
             ->then
                 ->variable($mockController->getMockClass())->isNotNull()
                 ->array($mockController->getInvokers())->isNotEmpty()
@@ -558,7 +557,7 @@ class controller extends atoum\test
             })
             ->then
                 ->sizeof($mockController->getCalls())->isZero()
-            ->if($mockController->invoke($method, array()))
+            ->if($mockController->invoke($method, []))
             ->then
                 ->sizeof($mockController->getCalls())->isGreaterThan(0)
                 ->object($mockController->resetCalls())->isIdenticalTo($mockController)

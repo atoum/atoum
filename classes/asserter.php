@@ -2,7 +2,6 @@
 
 namespace mageekguy\atoum;
 
-use mageekguy\atoum\exceptions;
 use mageekguy\atoum\tools\variable;
 
 abstract class asserter implements asserter\definition
@@ -37,7 +36,7 @@ abstract class asserter implements asserter\definition
                 }
 
                 foreach ($arguments[0] as $key => $value) {
-                    call_user_func_array($arguments[1], array($this, $value, $key));
+                    call_user_func_array($arguments[1], [$this, $value, $key]);
                 }
 
                 return $this;
@@ -108,7 +107,7 @@ abstract class asserter implements asserter\definition
     public function setWithArguments(array $arguments)
     {
         if (sizeof($arguments) > 0) {
-            call_user_func_array(array($this, 'setWith'), $arguments);
+            call_user_func_array([$this, 'setWith'], $arguments);
         }
 
         return $this;
@@ -139,11 +138,11 @@ abstract class asserter implements asserter\definition
 
     protected function _($string)
     {
-        return call_user_func_array(array($this->locale, '_'), func_get_args());
+        return call_user_func_array([$this->locale, '_'], func_get_args());
     }
 
     protected function __($singular, $plural, $quantity)
     {
-        return call_user_func_array(array($this->locale, '__'), func_get_args());
+        return call_user_func_array([$this->locale, '__'], func_get_args());
     }
 }

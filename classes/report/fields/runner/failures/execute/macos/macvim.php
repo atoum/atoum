@@ -2,9 +2,6 @@
 
 namespace mageekguy\atoum\report\fields\runner\failures\execute\macos;
 
-use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\adapter;
 use mageekguy\atoum\report\fields\runner\failures;
 
 class macvim extends failures\execute

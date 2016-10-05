@@ -3,10 +3,7 @@
 namespace mageekguy\atoum\report\fields;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
 use mageekguy\atoum\report;
-use mageekguy\atoum\test\cli;
-use mageekguy\atoum\exceptions;
 
 abstract class event extends report\field
 {

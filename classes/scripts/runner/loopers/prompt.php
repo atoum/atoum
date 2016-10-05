@@ -4,8 +4,8 @@ namespace mageekguy\atoum\scripts\runner\loopers;
 
 use mageekguy\atoum;
 use mageekguy\atoum\script;
-use mageekguy\atoum\writers;
 use mageekguy\atoum\scripts\runner\looper;
+use mageekguy\atoum\writers;
 
 class prompt implements looper
 {

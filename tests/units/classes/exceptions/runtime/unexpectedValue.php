@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\tests\units\exceptions\runtime;
 
 use mageekguy\atoum;
-use mageekguy\atoum\exceptions\runtime;
 
 require_once __DIR__ . '/../../../runner.php';
 

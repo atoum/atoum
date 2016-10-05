@@ -2,10 +2,9 @@
 
 namespace mageekguy\atoum\report\fields\runner;
 
-use mageekguy\atoum\locale;
-use mageekguy\atoum\runner;
-use mageekguy\atoum\report;
 use mageekguy\atoum\observable;
+use mageekguy\atoum\report;
+use mageekguy\atoum\runner;
 
 abstract class duration extends report\field
 {
@@ -13,7 +12,7 @@ abstract class duration extends report\field
 
     public function __construct()
     {
-        parent::__construct(array(runner::runStop));
+        parent::__construct([runner::runStop]);
     }
 
     public function getValue()

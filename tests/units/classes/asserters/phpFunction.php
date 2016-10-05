@@ -100,7 +100,7 @@ class phpFunction extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->wasCalledWithArguments($arg1 = '1', $arg2 = '2'))->isTestedInstance
-                ->array($this->testedInstance->getCall()->getArguments())->isEqualTo(array($arg1, $arg2))
+                ->array($this->testedInstance->getCall()->getArguments())->isEqualTo([$arg1, $arg2])
 
             ->if(eval('\\' . $this->getTestedClassNamespace() . '\md5(\'' . $arg1 . '\', \'' . $arg2 . '\');'))
             ->then
@@ -142,7 +142,7 @@ class phpFunction extends atoum\test
             )
             ->then
                 ->object($this->testedInstance->wasCalledWithIdenticalArguments($arg1 = 1, $arg2 = 2))->isTestedInstance
-                ->array($this->testedInstance->getArguments())->isEqualTo(array($arg1, $arg2))
+                ->array($this->testedInstance->getArguments())->isEqualTo([$arg1, $arg2])
 
             ->if(eval('\\' . $this->getTestedClassNamespace() . '\foo(\'1\', \'2\');'))
             ->then
@@ -191,7 +191,7 @@ class phpFunction extends atoum\test
             ->if(
                 $this->testedInstance
                     ->setWith(uniqid())
-                    ->wasCalledWithArguments(array())
+                    ->wasCalledWithArguments([])
             )
             ->then
                 ->object($this->testedInstance->wasCalledWithAnyArguments())->isTestedInstance

@@ -3,11 +3,10 @@
 namespace mageekguy\atoum\tests\units\report\fields\test\memory;
 
 use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\test;
-use mageekguy\atoum\tests\units;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -28,7 +27,7 @@ class cli extends atoum\test
                 ->object($field->getMemoryColorizer())->isEqualTo(new colorizer())
                 ->object($field->getLocale())->isEqualTo(new locale())
                 ->variable($field->getValue())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(atoum\test::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\test::runStop])
         ;
     }
 

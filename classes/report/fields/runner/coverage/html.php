@@ -5,11 +5,11 @@ namespace mageekguy\atoum\report\fields\runner\coverage;
 require_once __DIR__ . '/../../../../../constants.php';
 
 use mageekguy\atoum;
+use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\exceptions;
 use mageekguy\atoum\report;
 use mageekguy\atoum\template;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
 
 class html extends report\fields\runner\coverage\cli
 {
@@ -65,7 +65,7 @@ class html extends report\fields\runner\coverage\cli
                 if ($coverageValue === null) {
                     $indexTemplate->coverageUnavailable->build();
                 } else {
-                    $indexTemplate->coverageAvailable->build(array('coverageValue' => round($coverageValue * 100, 2)));
+                    $indexTemplate->coverageAvailable->build(['coverageValue' => round($coverageValue * 100, 2)]);
                 }
 
                 $classCoverageTemplates = $indexTemplate->classCoverage;
@@ -81,7 +81,7 @@ class html extends report\fields\runner\coverage\cli
 
                     $classCoverageValue = $this->coverage->getValueForClass($className);
 
-                    $classCoverageAvailableTemplates->build(array('classCoverageValue' => round($classCoverageValue * 100, 2)));
+                    $classCoverageAvailableTemplates->build(['classCoverageValue' => round($classCoverageValue * 100, 2)]);
 
                     $classCoverageTemplates->build();
 
@@ -123,10 +123,10 @@ class html extends report\fields\runner\coverage\cli
                     if ($classCoverageValue === null) {
                         $classCoverageUnavailableTemplates->build();
                     } else {
-                        $classCoverageAvailableTemplates->build(array('classCoverageValue' => round($classCoverageValue * 100, 2)));
+                        $classCoverageAvailableTemplates->build(['classCoverageValue' => round($classCoverageValue * 100, 2)]);
                     }
 
-                    $reflectedMethods = array();
+                    $reflectedMethods = [];
 
                     foreach (array_filter($this->getReflectionClass($className)->getMethods(), function ($reflectedMethod) use ($className) {
                         return $reflectedMethod->isAbstract() === false && $reflectedMethod->getDeclaringClass()->getName() === $className;
@@ -139,12 +139,12 @@ class html extends report\fields\runner\coverage\cli
                             $methodCoverageValue = $this->coverage->getValueForMethod($className, $methodName);
 
                             if ($methodCoverageValue === null) {
-                                $methodCoverageUnavailableTemplates->build(array('methodName' => $methodName));
+                                $methodCoverageUnavailableTemplates->build(['methodName' => $methodName]);
                             } else {
-                                $methodCoverageAvailableTemplates->build(array(
+                                $methodCoverageAvailableTemplates->build([
                                         'methodName' => $methodName,
                                         'methodCoverageValue' => round($methodCoverageValue * 100, 2)
-                                    )
+                                    ]
                                 );
                             }
 
@@ -162,7 +162,7 @@ class html extends report\fields\runner\coverage\cli
                     $srcFile = $this->adapter->fopen($classes[$className], 'r');
 
                     if ($srcFile !== false) {
-                        $methodLines = array();
+                        $methodLines = [];
 
                         foreach ($reflectedMethods as $reflectedMethodName => $reflectedMethod) {
                             $methodLines[$reflectedMethod->getStartLine()] = $reflectedMethodName;

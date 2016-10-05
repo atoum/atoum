@@ -2,9 +2,9 @@
 
 namespace mageekguy\atoum\report\fields\runner;
 
-use mageekguy\atoum\runner;
 use mageekguy\atoum\observable;
 use mageekguy\atoum\report\field;
+use mageekguy\atoum\runner;
 
 abstract class outputs extends field
 {
@@ -12,7 +12,7 @@ abstract class outputs extends field
 
     public function __construct()
     {
-        parent::__construct(array(runner::runStop));
+        parent::__construct([runner::runStop]);
     }
 
     public function getRunner()

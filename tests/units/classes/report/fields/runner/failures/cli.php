@@ -3,10 +3,9 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\failures;
 
 use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\tests\units;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\runner;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -29,7 +28,7 @@ class cli extends atoum\test
                 ->object($field->getMethodColorizer())->isEqualTo(new colorizer())
                 ->object($field->getLocale())->isEqualTo(new locale())
                 ->variable($field->getRunner())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
         ;
     }
 
@@ -105,7 +104,7 @@ class cli extends atoum\test
     {
         $this
             ->if($score = new \mock\mageekguy\atoum\runner\score())
-            ->and($score->getMockController()->getErrors = array())
+            ->and($score->getMockController()->getErrors = [])
             ->and($runner = new atoum\runner())
             ->and($runner->setScore($score))
             ->and($defaultField = new runner\failures\cli())
@@ -128,8 +127,8 @@ class cli extends atoum\test
             ->then
                 ->castToString($defaultField)->isEmpty()
                 ->castToString($customField)->isEmpty()
-            ->if($score->getMockController()->getFailAssertions = $fails = array(
-                        array(
+            ->if($score->getMockController()->getFailAssertions = $fails = [
+                        [
                             'case' => null,
                             'dataSetKey' => null,
                             'class' => $class = uniqid(),
@@ -138,8 +137,8 @@ class cli extends atoum\test
                             'line' => $line = uniqid(),
                             'asserter' => $asserter = uniqid(),
                             'fail' => $fail = uniqid()
-                        ),
-                        array(
+                        ],
+                        [
                             'case' => null,
                             'dataSetKey' => null,
                             'class' => $otherClass = uniqid(),
@@ -148,8 +147,8 @@ class cli extends atoum\test
                             'line' => $otherLine = uniqid(),
                             'asserter' => $otherAsserter = uniqid(),
                             'fail' => $otherFail = uniqid()
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($defaultField = new runner\failures\cli())
             ->and($customField = new runner\failures\cli())
@@ -194,8 +193,8 @@ class cli extends atoum\test
                     sprintf($locale->_('In file %s on line %d, %s failed: %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) .
                     PHP_EOL
                 )
-            ->if($score->getMockController()->getFailAssertions = $fails = array(
-                        array(
+            ->if($score->getMockController()->getFailAssertions = $fails = [
+                        [
                             'case' => $case =  uniqid(),
                             'dataSetKey' => null,
                             'class' => $class = uniqid(),
@@ -204,8 +203,8 @@ class cli extends atoum\test
                             'line' => $line = uniqid(),
                             'asserter' => $asserter = uniqid(),
                             'fail' => $fail = uniqid()
-                        ),
-                        array(
+                        ],
+                        [
                             'case' => $otherCase =  uniqid(),
                             'dataSetKey' => null,
                             'class' => $otherClass = uniqid(),
@@ -214,8 +213,8 @@ class cli extends atoum\test
                             'line' => $otherLine = uniqid(),
                             'asserter' => $otherAsserter = uniqid(),
                             'fail' => $otherFail = uniqid()
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($defaultField = new runner\failures\cli())
             ->and($customField = new runner\failures\cli())
@@ -260,8 +259,8 @@ class cli extends atoum\test
                     sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $otherFile, $otherLine, $otherCase, $otherAsserter, $otherFail) .
                     PHP_EOL
                 )
-            ->if($score->getMockController()->getFailAssertions = $fails = array(
-                        array(
+            ->if($score->getMockController()->getFailAssertions = $fails = [
+                        [
                             'case' => $case =  uniqid(),
                             'dataSetKey' => $dataSetKey = rand(1, PHP_INT_MAX),
                             'dataSetProvider' => $dataSetProvider = uniqid(),
@@ -271,8 +270,8 @@ class cli extends atoum\test
                             'line' => $line = uniqid(),
                             'asserter' => $asserter = uniqid(),
                             'fail' => $fail = uniqid()
-                        ),
-                        array(
+                        ],
+                        [
                             'case' => $otherCase =  uniqid(),
                             'dataSetKey' => $otherDataSetKey = rand(1, PHP_INT_MAX),
                             'dataSetProvider' => $otherDataSetProvider = uniqid(),
@@ -282,8 +281,8 @@ class cli extends atoum\test
                             'line' => $otherLine = uniqid(),
                             'asserter' => $otherAsserter = uniqid(),
                             'fail' => $otherFail = uniqid()
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($defaultField = new runner\failures\cli())
             ->and($customField = new runner\failures\cli())

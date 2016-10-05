@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\reports\realtime\cli;
 
 use mageekguy\atoum;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\report\fields;
 use mageekguy\atoum\reports\realtime\cli\light as testedClass;
 
@@ -75,7 +75,7 @@ class light extends atoum\test
             ->then
                 ->object($report->getLocale())->isEqualTo(new atoum\locale())
                 ->object($report->getAdapter())->isEqualTo(new atoum\adapter())
-                ->array($report->getFields())->isEqualTo(array(
+                ->array($report->getFields())->isEqualTo([
                         $eventField,
                         $resultField,
                         $failuresField,
@@ -85,7 +85,7 @@ class light extends atoum\test
                         $uncompletedTestField,
                         $voidTestField,
                         $skippedTestField
-                    )
+                    ]
                 )
         ;
     }

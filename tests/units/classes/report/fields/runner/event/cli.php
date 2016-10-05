@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\event;
 
 use mageekguy\atoum;
-use mageekguy\atoum\mock;
 use mageekguy\atoum\report\fields\runner;
 
 require_once __DIR__ . '/../../../../../runner.php';

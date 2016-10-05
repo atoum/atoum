@@ -49,12 +49,12 @@ class mock extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to register mock autoloader')
                 ->adapter($adapter)
-                    ->call('spl_autoload_register')->withArguments(array($this->testedInstance, 'requireClass'))->once
+                    ->call('spl_autoload_register')->withArguments([$this->testedInstance, 'requireClass'])->once
             ->if($adapter->spl_autoload_register = true)
             ->then
                 ->object($this->testedInstance->register())->isTestedInstance
                 ->adapter($adapter)
-                    ->call('spl_autoload_register')->withArguments(array($this->testedInstance, 'requireClass'))->twice
+                    ->call('spl_autoload_register')->withArguments([$this->testedInstance, 'requireClass'])->twice
         ;
     }
 
@@ -74,12 +74,12 @@ class mock extends atoum\test
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to unregister mock autoloader')
                 ->adapter($adapter)
-                    ->call('spl_autoload_unregister')->withArguments(array($this->testedInstance, 'requireClass'))->once
+                    ->call('spl_autoload_unregister')->withArguments([$this->testedInstance, 'requireClass'])->once
             ->if($adapter->spl_autoload_unregister = true)
             ->then
                 ->object($this->testedInstance->unregister())->isTestedInstance
                 ->adapter($adapter)
-                    ->call('spl_autoload_unregister')->withArguments(array($this->testedInstance, 'requireClass'))->twice
+                    ->call('spl_autoload_unregister')->withArguments([$this->testedInstance, 'requireClass'])->twice
         ;
     }
 

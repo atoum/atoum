@@ -1,9 +1,9 @@
 <?php
 
 use mageekguy\atoum;
+use mageekguy\atoum\report\fields\runner\coverage;
 use mageekguy\atoum\reports;
 use mageekguy\atoum\reports\realtime;
-use mageekguy\atoum\report\fields\runner\coverage;
 
 if (defined('mageekguy\atoum\phing\task\path') === false) {
     define('mageekguy\atoum\phing\task\path', 'phing/Task.php');
@@ -14,7 +14,7 @@ require_once mageekguy\atoum\phing\task\path;
 class AtoumTask extends task
 {
     private $runner = false;
-    private $fileSets = array();
+    private $fileSets = [];
     private $bootstrap = null;
     private $codeCoverage = false;
     private $codeCoverageReportPath = null;
@@ -83,7 +83,7 @@ class AtoumTask extends task
 
     private function getFiles()
     {
-        $files = array();
+        $files = [];
 
         foreach ($this->fileSets as $fs) {
             $ds = $fs->getDirectoryScanner($this->project);

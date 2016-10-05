@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\reports\realtime;
 
 use mageekguy\atoum;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\report\fields;
 use mageekguy\atoum\reports\realtime\phing as testedClass;
 
@@ -119,7 +119,7 @@ class phing extends atoum\test
                 ->boolean($report->memoryIsShowed())->isTrue()
                 ->variable($report->getCodeCoverageReportPath())->isNull()
                 ->variable($report->getCodeCoverageReportUrl())->isNull()
-                ->array($report->getFields())->isEqualTo(array(
+                ->array($report->getFields())->isEqualTo([
                         $phpPathField,
                         $phpVersionField,
                         $runnerTestsDurationField,
@@ -137,7 +137,7 @@ class phing extends atoum\test
                         new fields\test\event\phing(),
                         $testDurationField,
                         $testMemoryField,
-                    )
+                    ]
                 )
 
           ;

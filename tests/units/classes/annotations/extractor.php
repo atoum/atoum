@@ -300,9 +300,9 @@ class extractor extends atoum\test
     public function testToArray()
     {
         $this
-            ->array(annotations\extractor::toArray(''))->isEqualTo(array(''))
-            ->array(annotations\extractor::toArray($value = uniqid()))->isEqualTo(array($value))
-            ->array(annotations\extractor::toArray(($value = uniqid()) . ' ' . ($otherValue = uniqid())))->isEqualTo(array($value, $otherValue))
+            ->array(annotations\extractor::toArray(''))->isEqualTo([''])
+            ->array(annotations\extractor::toArray($value = uniqid()))->isEqualTo([$value])
+            ->array(annotations\extractor::toArray(($value = uniqid()) . ' ' . ($otherValue = uniqid())))->isEqualTo([$value, $otherValue])
         ;
     }
 

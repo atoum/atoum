@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\readers\std;
 
-use mageekguy\atoum\reader;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\reader;
 
 class in extends reader
 {

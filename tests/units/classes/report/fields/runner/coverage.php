@@ -22,7 +22,7 @@ class coverage extends atoum\test
                 ->object($field->getPhp())->isEqualTo(new atoum\php())
                 ->object($field->getAdapter())->isEqualTo(new atoum\adapter())
                 ->array($field->getSrcDirectories())->isEmpty()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
                 ->variable($field->getCoverage())->isNull()
         ;
     }
@@ -61,17 +61,17 @@ class coverage extends atoum\test
             ->if($field = new testedClass())
             ->then
                 ->object($field->addSrcDirectory($srcDirectory = uniqid()))->isIdenticalTo($field)
-                ->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory => array()))
+                ->array($field->getSrcDirectories())->isEqualTo([$srcDirectory => []])
                 ->object($field->addSrcDirectory($srcDirectory))->isIdenticalTo($field)
-                ->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory => array()))
+                ->array($field->getSrcDirectories())->isEqualTo([$srcDirectory => []])
                 ->object($field->addSrcDirectory($otherSrcDirectory = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
-                ->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory => array(), (string) $otherSrcDirectory => array()))
+                ->array($field->getSrcDirectories())->isIdenticalTo([$srcDirectory => [], (string) $otherSrcDirectory => []])
                 ->object($field->addSrcDirectory($srcDirectory, $closure = function () {
                 }))->isIdenticalTo($field)
-                ->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory => array($closure), (string) $otherSrcDirectory => array()))
+                ->array($field->getSrcDirectories())->isIdenticalTo([$srcDirectory => [$closure], (string) $otherSrcDirectory => []])
                 ->object($field->addSrcDirectory($srcDirectory, $otherClosure = function () {
                 }))->isIdenticalTo($field)
-                ->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory => array($closure, $otherClosure), (string) $otherSrcDirectory => array()))
+                ->array($field->getSrcDirectories())->isIdenticalTo([$srcDirectory => [$closure, $otherClosure], (string) $otherSrcDirectory => []])
         ;
     }
 }

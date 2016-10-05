@@ -5,12 +5,11 @@ namespace mageekguy\atoum\report\fields\runner\coverage;
 require_once __DIR__ . '/../../../../../constants.php';
 
 use mageekguy\atoum;
+use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\exceptions;
 use mageekguy\atoum\locale;
 use mageekguy\atoum\report;
-use mageekguy\atoum\template;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
 
 class treemap extends report\fields\runner\coverage\cli
 {
@@ -21,7 +20,7 @@ class treemap extends report\fields\runner\coverage\cli
     protected $treemapUrl = '';
     protected $projectName = '';
     protected $htmlReportBaseUrl = null;
-    protected $resourcesDirectory = array();
+    protected $resourcesDirectory = [];
     protected $destinationDirectory = null;
     protected $reflectionClassFactory = null;
 
@@ -46,15 +45,15 @@ class treemap extends report\fields\runner\coverage\cli
 
         if (sizeof($this->coverage) > 0) {
             try {
-                $nodes = array(
+                $nodes = [
                     'coverage' => round($this->coverage->getValue() * 100, 2),
                     'project' => $this->projectName,
                     'name' => '',
                     'fullname' => '',
                     'htmlReportBaseUrl' => $this->htmlReportBaseUrl,
                     'date' => time(),
-                    'children' => array()
-                );
+                    'children' => []
+                ];
 
                 foreach ($this->coverage->getClasses() as $className => $classPath) {
                     $node = & $nodes;
@@ -76,24 +75,24 @@ class treemap extends report\fields\runner\coverage\cli
 
                         if ($childFound === false) {
                             $key = sizeof($node['children']);
-                            $node['children'][] = array(
+                            $node['children'][] = [
                                 'name' => $namespace,
                                 'fullname' => $node['fullname'] . ($node['fullname'] == '' ? '' : '\\') . $namespace,
-                                'children' => array()
-                            );
+                                'children' => []
+                            ];
                         }
 
                         $node = & $node['children'][$key];
                     }
 
-                    $child = array(
+                    $child = [
                         'name' => $class->getShortName(),
                         'fullname' => $node['fullname'] . '\\' . $class->getShortName(),
                         'covered' => $this->coverage->getNumberOfCoveredLinesInClass($className),
                         'coverable' => $this->coverage->getNumberOfCoverableLinesInClass($className),
                         'pourcent' => round($this->coverage->getValueForClass($className) * 100, 2),
-                        'children' => array()
-                    );
+                        'children' => []
+                    ];
 
                     $node['children'][] = $child;
                 }

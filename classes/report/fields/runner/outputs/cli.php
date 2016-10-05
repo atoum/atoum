@@ -2,10 +2,9 @@
 
 namespace mageekguy\atoum\report\fields\runner\outputs;
 
-use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\runner\outputs;
 
 class cli extends outputs

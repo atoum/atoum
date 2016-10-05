@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\tools\diffs;
 
-use mageekguy\atoum\tools;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\tools;
 
 class variable extends tools\diff
 {

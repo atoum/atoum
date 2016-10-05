@@ -69,10 +69,10 @@ class stub extends atoum\test
             ->and->mockGenerator->shuntParentClassCalls()
             ->and(
                 $phar = new \mock\phar(uniqid()),
-                $this->calling($phar)->getMetadata = array(
+                $this->calling($phar)->getMetadata = [
                     $key = uniqid() => $value = uniqid(),
                     $otherKey = uniqid() => $otherValue = uniqid(),
-                ),
+                ],
                 $factory = function () use ($phar) {
                     return $phar;
                 }
@@ -100,7 +100,7 @@ class stub extends atoum\test
             ->and->mockGenerator->shuntParentClassCalls()
             ->and(
                 $phar = new \mock\phar(uniqid()),
-                $this->calling($phar)->getSignature = array('hash' => $signature = uniqid()),
+                $this->calling($phar)->getSignature = ['hash' => $signature = uniqid()],
                 $factory = function () use ($phar) {
                     return $phar;
                 }
@@ -182,10 +182,10 @@ class stub extends atoum\test
             ->and($adapter->file_get_contents = function ($path) use (& $currentVersion) {
                 switch ($path) {
                         case 'versions':
-                            return serialize(array('1' => $currentVersion = uniqid(), 'current' => '1'));
+                            return serialize(['1' => $currentVersion = uniqid(), 'current' => '1']);
 
                         case phar\stub::updateUrl:
-                            return json_encode(array());
+                            return json_encode([]);
 
                         default:
                             return false;
@@ -195,7 +195,7 @@ class stub extends atoum\test
             ->then
                 ->object($stub->update())->isIdenticalTo($stub)
                 ->adapter($adapter)
-                    ->call('file_get_contents')->withArguments(sprintf(phar\stub::updateUrl, json_encode(array($currentVersion))))->once()
+                    ->call('file_get_contents')->withArguments(sprintf(phar\stub::updateUrl, json_encode([$currentVersion])))->once()
                 ->mock($phar)
                     ->call('offsetGet')->withArguments('versions')->once()
                 ->mock($locale)

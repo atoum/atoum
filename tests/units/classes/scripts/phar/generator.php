@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\scripts\phar;
 
 use mageekguy\atoum;
+use mageekguy\atoum\iterators;
 use mageekguy\atoum\mock;
 use mageekguy\atoum\mock\stream;
-use mageekguy\atoum\iterators;
 use mageekguy\atoum\scripts\phar;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -344,14 +344,14 @@ class generator extends atoum\test
                 ->mock($phar)
                     ->call('__construct')->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null)->once()
                     ->call('setMetadata')
-                        ->withArguments(array(
+                        ->withArguments([
                                 'version' => atoum\version,
                                 'author' => atoum\author,
                                 'support' => atoum\mail,
                                 'repository' => atoum\repository,
                                 'description' => $description,
                                 'licence' => $licence
-                            )
+                            ]
                         )
                         ->once()
                     ->call('setStub')->withArguments($stub, null)->once()
@@ -362,7 +362,7 @@ class generator extends atoum\test
                         ->withArguments(\phar::SHA1, null)
                         ->once()
             ->if($superglobals = new atoum\superglobals())
-            ->and($superglobals->_SERVER = array('argv' => array(uniqid(), '--help')))
+            ->and($superglobals->_SERVER = ['argv' => [uniqid(), '--help']])
             ->and($generator->setArgumentsParser(new atoum\script\arguments\parser($superglobals)))
             ->and($stdout = new \mock\mageekguy\atoum\writers\std\out())
             ->and($stdout->getMockController()->write = function () {
@@ -401,7 +401,7 @@ class generator extends atoum\test
                 )
             )
             ->then
-                ->object($generator->run(array('-d', $directory = uniqid())))->isIdenticalTo($generator)
+                ->object($generator->run(['-d', $directory = uniqid()]))->isIdenticalTo($generator)
                 ->string($generator->getDestinationDirectory())->isEqualTo($directory)
                 ->mock($phar)
                     ->call('__construct')
@@ -409,14 +409,14 @@ class generator extends atoum\test
                         ->once()
                     ->call('setMetadata')
                         ->withArguments(
-                            array(
+                            [
                                 'version' => atoum\version,
                                 'author' => atoum\author,
                                 'support' => atoum\mail,
                                 'repository' => atoum\repository,
                                 'description' => $description,
                                 'licence' => $licence
-                            )
+                            ]
                         )
                         ->once()
                     ->call('setStub')->withArguments($stub, null)->once()

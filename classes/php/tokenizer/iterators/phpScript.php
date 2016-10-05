@@ -7,12 +7,12 @@ use mageekguy\atoum\php\tokenizer\iterators;
 
 class phpScript extends tokenizer\iterators\phpNamespace
 {
-    protected $namespaces = array();
-    protected $importations = array();
+    protected $namespaces = [];
+    protected $importations = [];
 
     public function reset()
     {
-        $this->namespaces = array();
+        $this->namespaces = [];
 
         return parent::reset();
     }

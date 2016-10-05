@@ -57,7 +57,7 @@ class phpResource extends variable
     public function __call($name, $arguments)
     {
         if ('is' === substr($name, 0, 2)) {
-            $pattern = preg_replace(array('/^is/', '/_/'), array('', '.?'), $name);
+            $pattern = preg_replace(['/^is/', '/_/'], ['', '.?'], $name);
             $pattern = preg_replace_callback(
                 '/([A-Z])([a-z]+)/',
                 function ($matches) {
@@ -79,6 +79,6 @@ class phpResource extends variable
 
     protected function getTypeAsserter()
     {
-        return $this->generator->__call('phpString', array(get_resource_type($this->valueIsSet()->value)));
+        return $this->generator->__call('phpString', [get_resource_type($this->valueIsSet()->value)]);
     }
 }

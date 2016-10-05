@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\tests\units\exceptions\logic;
 
 use mageekguy\atoum;
-use mageekguy\atoum\exceptions\logic;
 
 require_once __DIR__ . '/../../../runner.php';
 

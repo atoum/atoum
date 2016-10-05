@@ -60,6 +60,6 @@ class generic implements analyzer
 
     public function getMetricFromFile(\splFileInfo $file)
     {
-        return call_user_func_array($this->callback, array($file));
+        return call_user_func_array($this->callback, [$file]);
     }
 }

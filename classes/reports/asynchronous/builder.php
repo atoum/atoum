@@ -4,10 +4,8 @@ namespace mageekguy\atoum\reports\asynchronous;
 
 use mageekguy\atoum;
 use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\report\fields\test;
 use mageekguy\atoum\report\fields\runner;
+use mageekguy\atoum\report\fields\test;
 
 class builder extends atoum\reports\asynchronous
 {

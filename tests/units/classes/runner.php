@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
 use mageekguy\atoum\mock;
 use mageekguy\atoum\runner as testedClass;
+use mageekguy\atoum\test;
 
 require_once __DIR__ . '/../runner.php';
 
@@ -54,7 +54,7 @@ class runner extends atoum\test
         $this
             ->if($runner = new testedClass())
             ->then
-                ->object($runner->setTestPaths($paths = array(uniqid(), uniqid(), uniqid())))->isIdenticalTo($runner)
+                ->object($runner->setTestPaths($paths = [uniqid(), uniqid(), uniqid()]))->isIdenticalTo($runner)
                 ->array($runner->getTestPaths())->isEqualTo($paths)
         ;
     }
@@ -63,7 +63,7 @@ class runner extends atoum\test
     {
         $this
             ->if($runner = new testedClass())
-            ->and($runner->setTestPaths(array(uniqid(), uniqid(), uniqid())))
+            ->and($runner->setTestPaths([uniqid(), uniqid(), uniqid()]))
             ->then
                 ->object($runner->resetTestPaths())->isIdenticalTo($runner)
                 ->array($runner->getTestPaths())->isEmpty()
@@ -220,7 +220,7 @@ class runner extends atoum\test
             ->then
                 ->array($runner->getObservers())->isEmpty()
                 ->object($runner->addObserver($observer = new \mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
-                ->array($runner->getObservers())->isEqualTo(array($observer))
+                ->array($runner->getObservers())->isEqualTo([$observer])
         ;
     }
 
@@ -235,11 +235,11 @@ class runner extends atoum\test
             ->if($runner->addObserver($observer1 = new \mock\mageekguy\atoum\observers\runner()))
             ->and($runner->addObserver($observer2 = new \mock\mageekguy\atoum\observers\runner()))
             ->then
-                ->array($runner->getObservers())->isEqualTo(array($observer1, $observer2))
+                ->array($runner->getObservers())->isEqualTo([$observer1, $observer2])
                 ->object($runner->removeObserver(new \mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
-                ->array($runner->getObservers())->isEqualTo(array($observer1, $observer2))
+                ->array($runner->getObservers())->isEqualTo([$observer1, $observer2])
                 ->object($runner->removeObserver($observer1))->isIdenticalTo($runner)
-                ->array($runner->getObservers())->isEqualTo(array($observer2))
+                ->array($runner->getObservers())->isEqualTo([$observer2])
                 ->object($runner->removeObserver($observer2))->isIdenticalTo($runner)
                 ->array($runner->getObservers())->isEmpty()
         ;
@@ -266,7 +266,7 @@ class runner extends atoum\test
                 static $call = 0;
                 return (++$call * 100);
             })
-            ->and($adapter->get_declared_classes = array())
+            ->and($adapter->get_declared_classes = [])
             ->and($runner = new testedClass())
             ->and($runner->setAdapter($adapter))
             ->then
@@ -275,7 +275,7 @@ class runner extends atoum\test
             ->then
                 ->integer($runner->getRunningDuration())->isEqualTo(100)
             ->if(eval('namespace ' . __NAMESPACE__ . ' { class forTestGetRunningDuration extends \mageekguy\atoum\test { public function testSomething() {} public function run(array $runTestMethods = array(), array $tags = array()) { return $this; } } }'))
-            ->and($adapter->get_declared_classes = array(__NAMESPACE__ . '\forTestGetRunningDuration'))
+            ->and($adapter->get_declared_classes = [__NAMESPACE__ . '\forTestGetRunningDuration'])
             ->and($runner->run())
             ->then
                 ->integer($runner->getRunningDuration())->isEqualTo(100)
@@ -286,7 +286,7 @@ class runner extends atoum\test
     {
         $this
             ->if($adapter = new atoum\test\adapter())
-            ->and($adapter->get_declared_classes = array())
+            ->and($adapter->get_declared_classes = [])
             ->and($runner = new testedClass())
             ->and($runner->setAdapter($adapter))
             ->then
@@ -301,7 +301,7 @@ class runner extends atoum\test
     {
         $this
             ->if($adapter = new atoum\test\adapter())
-            ->and($adapter->get_declared_classes = array())
+            ->and($adapter->get_declared_classes = [])
             ->and($runner = new testedClass())
             ->and($runner->setAdapter($adapter))
             ->then
@@ -360,16 +360,16 @@ class runner extends atoum\test
             ->if($runner = new testedClass())
             ->then
                 ->object($runner->setReport($report = new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($report))
+                ->array($runner->getReports())->isEqualTo([$report])
                 ->array($runner->getObservers())->contains($report)
                 ->object($runner->addReport($otherReport = new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($report))
+                ->array($runner->getReports())->isEqualTo([$report])
                 ->array($runner->getObservers())->contains($report)
                 ->object($runner->setReport($otherReport))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($otherReport))
+                ->array($runner->getReports())->isEqualTo([$otherReport])
                 ->array($runner->getObservers())->contains($otherReport)
                 ->object($runner->addReport($report))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($otherReport))
+                ->array($runner->getReports())->isEqualTo([$otherReport])
                 ->array($runner->getObservers())->contains($otherReport)
         ;
     }
@@ -380,12 +380,12 @@ class runner extends atoum\test
             ->if($runner = new testedClass())
             ->then
                 ->object($runner->addReport($report = new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($report))
+                ->array($runner->getReports())->isEqualTo([$report])
                 ->array($runner->getObservers())->contains($report)
             ->if($runner->setReport($otherReport = new atoum\reports\realtime\cli()))
             ->then
                 ->object($runner->addReport($report = new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($otherReport))
+                ->array($runner->getReports())->isEqualTo([$otherReport])
                 ->array($runner->getObservers())->contains($otherReport)
         ;
     }
@@ -404,28 +404,28 @@ class runner extends atoum\test
             ->and($report2 = new \mock\mageekguy\atoum\report())
             ->and($runner->addReport($report1)->addReport($report2))
             ->then
-                ->array($runner->getReports())->isEqualTo(array($report1, $report2))
-                ->array($runner->getObservers())->isEqualTo(array($report1, $report2))
+                ->array($runner->getReports())->isEqualTo([$report1, $report2])
+                ->array($runner->getObservers())->isEqualTo([$report1, $report2])
                 ->object($runner->removeReport(new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($report1, $report2))
-                ->array($runner->getObservers())->isEqualTo(array($report1, $report2))
+                ->array($runner->getReports())->isEqualTo([$report1, $report2])
+                ->array($runner->getObservers())->isEqualTo([$report1, $report2])
                 ->object($runner->removeReport($report1))->isIdenticalTo($runner)
-                ->array($runner->getReports())->isEqualTo(array($report2))
-                ->array($runner->getObservers())->isEqualTo(array($report2))
+                ->array($runner->getReports())->isEqualTo([$report2])
+                ->array($runner->getObservers())->isEqualTo([$report2])
                 ->object($runner->removeReport($report2))->isIdenticalTo($runner)
                 ->array($runner->getReports())->isEmpty()
                 ->array($runner->getObservers())->isEmpty()
             ->if($runner->setReport($otherReport = new atoum\reports\realtime\cli()))
             ->then
-                ->array($runner->getReports())->isEqualTo(array($otherReport))
-                ->array($runner->getObservers())->isEqualTo(array($otherReport))
+                ->array($runner->getReports())->isEqualTo([$otherReport])
+                ->array($runner->getObservers())->isEqualTo([$otherReport])
                 ->object($runner->removeReport($otherReport))->isIdenticalTo($runner)
                 ->array($runner->getReports())->isEmpty()
                 ->array($runner->getObservers())->isEmpty()
             ->if($runner->addReport($report1)->addReport($report2))
             ->then
-                ->array($runner->getReports())->isEqualTo(array($report1, $report2))
-                ->array($runner->getObservers())->isEqualTo(array($report1, $report2))
+                ->array($runner->getReports())->isEqualTo([$report1, $report2])
+                ->array($runner->getObservers())->isEqualTo([$report1, $report2])
         ;
     }
 
@@ -443,22 +443,22 @@ class runner extends atoum\test
             ->and($report2 = new \mock\mageekguy\atoum\report())
             ->and($runner->addReport($report1)->addReport($report2))
             ->then
-                ->array($runner->getReports())->isEqualTo(array($report1, $report2))
-                ->array($runner->getObservers())->isEqualTo(array($report1, $report2))
+                ->array($runner->getReports())->isEqualTo([$report1, $report2])
+                ->array($runner->getObservers())->isEqualTo([$report1, $report2])
                 ->object($runner->removeReports())->isIdenticalTo($runner)
                 ->array($runner->getReports())->isEmpty()
                 ->array($runner->getObservers())->isEmpty()
             ->if($runner->setReport($otherReport = new atoum\reports\realtime\cli()))
             ->then
-                ->array($runner->getReports())->isEqualTo(array($otherReport))
-                ->array($runner->getObservers())->isEqualTo(array($otherReport))
+                ->array($runner->getReports())->isEqualTo([$otherReport])
+                ->array($runner->getObservers())->isEqualTo([$otherReport])
                 ->object($runner->removeReports())->isIdenticalTo($runner)
                 ->array($runner->getReports())->isEmpty()
                 ->array($runner->getObservers())->isEmpty()
             ->if($runner->addReport($report1)->addReport($report2))
             ->then
-                ->array($runner->getReports())->isEqualTo(array($report1, $report2))
-                ->array($runner->getObservers())->isEqualTo(array($report1, $report2))
+                ->array($runner->getReports())->isEqualTo([$report1, $report2])
+                ->array($runner->getObservers())->isEqualTo([$report1, $report2])
             ->given(
                 $firstReport = new \mock\mageekguy\atoum\report(),
                 $secondReport = new \mock\mageekguy\atoum\report(),
@@ -484,8 +484,8 @@ class runner extends atoum\test
             )
             ->when($runner->removeReports($overrideReport))
             ->then
-                ->array($runner->getReports())->isEqualTo(array($firstReport))
-                ->array($runner->getObservers())->isEqualTo(array($firstReport))
+                ->array($runner->getReports())->isEqualTo([$firstReport])
+                ->array($runner->getObservers())->isEqualTo([$firstReport])
         ;
     }
 
@@ -495,14 +495,14 @@ class runner extends atoum\test
             ->if($runner = new testedClass())
             ->then
                 ->object($runner->addExtension($extension = new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
-                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension))
+                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$extension])
                 ->array($runner->getObservers())->contains($extension)
                 ->mock($extension)
                     ->call('setRunner')->withArguments($runner)->once()
             ->if($this->resetMock($extension))
             ->then
                 ->object($runner->addExtension($extension))->isIdenticalTo($runner)
-                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension))
+                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$extension])
                 ->array($runner->getObservers())->contains($extension)
                 ->mock($extension)
                     ->call('setRunner')->never();
@@ -524,23 +524,23 @@ class runner extends atoum\test
             )
             ->and($runner->addExtension($extension)->addExtension($otherExtension))
             ->then
-                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension, $otherExtension))
-                ->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
+                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$extension, $otherExtension])
+                ->array($runner->getObservers())->isEqualTo([$extension, $otherExtension])
                 ->object($runner->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
-                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($otherExtension))
-                ->array($runner->getObservers())->isEqualTo(array($otherExtension))
+                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$otherExtension])
+                ->array($runner->getObservers())->isEqualTo([$otherExtension])
             ->if($runner->addExtension($extension))
             ->then
-                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($otherExtension, $extension))
+                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$otherExtension, $extension])
                 ->object($runner->removeExtension($extension))->isIdenticalTo($runner)
-                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($otherExtension))
-                ->array($runner->getObservers())->isEqualTo(array($otherExtension))
+                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$otherExtension])
+                ->array($runner->getObservers())->isEqualTo([$otherExtension])
             ->if($runner->addExtension($extension))
             ->then
-                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($otherExtension, $extension))
+                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$otherExtension, $extension])
                 ->object($runner->removeExtension('mock\mageekguy\atoum\extension'))->isIdenticalTo($runner)
-                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($otherExtension))
-                ->array($runner->getObservers())->isEqualTo(array($otherExtension))
+                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$otherExtension])
+                ->array($runner->getObservers())->isEqualTo([$otherExtension])
                 ->object($runner->removeExtension($otherExtension))->isIdenticalTo($runner)
                 ->object($runner->getExtensions())->isInstanceOf('mageekguy\atoum\extension\aggregator')
                 ->sizeOf($runner->getExtensions())->isZero
@@ -575,8 +575,8 @@ class runner extends atoum\test
             )
             ->and($runner->addExtension($extension)->addExtension($otherExtension))
             ->then
-                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo(array($extension, $otherExtension))
-                ->array($runner->getObservers())->isEqualTo(array($extension, $otherExtension))
+                ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$extension, $otherExtension])
+                ->array($runner->getObservers())->isEqualTo([$extension, $otherExtension])
                 ->object($runner->removeExtensions())->isIdenticalTo($runner)
                 ->object($runner->getExtensions())->isInstanceOf('mageekguy\atoum\extension\aggregator')
                 ->sizeOf($runner->getExtensions())->isZero
@@ -710,21 +710,21 @@ class runner extends atoum\test
             ->if($runner = new testedClass())
             ->then
                 ->object($runner->addTest($testPath1 = uniqid()))->isIdenticalTo($runner)
-                ->array($runner->getTestPaths())->isEqualTo(array($testPath1))
+                ->array($runner->getTestPaths())->isEqualTo([$testPath1])
                 ->object($runner->addTest($testPath2 = uniqid()))->isIdenticalTo($runner)
-                ->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2))
+                ->array($runner->getTestPaths())->isEqualTo([$testPath1, $testPath2])
                 ->object($runner->addTest($testPath1))->isIdenticalTo($runner)
-                ->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2))
+                ->array($runner->getTestPaths())->isEqualTo([$testPath1, $testPath2])
                 ->object($runner->addTest($testPath3 = new \splFileInfo(__FILE__)))->isIdenticalTo($runner)
-                ->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2, (string) $testPath3))
+                ->array($runner->getTestPaths())->isEqualTo([$testPath1, $testPath2, (string) $testPath3])
             ->if($runner->canNotAddTest())
             ->then
                 ->object($runner->addTest($testPath4 = uniqid()))->isIdenticalTo($runner)
-                ->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2, (string) $testPath3))
+                ->array($runner->getTestPaths())->isEqualTo([$testPath1, $testPath2, (string) $testPath3])
             ->if($runner->canAddTest())
             ->then
                 ->object($runner->addTest($testPath4 = uniqid()))->isIdenticalTo($runner)
-                ->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2, (string) $testPath3, $testPath4))
+                ->array($runner->getTestPaths())->isEqualTo([$testPath1, $testPath2, (string) $testPath3, $testPath4])
         ;
     }
 
@@ -767,7 +767,7 @@ class runner extends atoum\test
             ->if($runner = new testedClass())
             ->and($runner->setTestDirectoryIterator($directoryIterator = new \mock\mageekguy\atoum\iterators\recursives\directory\factory()))
             ->then
-                ->object($runner->acceptTestFileExtensions($testFileExtensions = array(uniqid(), uniqid())))->isIdenticalTo($runner)
+                ->object($runner->acceptTestFileExtensions($testFileExtensions = [uniqid(), uniqid()]))->isIdenticalTo($runner)
                 ->mock($directoryIterator)->call('acceptExtensions')->withArguments($testFileExtensions)->once()
         ;
     }

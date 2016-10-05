@@ -7,7 +7,7 @@ use mageekguy\atoum\asserter;
 class aliaser implements \arrayAccess
 {
     protected $resolver = null;
-    protected $aliases = array();
+    protected $aliases = [];
 
     private $context = null;
     private $keyword = null;

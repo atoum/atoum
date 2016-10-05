@@ -3,15 +3,15 @@
 namespace mageekguy\atoum\script;
 
 use mageekguy\atoum;
-use mageekguy\atoum\includer;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\includer;
 
 abstract class configurable extends atoum\script
 {
     const defaultConfigFile = '.config.php';
 
     protected $includer = null;
-    protected $configFiles = array();
+    protected $configFiles = [];
 
     public function __construct($name, atoum\adapter $adapter = null)
     {
@@ -73,7 +73,7 @@ abstract class configurable extends atoum\script
         return $this;
     }
 
-    public function run(array $arguments = array())
+    public function run(array $arguments = [])
     {
         $this->useDefaultConfigFiles();
 
@@ -84,7 +84,7 @@ abstract class configurable extends atoum\script
     {
         $directorySeparator = $directorySeparator ?: DIRECTORY_SEPARATOR;
 
-        $paths = array();
+        $paths = [];
 
         if ($directory != '') {
             if ($directory == $directorySeparator) {
@@ -116,7 +116,7 @@ abstract class configurable extends atoum\script
 
                         $script->help();
                     },
-                    array('-h', '--help'),
+                    ['-h', '--help'],
                     null,
                     $this->locale->_('Display this help')
                 )
@@ -134,7 +134,7 @@ abstract class configurable extends atoum\script
                             }
                         }
                     },
-                    array('-c', '--configurations'),
+                    ['-c', '--configurations'],
                     '<file>...',
                     $this->locale->_('Use all configuration files <file>'),
                     PHP_INT_MAX

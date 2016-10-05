@@ -2,10 +2,9 @@
 
 namespace mageekguy\atoum\report\fields\test\event;
 
-use mageekguy\atoum\test;
-use mageekguy\atoum\report;
-use mageekguy\atoum\exceptions;
 use mageekguy\atoum\cli\progressBar;
+use mageekguy\atoum\report;
+use mageekguy\atoum\test;
 
 class cli extends report\fields\test\event
 {

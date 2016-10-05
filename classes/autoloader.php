@@ -9,10 +9,10 @@ class autoloader
     const defaultCacheFileName = '%s.atoum.cache';
 
     protected $version = null;
-    protected $classes = array();
-    protected $directories = array();
-    protected $classAliases = array();
-    protected $namespaceAliases = array();
+    protected $classes = [];
+    protected $directories = [];
+    protected $classAliases = [];
+    protected $namespaceAliases = [];
     protected $cacheFileInstance = null;
 
     protected static $autoloader = null;
@@ -22,30 +22,30 @@ class autoloader
     private static $cacheFile = null;
     private static $registeredAutoloaders = null;
 
-    public function __construct(array $namespaces = array(), array $namespaceAliases = array(), $classAliases = array())
+    public function __construct(array $namespaces = [], array $namespaceAliases = [], $classAliases = [])
     {
         $this->version = static::version;
 
         if (sizeof($namespaces) <= 0) {
-            $namespaces = array(__NAMESPACE__ => __DIR__);
+            $namespaces = [__NAMESPACE__ => __DIR__];
         }
 
         foreach ($namespaces as $namespace => $directory) {
             $this->addDirectory($namespace, $directory);
         }
 
-        foreach ($namespaceAliases ?: array('atoum' => __NAMESPACE__) as $alias => $target) {
+        foreach ($namespaceAliases ?: ['atoum' => __NAMESPACE__] as $alias => $target) {
             $this->addNamespaceAlias($alias, $target);
         }
 
-        foreach ($classAliases ?: array('atoum' => __NAMESPACE__ . '\test', __NAMESPACE__ => __NAMESPACE__ . '\test') as $alias => $target) {
+        foreach ($classAliases ?: ['atoum' => __NAMESPACE__ . '\test', __NAMESPACE__ => __NAMESPACE__ . '\test'] as $alias => $target) {
             $this->addClassAlias($alias, $target);
         }
     }
 
     public function register($prepend = false)
     {
-        if (spl_autoload_register(array($this, 'requireClass'), true, $prepend) === false) {
+        if (spl_autoload_register([$this, 'requireClass'], true, $prepend) === false) {
             throw new \runtimeException('Unable to register autoloader \'' . get_class($this) . '\'');
         }
 
@@ -60,7 +60,7 @@ class autoloader
 
     public function unregister()
     {
-        if (spl_autoload_unregister(array($this, 'requireClass')) === false) {
+        if (spl_autoload_unregister([$this, 'requireClass']) === false) {
             throw new \runtimeException('Unable to unregister');
         }
 
@@ -75,7 +75,7 @@ class autoloader
         $directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         if ($this->directoryIsSet($namespace, $directory) === false) {
-            $this->directories[$namespace][] = array($directory, $suffix);
+            $this->directories[$namespace][] = [$directory, $suffix];
 
             krsort($this->directories, \SORT_STRING);
         }
@@ -146,7 +146,7 @@ class autoloader
         $path = (isset($this->classes[$class]) === false || is_file($this->classes[$class]) === false ? null : $this->classes[$class]);
 
         if ($path === null && $this->handleNamespaceOfClass($class) === true) {
-            $classes = array();
+            $classes = [];
 
             foreach ($this->directories as $namespace => $directories) {
                 foreach ($directories as $directoryData) {
@@ -249,7 +249,7 @@ class autoloader
 
     public static function getRegisteredAutoloaders()
     {
-        $registeredAutoloaders = array();
+        $registeredAutoloaders = [];
 
         foreach (self::$registeredAutoloaders as $autoloader) {
             $registeredAutoloaders[] = $autoloader;
@@ -344,7 +344,7 @@ class autoloader
     {
         $cacheFile = $this->getCacheFileForInstance();
 
-        if (@file_put_contents($cacheFile, serialize(array('version' => static::version, 'classes' => $this->classes))) === false) {
+        if (@file_put_contents($cacheFile, serialize(['version' => static::version, 'classes' => $this->classes])) === false) {
             throw new \runtimeException('Unable to write in  \'' . $cacheFile . '\'');
         }
 

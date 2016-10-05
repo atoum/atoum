@@ -4,7 +4,7 @@ namespace mageekguy\atoum\iterators\filters\recursives;
 
 class closure extends \recursiveFilterIterator
 {
-    protected $closures = array();
+    protected $closures = [];
 
     public function __construct(\recursiveIterator $iterator, $closure = null)
     {

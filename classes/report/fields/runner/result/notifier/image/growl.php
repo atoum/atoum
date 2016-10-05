@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\report\fields\runner\result\notifier\image;
 
 use mageekguy\atoum;
-use mageekguy\atoum\exceptions\logic;
 use mageekguy\atoum\report\fields\runner\result\notifier\image;
 
 class growl extends image

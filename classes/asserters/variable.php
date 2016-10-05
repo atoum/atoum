@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum;
-use mageekguy\atoum\tools;
 use mageekguy\atoum\asserter;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\tools;
 use mageekguy\atoum\tools\diffs;
 
 class variable extends asserter
@@ -68,7 +68,7 @@ class variable extends asserter
                 return parent::__call($method, $arguments);
         }
 
-        return call_user_func_array(array($this, $assertion), $arguments);
+        return call_user_func_array([$this, $assertion], $arguments);
     }
 
     public function setDiff(diffs\variable $diff = null)

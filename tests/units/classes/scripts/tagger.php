@@ -50,7 +50,7 @@ class tagger extends atoum\test
                 ->mock($engine)->call('tagVersion')->once()
             ->if($engine->getMockController()->resetCalls())
             ->then
-                ->object($tagger->run(array('-h')))->isIdenticalTo($tagger)
+                ->object($tagger->run(['-h']))->isIdenticalTo($tagger)
                 ->mock($tagger)->call('help')->atLeastOnce()
                 ->mock($engine)->call('tagVersion')->never()
         ;

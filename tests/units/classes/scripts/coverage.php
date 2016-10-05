@@ -32,188 +32,188 @@ class coverage extends atoum\test
                 ->variable($this->testedInstance->getScoreFile())->isNull()
                 ->array($this->testedInstance->getReports())->isEmpty()
                 ->array($this->testedInstance->getArguments())->isEmpty()
-                ->array($this->testedInstance->getHelp())->isEqualTo(array(
-                        array(
-                            array('-h', '--help'),
+                ->array($this->testedInstance->getHelp())->isEqualTo([
+                        [
+                            ['-h', '--help'],
                             null,
                             'Display this help'
-                        ),
-                        array(
-                            array('-c', '--configurations'),
+                        ],
+                        [
+                            ['-c', '--configurations'],
                             '<file>...',
                             'Use all configuration files <file>'
-                        ),
-                        array(
-                            array('-v', '--version'),
+                        ],
+                        [
+                            ['-v', '--version'],
                             null,
                             'Display version'
-                        ),
-                        array(
-                            array('+verbose', '++verbose'),
+                        ],
+                        [
+                            ['+verbose', '++verbose'],
                             null,
                             'Enable verbose mode'
-                        ),
-                        array(
-                            array('--init'),
+                        ],
+                        [
+                            ['--init'],
                             '<path/to/directory>',
                             sprintf($this->testedInstance->getLocale()->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)'), $this->testedInstance->getDirectory())
-                        ),
-                        array(
-                            array('-p', '--php'),
+                        ],
+                        [
+                            ['-p', '--php'],
                             '<path/to/php/binary>',
                             'Path to PHP binary which must be used to run tests'
-                        ),
-                        array(
-                            array('-drt', '--default-report-title'),
+                        ],
+                        [
+                            ['-drt', '--default-report-title'],
                             '<string>',
                             'Define default report title with <string>'
-                        ),
-                        array(
-                            array('-sf', '--score-file'),
+                        ],
+                        [
+                            ['-sf', '--score-file'],
                             '<file>',
                             'Save score in file <file>'
-                        ),
-                        array(
-                            array('-mcn', '--max-children-number'),
+                        ],
+                        [
+                            ['-mcn', '--max-children-number'],
                             '<integer>',
                             'Maximum number of sub-processus which will be run simultaneously'
-                        ),
-                        array(
-                            array('-ncc', '--no-code-coverage'),
+                        ],
+                        [
+                            ['-ncc', '--no-code-coverage'],
                             null,
                             'Disable code coverage'
-                        ),
-                        array(
-                            array('-nccid', '--no-code-coverage-in-directories'),
+                        ],
+                        [
+                            ['-nccid', '--no-code-coverage-in-directories'],
                             '<directory>...',
                             'Disable code coverage in directories <directory>'
-                        ),
-                        array(
-                            array('-nccfns', '--no-code-coverage-for-namespaces'),
+                        ],
+                        [
+                            ['-nccfns', '--no-code-coverage-for-namespaces'],
                             '<namespace>...',
                             'Disable code coverage for namespaces <namespace>'
-                        ),
-                        array(
-                            array('-nccfc', '--no-code-coverage-for-classes'),
+                        ],
+                        [
+                            ['-nccfc', '--no-code-coverage-for-classes'],
                             '<class>...',
                             'Disable code coverage for classes <class>'
-                        ),
-                        array(
-                            array('-nccfm', '--no-code-coverage-for-methods'),
+                        ],
+                        [
+                            ['-nccfm', '--no-code-coverage-for-methods'],
                             '<method>...',
                             'Disable code coverage for methods <method>'
-                        ),
-                        array(
-                            array('-ebpc', '--enable-branch-and-path-coverage'),
+                        ],
+                        [
+                            ['-ebpc', '--enable-branch-and-path-coverage'],
                             null,
                             'Enable branch and path coverage'
-                        ),
-                        array(
-                            array('-f', '--files'),
+                        ],
+                        [
+                            ['-f', '--files'],
                             '<file>...',
                             'Execute all unit test files <file>'
-                        ),
-                        array(
-                            array('-d', '--directories'),
+                        ],
+                        [
+                            ['-d', '--directories'],
                             '<directory>...',
                             'Execute unit test files in all <directory>'
-                        ),
-                        array(
-                            array('-tfe', '--test-file-extensions'),
+                        ],
+                        [
+                            ['-tfe', '--test-file-extensions'],
                             '<extension>...',
                             'Execute unit test files with one of extensions <extension>'
-                        ),
-                        array(
-                            array('-g', '--glob'),
+                        ],
+                        [
+                            ['-g', '--glob'],
                             '<pattern>...',
                             'Execute unit test files which match <pattern>'
-                        ),
-                        array(
-                            array('-t', '--tags'),
+                        ],
+                        [
+                            ['-t', '--tags'],
                             '<tag>...',
                             'Execute only unit test with tags <tag>'
-                        ),
-                        array(
-                            array('-m', '--methods'),
+                        ],
+                        [
+                            ['-m', '--methods'],
                             '<class::method>...',
                             'Execute all <class::method>, * may be used as wildcard for class name or method name'
-                        ),
-                        array(
-                            array('-ns', '--namespaces'),
+                        ],
+                        [
+                            ['-ns', '--namespaces'],
                             '<namespace>...',
                             'Execute all classes in all namespaces <namespace>'
-                        ),
-                        array(
-                            array('-l', '--loop'),
+                        ],
+                        [
+                            ['-l', '--loop'],
                             null,
                             'Execute tests in an infinite loop'
-                        ),
-                        array(
-                            array('--test-it'),
+                        ],
+                        [
+                            ['--test-it'],
                             null,
                             'Execute atoum unit tests'
-                        ),
-                        array(
-                            array('--test-all'),
+                        ],
+                        [
+                            ['--test-all'],
                             null,
                             'DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead'
-                        ),
-                        array(
-                            array('-ft', '--force-terminal'),
+                        ],
+                        [
+                            ['-ft', '--force-terminal'],
                             null,
                             'Force output as in terminal'
-                        ),
-                        array(
-                            array('-af', '--autoloader-file'),
+                        ],
+                        [
+                            ['-af', '--autoloader-file'],
                             '<file>',
                             'Include autoloader <file> before executing each test method'
-                        ),
-                        array(
-                            array('-bf', '--bootstrap-file'),
+                        ],
+                        [
+                            ['-bf', '--bootstrap-file'],
                             '<file>',
                             'Include bootstrap <file> before executing each test method'
-                        ),
-                        array(
-                            array('-ulr', '--use-light-report'),
+                        ],
+                        [
+                            ['-ulr', '--use-light-report'],
                             null,
                             'Use "light" CLI report'
-                        ),
-                        array(
-                            array('-utr', '--use-tap-report'),
+                        ],
+                        [
+                            ['-utr', '--use-tap-report'],
                             null,
                             'Use TAP report'
-                        ),
-                        array(
-                            array('--debug'),
+                        ],
+                        [
+                            ['--debug'],
                             null,
                             'Enable debug mode'
-                        ),
-                        array(
-                            array('-xc', '--xdebug-config'),
+                        ],
+                        [
+                            ['-xc', '--xdebug-config'],
                             null,
                             'Set XDEBUG_CONFIG variable'
-                        ),
-                        array(
-                            array('-fivm', '--fail-if-void-methods'),
+                        ],
+                        [
+                            ['-fivm', '--fail-if-void-methods'],
                             null,
                             'Make the test suite fail if there is at least one void test method'
-                        ),
-                        array(
-                            array('-fism', '--fail-if-skipped-methods'),
+                        ],
+                        [
+                            ['-fism', '--fail-if-skipped-methods'],
                             null,
                             'Make the test suite fail if there is at least one skipped test method'
-                        ),
-                        array(
-                            array('-fmt', '--format'),
+                        ],
+                        [
+                            ['-fmt', '--format'],
                             '<xml|clover|html|treemap>',
                             'Coverage report format'
-                        ),
-                        array(
-                            array('-o', '--output'),
+                        ],
+                        [
+                            ['-o', '--output'],
                             '<path/to/file/or/directory>',
                             'Coverage report output path'
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->if($this->newTestedInstance($name = uniqid(), $adapter = new atoum\adapter()))
             ->then
@@ -225,188 +225,188 @@ class coverage extends atoum\test
                 ->object($this->testedInstance->getRunner())->isInstanceOf('mageekguy\atoum\runner')
                 ->variable($this->testedInstance->getScoreFile())->isNull()
                 ->array($this->testedInstance->getArguments())->isEmpty()
-                ->array($this->testedInstance->getHelp())->isEqualTo(array(
-                        array(
-                            array('-h', '--help'),
+                ->array($this->testedInstance->getHelp())->isEqualTo([
+                        [
+                            ['-h', '--help'],
                             null,
                             'Display this help'
-                        ),
-                        array(
-                            array('-c', '--configurations'),
+                        ],
+                        [
+                            ['-c', '--configurations'],
                             '<file>...',
                             'Use all configuration files <file>'
-                        ),
-                        array(
-                            array('-v', '--version'),
+                        ],
+                        [
+                            ['-v', '--version'],
                             null,
                             'Display version'
-                        ),
-                        array(
-                            array('+verbose', '++verbose'),
+                        ],
+                        [
+                            ['+verbose', '++verbose'],
                             null,
                             'Enable verbose mode'
-                        ),
-                        array(
-                            array('--init'),
+                        ],
+                        [
+                            ['--init'],
                             '<path/to/directory>',
                             sprintf($this->testedInstance->getLocale()->_('Create configuration and bootstrap files in <path/to/directory> (Optional, default: %s)'), $this->testedInstance->getDirectory())
-                        ),
-                        array(
-                            array('-p', '--php'),
+                        ],
+                        [
+                            ['-p', '--php'],
                             '<path/to/php/binary>',
                             'Path to PHP binary which must be used to run tests'
-                        ),
-                        array(
-                            array('-drt', '--default-report-title'),
+                        ],
+                        [
+                            ['-drt', '--default-report-title'],
                             '<string>',
                             'Define default report title with <string>'
-                        ),
-                        array(
-                            array('-sf', '--score-file'),
+                        ],
+                        [
+                            ['-sf', '--score-file'],
                             '<file>',
                             'Save score in file <file>'
-                        ),
-                        array(
-                            array('-mcn', '--max-children-number'),
+                        ],
+                        [
+                            ['-mcn', '--max-children-number'],
                             '<integer>',
                             'Maximum number of sub-processus which will be run simultaneously'
-                        ),
-                        array(
-                            array('-ncc', '--no-code-coverage'),
+                        ],
+                        [
+                            ['-ncc', '--no-code-coverage'],
                             null,
                             'Disable code coverage'
-                        ),
-                        array(
-                            array('-nccid', '--no-code-coverage-in-directories'),
+                        ],
+                        [
+                            ['-nccid', '--no-code-coverage-in-directories'],
                             '<directory>...',
                             'Disable code coverage in directories <directory>'
-                        ),
-                        array(
-                            array('-nccfns', '--no-code-coverage-for-namespaces'),
+                        ],
+                        [
+                            ['-nccfns', '--no-code-coverage-for-namespaces'],
                             '<namespace>...',
                             'Disable code coverage for namespaces <namespace>'
-                        ),
-                        array(
-                            array('-nccfc', '--no-code-coverage-for-classes'),
+                        ],
+                        [
+                            ['-nccfc', '--no-code-coverage-for-classes'],
                             '<class>...',
                             'Disable code coverage for classes <class>'
-                        ),
-                        array(
-                            array('-nccfm', '--no-code-coverage-for-methods'),
+                        ],
+                        [
+                            ['-nccfm', '--no-code-coverage-for-methods'],
                             '<method>...',
                             'Disable code coverage for methods <method>'
-                        ),
-                        array(
-                            array('-ebpc', '--enable-branch-and-path-coverage'),
+                        ],
+                        [
+                            ['-ebpc', '--enable-branch-and-path-coverage'],
                             null,
                             'Enable branch and path coverage'
-                        ),
-                        array(
-                            array('-f', '--files'),
+                        ],
+                        [
+                            ['-f', '--files'],
                             '<file>...',
                             'Execute all unit test files <file>'
-                        ),
-                        array(
-                            array('-d', '--directories'),
+                        ],
+                        [
+                            ['-d', '--directories'],
                             '<directory>...',
                             'Execute unit test files in all <directory>'
-                        ),
-                        array(
-                            array('-tfe', '--test-file-extensions'),
+                        ],
+                        [
+                            ['-tfe', '--test-file-extensions'],
                             '<extension>...',
                             'Execute unit test files with one of extensions <extension>'
-                        ),
-                        array(
-                            array('-g', '--glob'),
+                        ],
+                        [
+                            ['-g', '--glob'],
                             '<pattern>...',
                             'Execute unit test files which match <pattern>'
-                        ),
-                        array(
-                            array('-t', '--tags'),
+                        ],
+                        [
+                            ['-t', '--tags'],
                             '<tag>...',
                             'Execute only unit test with tags <tag>'
-                        ),
-                        array(
-                            array('-m', '--methods'),
+                        ],
+                        [
+                            ['-m', '--methods'],
                             '<class::method>...',
                             'Execute all <class::method>, * may be used as wildcard for class name or method name'
-                        ),
-                        array(
-                            array('-ns', '--namespaces'),
+                        ],
+                        [
+                            ['-ns', '--namespaces'],
                             '<namespace>...',
                             'Execute all classes in all namespaces <namespace>'
-                        ),
-                        array(
-                            array('-l', '--loop'),
+                        ],
+                        [
+                            ['-l', '--loop'],
                             null,
                             'Execute tests in an infinite loop'
-                        ),
-                        array(
-                            array('--test-it'),
+                        ],
+                        [
+                            ['--test-it'],
                             null,
                             'Execute atoum unit tests'
-                        ),
-                        array(
-                            array('--test-all'),
+                        ],
+                        [
+                            ['--test-all'],
                             null,
                             'DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead'
-                        ),
-                        array(
-                            array('-ft', '--force-terminal'),
+                        ],
+                        [
+                            ['-ft', '--force-terminal'],
                             null,
                             'Force output as in terminal'
-                        ),
-                        array(
-                            array('-af', '--autoloader-file'),
+                        ],
+                        [
+                            ['-af', '--autoloader-file'],
                             '<file>',
                             'Include autoloader <file> before executing each test method'
-                        ),
-                        array(
-                            array('-bf', '--bootstrap-file'),
+                        ],
+                        [
+                            ['-bf', '--bootstrap-file'],
                             '<file>',
                             'Include bootstrap <file> before executing each test method'
-                        ),
-                        array(
-                            array('-ulr', '--use-light-report'),
+                        ],
+                        [
+                            ['-ulr', '--use-light-report'],
                             null,
                             'Use "light" CLI report'
-                        ),
-                        array(
-                            array('-utr', '--use-tap-report'),
+                        ],
+                        [
+                            ['-utr', '--use-tap-report'],
                             null,
                             'Use TAP report'
-                        ),
-                        array(
-                            array('--debug'),
+                        ],
+                        [
+                            ['--debug'],
                             null,
                             'Enable debug mode'
-                        ),
-                        array(
-                            array('-xc', '--xdebug-config'),
+                        ],
+                        [
+                            ['-xc', '--xdebug-config'],
                             null,
                             'Set XDEBUG_CONFIG variable'
-                        ),
-                        array(
-                            array('-fivm', '--fail-if-void-methods'),
+                        ],
+                        [
+                            ['-fivm', '--fail-if-void-methods'],
                             null,
                             'Make the test suite fail if there is at least one void test method'
-                        ),
-                        array(
-                            array('-fism', '--fail-if-skipped-methods'),
+                        ],
+                        [
+                            ['-fism', '--fail-if-skipped-methods'],
                             null,
                             'Make the test suite fail if there is at least one skipped test method'
-                        ),
-                        array(
-                            array('-fmt', '--format'),
+                        ],
+                        [
+                            ['-fmt', '--format'],
                             '<xml|clover|html|treemap>',
                             'Coverage report format'
-                        ),
-                        array(
-                            array('-o', '--output'),
+                        ],
+                        [
+                            ['-o', '--output'],
                             '<path/to/file/or/directory>',
                             'Coverage report output path'
-                        )
-                    )
+                        ]
+                    ]
                 )
         ;
     }

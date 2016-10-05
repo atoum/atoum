@@ -3,10 +3,9 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\tests\duration;
 
 use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\tests\units;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\runner\tests;
 
 require_once __DIR__ . '/../../../../../../runner.php';
@@ -29,7 +28,7 @@ class cli extends atoum\test
                 ->object($field->getLocale())->isEqualTo(new locale())
                 ->variable($field->getValue())->isNull()
                 ->variable($field->getTestNumber())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
         ;
     }
 

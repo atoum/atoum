@@ -5,7 +5,6 @@ namespace mageekguy\atoum\tests\units\asserters;
 use mageekguy\atoum;
 use mageekguy\atoum\asserter;
 use mageekguy\atoum\asserters;
-use mageekguy\atoum\tools\diffs;
 use mageekguy\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';

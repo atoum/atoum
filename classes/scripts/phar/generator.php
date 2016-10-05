@@ -5,8 +5,8 @@ namespace mageekguy\atoum\scripts\phar;
 require_once __DIR__ . '/../../../constants.php';
 
 use mageekguy\atoum;
-use mageekguy\atoum\iterators;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\iterators;
 
 class generator extends atoum\script
 {
@@ -154,18 +154,18 @@ class generator extends atoum\script
 
         $phar = call_user_func($this->pharFactory, $pharFile);
 
-        $phar['versions'] = serialize(array('1' => atoum\version, 'current' => '1'));
+        $phar['versions'] = serialize(['1' => atoum\version, 'current' => '1']);
 
         $phar->setStub($stub);
         $phar->setMetadata(
-            array(
+            [
                 'version' => atoum\version,
                 'author' => atoum\author,
                 'support' => atoum\mail,
                 'repository' => atoum\repository,
                 'description' => $description,
                 'licence' => $licence
-            )
+            ]
         );
 
         $phar->buildFromIterator(new iterators\recursives\atoum\source($this->originDirectory, '1'));
@@ -198,7 +198,7 @@ class generator extends atoum\script
 
                     $script->help();
                 },
-                array('-h', '--help'),
+                ['-h', '--help'],
                 null,
                 'Display this help'
             )
@@ -210,7 +210,7 @@ class generator extends atoum\script
 
                     $script->setDestinationDirectory($values[0]);
                 },
-                array('-d', '--directory'),
+                ['-d', '--directory'],
                 '<directory>',
                 $this->locale->_('Destination directory <dir>')
             )

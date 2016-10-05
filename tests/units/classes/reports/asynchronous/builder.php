@@ -4,9 +4,8 @@ namespace mageekguy\atoum\tests\units\reports\asynchronous;
 
 use mageekguy\atoum;
 use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\report\fields\test;
 use mageekguy\atoum\report\fields\runner;
+use mageekguy\atoum\report\fields\test;
 use mageekguy\atoum\reports\asynchronous\builder as testedClass;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -55,7 +54,7 @@ class builder extends atoum\test
             ->then
                 ->object($report->getLocale())->isEqualTo(new atoum\locale())
                 ->object($report->getAdapter())->isEqualTo(new atoum\adapter())
-                ->array($report->getFields())->isEqualTo(array(
+                ->array($report->getFields())->isEqualTo([
                         new runner\php\path\cli(),
                         $phpVersionField,
                         new runner\duration\cli(),
@@ -71,7 +70,7 @@ class builder extends atoum\test
                         new test\run\cli(),
                         $durationField,
                         $memoryField
-                    )
+                    ]
                 )
         ;
     }

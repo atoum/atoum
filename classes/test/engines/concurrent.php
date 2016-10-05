@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\test\engines;
 
 use mageekguy\atoum;
-use mageekguy\atoum\test;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\test;
 
 class concurrent extends test\engine
 {

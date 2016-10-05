@@ -43,7 +43,7 @@ class cli extends atoum\test
             ->and($adapter->constant = function ($constant) {
                 return ($constant == 'STDOUT' ? uniqid() : null);
             })
-            ->and($adapter->fstat = array('mode' => 8592))
+            ->and($adapter->fstat = ['mode' => 8592])
             ->and($cli = new atoum\cli($adapter))
             ->then
                 ->boolean($cli->isTerminal())->isTrue()
@@ -67,7 +67,7 @@ class cli extends atoum\test
             ->and($adapter->constant = function ($constant) {
                 return ($constant == 'STDOUT' ? uniqid() : null);
             })
-            ->and($adapter->fstat = array('mode' => 0))
+            ->and($adapter->fstat = ['mode' => 0])
             ->and($cli = new atoum\cli($adapter))
             ->then
                 ->boolean($cli->isTerminal())->isFalse()
@@ -91,7 +91,7 @@ class cli extends atoum\test
             ->and($adapter->constant = function ($constant) {
                 return ($constant == 'STDOUT' ? uniqid() : null);
             })
-            ->and($adapter->fstat = array('mode' => 8592))
+            ->and($adapter->fstat = ['mode' => 8592])
             ->and($adapter->getenv = function ($variable) {
                 return ($variable != 'ANSICON');
             })
@@ -118,7 +118,7 @@ class cli extends atoum\test
             ->and($adapter->constant = function ($constant) {
                 return ($constant == 'STDOUT' ? uniqid() : null);
             })
-            ->and($adapter->fstat = array('mode' => 8592))
+            ->and($adapter->fstat = ['mode' => 8592])
             ->and($adapter->getenv = function ($variable) {
                 return ($variable == 'ANSICON');
             })

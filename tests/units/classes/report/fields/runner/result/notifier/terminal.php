@@ -4,8 +4,8 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\result\notifier;
 
 use mageekguy\atoum;
 use mageekguy\atoum\locale;
-use mageekguy\atoum\test\adapter;
 use mageekguy\atoum\report\fields\runner\result\notifier\terminal as testedClass;
+use mageekguy\atoum\test\adapter;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -30,7 +30,7 @@ class terminal extends atoum\test
                 ->variable($field->getFailNumber())->isNull()
                 ->variable($field->getErrorNumber())->isNull()
                 ->variable($field->getExceptionNumber())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
         ;
     }
 

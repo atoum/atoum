@@ -9,8 +9,8 @@ class iterator extends value
 {
     protected $key = null;
     protected $size = 0;
-    protected $values = array();
-    protected $skipedValues = array();
+    protected $values = [];
+    protected $skipedValues = [];
 
     public function __toString()
     {
@@ -221,9 +221,9 @@ class iterator extends value
     {
         $this->key = null;
         $this->size = 0;
-        $this->values = array();
+        $this->values = [];
         $this->parent = null;
-        $this->skipedValues = array();
+        $this->skipedValues = [];
 
         return $this;
     }

@@ -2,7 +2,6 @@
 
 namespace mageekguy\atoum\asserters;
 
-use mageekguy\atoum;
 use mageekguy\atoum\asserters\adapter\call;
 use mageekguy\atoum\asserters\adapter\exceptions;
 
@@ -52,7 +51,7 @@ class adapter extends call
 
     public function withoutAnyArgument()
     {
-        return $this->withAtLeastArguments(array());
+        return $this->withAtLeastArguments([]);
     }
 
     protected function adapterIsSet()

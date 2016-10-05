@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\result;
 
 use mageekguy\atoum;
-use mageekguy\atoum\locale;
 use mageekguy\atoum\adapter;
+use mageekguy\atoum\locale;
 use mageekguy\atoum\test;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -28,7 +28,7 @@ class notifier extends atoum\test
                 ->variable($field->getFailNumber())->isNull()
                 ->variable($field->getErrorNumber())->isNull()
                 ->variable($field->getExceptionNumber())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
             ->if($adapter = new adapter())
             ->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier($adapter))
             ->then

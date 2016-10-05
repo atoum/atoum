@@ -5,16 +5,16 @@ namespace mageekguy\atoum;
 class score
 {
     protected $passNumber = 0;
-    protected $failAssertions = array();
-    protected $exceptions = array();
-    protected $runtimeExceptions = array();
-    protected $errors = array();
-    protected $outputs = array();
-    protected $durations = array();
-    protected $memoryUsages = array();
-    protected $voidMethods = array();
-    protected $uncompletedMethods = array();
-    protected $skippedMethods = array();
+    protected $failAssertions = [];
+    protected $exceptions = [];
+    protected $runtimeExceptions = [];
+    protected $errors = [];
+    protected $outputs = [];
+    protected $durations = [];
+    protected $memoryUsages = [];
+    protected $voidMethods = [];
+    protected $uncompletedMethods = [];
+    protected $skippedMethods = [];
     protected $coverage = null;
 
     private static $failId = 0;
@@ -39,14 +39,14 @@ class score
     public function reset()
     {
         $this->passNumber = 0;
-        $this->failAssertions = array();
-        $this->exceptions = array();
-        $this->runtimeExceptions = array();
-        $this->errors = array();
-        $this->outputs = array();
-        $this->durations = array();
-        $this->memoryUsages = array();
-        $this->uncompletedMethods = array();
+        $this->failAssertions = [];
+        $this->exceptions = [];
+        $this->runtimeExceptions = [];
+        $this->errors = [];
+        $this->outputs = [];
+        $this->durations = [];
+        $this->memoryUsages = [];
+        $this->uncompletedMethods = [];
         $this->coverage->reset();
 
         return $this;
@@ -254,7 +254,7 @@ class score
 
     public function addFail($file, $class, $method, $line, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
     {
-        $this->failAssertions[] = array(
+        $this->failAssertions[] = [
             'id' => ++self::$failId,
             'case' => $case,
             'dataSetKey' => $dataSetKey,
@@ -265,14 +265,14 @@ class score
             'line' => $line,
             'asserter' => $asserter,
             'fail' => $reason
-        );
+        ];
 
         return self::$failId;
     }
 
     public function addException($file, $class, $method, $line, \exception $exception, $case = null, $dataSetKey = null, $dataSetProvider = null)
     {
-        $this->exceptions[] = array(
+        $this->exceptions[] = [
             'case' => $case,
             'dataSetKey' => $dataSetKey,
             'dataSetProvider' => $dataSetProvider,
@@ -281,7 +281,7 @@ class score
             'file' => $file,
             'line' => $line,
             'value' => (string) $exception
-        );
+        ];
 
         return $this;
     }
@@ -295,7 +295,7 @@ class score
 
     public function addError($file, $class, $method, $line, $type, $message, $errorFile = null, $errorLine = null, $case = null, $dataSetKey = null, $dataSetProvider = null)
     {
-        $this->errors[] = array(
+        $this->errors[] = [
             'case' => $case,
             'dataSetKey' => $dataSetKey,
             'dataSetProvider' => $dataSetProvider,
@@ -307,7 +307,7 @@ class score
             'message' => trim($message),
             'errorFile' => $errorFile,
             'errorLine' => $errorLine
-        );
+        ];
 
         return $this;
     }
@@ -315,11 +315,11 @@ class score
     public function addOutput($file, $class, $method, $output)
     {
         if ($output != '') {
-            $this->outputs[] = array(
+            $this->outputs[] = [
                 'class' => $class,
                 'method' => $method,
                 'value' => $output
-            );
+            ];
         }
 
         return $this;
@@ -328,12 +328,12 @@ class score
     public function addDuration($file, $class, $method, $duration)
     {
         if ($duration > 0) {
-            $this->durations[] = array(
+            $this->durations[] = [
                 'class' => $class,
                 'method' => $method,
                 'value' => $duration,
                 'path' => $file
-            );
+            ];
         }
 
         return $this;
@@ -342,11 +342,11 @@ class score
     public function addMemoryUsage($file, $class, $method, $memoryUsage)
     {
         if ($memoryUsage > 0) {
-            $this->memoryUsages[] = array(
+            $this->memoryUsages[] = [
                 'class' => $class,
                 'method' => $method,
                 'value' => $memoryUsage
-            );
+            ];
         }
 
         return $this;
@@ -354,37 +354,37 @@ class score
 
     public function addVoidMethod($file, $class, $method)
     {
-        $this->voidMethods[] = array(
+        $this->voidMethods[] = [
             'file' => $file,
             'class' => $class,
             'method' => $method
-        );
+        ];
 
         return $this;
     }
 
     public function addUncompletedMethod($file, $class, $method, $exitCode, $output)
     {
-        $this->uncompletedMethods[] = array(
+        $this->uncompletedMethods[] = [
             'file' => $file,
             'class' => $class,
             'method' => $method,
             'exitCode' => $exitCode,
             'output' => $output
-        );
+        ];
 
         return $this;
     }
 
     public function addSkippedMethod($file, $class, $method, $line, $message)
     {
-        $this->skippedMethods[] = array(
+        $this->skippedMethods[] = [
             'file' => $file,
             'class' => $class,
             'method' => $method,
             'line' => $line,
             'message' => $message
-        );
+        ];
 
         return $this;
     }
@@ -446,7 +446,7 @@ class score
 
     private static function getMethods(array $array)
     {
-        $methods = array();
+        $methods = [];
 
         foreach ($array as $value) {
             if (isset($methods[$value['class']]) === false || in_array($value['method'], $methods[$value['class']]) === false) {
@@ -459,7 +459,7 @@ class score
 
     private static function cleanAssertions(array $assertions)
     {
-        return array_map(array(__CLASS__, 'cleanAssertion'), array_values($assertions));
+        return array_map([__CLASS__, 'cleanAssertion'], array_values($assertions));
     }
 
     private static function cleanAssertion(array $assertion)

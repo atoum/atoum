@@ -5,10 +5,8 @@ namespace mageekguy\atoum\scripts;
 require_once __DIR__ . '/../../constants.php';
 
 use mageekguy\atoum;
-use mageekguy\atoum\cli;
-use mageekguy\atoum\php;
-use mageekguy\atoum\writers;
 use mageekguy\atoum\exceptions;
+use mageekguy\atoum\php;
 
 class coverage extends runner
 {
@@ -96,7 +94,7 @@ class coverage extends runner
 
                         $script->setReportFormat(current($values));
                     },
-                    array('-fmt', '--format'),
+                    ['-fmt', '--format'],
                     '<xml|clover|html|treemap>',
                     $this->locale->_('Coverage report format')
                 )
@@ -108,7 +106,7 @@ class coverage extends runner
 
                         $script->setReportOutputPath(current($values));
                     },
-                    array('-o', '--output'),
+                    ['-o', '--output'],
                     '<path/to/file/or/directory>',
                     $this->locale->_('Coverage report output path')
                 )

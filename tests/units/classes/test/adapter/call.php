@@ -5,9 +5,8 @@ namespace mageekguy\atoum\tests\units\test\adapter;
 require_once __DIR__ . '/../../../runner.php';
 
 use mageekguy\atoum;
-use mageekguy\atoum\test\adapter;
-use mageekguy\atoum\test\adapter\call\decorator;
 use mageekguy\atoum\test\adapter\call as testedClass;
+use mageekguy\atoum\test\adapter\call\decorator;
 
 class call extends atoum\test
 {
@@ -24,7 +23,7 @@ class call extends atoum\test
                 ->string($call->getFunction())->isEqualTo($function)
                 ->variable($call->getArguments())->isNull()
                 ->object($call->getDecorator())->isEqualTo(new decorator())
-            ->if($call = new testedClass($function = uniqid(), $arguments = array()))
+            ->if($call = new testedClass($function = uniqid(), $arguments = []))
             ->then
                 ->string($call->getFunction())->isEqualTo($function)
                 ->array($call->getArguments())->isEqualTo($arguments)
@@ -60,10 +59,10 @@ class call extends atoum\test
             ->if($call = new testedClass(uniqid()))
             ->then
                 ->boolean($call->isFullyQualified())->isFalse()
-            ->if($call = new testedClass(null, array()))
+            ->if($call = new testedClass(null, []))
             ->then
                 ->boolean($call->isFullyQualified())->isFalse()
-            ->if($call = new testedClass(uniqid(), array()))
+            ->if($call = new testedClass(uniqid(), []))
             ->then
                 ->boolean($call->isFullyQualified())->isTrue()
         ;
@@ -88,7 +87,7 @@ class call extends atoum\test
         $this
             ->if($call = new testedClass())
             ->then
-                ->object($call->setArguments($arguments = array()))->isIdenticalTo($call)
+                ->object($call->setArguments($arguments = []))->isIdenticalTo($call)
                 ->array($call->getArguments())->isEqualTo($arguments)
         ;
     }
@@ -100,7 +99,7 @@ class call extends atoum\test
             ->then
                 ->object($call->unsetArguments())->isIdenticalTo($call)
                 ->variable($call->getArguments())->isNull()
-            ->if($call->setArguments(array()))
+            ->if($call->setArguments([]))
             ->then
                 ->object($call->unsetArguments())->isIdenticalTo($call)
                 ->variable($call->getArguments())->isNull()
@@ -150,31 +149,23 @@ class call extends atoum\test
             ->then
                 ->boolean($call1->isEqualTo($call2))->isTrue()
                 ->boolean($call2->isEqualTo($call1))->isTrue()
-            ->if($call1 = new testedClass($function, array()))
+            ->if($call1 = new testedClass($function, []))
             ->then
                 ->boolean($call1->isEqualTo($call2))->isFalse()
                 ->boolean($call2->isEqualTo($call1))->isTrue()
-            ->if($call2 = new testedClass($function, array()))
+            ->if($call2 = new testedClass($function, []))
             ->then
                 ->boolean($call1->isEqualTo($call2))->isTrue()
                 ->boolean($call2->isEqualTo($call1))->isTrue()
-            ->if($call1 = new testedClass($function, array($argument = uniqid())))
-            ->then
-                ->boolean($call1->isEqualTo($call2))->isFalse()
-                ->boolean($call2->isEqualTo($call1))->isFalse()
-            ->if($call2 = new testedClass($function, array($argument)))
-            ->then
-                ->boolean($call1->isEqualTo($call2))->isTrue()
-                ->boolean($call2->isEqualTo($call1))->isTrue()
-            ->if($call1 = new testedClass($function, $arguments = array(uniqid(), uniqid())))
+            ->if($call1 = new testedClass($function, [$argument = uniqid()]))
             ->then
                 ->boolean($call1->isEqualTo($call2))->isFalse()
                 ->boolean($call2->isEqualTo($call1))->isFalse()
-            ->if($call2 = new testedClass($function, $arguments))
+            ->if($call2 = new testedClass($function, [$argument]))
             ->then
                 ->boolean($call1->isEqualTo($call2))->isTrue()
                 ->boolean($call2->isEqualTo($call1))->isTrue()
-            ->if($call1 = new testedClass($function, $arguments = array($arg1 = uniqid(), $arg2 = uniqid(), $arg3 = new \mock\object())))
+            ->if($call1 = new testedClass($function, $arguments = [uniqid(), uniqid()]))
             ->then
                 ->boolean($call1->isEqualTo($call2))->isFalse()
                 ->boolean($call2->isEqualTo($call1))->isFalse()
@@ -182,21 +173,29 @@ class call extends atoum\test
             ->then
                 ->boolean($call1->isEqualTo($call2))->isTrue()
                 ->boolean($call2->isEqualTo($call1))->isTrue()
-            ->if($call2 = new testedClass($function, array($arg1, $arg2, clone $arg3)))
-            ->then
-                ->boolean($call1->isEqualTo($call2))->isTrue()
-                ->boolean($call2->isEqualTo($call1))->isTrue()
-            ->if($call2 = new testedClass($function, array($arg3, $arg2, $arg1)))
+            ->if($call1 = new testedClass($function, $arguments = [$arg1 = uniqid(), $arg2 = uniqid(), $arg3 = new \mock\object()]))
             ->then
                 ->boolean($call1->isEqualTo($call2))->isFalse()
                 ->boolean($call2->isEqualTo($call1))->isFalse()
-            ->if($call1 = new testedClass($function = uniqid(), array($arg1 = uniqid(), $arg2 = uniqid(), $arg3 = new \mock\object())))
-            ->and($call2 = new testedClass($function, array($arg1, $arg2)))
+            ->if($call2 = new testedClass($function, $arguments))
+            ->then
+                ->boolean($call1->isEqualTo($call2))->isTrue()
+                ->boolean($call2->isEqualTo($call1))->isTrue()
+            ->if($call2 = new testedClass($function, [$arg1, $arg2, clone $arg3]))
+            ->then
+                ->boolean($call1->isEqualTo($call2))->isTrue()
+                ->boolean($call2->isEqualTo($call1))->isTrue()
+            ->if($call2 = new testedClass($function, [$arg3, $arg2, $arg1]))
+            ->then
+                ->boolean($call1->isEqualTo($call2))->isFalse()
+                ->boolean($call2->isEqualTo($call1))->isFalse()
+            ->if($call1 = new testedClass($function = uniqid(), [$arg1 = uniqid(), $arg2 = uniqid(), $arg3 = new \mock\object()]))
+            ->and($call2 = new testedClass($function, [$arg1, $arg2]))
             ->then
                 ->boolean($call1->isEqualTo($call2))->isFalse()
                 ->boolean($call2->isEqualTo($call1))->isTrue()
             ->if($call1 = new testedClass($function))
-            ->and($call2 = new testedClass($function, array($object = new \mock\object())))
+            ->and($call2 = new testedClass($function, [$object = new \mock\object()]))
             ->then
                 ->boolean($call1->isEqualTo($call2))->isTrue()
                 ->boolean($call2->isEqualTo($call1))->isFalse()
@@ -228,31 +227,23 @@ class call extends atoum\test
             ->then
                 ->boolean($call1->isIdenticalTo($call2))->isTrue()
                 ->boolean($call2->isIdenticalTo($call1))->isTrue()
-            ->if($call1 = new testedClass($function, array()))
+            ->if($call1 = new testedClass($function, []))
             ->then
                 ->boolean($call1->isIdenticalTo($call2))->isFalse()
                 ->boolean($call2->isIdenticalTo($call1))->isTrue()
-            ->if($call2 = new testedClass($function, array()))
+            ->if($call2 = new testedClass($function, []))
             ->then
                 ->boolean($call1->isIdenticalTo($call2))->isTrue()
                 ->boolean($call2->isIdenticalTo($call1))->isTrue()
-            ->if($call1 = new testedClass($function, array($argument = uniqid())))
-            ->then
-                ->boolean($call1->isIdenticalTo($call2))->isFalse()
-                ->boolean($call2->isIdenticalTo($call1))->isFalse()
-            ->if($call2 = new testedClass($function, array($argument)))
-            ->then
-                ->boolean($call1->isIdenticalTo($call2))->isTrue()
-                ->boolean($call2->isIdenticalTo($call1))->isTrue()
-            ->if($call1 = new testedClass($function, $arguments = array(uniqid(), uniqid())))
+            ->if($call1 = new testedClass($function, [$argument = uniqid()]))
             ->then
                 ->boolean($call1->isIdenticalTo($call2))->isFalse()
                 ->boolean($call2->isIdenticalTo($call1))->isFalse()
-            ->if($call2 = new testedClass($function, $arguments))
+            ->if($call2 = new testedClass($function, [$argument]))
             ->then
                 ->boolean($call1->isIdenticalTo($call2))->isTrue()
                 ->boolean($call2->isIdenticalTo($call1))->isTrue()
-            ->if($call1 = new testedClass($function, $arguments = array($arg1 = uniqid(), $arg2 = uniqid(), $arg3 = new \mock\object())))
+            ->if($call1 = new testedClass($function, $arguments = [uniqid(), uniqid()]))
             ->then
                 ->boolean($call1->isIdenticalTo($call2))->isFalse()
                 ->boolean($call2->isIdenticalTo($call1))->isFalse()
@@ -260,16 +251,24 @@ class call extends atoum\test
             ->then
                 ->boolean($call1->isIdenticalTo($call2))->isTrue()
                 ->boolean($call2->isIdenticalTo($call1))->isTrue()
-            ->if($call2 = new testedClass($function, array($arg1, $arg2, clone $arg3)))
+            ->if($call1 = new testedClass($function, $arguments = [$arg1 = uniqid(), $arg2 = uniqid(), $arg3 = new \mock\object()]))
             ->then
                 ->boolean($call1->isIdenticalTo($call2))->isFalse()
                 ->boolean($call2->isIdenticalTo($call1))->isFalse()
-            ->if($call2 = new testedClass($function, array($arg3, $arg2, $arg1)))
+            ->if($call2 = new testedClass($function, $arguments))
+            ->then
+                ->boolean($call1->isIdenticalTo($call2))->isTrue()
+                ->boolean($call2->isIdenticalTo($call1))->isTrue()
+            ->if($call2 = new testedClass($function, [$arg1, $arg2, clone $arg3]))
+            ->then
+                ->boolean($call1->isIdenticalTo($call2))->isFalse()
+                ->boolean($call2->isIdenticalTo($call1))->isFalse()
+            ->if($call2 = new testedClass($function, [$arg3, $arg2, $arg1]))
             ->then
                 ->boolean($call1->isIdenticalTo($call2))->isFalse()
                 ->boolean($call2->isIdenticalTo($call1))->isFalse()
             ->if($call1 = new testedClass($function))
-            ->and($call2 = new testedClass($function, array($object = new \mock\object())))
+            ->and($call2 = new testedClass($function, [$object = new \mock\object()]))
             ->then
                 ->boolean($call1->isIdenticalTo($call2))->isTrue()
                 ->boolean($call2->isIdenticalTo($call1))->isFalse()

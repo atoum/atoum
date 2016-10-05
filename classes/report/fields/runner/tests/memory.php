@@ -13,7 +13,7 @@ abstract class memory extends report\field
 
     public function __construct()
     {
-        parent::__construct(array(runner::runStop));
+        parent::__construct([runner::runStop]);
     }
 
     public function getValue()

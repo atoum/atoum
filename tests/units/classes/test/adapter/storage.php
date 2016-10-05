@@ -66,7 +66,7 @@ class storage extends atoum\test
                 ->object($storage->getIterator())->isEqualTo(new \arrayIterator())
             ->if($storage->add($adapter = new atoum\test\adapter()))
             ->then
-                ->object($storage->getIterator())->isEqualTo(new \arrayIterator(array($adapter)))
+                ->object($storage->getIterator())->isEqualTo(new \arrayIterator([$adapter]))
         ;
     }
 }

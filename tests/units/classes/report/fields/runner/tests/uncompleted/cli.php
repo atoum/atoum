@@ -3,11 +3,9 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\tests\uncompleted;
 
 use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\tests\units;
-use mock\mageekguy\atoum as mock;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\runner\tests;
 
 require_once __DIR__ . '/../../../../../../runner.php';
@@ -32,7 +30,7 @@ class cli extends atoum\test
                 ->object($field->getOutputColorizer())->isEqualTo(new colorizer())
                 ->object($field->getLocale())->isEqualTo(new locale())
                 ->variable($field->getRunner())->isNull()
-                ->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+                ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
         ;
     }
 
@@ -150,7 +148,7 @@ class cli extends atoum\test
     {
         $this
             ->if($score = new \mock\mageekguy\atoum\runner\score())
-            ->and($this->calling($score)->getUncompletedMethods = array())
+            ->and($this->calling($score)->getUncompletedMethods = [])
             ->and($runner = new atoum\runner())
             ->and($runner->setScore($score))
             ->and($defaultField = new tests\uncompleted\cli())
@@ -177,26 +175,26 @@ class cli extends atoum\test
             ->if($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($customField)->isEmpty()
-            ->if($score->getMockController()->getUncompletedMethods = $allUncompletedMethods = array(
-                        array(
+            ->if($score->getMockController()->getUncompletedMethods = $allUncompletedMethods = [
+                        [
                             'class' => $class = uniqid(),
                             'method' => $method = uniqid(),
                             'exitCode' => $exitCode = rand(1, PHP_INT_MAX),
                             'output' => $output = uniqid()
-                        ),
-                        array(
+                        ],
+                        [
                             'class' => $otherClass = uniqid(),
                             'method' => $otherMethod = uniqid(),
                             'exitCode' => $otherExitCode = rand(1, PHP_INT_MAX),
                             'output' => ($otherOutputLine1 = uniqid()) . PHP_EOL . ($otherOutputLine2 = uniqid())
-                        ),
-                        array(
+                        ],
+                        [
                             'class' => $anotherClass = uniqid(),
                             'method' => $anotherMethod = uniqid(),
                             'exitCode' => $anotherExitCode = rand(1, PHP_INT_MAX),
                             'output' => ''
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($defaultField = new tests\uncompleted\cli())
             ->and($customField = new tests\uncompleted\cli())

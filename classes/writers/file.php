@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\writers;
 
 use mageekguy\atoum;
-use mageekguy\atoum\reports;
 use mageekguy\atoum\exceptions;
 use mageekguy\atoum\report\writers;
+use mageekguy\atoum\reports;
 
 class file extends atoum\writer implements writers\realtime, writers\asynchronous
 {

@@ -21,7 +21,7 @@ class controller extends fs\controller
 
     public function getContents()
     {
-        return array();
+        return [];
     }
 
     public function mkdir($path, $mode, $options)

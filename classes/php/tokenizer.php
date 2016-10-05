@@ -2,9 +2,8 @@
 
 namespace mageekguy\atoum\php;
 
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\php\tokenizer\token;
 use mageekguy\atoum\php\tokenizer\iterators;
+use mageekguy\atoum\php\tokenizer\token;
 
 class tokenizer implements \iteratorAggregate
 {
@@ -262,7 +261,7 @@ class tokenizer implements \iteratorAggregate
         }
     }
 
-    private function nextTokenIs($tokenName, array $skipedTags = array(T_WHITESPACE, T_COMMENT, T_INLINE_HTML))
+    private function nextTokenIs($tokenName, array $skipedTags = [T_WHITESPACE, T_COMMENT, T_INLINE_HTML])
     {
         $key = $this->tokens->key() + 1;
 

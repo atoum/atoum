@@ -2,8 +2,6 @@
 
 namespace mageekguy\atoum\test\data;
 
-use mageekguy\atoum\test\data\provider;
-
 class set extends provider\aggregator
 {
     protected $provider;

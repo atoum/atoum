@@ -5,7 +5,6 @@ namespace mageekguy\atoum\tests\units\scripts\builder\vcs;
 use mageekguy\atoum;
 use mageekguy\atoum\mock;
 use mageekguy\atoum\mock\stream;
-use mageekguy\atoum\scripts\builder\vcs;
 
 require_once __DIR__ . '/../../../../runner.php';
 
@@ -150,7 +149,7 @@ class svn extends atoum\test
                 $this->testedInstance->setRepositoryUrl($repositoryUrl = uniqid()),
                 $adapter->svn_auth_set_parameter = function () {
                 },
-                $adapter->svn_log = array(),
+                $adapter->svn_log = [],
                 $adapter->resetCalls()
             )
             ->then
@@ -169,7 +168,7 @@ class svn extends atoum\test
                     ->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
             ->if(
                 $adapter->resetCalls(),
-                $adapter->svn_log = array(uniqid() => uniqid())
+                $adapter->svn_log = [uniqid() => uniqid()]
             )
             ->then
                 ->array($this->testedInstance->getNextRevisions())->isEmpty()
@@ -177,14 +176,14 @@ class svn extends atoum\test
                     ->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
             ->if(
                 $adapter->resetCalls(),
-                $adapter->svn_log = array(
-                    array('rev' => $revision1 = uniqid()),
-                    array('rev' => $revision2 = uniqid()),
-                    array('rev' => $revision3 = uniqid())
-                )
+                $adapter->svn_log = [
+                    ['rev' => $revision1 = uniqid()],
+                    ['rev' => $revision2 = uniqid()],
+                    ['rev' => $revision3 = uniqid()]
+                ]
             )
             ->then
-                ->array($this->testedInstance->getNextRevisions())->isEqualTo(array($revision1, $revision2, $revision3))
+                ->array($this->testedInstance->getNextRevisions())->isEqualTo([$revision1, $revision2, $revision3])
                 ->adapter($adapter)->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
         ;
     }

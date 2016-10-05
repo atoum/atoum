@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\tests\skipped;
 
 use mageekguy\atoum;
-use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\report\fields\runner\tests\skipped\cli as testedClass;
 
 require __DIR__ . '/../../../../../../runner.php';
@@ -90,7 +90,7 @@ class cli extends atoum\test
     {
         $this
             ->if($score = new \mock\mageekguy\atoum\runner\score())
-            ->and($this->calling($score)->getSkippedMethods = array())
+            ->and($this->calling($score)->getSkippedMethods = [])
             ->and($runner = new atoum\runner())
             ->and($runner->setScore($score))
             ->and($defaultField = new testedClass())
@@ -116,23 +116,23 @@ class cli extends atoum\test
             ->if($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($customField)->isEmpty()
-            ->if($score->getMockController()->getSkippedMethods = $allSkippedMethods = array(
-                        array(
+            ->if($score->getMockController()->getSkippedMethods = $allSkippedMethods = [
+                        [
                             'class' => $class = uniqid(),
                             'method' => $method = uniqid(),
                             'message' => $message = uniqid()
-                        ),
-                        array(
+                        ],
+                        [
                             'class' => $otherClass = uniqid(),
                             'method' => $otherMethod = uniqid(),
                             'message' => $otherMessage = uniqid()
-                        ),
-                        array(
+                        ],
+                        [
                             'class' => $anotherClass = uniqid(),
                             'method' => $anotherMethod = uniqid(),
                             'message' => $anotherMessage = uniqid()
-                        )
-                    )
+                        ]
+                    ]
                 )
             ->and($defaultField = new testedClass())
             ->and($customField = new testedClass())

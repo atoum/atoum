@@ -11,9 +11,9 @@ class resolver
     const defaultNamespace = 'mageekguy\atoum\asserters';
 
     protected $baseClass = '';
-    protected $namespaces = array();
+    protected $namespaces = [];
     private $analyzer;
-    private $resolved = array();
+    private $resolved = [];
 
     public function __construct($baseClass = null, $namespace = null, analyzer $analyzer = null)
     {

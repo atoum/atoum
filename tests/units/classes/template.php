@@ -466,13 +466,13 @@ class template extends atoum\test
                 ->array($this->testedInstance->getChildren())->isEmpty()
             ->if($this->testedInstance->addChild($childTemplate = new atoum\template()))
             ->then
-                ->array($this->testedInstance->getChildren())->isIdenticalTo(array($childTemplate))
+                ->array($this->testedInstance->getChildren())->isIdenticalTo([$childTemplate])
             ->if($this->testedInstance->addChild($otherChildTemplate = new atoum\template()))
             ->then
-                ->array($this->testedInstance->getChildren())->isIdenticalTo(array($childTemplate, $otherChildTemplate))
+                ->array($this->testedInstance->getChildren())->isIdenticalTo([$childTemplate, $otherChildTemplate])
             ->if($childTemplate->addChild($littleChildTemplate = new atoum\template()))
             ->then
-                ->array($this->testedInstance->getChildren())->isIdenticalTo(array($childTemplate, $otherChildTemplate))
+                ->array($this->testedInstance->getChildren())->isIdenticalTo([$childTemplate, $otherChildTemplate])
         ;
     }
 
@@ -484,21 +484,21 @@ class template extends atoum\test
                 ->boolean($this->testedInstance->hasChildren())->isFalse()
                 ->object($this->testedInstance->addChild($childTemplate = new atoum\template()))->isTestedInstance
                 ->object($childTemplate->getParent())->isTestedInstance
-                ->array($this->testedInstance->getChildren())->isIdenticalTo(array($childTemplate))
+                ->array($this->testedInstance->getChildren())->isIdenticalTo([$childTemplate])
                 ->object($this->testedInstance->addChild($childTemplate))->isTestedInstance
                 ->object($childTemplate->getParent())->isTestedInstance
-                ->array($this->testedInstance->getChildren())->isIdenticalTo(array($childTemplate))
+                ->array($this->testedInstance->getChildren())->isIdenticalTo([$childTemplate])
             ->if(
                 $otherTemplate = new atoum\template(),
                 $otherTemplate->addChild($otherChildTemplate = new atoum\template())
             )
             ->then
-                ->array($otherTemplate->getChildren())->isIdenticalTo(array($otherChildTemplate))
+                ->array($otherTemplate->getChildren())->isIdenticalTo([$otherChildTemplate])
                 ->object($otherChildTemplate->getParent())->isIdenticalTo($otherTemplate)
                 ->object($this->testedInstance->addChild($otherChildTemplate))->isTestedInstance
                 ->array($otherTemplate->getChildren())->isEmpty()
                 ->object($otherChildTemplate->getParent())->isTestedInstance
-                ->array($this->testedInstance->getChildren())->isIdenticalTo(array($childTemplate, $otherChildTemplate))
+                ->array($this->testedInstance->getChildren())->isIdenticalTo([$childTemplate, $otherChildTemplate])
             ->if(
                 $this->newTestedInstance,
                 $templateWithId = new atoum\template\tag(uniqid()),
@@ -508,9 +508,9 @@ class template extends atoum\test
             ->then
                 ->boolean($this->testedInstance->hasChildren())->isFalse()
                 ->object($this->testedInstance->addChild($templateWithId))->isTestedInstance
-                ->array($this->testedInstance->getChildren())->isIdenticalTo(array($templateWithId))
+                ->array($this->testedInstance->getChildren())->isIdenticalTo([$templateWithId])
                 ->object($this->testedInstance->addChild($templateWithId))->isTestedInstance
-                ->array($this->testedInstance->getChildren())->isIdenticalTo(array($templateWithId))
+                ->array($this->testedInstance->getChildren())->isIdenticalTo([$templateWithId])
                 ->exception(function ($test) use ($templateWithSameId) {
                     $test->testedInstance->addChild($templateWithSameId);
                 }
@@ -529,7 +529,7 @@ class template extends atoum\test
             )
             ->then
                 ->object($childTemplate->getParent())->isTestedInstance
-                ->array($this->testedInstance->getChildren())->isIdenticalTo(array($childTemplate))
+                ->array($this->testedInstance->getChildren())->isIdenticalTo([$childTemplate])
                 ->object($this->testedInstance->deleteChild($childTemplate))->isTestedInstance
                 ->variable($childTemplate->getParent())->isNull()
                 ->array($this->testedInstance->getChildren())->isEmpty()
@@ -634,7 +634,7 @@ class template extends atoum\test
             ->then
                 ->string($this->testedInstance->getData())->isEqualTo($data)
                 ->string($childTemplate->getData())->isEqualTo($childData)
-                ->array($this->testedInstance->getChildren())->isIdenticalTo(array($childTemplate))
+                ->array($this->testedInstance->getChildren())->isIdenticalTo([$childTemplate])
                 ->object($this->testedInstance->build())->isTestedInstance
                 ->string($this->testedInstance->getData())->isEqualTo($data . $childData)
                 ->string($childTemplate->getData())->isEqualTo($childData)

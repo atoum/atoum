@@ -124,7 +124,7 @@ class dateInterval extends object
         $date1 = new \dateTime();
         $date2 = clone $date1;
 
-        return array($date1->add($this->value), $date2->add($interval));
+        return [$date1->add($this->value), $date2->add($interval)];
     }
 
     protected static function isDateInterval($value)

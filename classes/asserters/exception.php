@@ -130,7 +130,7 @@ class exception extends object
 
     protected function getMessageAsserter()
     {
-        return $this->generator->__call('phpString', array($this->valueIsSet()->value->getMessage()));
+        return $this->generator->__call('phpString', [$this->valueIsSet()->value->getMessage()]);
     }
 
     protected function check($value, $method)

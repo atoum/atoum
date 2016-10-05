@@ -8,7 +8,7 @@ use mageekguy\atoum\writer\decorator
 abstract class writer
 {
     protected $adapter = null;
-    protected $decorators = array();
+    protected $decorators = [];
 
     public function __construct(adapter $adapter = null)
     {
@@ -46,7 +46,7 @@ abstract class writer
 
     public function removeDecorators()
     {
-        $this->decorators = array();
+        $this->decorators = [];
 
         return $this;
     }

@@ -59,7 +59,7 @@ class decorator extends atoum
                     '-Expected' . PHP_EOL .
                     '+Actual' . PHP_EOL .
                     '@@ -4 +4 @@' . PHP_EOL .
-                    '-4'. PHP_EOL .
+                    '-4' . PHP_EOL .
                     '+6'
                 )
 
@@ -72,7 +72,7 @@ class decorator extends atoum
                     '-Expected' . PHP_EOL .
                     '+Actual' . PHP_EOL .
                     '@@ -4 +4,2 @@' . PHP_EOL .
-                    '-4'. PHP_EOL .
+                    '-4' . PHP_EOL .
                     '+6' . PHP_EOL .
                     '+7'
                 )
