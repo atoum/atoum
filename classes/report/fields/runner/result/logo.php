@@ -2,20 +2,17 @@
 
 namespace mageekguy\atoum\report\fields\runner\result;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\report,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer
-;
+use mageekguy\atoum;
+use mageekguy\atoum\report;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\cli\colorizer;
 
 class logo extends cli
 {
-	public function __toString()
-	{
-		if ($this->success)
-		{
-			return "
+    public function __toString()
+    {
+        if ($this->success) {
+            return "
               \033[48;5;16m  \033[0m                                 \033[48;5;16m  \033[0m
             \033[48;5;16m    \033[0m                                 \033[48;5;16m   \033[0m
             \033[48;5;16m  \033[48;5;231m \033[48;5;120m \033[48;5;16m  \033[0m                             \033[48;5;16m  \033[48;5;120m \033[48;5;231m \033[48;5;16m \033[0m
@@ -34,10 +31,8 @@ class logo extends cli
                            \033[48;5;16m  \033[48;5;83m       \033[48;5;16m  \033[0m
                              \033[48;5;16m       \033[0m
             \033[0m" . PHP_EOL;
-		}
-		else
-		{
-			return "
+        } else {
+            return "
               \033[48;5;16m  \033[0m                                 \033[48;5;16m  \033[0m
             \033[48;5;16m    \033[0m                                 \033[48;5;16m   \033[0m
             \033[48;5;16m  \033[48;5;231m \033[48;5;211m \033[48;5;16m  \033[0m                             \033[48;5;16m  \033[48;5;211m \033[48;5;231m \033[48;5;16m \033[0m
@@ -56,6 +51,6 @@ class logo extends cli
                            \033[48;5;16m  \033[48;5;197m \033[48;5;197m \033[48;5;197m \033[48;5;197m \033[48;5;197m \033[48;5;197m \033[48;5;197m \033[48;5;16m  \033[0m
                              \033[48;5;16m       \033[0m
             \033[0m" . PHP_EOL;
-		}
-	}
+        }
+    }
 }

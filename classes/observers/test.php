@@ -2,8 +2,9 @@
 
 namespace mageekguy\atoum\observers;
 
-use
-	mageekguy\atoum
+use mageekguy\atoum
 ;
 
-interface test extends atoum\observer {}
+interface test extends atoum\observer
+{
+}

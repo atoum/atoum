@@ -2,24 +2,23 @@
 
 namespace mageekguy\atoum\scripts\treemap\analyzers;
 
-use
-	mageekguy\atoum\scripts\treemap\analyzer
+use mageekguy\atoum\scripts\treemap\analyzer
 ;
 
 class size implements analyzer
 {
-	public function getMetricName()
-	{
-		return 'size';
-	}
+    public function getMetricName()
+    {
+        return 'size';
+    }
 
-	public function getMetricLabel()
-	{
-		return 'Size';
-	}
+    public function getMetricLabel()
+    {
+        return 'Size';
+    }
 
-	public function getMetricFromFile(\splFileInfo $file)
-	{
-		return $file->getSize();
-	}
+    public function getMetricFromFile(\splFileInfo $file)
+    {
+        return $file->getSize();
+    }
 }

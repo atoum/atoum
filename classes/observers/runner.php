@@ -2,8 +2,9 @@
 
 namespace mageekguy\atoum\observers;
 
-use
-	mageekguy\atoum
+use mageekguy\atoum
 ;
 
-interface runner extends atoum\observer {}
+interface runner extends atoum\observer
+{
+}

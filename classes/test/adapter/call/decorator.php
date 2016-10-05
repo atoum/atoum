@@ -2,56 +2,50 @@
 
 namespace mageekguy\atoum\test\adapter\call;
 
-use
-	mageekguy\atoum\test\adapter\call,
-	mageekguy\atoum\test\adapter\call\arguments
-;
+use mageekguy\atoum\test\adapter\call;
+use mageekguy\atoum\test\adapter\call\arguments;
 
 class decorator
 {
-	protected $argumentsDecorator = null;
+    protected $argumentsDecorator = null;
 
-	public function __construct()
-	{
-		$this->setArgumentsDecorator();
-	}
+    public function __construct()
+    {
+        $this->setArgumentsDecorator();
+    }
 
-	public function getArgumentsDecorator()
-	{
-		return $this->argumentsDecorator;
-	}
+    public function getArgumentsDecorator()
+    {
+        return $this->argumentsDecorator;
+    }
 
-	public function setArgumentsDecorator(arguments\decorator $decorator = null)
-	{
-		$this->argumentsDecorator = $decorator ?: new arguments\decorator();
+    public function setArgumentsDecorator(arguments\decorator $decorator = null)
+    {
+        $this->argumentsDecorator = $decorator ?: new arguments\decorator();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function decorate(call $call)
-	{
-		$string = '';
+    public function decorate(call $call)
+    {
+        $string = '';
 
-		$function = $call->getFunction();
+        $function = $call->getFunction();
 
-		if ($function !== null)
-		{
-			$string = $function . '(';
+        if ($function !== null) {
+            $string = $function . '(';
 
-			$arguments = $call->getArguments();
+            $arguments = $call->getArguments();
 
-			if ($arguments === null)
-			{
-				$string .= '*';
-			}
-			else
-			{
-				$string .= $this->argumentsDecorator->decorate($call->getArguments());
-			}
+            if ($arguments === null) {
+                $string .= '*';
+            } else {
+                $string .= $this->argumentsDecorator->decorate($call->getArguments());
+            }
 
-			$string .= ')';
-		}
+            $string .= ')';
+        }
 
-		return $string;
-	}
+        return $string;
+    }
 }

@@ -2,13 +2,12 @@
 
 namespace mageekguy\atoum\test;
 
-use
-	mageekguy\atoum
+use mageekguy\atoum
 ;
 
 abstract class engine
 {
-	public abstract function isAsynchronous();
-	public abstract function run(atoum\test $test);
-	public abstract function getScore();
+    abstract public function isAsynchronous();
+    abstract public function run(atoum\test $test);
+    abstract public function getScore();
 }
