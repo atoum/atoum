@@ -33,6 +33,7 @@ class runner extends atoum\script\configurable
 
 	protected static $autorunner = true;
 	protected static $runnerFile = null;
+	protected static $configurationCallables = array();
 
 	public function __construct($name, atoum\adapter $adapter = null, atoum\scripts\runner\looper $looper = null)
 	{
@@ -245,6 +246,41 @@ class runner extends atoum\script\configurable
 		$runner = $this->runner;
 
 		return $this->includeConfigFile($path, function($path) use ($script, $runner) { include_once($path); });
+	}
+
+	public function useConfigurationCallable(\closure $callback)
+	{
+		$script = call_user_func($this->configuratorFactory, $this);
+		$runner = $this->runner;
+		$errors = array();
+
+		$this->adapter->set_error_handler(function($error, $message, $file, $line, $context) use (&$errors) {
+			foreach (array_reverse(debug_backtrace()) as $trace)
+			{
+				if (isset($trace['file']) === true && $trace['file'] === __DIR__)
+				{
+					$file = __DIR__;
+					$line = $trace['line'];
+
+					break;
+				}
+			}
+
+			$errors[] = array($error, $message, $file, $line, $context);
+		});
+
+		$callback($script, $runner);
+
+		$this->adapter->restore_error_handler();
+
+		if (sizeof($errors) > 0)
+		{
+			list($error, $message, $file, $line, $context) = $errors[0];
+
+			throw new exceptions\runtime('Unable to configure runner. ' . atoum\asserters\error::getAsString($error) . ': ' . $message . ' in ' . $file . ' on line ' . $line);
+		}
+
+		return $this;
 	}
 
 	public function testIt()
@@ -683,12 +719,33 @@ class runner extends atoum\script\configurable
 
 		static::$autorunner = new static($name);
 
+		foreach (static::$configurationCallables as $callable) {
+			try
+			{
+				static::$autorunner->useConfigurationCallable($callable);
+			}
+			catch (\exception $exception)
+			{
+				static::$autorunner->writeError($exception->getMessage());
+
+				static::$autorunner = null;
+
+				exit($exception->getCode());
+			}
+
+		}
+
 		return static::$autorunner;
 	}
 
 	public static function disableAutorun()
 	{
 		static::$autorunner = false;
+	}
+
+	public static function addConfigurationCallable(callable $callable)
+	{
+		static::$configurationCallables[] = $callable;
 	}
 
 	protected function setArgumentHandlers()
