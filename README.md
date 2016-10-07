@@ -158,7 +158,7 @@ Should you wish to monitor the coverage rate of your code by the unit tests, the
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal:
 
 ```sh
-$ php -v | grep -oi 'xdebug v2.2.[0-9]*'
+$ php -v | grep -oi 'xdebug'
 ```
 
 If `Xdebug v2.2.x` or equivalent gets displayed, then the module is properly installed.
