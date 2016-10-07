@@ -61,7 +61,7 @@ class coverage implements \countable, \serializable
                 $this->branches,
                 $this->excludedClasses,
                 $this->excludedNamespaces,
-                $this->excludedDirectories
+                $this->excludedDirectories,
             ]
         );
     }
@@ -177,7 +177,7 @@ class coverage implements \countable, \serializable
                                 }
 
                                 if (isset($data[$declaringClassFile]) === true) {
-                                    for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++) {
+                                    for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; ++$line) {
                                         if (isset($data[$declaringClassFile]['lines'][$line]) === true && (isset($this->methods[$declaringClassName][$method->getName()][$line]) === false || $this->methods[$declaringClassName][$method->getName()][$line] < $data[$declaringClassFile][$line])) {
                                             $this->methods[$declaringClassName][$method->getName()][$line] = $data[$declaringClassFile]['lines'][$line];
                                         }
@@ -288,11 +288,11 @@ class coverage implements \countable, \serializable
                 foreach ($methods as $lines) {
                     foreach ($lines as $call) {
                         if ($call >= -1) {
-                            $totalLines++;
+                            ++$totalLines;
                         }
 
                         if ($call === 1) {
-                            $coveredLines++;
+                            ++$coveredLines;
                         }
                     }
                 }
@@ -317,10 +317,10 @@ class coverage implements \countable, \serializable
             foreach ($this->paths as $methods) {
                 foreach ($methods as $method) {
                     foreach ($method as $path) {
-                        $totalPaths++;
+                        ++$totalPaths;
 
                         if ($path['hit'] === 1) {
-                            $coveredPaths++;
+                            ++$coveredPaths;
                         }
                     }
                 }
@@ -346,10 +346,10 @@ class coverage implements \countable, \serializable
                 foreach ($methods as $method) {
                     foreach ($method as $node) {
                         foreach ($node['out'] as $index => $out) {
-                            $totalBranches++;
+                            ++$totalBranches;
 
                             if ($node['out_hit'][$index] === 1) {
-                                $coveredBranches++;
+                                ++$coveredBranches;
                             }
                         }
                     }
@@ -375,11 +375,11 @@ class coverage implements \countable, \serializable
             foreach ($this->methods[$class] as $lines) {
                 foreach ($lines as $call) {
                     if ($call >= -1) {
-                        $totalLines++;
+                        ++$totalLines;
                     }
 
                     if ($call === 1) {
-                        $coveredLines++;
+                        ++$coveredLines;
                     }
                 }
             }
@@ -402,10 +402,10 @@ class coverage implements \countable, \serializable
 
             foreach ($this->paths[$class] as $method) {
                 foreach ($method as $path) {
-                    $totalPaths++;
+                    ++$totalPaths;
 
                     if ($path['hit'] === 1) {
-                        $coveredPaths++;
+                        ++$coveredPaths;
                     }
                 }
             }
@@ -428,10 +428,10 @@ class coverage implements \countable, \serializable
 
             foreach ($this->branches[$class] as $method) {
                 foreach ($method as $path) {
-                    $totalPaths++;
+                    ++$totalPaths;
 
                     if ($path['hit'] === 1) {
-                        $coveredPaths++;
+                        ++$coveredPaths;
                     }
                 }
             }
@@ -493,7 +493,7 @@ class coverage implements \countable, \serializable
             foreach ($this->methods[$class] as $lines) {
                 foreach ($lines as $call) {
                     if ($call >= -1) {
-                        $coverableLines++;
+                        ++$coverableLines;
                     }
                 }
             }
@@ -512,7 +512,7 @@ class coverage implements \countable, \serializable
             foreach ($this->methods[$class] as $lines) {
                 foreach ($lines as $call) {
                     if ($call === 1) {
-                        $coveredLines++;
+                        ++$coveredLines;
                     }
                 }
             }
@@ -531,11 +531,11 @@ class coverage implements \countable, \serializable
 
             foreach ($this->methods[$class][$method] as $call) {
                 if ($call >= -1) {
-                    $totalLines++;
+                    ++$totalLines;
                 }
 
                 if ($call === 1) {
-                    $coveredLines++;
+                    ++$coveredLines;
                 }
             }
 
@@ -556,10 +556,10 @@ class coverage implements \countable, \serializable
             $coveredPaths = 0;
 
             foreach ($this->paths[$class][$method] as $path) {
-                $totalPaths++;
+                ++$totalPaths;
 
                 if ($path['hit'] === 1) {
-                    $coveredPaths++;
+                    ++$coveredPaths;
                 }
             }
 
@@ -581,10 +581,10 @@ class coverage implements \countable, \serializable
 
             foreach ($this->branches[$class][$method] as $node) {
                 foreach ($node['out'] as $index => $out) {
-                    $totalBranches++;
+                    ++$totalBranches;
 
                     if ($node['out_hit'][$index] === 1) {
-                        $coveredBranches++;
+                        ++$coveredBranches;
                     }
                 }
             }
@@ -597,12 +597,11 @@ class coverage implements \countable, \serializable
         return $value;
     }
 
-
     public function getCoverageForMethod($class, $method)
     {
         $class = $this->getCoverageForClass($class);
 
-        return (isset($class[$method]) === false ? [] : $class[$method]);
+        return isset($class[$method]) === false ? [] : $class[$method];
     }
 
     public function excludeMethod($method)
@@ -693,7 +692,7 @@ class coverage implements \countable, \serializable
 
     public function isInExcludedClasses($class)
     {
-        return (in_array($class, $this->excludedClasses) === true);
+        return in_array($class, $this->excludedClasses) === true;
     }
 
     public function isInExcludedNamespaces($class)
@@ -715,7 +714,7 @@ class coverage implements \countable, \serializable
         } else {
             $fileName = $class->getFileName();
 
-            return ($fileName === false || $this->isInExcludedDirectories($fileName) === true);
+            return $fileName === false || $this->isInExcludedDirectories($fileName) === true;
         }
     }
 

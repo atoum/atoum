@@ -52,11 +52,11 @@ class treemap extends report\fields\runner\coverage\cli
                     'fullname' => '',
                     'htmlReportBaseUrl' => $this->htmlReportBaseUrl,
                     'date' => time(),
-                    'children' => []
+                    'children' => [],
                 ];
 
                 foreach ($this->coverage->getClasses() as $className => $classPath) {
-                    $node = & $nodes;
+                    $node = &$nodes;
 
                     $class = new \reflectionClass($className);
 
@@ -78,11 +78,11 @@ class treemap extends report\fields\runner\coverage\cli
                             $node['children'][] = [
                                 'name' => $namespace,
                                 'fullname' => $node['fullname'] . ($node['fullname'] == '' ? '' : '\\') . $namespace,
-                                'children' => []
+                                'children' => [],
                             ];
                         }
 
-                        $node = & $node['children'][$key];
+                        $node = &$node['children'][$key];
                     }
 
                     $child = [
@@ -91,7 +91,7 @@ class treemap extends report\fields\runner\coverage\cli
                         'covered' => $this->coverage->getNumberOfCoveredLinesInClass($className),
                         'coverable' => $this->coverage->getNumberOfCoverableLinesInClass($className),
                         'pourcent' => round($this->coverage->getValueForClass($className) * 100, 2),
-                        'children' => []
+                        'children' => [],
                     ];
 
                     $node['children'][] = $child;

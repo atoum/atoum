@@ -19,7 +19,7 @@ abstract class event extends report\fields\event
                 test::skipped,
                 test::exception,
                 test::success,
-                runner::runStop
+                runner::runStop,
             ]
         );
     }

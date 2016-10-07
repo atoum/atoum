@@ -16,7 +16,7 @@ class iterator extends value
     {
         $key = $this->key();
 
-        $string = join('', iterator_to_array($this));
+        $string = implode('', iterator_to_array($this));
 
         if ($key !== null) {
             $this->seek($key);
@@ -27,7 +27,7 @@ class iterator extends value
 
     public function valid()
     {
-        return (current($this->values) !== false);
+        return current($this->values) !== false;
     }
 
     public function current()
@@ -68,9 +68,9 @@ class iterator extends value
                 }
             }
 
-            $this->key--;
+            --$this->key;
 
-            $offset--;
+            --$offset;
         }
 
         return $this;
@@ -98,9 +98,9 @@ class iterator extends value
                 }
             }
 
-            $this->key++;
+            ++$this->key;
 
-            $offset--;
+            --$offset;
         }
 
         return $this;
@@ -194,7 +194,6 @@ class iterator extends value
             }
         }
 
-
         return $this;
     }
 
@@ -230,7 +229,7 @@ class iterator extends value
 
     public function getValue()
     {
-        return (current($this->values) ?: null);
+        return current($this->values) ?: null;
     }
 
     public function seek($key)

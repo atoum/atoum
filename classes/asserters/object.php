@@ -153,6 +153,6 @@ class object extends variable
 
     protected static function classExists($value)
     {
-        return (class_exists($value) === true || interface_exists($value) === true);
+        return class_exists($value) === true || interface_exists($value) === true;
     }
 }

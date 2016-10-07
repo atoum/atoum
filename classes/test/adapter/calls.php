@@ -62,7 +62,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     public function offsetExists($mixed)
     {
-        return (isset($this->calls[self::getKey(self::buildCall($mixed))]) === true);
+        return isset($this->calls[self::getKey(self::buildCall($mixed))]) === true;
     }
 
     public function getIterator()
@@ -107,7 +107,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
         if (isset($this->calls[$key][$position]) === true) {
             unset($this->calls[$key][$position]);
-            $this->size--;
+            --$this->size;
         }
 
         return $this;
@@ -178,7 +178,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     public function getPrevious(adapter\call $call, $position, $identical = false)
     {
-        return ($identical === false ? $this->getPreviousEqualTo($call, $position) : $this->getPreviousIdenticalTo($call, $position));
+        return $identical === false ? $this->getPreviousEqualTo($call, $position) : $this->getPreviousIdenticalTo($call, $position);
     }
 
     public function hasPreviousEqualTo(adapter\call $call, $position)
@@ -205,7 +205,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     public function hasPrevious(adapter\call $call, $position, $identical = false)
     {
-        return ($identical === false ? $this->hasPreviousEqualTo($call, $position) : $this->hasPreviousIdenticalTo($call, $position));
+        return $identical === false ? $this->hasPreviousEqualTo($call, $position) : $this->hasPreviousIdenticalTo($call, $position);
     }
 
     public function getAfterEqualTo(adapter\call $call, $position)
@@ -236,7 +236,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     public function getAfter(adapter\call $call, $position, $identical = false)
     {
-        return ($identical === false ? $this->getAfterEqualTo($call, $position) : $this->getAfterIdenticalTo($call, $position));
+        return $identical === false ? $this->getAfterEqualTo($call, $position) : $this->getAfterIdenticalTo($call, $position);
     }
 
     public function hasAfterEqualTo(adapter\call $call, $position)
@@ -263,12 +263,12 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     public function hasAfter(adapter\call $call, $position, $identical = false)
     {
-        return ($identical === false ? $this->hasAfterEqualTo($call, $position) : $this->hasAfterIdenticalTo($call, $position));
+        return $identical === false ? $this->hasAfterEqualTo($call, $position) : $this->hasAfterIdenticalTo($call, $position);
     }
 
     public function get(adapter\call $call, $identical = false)
     {
-        return ($identical === false ? $this->getEqualTo($call) : $this->getIdenticalTo($call));
+        return $identical === false ? $this->getEqualTo($call) : $this->getIdenticalTo($call);
     }
 
     public function getTimeline()
@@ -305,7 +305,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
         }
 
         $this->calls[self::getKey($call)][$position] = $call;
-        $this->size++;
+        ++$this->size;
 
         return $this;
     }
@@ -314,7 +314,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
     {
         $key = self::getKey($mixed);
 
-        return (isset($this->calls[$key]) === false ? [] : $this->calls[$key]);
+        return isset($this->calls[$key]) === false ? [] : $this->calls[$key];
     }
 
     protected static function getKey(adapter\call $call)
@@ -334,6 +334,6 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     private static function buildCall($mixed)
     {
-        return ($mixed instanceof adapter\call ? $mixed : new adapter\call($mixed));
+        return $mixed instanceof adapter\call ? $mixed : new adapter\call($mixed);
     }
 }

@@ -107,7 +107,7 @@ abstract class script
 
     public function hasArguments()
     {
-        return (sizeof($this->argumentsParser->getValues()) > 0);
+        return sizeof($this->argumentsParser->getValues()) > 0;
     }
 
     public function setOutputWriter(writer $writer = null)
@@ -363,7 +363,7 @@ abstract class script
 
     public function increaseVerbosityLevel()
     {
-        $this->verbosityLevel++;
+        ++$this->verbosityLevel;
 
         return $this;
     }
@@ -371,7 +371,7 @@ abstract class script
     public function decreaseVerbosityLevel()
     {
         if ($this->verbosityLevel > 0) {
-            $this->verbosityLevel--;
+            --$this->verbosityLevel;
         }
 
         return $this;
@@ -400,7 +400,7 @@ abstract class script
 
     protected function canRun()
     {
-        return ($this->doRun === true);
+        return $this->doRun === true;
     }
 
     protected function stopRun()
@@ -426,12 +426,12 @@ abstract class script
 
             foreach ($this->help as $help) {
                 if ($help[1] !== null) {
-                    foreach ($help[0] as & $argument) {
+                    foreach ($help[0] as &$argument) {
                         $argument .= ' ' . $help[1];
                     }
                 }
 
-                $arguments[join(', ', $help[0])] = $help[2];
+                $arguments[implode(', ', $help[0])] = $help[2];
             }
 
             $this->writeHelp($this->locale->_('Available options are:'));

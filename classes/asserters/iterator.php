@@ -76,6 +76,6 @@ class iterator extends object
 
     protected static function isIterator($value)
     {
-        return ($value instanceof \iterator);
+        return $value instanceof \iterator;
     }
 }

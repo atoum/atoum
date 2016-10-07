@@ -71,12 +71,12 @@ class command
 
     public function __get($envVariable)
     {
-        return (isset($this->{$envVariable}) === false ? null : $this->env[$envVariable]);
+        return isset($this->{$envVariable}) === false ? null : $this->env[$envVariable];
     }
 
     public function __isset($envVariable)
     {
-        return (isset($this->env[$envVariable]) === true);
+        return isset($this->env[$envVariable]) === true;
     }
 
     public function __unset($envVariable)
@@ -203,14 +203,14 @@ class command
 
         $pipes = [
             1 => ['pipe', 'w'],
-            2 => ['pipe', 'w']
+            2 => ['pipe', 'w'],
         ];
 
         if ($stdin != '') {
             $pipes[0] = ['pipe', 'r'];
         }
 
-        $this->processus = @call_user_func_array([$this->adapter, 'proc_open'], [(string) $this, $pipes, & $this->streams, null, sizeof($this->env) <= 0 ? null : $this->env]);
+        $this->processus = @call_user_func_array([$this->adapter, 'proc_open'], [(string) $this, $pipes, &$this->streams, null, sizeof($this->env) <= 0 ? null : $this->env]);
 
         if ($this->processus === false) {
             throw new command\exception('Unable to run \'' . $this . '\'');
@@ -239,6 +239,6 @@ class command
 
     private static function osIsWindows()
     {
-        return (defined('PHP_WINDOWS_VERSION_MAJOR') === true);
+        return defined('PHP_WINDOWS_VERSION_MAJOR') === true;
     }
 }

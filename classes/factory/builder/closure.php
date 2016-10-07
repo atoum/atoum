@@ -10,7 +10,7 @@ class closure implements factory\builder
     private $factory = null;
     private $allArgumentsAreOptional = true;
 
-    public function build(\reflectionClass $class, & $instance = null)
+    public function build(\reflectionClass $class, &$instance = null)
     {
         $this->factory = null;
 
@@ -51,11 +51,11 @@ class closure implements factory\builder
                 }
 
                 if ($constructor === null || sizeof($closureParameters) <= 0) {
-                    $this->factory = function () use (& $instance, $class) {
-                        return ($instance = $class->newInstanceArgs(func_get_args()));
+                    $this->factory = function () use (&$instance, $class) {
+                        return $instance = $class->newInstanceArgs(func_get_args());
                     };
                 } else {
-                    $this->factory = eval('return function(' . join(', ', $closureParameters) . ') use (& $instance) { return ($instance = new ' . $class->getName() . '(' . join(', ', $constructorParameters) . ')); };');
+                    $this->factory = eval('return function(' . implode(', ', $closureParameters) . ') use (& $instance) { return ($instance = new ' . $class->getName() . '(' . implode(', ', $constructorParameters) . ')); };');
                 }
             }
         }
@@ -84,6 +84,6 @@ class closure implements factory\builder
 
     private static function isVariadic(\reflectionParameter $parameter)
     {
-        return (method_exists($parameter, 'isVariadic') && $parameter->isVariadic());
+        return method_exists($parameter, 'isVariadic') && $parameter->isVariadic();
     }
 }

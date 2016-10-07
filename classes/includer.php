@@ -47,7 +47,7 @@ class includer
         $errorHandler = $this->adapter->set_error_handler([$this, 'errorHandler']);
 
         $closure = $closure ?: function ($path) {
-            include_once($path);
+            include_once $path;
         };
 
         $closure($this->path);

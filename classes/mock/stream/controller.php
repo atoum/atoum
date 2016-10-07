@@ -43,6 +43,7 @@ class controller extends test\adapter
                     $this->fread[2] = false;
                     $this->fclose = true;
                 }
+
                 return $this;
 
             case 'file_put_contents':
@@ -50,6 +51,7 @@ class controller extends test\adapter
                 $this->fopen = true;
                 $this->fwrite = $value;
                 $this->fclose = true;
+
                 return $this;
 
             default:
@@ -83,9 +85,9 @@ class controller extends test\adapter
     {
         $controller = clone $this;
 
-        $controller->path = & $this->path;
-        $controller->calls = & $this->calls;
-        $controller->invokers = & $this->invokers;
+        $controller->path = &$this->path;
+        $controller->calls = &$this->calls;
+        $controller->invokers = &$this->invokers;
 
         return $controller;
     }
@@ -115,7 +117,7 @@ class controller extends test\adapter
             $this->resetCalls('dir_readdir');
         }
 
-        return ($this->nextCallIsOverloaded($method) === false ? null : parent::invoke($method, $arguments));
+        return $this->nextCallIsOverloaded($method) === false ? null : parent::invoke($method, $arguments);
     }
 
     protected static function mapMethod($method)

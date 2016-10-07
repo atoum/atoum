@@ -72,7 +72,7 @@ class parser
         return $root;
     }
 
-    protected function parse($string, & $root = null)
+    protected function parse($string, &$root = null)
     {
         if ($root === null) {
             $root = new atoum\template();
@@ -103,7 +103,7 @@ class parser
 
             $string = substr($string, $tag[5][1] + 1);
 
-            if ($tag[1][0] == '') { # < /> or < > tag
+            if ($tag[1][0] == '') { // < /> or < > tag
                 $child = new tag($tag[2][0], null, $line, $offset);
 
                 $currentTag->addChild($child);
@@ -118,11 +118,11 @@ class parser
                     }
                 }
 
-                if ($tag[4][0] == '') { # < >
+                if ($tag[4][0] == '') { // < >
                     $stack[] = $child;
                     $currentTag = $child;
                 }
-            } else { # </ >
+            } else { // </ >
                 $stackedTemplateTag = array_pop($stack);
 
                 if ($stackedTemplateTag === null || $stackedTemplateTag->getTag() != $tag[2][0]) {

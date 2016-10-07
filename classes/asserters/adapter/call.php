@@ -203,7 +203,7 @@ abstract class call extends atoum\asserter
                         $beforeCalls[] = (string) $asserter->getCall();
                     }
 
-                    $failMessage = $this->_('%s before %s', $failMessage, join(', ', $beforeCalls));
+                    $failMessage = $this->_('%s before %s', $failMessage, implode(', ', $beforeCalls));
                 }
 
                 if (sizeof($this->afterCalls) > 0) {
@@ -213,7 +213,7 @@ abstract class call extends atoum\asserter
                         $afterCalls[] = (string) $asserter->getCall();
                     }
 
-                    $failMessage = $this->_('%s after %s', $failMessage, join(', ', $afterCalls));
+                    $failMessage = $this->_('%s after %s', $failMessage, implode(', ', $afterCalls));
                 }
 
                 $failMessage .= $this->getCallsAsString();

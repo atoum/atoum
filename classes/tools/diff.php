@@ -37,6 +37,7 @@ class diff
     public function setDecorator(diff\decorator $decorator = null)
     {
         $this->decorator = $decorator ?: new diff\decorator();
+
         return $this;
     }
 

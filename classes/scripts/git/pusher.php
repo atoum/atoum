@@ -106,7 +106,7 @@ class pusher extends script\configurable
         return $this->git;
     }
 
-    public function setForceMode($force=true)
+    public function setForceMode($force = true)
     {
         $this->forceMode = $force;
 
@@ -129,7 +129,6 @@ class pusher extends script\configurable
         $this->tagMajorVersion = false;
         $this->tagMinorVersion = true;
     }
-
 
     public function tagPatchVersion()
     {
@@ -244,7 +243,7 @@ class pusher extends script\configurable
         $versionPattern = '/^(\d+)\.(\d+)\.(\d+)$/';
         $increment = function ($position) {
             return function ($matches) use ($position) {
-                for ($i = 1; $i <= 3; $i++) {
+                for ($i = 1; $i <= 3; ++$i) {
                     if ($i > $position) {
                         $matches[$i] = 0;
                     }

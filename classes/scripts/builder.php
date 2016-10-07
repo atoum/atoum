@@ -446,7 +446,7 @@ class builder extends atoum\script\configurable
             $builder = $this;
 
             $callback = function ($path) use ($builder) {
-                include_once($path);
+                include_once $path;
             };
         }
 

@@ -22,7 +22,7 @@ class phpClass extends tokenizer\iterator
 
     public function getConstant($index)
     {
-        return (isset($this->constants[$index]) === false ? null : $this->constants[$index]);
+        return isset($this->constants[$index]) === false ? null : $this->constants[$index];
     }
 
     public function getConstants()
@@ -44,7 +44,7 @@ class phpClass extends tokenizer\iterator
 
     public function getMethod($index)
     {
-        return (isset($this->methods[$index]) === false ? null : $this->methods[$index]);
+        return isset($this->methods[$index]) === false ? null : $this->methods[$index];
     }
 
     public function appendMethod(iterators\phpMethod $phpMethod)
@@ -61,7 +61,7 @@ class phpClass extends tokenizer\iterator
 
     public function getProperty($index)
     {
-        return (isset($this->properties[$index]) === false ? null : $this->properties[$index]);
+        return isset($this->properties[$index]) === false ? null : $this->properties[$index];
     }
 
     public function appendProperty(iterators\phpProperty $phpProperty)

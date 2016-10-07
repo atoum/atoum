@@ -39,7 +39,7 @@ class configurator
 
             $return = call_user_func_array([$this->script, $keyMethod], $arguments);
 
-            return ($return === $this->script ? $this : $return);
+            return $return === $this->script ? $this : $return;
         }
     }
 

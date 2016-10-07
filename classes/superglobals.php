@@ -11,7 +11,7 @@ class superglobals
         $this->check($superglobal)->superglobals[$superglobal] = $value;
     }
 
-    public function & __get($superglobal)
+    public function &__get($superglobal)
     {
         $this->check($superglobal);
 

@@ -71,7 +71,7 @@ class iterator implements \iterator, \countable
 
     public function valid()
     {
-        return (key($this->tags) !== null);
+        return key($this->tags) !== null;
     }
 
     public function current()

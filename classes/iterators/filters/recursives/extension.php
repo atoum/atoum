@@ -21,7 +21,7 @@ class extension extends \recursiveFilterIterator
 
     public function setAcceptedExtensions(array $extensions)
     {
-        array_walk($extensions, function (& $extension) {
+        array_walk($extensions, function (&$extension) {
             $extension = trim($extension, '.');
         });
 
@@ -41,7 +41,7 @@ class extension extends \recursiveFilterIterator
 
         $extension = pathinfo($path, PATHINFO_EXTENSION);
 
-        return ($extension == '' || in_array($extension, $this->acceptedExtensions) === true);
+        return $extension == '' || in_array($extension, $this->acceptedExtensions) === true;
     }
 
     public function getChildren()

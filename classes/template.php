@@ -31,7 +31,7 @@ class template extends template\data
 
     public function __isset($tag)
     {
-        return (sizeof($this->getByTag($tag)) > 0);
+        return sizeof($this->getByTag($tag)) > 0;
     }
 
     public function getByTag($tag)
@@ -62,7 +62,7 @@ class template extends template\data
 
     public function getChild($rank)
     {
-        return (isset($this->children[$rank]) === false ? null : $this->children[$rank]);
+        return isset($this->children[$rank]) === false ? null : $this->children[$rank];
     }
 
     public function getChildren()
@@ -99,12 +99,12 @@ class template extends template\data
 
     public function hasChildren()
     {
-        return (sizeof($this->children) > 0);
+        return sizeof($this->children) > 0;
     }
 
     public function isChild(template\data $child)
     {
-        return ($child->parent === $this);
+        return $child->parent === $this;
     }
 
     public function addToParent($mixed = [])
@@ -148,7 +148,7 @@ class template extends template\data
 
     public function idExists($id)
     {
-        return ($this->getById($id) !== null);
+        return $this->getById($id) !== null;
     }
 
     public function setAttribute($name, $value)

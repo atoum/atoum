@@ -91,7 +91,7 @@ class AtoumTask extends task
             $srcFiles = $ds->getIncludedFiles();
 
             foreach ($srcFiles as $file) {
-                $files[] = $dir.FileSystem::getFileSystem()->getSeparator().$file;
+                $files[] = $dir . FileSystem::getFileSystem()->getSeparator() . $file;
             }
         }
 
@@ -158,7 +158,7 @@ class AtoumTask extends task
             $coverageReportUrl = null;
             if (($path = $this->codeCoverageReportPath) !== null) {
                 $coverageHtmlField = new coverage\html(isset($this->project) === true ? $this->project->getName() : 'Code coverage report', $path);
-                $coverageHtmlField->setRootUrl($this->codeCoverageReportUrl ?: 'file://'.$path.'/index.html');
+                $coverageHtmlField->setRootUrl($this->codeCoverageReportUrl ?: 'file://' . $path . '/index.html');
 
                 $report->addField($coverageHtmlField);
             }
@@ -254,7 +254,7 @@ class AtoumTask extends task
     public function configureCoverageTreemapField($coverageTreemapPath, $coverageReportUrl = null)
     {
         $coverageTreemapField = new coverage\treemap(isset($this->project) ? $this->project->getName() : 'Code coverage treemap', $coverageTreemapPath);
-        $coverageTreemapField->setTreemapUrl($this->codeCoverageTreemapUrl ?: 'file://'.$coverageTreemapPath.'/index.html');
+        $coverageTreemapField->setTreemapUrl($this->codeCoverageTreemapUrl ?: 'file://' . $coverageTreemapPath . '/index.html');
 
         if ($coverageReportUrl !== null) {
             $coverageTreemapField->setHtmlReportBaseUrl($coverageReportUrl);

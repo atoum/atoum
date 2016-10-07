@@ -43,7 +43,7 @@ class controller extends fs\controller
     {
         $controller = parent::duplicate();
 
-        $controller->contents = & $this->contents;
+        $controller->contents = &$this->contents;
 
         return $controller;
     }
@@ -83,7 +83,7 @@ class controller extends fs\controller
         return $this->contains('');
     }
 
-    public function stream_open($path, $mode, $options, & $openedPath = null)
+    public function stream_open($path, $mode, $options, &$openedPath = null)
     {
         if ($this->nextCallIsOverloaded(__FUNCTION__) === true) {
             return $this->invoke(__FUNCTION__, func_get_args());
@@ -211,7 +211,7 @@ class controller extends fs\controller
         } else {
             $this->addCall(__FUNCTION__, []);
 
-            return ($this->offset === null ? $this->pointer : $this->pointer - $this->offset);
+            return $this->offset === null ? $this->pointer : $this->pointer - $this->offset;
         }
     }
 
@@ -289,6 +289,7 @@ class controller extends fs\controller
 
                 case STREAM_META_ACCESS:
                     $this->setPermissions($value);
+
                     return true;
 
                 default:

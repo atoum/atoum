@@ -72,7 +72,7 @@ class phpClass extends atoum\asserter
 
     public function getClass()
     {
-        return ($this->class === null ? null : $this->class->getName());
+        return $this->class === null ? null : $this->class->getName();
     }
 
     public function setWith($class)

@@ -258,7 +258,7 @@ class runner implements observable
     {
         try {
             $this->includer->includePath($path, function ($path) {
-                include_once($path);
+                include_once $path;
             });
         } catch (includer\exception $exception) {
             throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to use bootstrap file \'%s\''), $path));
@@ -273,7 +273,7 @@ class runner implements observable
     {
         try {
             $this->includer->includePath($path, function ($path) {
-                include_once($path);
+                include_once $path;
             });
         } catch (includer\exception $exception) {
             throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to use autoloader file \'%s\''), $path));
@@ -553,7 +553,7 @@ class runner implements observable
                     $tests[] = $test;
                     $test->addExtensions($this->extensions);
 
-                    $this->testNumber++;
+                    ++$this->testNumber;
                     $this->testMethodNumber += $testMethodNumber;
 
                     $test
@@ -700,7 +700,7 @@ class runner implements observable
 
     public function getRunningDuration()
     {
-        return ($this->start === null || $this->stop === null ? null : $this->stop - $this->start);
+        return $this->start === null || $this->stop === null ? null : $this->stop - $this->start;
     }
 
     public function getDeclaredTestClasses($testBaseClass = null)
@@ -767,7 +767,7 @@ class runner implements observable
 
     public function hasReports()
     {
-        return (sizeof($this->reports) > 0);
+        return sizeof($this->reports) > 0;
     }
 
     public function getReports()
@@ -859,7 +859,7 @@ class runner implements observable
         return array_filter($this->adapter->get_declared_classes(), function ($class) use ($reflectionClassFactory, $testBaseClass) {
             $class = $reflectionClassFactory($class);
 
-            return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
+            return $class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false;
         }
         );
     }
@@ -868,7 +868,7 @@ class runner implements observable
     {
         $runner = $this;
         $includer = function ($path) use ($runner) {
-            include_once($path);
+            include_once $path;
         };
 
         foreach ($this->testPaths as $testPath) {
@@ -883,7 +883,7 @@ class runner implements observable
 
                     try {
                         $this->includer->includePath($testPath, function ($testPath) use ($runner) {
-                            include($testPath);
+                            include $testPath;
                         });
                     } catch (includer\exception $exception) {
                         throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $testPath));

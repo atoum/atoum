@@ -69,7 +69,7 @@ class generator
 
     public function getDefaultNamespace()
     {
-        return ($this->defaultNamespace === null ? self::defaultNamespace : $this->defaultNamespace);
+        return $this->defaultNamespace === null ? self::defaultNamespace : $this->defaultNamespace;
     }
 
     public function overload(php\method $method)
@@ -81,12 +81,12 @@ class generator
 
     public function isOverloaded($method)
     {
-        return ($this->getOverload($method) !== null);
+        return $this->getOverload($method) !== null;
     }
 
     public function getOverload($method)
     {
-        return (isset($this->overloadedMethods[$method = strtolower($method)]) === false ? null : $this->overloadedMethods[$method]);
+        return isset($this->overloadedMethods[$method = strtolower($method)]) === false ? null : $this->overloadedMethods[$method];
     }
 
     public function shunt($method)
@@ -100,7 +100,7 @@ class generator
 
     public function isShunted($method)
     {
-        return (in_array(strtolower($method), $this->shuntedMethods) === true);
+        return in_array(strtolower($method), $this->shuntedMethods) === true;
     }
 
     public function shuntParentClassCalls()
@@ -128,7 +128,7 @@ class generator
 
     public function isOrphanized($method)
     {
-        return (in_array($method, $this->orphanizedMethods) === true);
+        return in_array($method, $this->orphanizedMethods) === true;
     }
 
     public function allIsInterface()
@@ -299,7 +299,7 @@ class generator
                 $mockedMethods .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
                 $mockedMethods .= "\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
             } else {
-                $mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ', -1));' . PHP_EOL;
+                $mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . implode(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ', -1));' . PHP_EOL;
                 $mockedMethods .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
                 $mockedMethods .= "\t\t" . '{' . PHP_EOL;
                 $mockedMethods .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
@@ -358,7 +358,7 @@ class generator
                 if (self::hasVariadic($method) === true) {
                     $mockedMethods .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
                 } else {
-                    $mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . '));' . PHP_EOL;
+                    $mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . implode(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . '));' . PHP_EOL;
                 }
 
                 if ($this->isShunted($methodName) === true || $method->isAbstract() === true) {
@@ -455,7 +455,7 @@ class generator
                     if (self::hasVariadic($method) === true) {
                         $methodCode .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
                     } else {
-                        $methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
+                        $methodCode .= "\t\t" . '$arguments = array_merge(array(' . implode(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
                     }
 
                     if ($isConstructor === true) {
@@ -491,7 +491,7 @@ class generator
                 case $method->isStatic() === true:
                     $methodCode = "\t" . 'public static function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . PHP_EOL;
                     $methodCode .= "\t" . '{' . PHP_EOL;
-                    $methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ', -1));' . PHP_EOL;
+                    $methodCode .= "\t\t" . '$arguments = array_merge(array(' . implode(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ', -1));' . PHP_EOL;
                     $methodCode .= "\t\t" . 'return call_user_func_array(array(\'parent\', \'' . $methodName . '\'), $arguments);' . PHP_EOL;
                     $methodCode .= "\t" . '}' . PHP_EOL;
                     break;
@@ -607,7 +607,7 @@ class generator
             $parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
         }
 
-        return join(', ', $parameters);
+        return implode(', ', $parameters);
     }
 
     protected static function getClassName($class)
@@ -615,7 +615,7 @@ class generator
         $class = ltrim($class, '\\');
         $lastAntiSlash = strrpos($class, '\\');
 
-        return ($lastAntiSlash === false ? $class : substr($class, $lastAntiSlash + 1));
+        return $lastAntiSlash === false ? $class : substr($class, $lastAntiSlash + 1);
     }
 
     protected static function getParameterType(\reflectionParameter $parameter)
@@ -627,7 +627,7 @@ class generator
             case method_exists($parameter, 'isCallable') && $parameter->isCallable():
                 return 'callable ';
 
-            case ($class = $parameter->getClass()):
+            case $class = $parameter->getClass():
                 return '\\' . $class->getName() . ' ';
 
             case method_exists($parameter, 'hasType') && $parameter->hasType():

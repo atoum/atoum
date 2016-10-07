@@ -85,7 +85,7 @@ class parser implements \iteratorAggregate
                         return -1;
 
                     default:
-                        return ($priorities[$arg1] > $priorities[$arg2] ? -1 : ($priorities[$arg1] == $priorities[$arg2] ? 0 : 1));
+                        return $priorities[$arg1] > $priorities[$arg2] ? -1 : ($priorities[$arg1] == $priorities[$arg2] ? 0 : 1);
                 }
         }
         );
@@ -99,12 +99,12 @@ class parser implements \iteratorAggregate
 
     public function getValues($argument = null)
     {
-        return ($argument === null ? $this->values : (isset($this->values[$argument]) === false ? null : $this->values[$argument]));
+        return $argument === null ? $this->values : (isset($this->values[$argument]) === false ? null : $this->values[$argument]);
     }
 
     public function hasFoundArguments()
     {
-        return (sizeof($this->values) > 0);
+        return sizeof($this->values) > 0;
     }
 
     public function addHandler(\closure $handler, array $arguments, $priority = 0)
@@ -156,12 +156,12 @@ class parser implements \iteratorAggregate
 
     public function argumentIsHandled($argument)
     {
-        return (isset($this->handlers[$argument]) === true || $this->defaultHandler !== null);
+        return isset($this->handlers[$argument]) === true || $this->defaultHandler !== null;
     }
 
     public function argumentHasHandler($argument)
     {
-        return (isset($this->handlers[$argument]) === true);
+        return isset($this->handlers[$argument]) === true;
     }
 
     public function init(array $array = [])
@@ -207,7 +207,7 @@ class parser implements \iteratorAggregate
         return $this;
     }
 
-    public function triggerHandlers($argument, array $values, atoum\script $script, & $argumentUsed = null)
+    public function triggerHandlers($argument, array $values, atoum\script $script, &$argumentUsed = null)
     {
         if (isset($this->handlers[$argument]) === true) {
             $this->invokeHandlers($script, $argument, $values);
@@ -232,7 +232,7 @@ class parser implements \iteratorAggregate
         return $this;
     }
 
-    public function getClosestArgument($argument, & $min = null)
+    public function getClosestArgument($argument, &$min = null)
     {
         $closestArgument = null;
 
@@ -270,6 +270,6 @@ class parser implements \iteratorAggregate
 
     public static function isArgument($value)
     {
-        return (preg_match('/^(\+{1,}|-{1,})[a-z][-_a-z0-9]*/i', $value) === 1);
+        return preg_match('/^(\+{1,}|-{1,})[a-z][-_a-z0-9]*/i', $value) === 1;
     }
 }

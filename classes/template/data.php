@@ -30,7 +30,7 @@ class data
 
     public function getData()
     {
-        return ($this->data === null ? '' : $this->data);
+        return $this->data === null ? '' : $this->data;
     }
 
     public function setData($data)
@@ -74,12 +74,12 @@ class data
 
     public function isRoot()
     {
-        return ($this->parent === null);
+        return $this->parent === null;
     }
 
     public function parentIsSet()
     {
-        return ($this->parent !== null);
+        return $this->parent !== null;
     }
 
     public function unsetParent()

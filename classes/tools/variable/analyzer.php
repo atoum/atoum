@@ -44,47 +44,47 @@ class analyzer
 
     public function isObject($mixed)
     {
-        return (is_object($mixed) === true);
+        return is_object($mixed) === true;
     }
 
     public function isException($mixed)
     {
-        return ($mixed instanceof \exception);
+        return $mixed instanceof \exception;
     }
 
     public function isBoolean($mixed)
     {
-        return (is_bool($mixed) === true);
+        return is_bool($mixed) === true;
     }
 
     public function isInteger($mixed)
     {
-        return (is_int($mixed) === true);
+        return is_int($mixed) === true;
     }
 
     public function isFloat($mixed)
     {
-        return (is_float($mixed) === true);
+        return is_float($mixed) === true;
     }
 
     public function isString($mixed)
     {
-        return (is_string($mixed) === true);
+        return is_string($mixed) === true;
     }
 
     public function isUtf8($mixed)
     {
-        return ($this->isString($mixed) === true && preg_match('/^.*$/us', $mixed) === 1);
+        return $this->isString($mixed) === true && preg_match('/^.*$/us', $mixed) === 1;
     }
 
     public function isArray($mixed)
     {
-        return (is_array($mixed) === true);
+        return is_array($mixed) === true;
     }
 
     public function isResource($mixed)
     {
-        return (is_resource($mixed) === true);
+        return is_resource($mixed) === true;
     }
 
     public function isRegex($namespace)

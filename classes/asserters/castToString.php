@@ -23,6 +23,6 @@ class castToString extends phpString
 
     protected static function isObject($value)
     {
-        return (is_object($value) === true);
+        return is_object($value) === true;
     }
 }

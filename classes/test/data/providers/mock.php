@@ -54,7 +54,6 @@ class mock extends object
             throw new provider\object\exceptions\mandatoryArgument('Could not instanciate a mock from ' . $mockNamespace . '\\' . $this->class . ' because ' . $this->class . '::__construct() has at least one mandatory argument');
         }
 
-
         throw new runtime('Could not instanciate a mock from ' . $this->class);
     }
 

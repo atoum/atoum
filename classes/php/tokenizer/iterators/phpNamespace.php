@@ -27,7 +27,7 @@ class phpNamespace extends tokenizer\iterator
 
     public function getConstant($index)
     {
-        return (isset($this->constants[$index]) === false ? null : $this->constants[$index]);
+        return isset($this->constants[$index]) === false ? null : $this->constants[$index];
     }
 
     public function appendConstant(iterators\phpConstant $phpConstant)
@@ -44,7 +44,7 @@ class phpNamespace extends tokenizer\iterator
 
     public function getClass($index)
     {
-        return (isset($this->classes[$index]) === false ? null : $this->classes[$index]);
+        return isset($this->classes[$index]) === false ? null : $this->classes[$index];
     }
 
     public function appendClass(iterators\phpClass $phpClass)
@@ -61,7 +61,7 @@ class phpNamespace extends tokenizer\iterator
 
     public function getFunction($index)
     {
-        return (isset($this->functions[$index]) === false ? null : $this->functions[$index]);
+        return isset($this->functions[$index]) === false ? null : $this->functions[$index];
     }
 
     public function appendFunction(iterators\phpFunction $phpFunction)

@@ -140,7 +140,7 @@ class treemap extends atoum\script\configurable
         $script = $this;
 
         return $this->includeConfigFile($path, function ($path) use ($script) {
-            include_once($path);
+            include_once $path;
         });
     }
 
@@ -296,7 +296,7 @@ class treemap extends atoum\script\configurable
             'name' => $this->projectName,
             'url' => $this->projectUrl,
             'path' => '',
-            'children' => []
+            'children' => [],
         ];
 
         foreach ($this->directories as $rootDirectory) {
@@ -307,7 +307,7 @@ class treemap extends atoum\script\configurable
             }
 
             foreach ($directoryIterator as $file) {
-                $node = & $nodes;
+                $node = &$nodes;
 
                 $directories = ltrim(substr(dirname($file->getPathname()), strlen($rootDirectory)), DIRECTORY_SEPARATOR);
 
@@ -336,11 +336,11 @@ class treemap extends atoum\script\configurable
                             $node['children'][] = [
                                 'name' => $directory,
                                 'path' => $node['path'] . DIRECTORY_SEPARATOR . $directory,
-                                'children' => []
+                                'children' => [],
                             ];
                         }
 
-                        $node = & $node['children'][$key];
+                        $node = &$node['children'][$key];
                     }
                 }
 
@@ -348,7 +348,7 @@ class treemap extends atoum\script\configurable
                     'name' => $file->getFilename(),
                     'path' => $node['path'] . DIRECTORY_SEPARATOR . $file->getFilename(),
                     'metrics' => [],
-                    'type' => ''
+                    'type' => '',
                 ];
 
                 foreach ($this->analyzers as $analyzer) {
@@ -372,13 +372,13 @@ class treemap extends atoum\script\configurable
             'metrics' => [],
             'categorizers' => [],
             'maxDepth' => $maxDepth,
-            'nodes' => $nodes
+            'nodes' => $nodes,
         ];
 
         foreach ($this->analyzers as $analyzer) {
             $data['metrics'][] = [
                 'name' => $analyzer->getMetricName(),
-                'label' => $analyzer->getMetricLabel()
+                'label' => $analyzer->getMetricLabel(),
             ];
         }
 
@@ -386,7 +386,7 @@ class treemap extends atoum\script\configurable
             $data['categorizers'][] = [
                 'name' => $categorizer->getName(),
                 'minDepthColor' => $categorizer->getMinDepthColor(),
-                'maxDepthColor' => $categorizer->getMaxDepthColor()
+                'maxDepthColor' => $categorizer->getMaxDepthColor(),
             ];
         }
 

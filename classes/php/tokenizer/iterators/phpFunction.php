@@ -49,6 +49,6 @@ class phpFunction extends tokenizer\iterator
 
     public function getArgument($index)
     {
-        return (isset($this->arguments[$index]) === false ? null : $this->arguments[$index]);
+        return isset($this->arguments[$index]) === false ? null : $this->arguments[$index];
     }
 }

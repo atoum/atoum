@@ -135,7 +135,7 @@ class child extends asserters\phpArray
         return $this->parentIsSet()->parent->isNotIdenticalTo($value, $failMessage);
     }
 
-    public function isReferenceTo(& $reference, $failMessage = null)
+    public function isReferenceTo(&$reference, $failMessage = null)
     {
         return $this->parentIsSet()->parent->isReferenceTo($reference, $failMessage);
     }

@@ -178,8 +178,8 @@ class stub extends scripts\runner
             'http' => [
                     'method' => 'GET',
                     'protocol_version' => '1.1',
-                    'header' => "Accept: */*\r\nUser-Agent:atoum\r\nCache-Control: no-cache"
-            ]
+                    'header' => "Accept: */*\r\nUser-Agent:atoum\r\nCache-Control: no-cache",
+            ],
         ]);
         $data = json_decode($this->adapter->file_get_contents(self::githubUpdateUrl, false, $httpContext), true);
 
@@ -267,7 +267,7 @@ class stub extends scripts\runner
         $newCurrentDirectory = 1;
 
         while (isset($versions[$newCurrentDirectory]) === true) {
-            $newCurrentDirectory++;
+            ++$newCurrentDirectory;
         }
 
         $newFiles = new \arrayIterator();
@@ -552,7 +552,7 @@ class stub extends scripts\runner
 
         $versions = unserialize($this->adapter->file_get_contents($phar['versions']));
 
-        return ((is_array($versions) === false || isset($versions['current']) === false || isset($versions[$versions['current']]) === false) ? null : $versions);
+        return (is_array($versions) === false || isset($versions['current']) === false || isset($versions[$versions['current']]) === false) ? null : $versions;
     }
 
     protected static function getScriptFile($scriptName)

@@ -23,7 +23,7 @@ class tap extends report\fields\event
                 test::skipped,
                 test::exception,
                 test::runtimeException,
-                test::success
+                test::success,
             ]
         );
     }

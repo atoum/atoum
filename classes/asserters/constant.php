@@ -50,7 +50,7 @@ class constant extends asserter
 
     public function wasSet()
     {
-        return ($this->isSet === true);
+        return $this->isSet === true;
     }
 
     public function setWith($value)

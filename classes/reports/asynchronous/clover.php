@@ -38,12 +38,12 @@ class clover extends atoum\reports\asynchronous
 
     public function getTitle()
     {
-        return ($this->title ?: self::defaultTitle);
+        return $this->title ?: self::defaultTitle;
     }
 
     public function getPackage()
     {
-        return ($this->package ?: self::defaultPackage);
+        return $this->package ?: self::defaultPackage;
     }
 
     public function setPackage($package)
@@ -161,11 +161,11 @@ class clover extends atoum\reports\asynchronous
 
             foreach ($lines as $lineNumber => $cover) {
                 if ($cover >= -1) {
-                    $totalMethodLines++;
+                    ++$totalMethodLines;
                 }
 
                 if ($cover === 1) {
-                    $coveredMethodLines++;
+                    ++$coveredMethodLines;
                     $file->appendChild($this->makeLineElement($document, $lineNumber));
                 } else {
                     if ($cover !== -2) {
@@ -236,11 +236,11 @@ class clover extends atoum\reports\asynchronous
 
             foreach ($lines as $cover) {
                 if ($cover >= -1) {
-                    $totalLines++;
+                    ++$totalLines;
                 }
 
                 if ($cover === 1) {
-                    $coveredLines++;
+                    ++$coveredLines;
                 }
             }
 

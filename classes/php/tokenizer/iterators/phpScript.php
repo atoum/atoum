@@ -31,7 +31,7 @@ class phpScript extends tokenizer\iterators\phpNamespace
 
     public function getNamespace($index)
     {
-        return (isset($this->namespaces[$index]) === false ? null : $this->namespaces[$index]);
+        return isset($this->namespaces[$index]) === false ? null : $this->namespaces[$index];
     }
 
     public function appendImportation(iterators\phpImportation $phpImportation)
@@ -48,6 +48,6 @@ class phpScript extends tokenizer\iterators\phpNamespace
 
     public function getImportation($index)
     {
-        return (isset($this->importations[$index]) === false ? null : $this->importations[$index]);
+        return isset($this->importations[$index]) === false ? null : $this->importations[$index];
     }
 }

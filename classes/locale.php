@@ -15,7 +15,7 @@ class locale
 
     public function __toString()
     {
-        return ($this->value === null ? 'unknown' : $this->value);
+        return $this->value === null ? 'unknown' : $this->value;
     }
 
     public function set($value)

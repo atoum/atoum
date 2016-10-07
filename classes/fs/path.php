@@ -73,7 +73,7 @@ class path
 
     public function exists()
     {
-        return (file_exists((string) $this) === true);
+        return file_exists((string) $this) === true;
     }
 
     public function resolve()
@@ -102,7 +102,7 @@ class path
             }
         }
 
-        $this->components = '/' . join('/', $components);
+        $this->components = '/' . implode('/', $components);
 
         return $this;
     }
@@ -113,12 +113,12 @@ class path
 
         $resolvedPath = $path->getResolvedPath();
 
-        return ($this->components !== $resolvedPath->components && ($resolvedPath->isRoot() === true || strpos($this->components, $resolvedPath->components . '/') === 0));
+        return $this->components !== $resolvedPath->components && ($resolvedPath->isRoot() === true || strpos($this->components, $resolvedPath->components . '/') === 0);
     }
 
     public function isNotSubPathOf(path $path)
     {
-        return ($this->isSubPathOf($path) === false);
+        return $this->isSubPathOf($path) === false;
     }
 
     public function isRoot()
@@ -243,12 +243,12 @@ class path
 
     protected static function pathIsRoot($path)
     {
-        return ($path === '/');
+        return $path === '/';
     }
 
     protected static function pathIsAbsolute($path)
     {
-        return (substr($path, 0, 1) === '/');
+        return substr($path, 0, 1) === '/';
     }
 
     protected static function getComponents($path)

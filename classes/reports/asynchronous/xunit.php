@@ -55,10 +55,10 @@ class xunit extends atoum\reports\asynchronous
         $skipped = $this->score->getSkippedMethods();
         $assertions = $this->assertions;
 
-        $filterClass = function ($element) use (& $clname) {
-            return ($element['class'] == $clname);
+        $filterClass = function ($element) use (&$clname) {
+            return $element['class'] == $clname;
         };
-        $extractClasses = function ($list) use (& $clname, & $classes, & $assertions, $durations, $errors, $excepts, $fails, $uncomplete, $skipped, $filterClass) {
+        $extractClasses = function ($list) use (&$clname, &$classes, &$assertions, $durations, $errors, $excepts, $fails, $uncomplete, $skipped, $filterClass) {
             foreach ($list as $entry) {
                 $clname = ltrim($entry['class'], '\\');
 
@@ -70,7 +70,7 @@ class xunit extends atoum\reports\asynchronous
                         'durations' => array_filter($durations, $filterClass),
                         'uncomplete' => array_filter($uncomplete, $filterClass),
                         'skipped' => array_filter($skipped, $filterClass),
-                        'assertions' => isset($assertions[$clname]) ? $assertions[$clname] : []
+                        'assertions' => isset($assertions[$clname]) ? $assertions[$clname] : [],
                     ];
                 }
             }

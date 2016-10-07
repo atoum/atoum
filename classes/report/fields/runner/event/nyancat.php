@@ -42,7 +42,7 @@ class nyancat extends cli
             new colorizer(33),
             new colorizer(34),
             new colorizer(35),
-            new colorizer(36)
+            new colorizer(36),
         ];
     }
 
@@ -50,7 +50,8 @@ class nyancat extends cli
     {
         if (empty($this->nyan) === false) {
             $lines = explode(PHP_EOL, $this->nyan);
-            return "\x1b[" . (sizeof($lines) - 1) . "F";
+
+            return "\x1b[" . (sizeof($lines) - 1) . 'F';
         }
     }
 
@@ -71,7 +72,7 @@ class nyancat extends cli
 
             $string .= $this->clear();
 
-            for ($row = 0, $count = sizeof($cat); $row < $count; $row++) {
+            for ($row = 0, $count = sizeof($cat); $row < $count; ++$row) {
                 $string .= $this->getRainbowRow() . $this->catColorizer->colorize($cat[$row]) . PHP_EOL;
             }
 
@@ -93,7 +94,7 @@ class nyancat extends cli
     {
         $string = '';
 
-        for ($column = 0, $count = sizeof($this->rainbowColorizers); $column < $count; $column++) {
+        for ($column = 0, $count = sizeof($this->rainbowColorizers); $column < $count; ++$column) {
             $string .= $this->getColorizer($column - $this->offset)->colorize($this->curve);
         }
 

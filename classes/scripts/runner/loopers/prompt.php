@@ -78,7 +78,7 @@ class prompt implements looper
 
     public function runAgain()
     {
-        return ($this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '');
+        return $this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '';
     }
 
     private function prompt($message)

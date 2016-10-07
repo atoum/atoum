@@ -120,7 +120,7 @@ class phpArray extends variable implements \arrayAccess
     {
         $value = ($this->innerAsserter === null ? $this->value : $this->innerValue);
 
-        return ($value !== null && array_key_exists($key, $value) === true);
+        return $value !== null && array_key_exists($key, $value) === true;
     }
 
     public function setWith($value, $checkType = true)
@@ -134,7 +134,7 @@ class phpArray extends variable implements \arrayAccess
         } else {
             parent::setWith($value);
 
-            if ($this->analyzer->isArray($this->value) === true  || $checkType === false) {
+            if ($this->analyzer->isArray($this->value) === true || $checkType === false) {
                 $this->pass();
             } else {
                 $this->fail($this->_('%s is not an array', $this));
@@ -144,7 +144,7 @@ class phpArray extends variable implements \arrayAccess
         }
     }
 
-    public function setByReferenceWith(& $value)
+    public function setByReferenceWith(&$value)
     {
         if ($this->innerAsserter !== null) {
             return $this->innerAsserter->setByReferenceWith($value);
@@ -307,9 +307,9 @@ class phpArray extends variable implements \arrayAccess
         return $this->callAssertion(__FUNCTION__, [$value, $failMessage]);
     }
 
-    public function isReferenceTo(& $reference, $failMessage = null)
+    public function isReferenceTo(&$reference, $failMessage = null)
     {
-        return $this->callAssertion(__FUNCTION__, [& $reference, $failMessage]);
+        return $this->callAssertion(__FUNCTION__, [&$reference, $failMessage]);
     }
 
     protected function containsValue($value, $failMessage, $strict)
@@ -492,7 +492,7 @@ class phpArray extends variable implements \arrayAccess
 
     protected function innerAsserterCanUse($method)
     {
-        return ($this->innerAsserter !== null && $this->innerValueIsSet === true && method_exists($this->innerAsserter, $method) === true);
+        return $this->innerAsserter !== null && $this->innerValueIsSet === true && method_exists($this->innerAsserter, $method) === true;
     }
 
     protected function callInnerAsserterMethod($method, $arguments)

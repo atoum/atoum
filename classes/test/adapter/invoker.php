@@ -57,7 +57,7 @@ class invoker implements \arrayAccess, \countable
     {
         $this->bindClosureTo = $object;
 
-        foreach ($this->closuresByCall as & $closure) {
+        foreach ($this->closuresByCall as &$closure) {
             $closure = $this->bindClosure($closure);
         }
 
@@ -82,7 +82,7 @@ class invoker implements \arrayAccess, \countable
 
     public function isEmpty()
     {
-        return (sizeof($this->closuresByCall) <= 0);
+        return sizeof($this->closuresByCall) <= 0;
     }
 
     public function getCurrentCall()
@@ -118,7 +118,7 @@ class invoker implements \arrayAccess, \countable
     {
         $call = static::checkCall($call);
 
-        return (isset($this->closuresByCall[$call]) === true ? $this->closuresByCall[$call] : (isset($this->closuresByCall[0]) === false ? null : $this->closuresByCall[0]));
+        return isset($this->closuresByCall[$call]) === true ? $this->closuresByCall[$call] : (isset($this->closuresByCall[0]) === false ? null : $this->closuresByCall[0]);
     }
 
     public function closureIsSetForCall($call = 0)

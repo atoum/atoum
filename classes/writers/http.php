@@ -94,9 +94,9 @@ class http extends atoum\writer implements writers\asynchronous
         $context = $this->adapter->stream_context_create([
             'http' => [
                 'method' => $this->method,
-                'header' => join("\r\n", $headers),
-                'content' => $this->parameter ? http_build_query([$this->parameter => $string]) : $string
-            ]
+                'header' => implode("\r\n", $headers),
+                'content' => $this->parameter ? http_build_query([$this->parameter => $string]) : $string,
+            ],
         ]);
 
         if (@$this->adapter->file_get_contents($this->url, false, $context) === false) {

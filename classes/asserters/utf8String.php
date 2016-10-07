@@ -22,7 +22,7 @@ class utf8String extends phpString
 
     public function __toString()
     {
-        return (is_string($this->value) === false ? parent::__toString() : $this->_('string(%s) \'%s\'', mb_strlen($this->value, 'UTF-8'), addcslashes($this->value, $this->charlist)));
+        return is_string($this->value) === false ? parent::__toString() : $this->_('string(%s) \'%s\'', mb_strlen($this->value, 'UTF-8'), addcslashes($this->value, $this->charlist));
     }
 
     public function setWith($value, $charlist = null, $checkType = true)

@@ -35,12 +35,12 @@ class linker
 
     public function getController(mock\aggregator $mock)
     {
-        return (isset($this->controllers[$mock]) === false ? null : $this->controllers[$mock]);
+        return isset($this->controllers[$mock]) === false ? null : $this->controllers[$mock];
     }
 
     public function getMock(mock\controller $controller)
     {
-        return (isset($this->mocks[$controller]) === false ? null : $this->mocks[$controller]);
+        return isset($this->mocks[$controller]) === false ? null : $this->mocks[$controller];
     }
 
     public function unlink(mock\controller $controller)

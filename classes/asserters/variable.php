@@ -85,7 +85,7 @@ class variable extends asserter
 
     public function wasSet()
     {
-        return ($this->isSet === true);
+        return $this->isSet === true;
     }
 
     public function setWith($value)
@@ -99,11 +99,11 @@ class variable extends asserter
         return $this;
     }
 
-    public function setByReferenceWith(& $value)
+    public function setByReferenceWith(&$value)
     {
         $this->reset();
 
-        $this->value = & $value;
+        $this->value = &$value;
         $this->isSet = true;
         $this->isSetByReference = true;
 
@@ -126,7 +126,7 @@ class variable extends asserter
 
     public function isSetByReference()
     {
-        return ($this->isSet === true && $this->isSetByReference === true);
+        return $this->isSet === true && $this->isSetByReference === true;
     }
 
     public function isEqualTo($value, $failMessage = null)
@@ -195,7 +195,7 @@ class variable extends asserter
         return $this;
     }
 
-    public function isReferenceTo(& $reference, $failMessage = null)
+    public function isReferenceTo(&$reference, $failMessage = null)
     {
         if ($this->valueIsSet()->isSetByReference() === false) {
             throw new exceptions\logic('Value is not set by reference');

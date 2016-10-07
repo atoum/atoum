@@ -192,7 +192,6 @@ class phing extends realtime
         $skippedTestMethodPrompt = clone $secondLevelPrompt;
         $skippedTestMethodPrompt->setColorizer($skippedTestColorizer);
 
-
         $phpPathField = new runner\php\path\cli();
         $phpPathField
             ->setPrompt($firstLevelPrompt)

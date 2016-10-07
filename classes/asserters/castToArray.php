@@ -34,7 +34,7 @@ class castToArray extends phpArray
         parent::setWith($value, false);
 
         $fail = false;
-        $this->adapter->set_error_handler(function () use (& $fail) {
+        $this->adapter->set_error_handler(function () use (&$fail) {
             $fail = true;
         });
 

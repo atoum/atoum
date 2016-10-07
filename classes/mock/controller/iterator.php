@@ -52,7 +52,7 @@ class iterator implements \iteratorAggregate
         }
 
         return array_values(array_filter($methods, function ($name) {
-            return ($name !== '__construct');
+            return $name !== '__construct';
         }));
     }
 

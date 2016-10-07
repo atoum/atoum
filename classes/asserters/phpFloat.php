@@ -27,7 +27,7 @@ class phpFloat extends integer
             $offsetIsNaN = is_nan($offset);
 
             if ($offsetIsNaN === false && $epsilon === null) {
-                $epsilon = pow(10, - ini_get('precision'));
+                $epsilon = pow(10, -ini_get('precision'));
             }
 
             switch (true) {

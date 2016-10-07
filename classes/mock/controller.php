@@ -193,7 +193,7 @@ class controller extends test\adapter
 
     public function autoBindIsEnabled()
     {
-        return ($this->autoBind === true);
+        return $this->autoBind === true;
     }
 
     public function reset()

@@ -73,7 +73,7 @@ class token extends iterator\value
 
     public function valid()
     {
-        return ($this->key === 0);
+        return $this->key === 0;
     }
 
     public function next()

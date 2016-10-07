@@ -164,7 +164,7 @@ class generator extends atoum\script
                 'support' => atoum\mail,
                 'repository' => atoum\repository,
                 'description' => $description,
-                'licence' => $licence
+                'licence' => $licence,
             ]
         );
 

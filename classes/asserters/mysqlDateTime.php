@@ -27,6 +27,6 @@ class mysqlDateTime extends dateTime
     {
         $value = parent::getValue();
 
-        return ($value instanceof \dateTime === false ? $value : $value->format(self::mysqlDateTimeFormat));
+        return $value instanceof \dateTime === false ? $value : $value->format(self::mysqlDateTimeFormat);
     }
 }

@@ -119,7 +119,7 @@ class compiler extends atoum\script
         $bootstrapFile = new atoum\fs\path($this->bootstrapFile);
         $bootstrapFile = $bootstrapFile->relativizeFrom($srcDirectory);
 
-        $bootstrap  = '<?php $directory = sys_get_temp_dir() . \'/\' . basename(__FILE__);';
+        $bootstrap = '<?php $directory = sys_get_temp_dir() . \'/\' . basename(__FILE__);';
         $bootstrap .= '$bootstrap = $directory . \'/' . $bootstrapFile . '\';';
         $bootstrap .= 'if (is_file($bootstrap) === false || filemtime(__FILE__) > filemtime($bootstrap))';
         $bootstrap .= '{';

@@ -102,10 +102,10 @@ class call
 
             case sizeof($this->arguments) <= sizeof($call->arguments):
                 $callback = function ($a, $b) {
-                    return ($a == $b ? 0 : -1);
+                    return $a == $b ? 0 : -1;
                 };
 
-                return (sizeof($this->arguments) == sizeof(array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback)));
+                return sizeof($this->arguments) == sizeof(array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback));
 
             default:
                 return false;
@@ -118,7 +118,7 @@ class call
 
         if ($isIdentical === true && $this->arguments !== null && $call->arguments !== null) {
             $callback = function ($a, $b) {
-                return ($a === $b ? 0 : -1);
+                return $a === $b ? 0 : -1;
             };
 
             $isIdentical = ($this->arguments === array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback));
@@ -129,6 +129,6 @@ class call
 
     public function isFullyQualified()
     {
-        return ($this->function !== null && $this->arguments !== null);
+        return $this->function !== null && $this->arguments !== null;
     }
 }

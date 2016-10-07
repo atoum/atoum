@@ -54,7 +54,7 @@ class score
 
     public function getAssertionNumber()
     {
-        return ($this->passNumber + sizeof($this->failAssertions));
+        return $this->passNumber + sizeof($this->failAssertions);
     }
 
     public function getPassNumber()
@@ -232,7 +232,7 @@ class score
 
     public function addPass()
     {
-        $this->passNumber++;
+        ++$this->passNumber;
 
         return $this;
     }
@@ -264,7 +264,7 @@ class score
             'file' => $file,
             'line' => $line,
             'asserter' => $asserter,
-            'fail' => $reason
+            'fail' => $reason,
         ];
 
         return self::$failId;
@@ -280,7 +280,7 @@ class score
             'method' => $method,
             'file' => $file,
             'line' => $line,
-            'value' => (string) $exception
+            'value' => (string) $exception,
         ];
 
         return $this;
@@ -306,7 +306,7 @@ class score
             'type' => $type,
             'message' => trim($message),
             'errorFile' => $errorFile,
-            'errorLine' => $errorLine
+            'errorLine' => $errorLine,
         ];
 
         return $this;
@@ -318,7 +318,7 @@ class score
             $this->outputs[] = [
                 'class' => $class,
                 'method' => $method,
-                'value' => $output
+                'value' => $output,
             ];
         }
 
@@ -332,7 +332,7 @@ class score
                 'class' => $class,
                 'method' => $method,
                 'value' => $duration,
-                'path' => $file
+                'path' => $file,
             ];
         }
 
@@ -345,7 +345,7 @@ class score
             $this->memoryUsages[] = [
                 'class' => $class,
                 'method' => $method,
-                'value' => $memoryUsage
+                'value' => $memoryUsage,
             ];
         }
 
@@ -357,7 +357,7 @@ class score
         $this->voidMethods[] = [
             'file' => $file,
             'class' => $class,
-            'method' => $method
+            'method' => $method,
         ];
 
         return $this;
@@ -370,7 +370,7 @@ class score
             'class' => $class,
             'method' => $method,
             'exitCode' => $exitCode,
-            'output' => $output
+            'output' => $output,
         ];
 
         return $this;
@@ -383,7 +383,7 @@ class score
             'class' => $class,
             'method' => $method,
             'line' => $line,
-            'message' => $message
+            'message' => $message,
         ];
 
         return $this;
@@ -439,9 +439,9 @@ class score
     {
         $id = $exception->getCode();
 
-        return (sizeof(array_filter($this->failAssertions, function ($assertion) use ($id) {
-            return ($assertion['id'] === $id);
-        })) > 0);
+        return sizeof(array_filter($this->failAssertions, function ($assertion) use ($id) {
+            return $assertion['id'] === $id;
+        })) > 0;
     }
 
     private static function getMethods(array $array)
@@ -477,7 +477,7 @@ class score
             } elseif ($a['line'] === $b['line']) {
                 return 0;
             } else {
-                return ($a['line'] < $b['line'] ? -1 : 1);
+                return $a['line'] < $b['line'] ? -1 : 1;
             }
         }
         );

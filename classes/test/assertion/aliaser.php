@@ -47,7 +47,7 @@ class aliaser implements \arrayAccess
         if (isset($this->aliases[$contextKey]) === true) {
             $aliasKey = $this->getAliasKey($alias);
 
-            return (isset($this->aliases[$contextKey][$aliasKey]) === true);
+            return isset($this->aliases[$contextKey][$aliasKey]) === true;
         }
     }
 
@@ -82,7 +82,7 @@ class aliaser implements \arrayAccess
 
     public function offsetExists($context)
     {
-        return (isset($this->aliases[$this->getContextKey($context)]) === true);
+        return isset($this->aliases[$this->getContextKey($context)]) === true;
     }
 
     public function setResolver(asserter\resolver $resolver = null)
@@ -132,7 +132,7 @@ class aliaser implements \arrayAccess
         $aliasKey = $this->getAliasKey($alias);
         $contextKey = $this->getContextKey($context);
 
-        return (isset($this->aliases[$contextKey]) === false || isset($this->aliases[$contextKey][$aliasKey]) === false ? $alias : $this->aliases[$contextKey][$aliasKey]);
+        return isset($this->aliases[$contextKey]) === false || isset($this->aliases[$contextKey][$aliasKey]) === false ? $alias : $this->aliases[$contextKey][$aliasKey];
     }
 
     private function getAliasKey($alias)
@@ -148,6 +148,6 @@ class aliaser implements \arrayAccess
             $this->context = null;
         }
 
-        return ($context == '' ? '' : strtolower($this->resolver->resolve($context) ?: $context));
+        return $context == '' ? '' : strtolower($this->resolver->resolve($context) ?: $context);
     }
 }

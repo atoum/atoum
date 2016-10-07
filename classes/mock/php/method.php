@@ -69,11 +69,11 @@ class method
     {
         $arguments = $this->arguments;
 
-        array_walk($arguments, function (& $value) {
+        array_walk($arguments, function (&$value) {
             $value = (string) $value;
         });
 
-        return join(', ', $arguments);
+        return implode(', ', $arguments);
     }
 
     public static function get($name)

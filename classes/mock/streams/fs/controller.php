@@ -28,22 +28,22 @@ class controller extends stream\controller
             'mtime' => 507769200,
             'ctime' => 507769200,
             'blksize' => 0,
-            'blocks' => 0
+            'blocks' => 0,
         ];
 
-        $this->stat[0] = & $this->stat['dev'];
-        $this->stat[1] = & $this->stat['ino'];
-        $this->stat[2] = & $this->stat['mode'];
-        $this->stat[3] = & $this->stat['nlink'];
-        $this->stat[4] = & $this->stat['uid'];
-        $this->stat[5] = & $this->stat['gid'];
-        $this->stat[6] = & $this->stat['rdev'];
-        $this->stat[7] = & $this->stat['size'];
-        $this->stat[8] = & $this->stat['atime'];
-        $this->stat[9] = & $this->stat['mtime'];
-        $this->stat[10] = & $this->stat['ctime'];
-        $this->stat[11] = & $this->stat['blksize'];
-        $this->stat[12] = & $this->stat['blocks'];
+        $this->stat[0] = &$this->stat['dev'];
+        $this->stat[1] = &$this->stat['ino'];
+        $this->stat[2] = &$this->stat['mode'];
+        $this->stat[3] = &$this->stat['nlink'];
+        $this->stat[4] = &$this->stat['uid'];
+        $this->stat[5] = &$this->stat['gid'];
+        $this->stat[6] = &$this->stat['rdev'];
+        $this->stat[7] = &$this->stat['size'];
+        $this->stat[8] = &$this->stat['atime'];
+        $this->stat[9] = &$this->stat['mtime'];
+        $this->stat[10] = &$this->stat['ctime'];
+        $this->stat[11] = &$this->stat['blksize'];
+        $this->stat[12] = &$this->stat['blocks'];
     }
 
     public function getAdapter()
@@ -109,23 +109,23 @@ class controller extends stream\controller
 
     public function getPermissions()
     {
-        return ($this->exists === false ? null : (int) sprintf('%03o', $this->stat['mode'] & 07777));
+        return $this->exists === false ? null : (int) sprintf('%03o', $this->stat['mode'] & 07777);
     }
 
     public function duplicate()
     {
         $controller = parent::duplicate();
 
-        $controller->adapter = & $this->adapter;
-        $controller->exists = & $this->exists;
-        $controller->stat = & $this->stat;
+        $controller->adapter = &$this->adapter;
+        $controller->exists = &$this->exists;
+        $controller->stat = &$this->stat;
 
         return $controller;
     }
 
     public function getStat()
     {
-        return ($this->exists === false ? false : $this->stat);
+        return $this->exists === false ? false : $this->stat;
     }
 
     public function stream_stat()
@@ -175,7 +175,7 @@ class controller extends stream\controller
 
     protected function removePermissions($permissions)
     {
-        return $this->setStat('mode', $this->stat['mode'] & ~ $permissions);
+        return $this->setStat('mode', $this->stat['mode'] & ~$permissions);
     }
 
     protected function checkIfReadable()

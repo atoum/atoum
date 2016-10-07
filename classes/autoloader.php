@@ -153,9 +153,9 @@ class autoloader
                     list($directory, $suffix) = $directoryData;
 
                     $directoryLength = strlen($directory);
-                    $suffixLength = - strlen($suffix);
+                    $suffixLength = -strlen($suffix);
 
-                    foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file) {
+                    foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS | \filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file) {
                         $filePath = $file->getPathname();
 
                         $classes[$namespace . strtolower(str_replace('/', '\\', substr($filePath, $directoryLength, $suffixLength)))] = $filePath;
@@ -219,7 +219,7 @@ class autoloader
 
     public function getCacheFileForInstance()
     {
-        return ($this->cacheFileInstance ?: static::getCacheFile());
+        return $this->cacheFileInstance ?: static::getCacheFile();
     }
 
     public static function set()
@@ -244,7 +244,7 @@ class autoloader
 
     public static function getCacheFile()
     {
-        return (self::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . sprintf(static::defaultCacheFileName, md5(__FILE__)));
+        return self::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . sprintf(static::defaultCacheFileName, md5(__FILE__));
     }
 
     public static function getRegisteredAutoloaders()
@@ -353,13 +353,13 @@ class autoloader
 
     protected static function exists($class)
     {
-        return (
+        return
             class_exists($class, false) === true ||
             interface_exists($class, false) === true || (
                 version_compare(PHP_VERSION, '5.4.0') >= 0 &&
                 trait_exists($class, false) === true
             )
-        );
+        ;
     }
 }
 

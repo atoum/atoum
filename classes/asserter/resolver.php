@@ -97,6 +97,6 @@ class resolver
 
     private function checkClass($class)
     {
-        return (class_exists($class, true) === false || is_subclass_of($class, $this->baseClass) === false ? null : $class);
+        return class_exists($class, true) === false || is_subclass_of($class, $this->baseClass) === false ? null : $class;
     }
 }

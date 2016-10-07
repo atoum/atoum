@@ -27,7 +27,7 @@ class generator
 
     public function __isset($property)
     {
-        return ($this->getAsserterClass($property) !== null);
+        return $this->getAsserterClass($property) !== null;
     }
 
     public function __call($method, $arguments)

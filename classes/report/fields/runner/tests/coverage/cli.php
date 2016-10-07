@@ -66,7 +66,6 @@ class cli extends report\fields\runner\tests\coverage
                 ;
             }
 
-
             if ($this->hideClassesCoverageDetails === false) {
                 foreach ($this->coverage->getMethods() as $class => $methods) {
                     $classCoverage = $this->coverage->getValueForClass($class);

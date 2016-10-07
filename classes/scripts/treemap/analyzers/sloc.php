@@ -24,9 +24,9 @@ class sloc implements analyzer
 
         foreach ($file->openFile() as $line) {
             if (preg_match('/^\s+$/', $line)) {
-                $blankLines++;
+                ++$blankLines;
             } else {
-                $codeLines++;
+                ++$codeLines;
             }
         }
 

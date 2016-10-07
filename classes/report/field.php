@@ -36,7 +36,7 @@ abstract class field
 
     public function canHandleEvent($event)
     {
-        return ($this->events === null ? true : in_array($event, $this->events));
+        return $this->events === null ? true : in_array($event, $this->events);
     }
 
     public function handleEvent($event, atoum\observable $observable)

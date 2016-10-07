@@ -105,7 +105,6 @@ class tokenizer implements \iteratorAggregate
                     $this->currentIterator = $this->currentNamespace;
                     break;
 
-
                 case T_CONST:
                     $this->appendConstant();
                     break;
@@ -249,9 +248,9 @@ class tokenizer implements \iteratorAggregate
                         $token = $this->tokens->current();
 
                         if ($token[0] === '(') {
-                            $stack++;
+                            ++$stack;
                         } elseif ($token[0] === ')') {
-                            $stack--;
+                            --$stack;
                         }
 
                         $this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
@@ -266,11 +265,11 @@ class tokenizer implements \iteratorAggregate
         $key = $this->tokens->key() + 1;
 
         while (isset($this->tokens[$key]) === true && in_array($this->tokens[$key], $skipedTags) === true) {
-            $key++;
+            ++$key;
         }
 
-        $key++;
+        ++$key;
 
-        return (isset($this->tokens[$key]) === true && $this->tokens[$key][0] === $tokenName);
+        return isset($this->tokens[$key]) === true && $this->tokens[$key][0] === $tokenName;
     }
 }

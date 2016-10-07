@@ -52,7 +52,7 @@ class decorator
                 }
             }
 
-            $string = join(', ', $string);
+            $string = implode(', ', $string);
         }
 
         return $string;

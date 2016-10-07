@@ -9,7 +9,7 @@ class dateInterval extends object
 {
     public function __toString()
     {
-        return (static::isDateInterval($this->value) === false ? parent::__toString() : $this->format($this->value));
+        return static::isDateInterval($this->value) === false ? parent::__toString() : $this->format($this->value);
     }
 
     public function __get($asserter)
@@ -129,7 +129,7 @@ class dateInterval extends object
 
     protected static function isDateInterval($value)
     {
-        return ($value instanceof \dateInterval);
+        return $value instanceof \dateInterval;
     }
 
     protected function format(\dateInterval $interval)

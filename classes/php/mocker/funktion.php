@@ -120,7 +120,7 @@ class funktion extends mocker
 
     protected function functionExists($fqdn)
     {
-        return (isset(static::$adapter->{$fqdn}) === true);
+        return isset(static::$adapter->{$fqdn}) === true;
     }
 
     protected static function getParametersSignature(\reflectionFunction $function)
@@ -141,7 +141,7 @@ class funktion extends mocker
             $parameters[] = $parameterCode;
         }
 
-        return join(', ', $parameters);
+        return implode(', ', $parameters);
     }
 
     protected static function getParameters(\reflectionFunction $function)
@@ -152,7 +152,7 @@ class funktion extends mocker
             $parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
         }
 
-        return 'array(' . join(',', $parameters) . ')';
+        return 'array(' . implode(',', $parameters) . ')';
     }
 
     protected static function getParameterType(\reflectionParameter $parameter)
@@ -164,7 +164,7 @@ class funktion extends mocker
             case method_exists($parameter, 'isCallable') && $parameter->isCallable():
                 return 'callable ';
 
-            case ($class = $parameter->getClass()):
+            case $class = $parameter->getClass():
                 return '\\' . $class->getName() . ' ';
 
             default:
@@ -199,7 +199,7 @@ class funktion extends mocker
     private static function filterParameters(\reflectionFunction $function)
     {
         return array_filter($function->getParameters(), function ($parameter) {
-            return ($parameter->getName() != '...');
+            return $parameter->getName() != '...';
         });
     }
 }

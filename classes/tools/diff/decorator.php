@@ -20,26 +20,26 @@ class decorator
             $string .= '+Actual' . PHP_EOL;
 
             foreach ($diff as $lineNumber => $diff) {
-                $lineNumber++;
+                ++$lineNumber;
 
                 $sizeofMinus = sizeof($diff['-']);
                 $sizeofPlus = sizeof($diff['+']);
 
                 $string .= '@@ -' . $lineNumber . ($sizeofMinus <= 1 ? '' : ',' . $sizeofMinus) . ' +' . $lineNumber . ($sizeofPlus <= 1 ? '' : ',' . $sizeofPlus) . ' @@' . PHP_EOL;
 
-                array_walk($diff['-'], function (& $value) {
+                array_walk($diff['-'], function (&$value) {
                     $value = ($value == '' ? '' : '-' . $value);
                 });
-                $minus = join(PHP_EOL, $diff['-']);
+                $minus = implode(PHP_EOL, $diff['-']);
 
                 if ($minus != '') {
                     $string .= $minus . PHP_EOL;
                 }
 
-                array_walk($diff['+'], function (& $value) {
+                array_walk($diff['+'], function (&$value) {
                     $value = ($value == '' ? '' : '+' . $value);
                 });
-                $plus = join(PHP_EOL, $diff['+']);
+                $plus = implode(PHP_EOL, $diff['+']);
 
                 if ($plus != '') {
                     $string .= $plus . PHP_EOL;

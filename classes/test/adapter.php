@@ -84,7 +84,7 @@ class adapter extends atoum\adapter
 
     public function getCalls(adapter\call $call = null, $identical = false)
     {
-        return ($call === null ? $this->calls : $this->calls->get($call, $identical));
+        return $call === null ? $this->calls : $this->calls->get($call, $identical);
     }
 
     public function getCallsNumber(adapter\call $call = null, $identical = false)
@@ -177,7 +177,7 @@ class adapter extends atoum\adapter
         $call = sizeof($this->addCall($functionName, $arguments)->getCallsEqualTo(new adapter\call($functionName)));
 
         try {
-            return ($this->callIsOverloaded($functionName, $call) === false ? parent::invoke($functionName, $arguments) : $this->{$functionName}->invoke($arguments, $call));
+            return $this->callIsOverloaded($functionName, $call) === false ? parent::invoke($functionName, $arguments) : $this->{$functionName}->invoke($arguments, $call);
         } catch (exceptions\logic\invalidArgument $exception) {
             throw new exceptions\logic('There is no return value defined for \'' . $functionName . '() at call ' . $call);
         }
@@ -214,12 +214,12 @@ class adapter extends atoum\adapter
     {
         $functionName = static::getKey($functionName);
 
-        return (isset($this->invokers[$functionName]) === true && $this->invokers[$functionName]->closureIsSetForCall($call) === true);
+        return isset($this->invokers[$functionName]) === true && $this->invokers[$functionName]->closureIsSetForCall($call) === true;
     }
 
     protected function nextCallIsOverloaded($functionName)
     {
-        return ($this->callIsOverloaded($functionName, $this->getCallNumber(new adapter\call($functionName)) + 1) === true);
+        return $this->callIsOverloaded($functionName, $this->getCallNumber(new adapter\call($functionName)) + 1) === true;
     }
 
     protected function buildCall($function, array $arguments)
@@ -264,20 +264,20 @@ class adapter extends atoum\adapter
         if (is_array($arguments) === true) {
             if ($arguments === []) {
                 $filter = function ($callArguments) use ($arguments) {
-                    return ($arguments === $callArguments);
+                    return $arguments === $callArguments;
                 };
             } else {
                 $callback = function ($a, $b) {
-                    return ($a == $b ? 0 : -1);
+                    return $a == $b ? 0 : -1;
                 };
 
                 if ($identicalArguments === false) {
                     $filter = function ($callArguments) use ($arguments, $callback) {
-                        return ($arguments == array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+                        return $arguments == array_uintersect_uassoc($callArguments, $arguments, $callback, $callback);
                     };
                 } else {
                     $filter = function ($callArguments) use ($arguments, $callback) {
-                        return ($arguments === array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+                        return $arguments === array_uintersect_uassoc($callArguments, $arguments, $callback, $callback);
                     };
                 }
             }

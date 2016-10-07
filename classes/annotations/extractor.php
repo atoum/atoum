@@ -34,7 +34,7 @@ class extractor
                                 break;
 
                             default:
-                                $value = join(' ', array_slice($comment, 1));
+                                $value = implode(' ', array_slice($comment, 1));
                         }
 
                         foreach ($this->handlers as $handlerAnnotation => $handlerValue) {

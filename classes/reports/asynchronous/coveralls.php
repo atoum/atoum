@@ -127,7 +127,7 @@ class coveralls extends atoum\reports\asynchronous
             'service_job_id' => $this->serviceJobId,
             'run_at' => $this->adapter->date('Y-m-d H:i:s O'),
             'source_files' => $this->makeSourceElement($coverage),
-            'git' => $this->makeGitElement()
+            'git' => $this->makeGitElement(),
         ];
 
         if ($this->repositoryToken !== null) {
@@ -161,7 +161,7 @@ class coveralls extends atoum\reports\asynchronous
             $sources[] = [
                 'name' => ltrim((string) $path->relativizeFrom($this->sourceDir), '.' . DIRECTORY_SEPARATOR),
                 'source' => $source,
-                'coverage' => $this->makeCoverageElement($coverage->getCoverageForClass($class))
+                'coverage' => $this->makeCoverageElement($coverage->getCoverageForClass($class)),
             ];
         }
 

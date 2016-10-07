@@ -86,7 +86,7 @@ class manager
         return $this->invokeHandlerFrom($this->methodHandlers, $event, $arguments);
     }
 
-    private function setHandlerIn(array & $handlers, $event, \closure $handler)
+    private function setHandlerIn(array &$handlers, $event, \closure $handler)
     {
         $handlers[strtolower($event)] = $handler;
 

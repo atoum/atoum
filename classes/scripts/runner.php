@@ -148,7 +148,7 @@ class runner extends atoum\script\configurable
 
     public function autorun()
     {
-        return (isset($_SERVER['argv']) === false || isset($_SERVER['argv'][0]) === false || $this->adapter->realpath($_SERVER['argv'][0]) !== $this->getName());
+        return isset($_SERVER['argv']) === false || isset($_SERVER['argv'][0]) === false || $this->adapter->realpath($_SERVER['argv'][0]) !== $this->getName();
     }
 
     public function setScoreFile($path)
@@ -184,7 +184,7 @@ class runner extends atoum\script\configurable
 
     public function hasDefaultArguments()
     {
-        return (sizeof($this->defaultArguments) > 0);
+        return sizeof($this->defaultArguments) > 0;
     }
 
     public function getDefaultArguments()
@@ -201,10 +201,10 @@ class runner extends atoum\script\configurable
 
     public function run(array $arguments = [])
     {
-        # Default bootstrap file MUST be included here because some arguments on the command line can include some tests which depends of this file.
-        # So, this file must be included BEFORE argument parsing which is done in script::run().
-        # Default bootstrap file can be overrided in a default config file included in script\configurable::run() which extends script::run().
-        # So, if a bootstrap file is defined in a default config file, it will be available when arguments on CLI will be parsed
+        // Default bootstrap file MUST be included here because some arguments on the command line can include some tests which depends of this file.
+        // So, this file must be included BEFORE argument parsing which is done in script::run().
+        // Default bootstrap file can be overrided in a default config file included in script\configurable::run() which extends script::run().
+        // So, if a bootstrap file is defined in a default config file, it will be available when arguments on CLI will be parsed
         $this->setDefaultBootstrapFiles();
 
         if ($this->autorun() === true && sizeof($this->runner->getDeclaredTestClasses()) > 0) {
@@ -238,7 +238,7 @@ class runner extends atoum\script\configurable
         $runner = $this->runner;
 
         return $this->includeConfigFile($path, function ($path) use ($script, $runner) {
-            include_once($path);
+            include_once $path;
         });
     }
 
@@ -597,7 +597,7 @@ class runner extends atoum\script\configurable
 
     public static function autorunMustBeEnabled()
     {
-        return (static::$autorunner === true);
+        return static::$autorunner === true;
     }
 
     public static function enableAutorun($name)
@@ -609,10 +609,10 @@ class runner extends atoum\script\configurable
         }
 
         if ($autorunIsRegistered === false) {
-            $autorunner = & static::$autorunner;
+            $autorunner = &static::$autorunner;
             $calledClass = get_called_class();
 
-            register_shutdown_function(function () use (& $autorunner, $calledClass) {
+            register_shutdown_function(function () use (&$autorunner, $calledClass) {
                 if ($autorunner instanceof $calledClass) {
                     set_error_handler(function ($error, $message, $file, $line) use ($autorunner) {
                         if (error_reporting() !== 0) {
@@ -1199,12 +1199,12 @@ class runner extends atoum\script\configurable
                         $closestArgument = $this->argumentsParser->getClosestArgument($argument, $min);
 
                         if ($closestArgument !== null && $min === 0) {
-                            $php->addArgument($closestArgument, join(' ', $values));
+                            $php->addArgument($closestArgument, implode(' ', $values));
                         } else {
                             $php->addArgument('-f', $argument);
                         }
                     } else {
-                        $php->addArgument($argument, join(' ', $values));
+                        $php->addArgument($argument, implode(' ', $values));
                     }
             }
         }

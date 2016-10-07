@@ -23,7 +23,7 @@ class stream
 
     public static function getAdapter()
     {
-        return (static::$adapter = static::$adapter ?: new adapter());
+        return static::$adapter = static::$adapter ?: new adapter();
     }
 
     public static function setAdapter(adapter $adapter)

@@ -149,11 +149,11 @@ abstract class test implements observable, \countable
 
         if ($this->analyzer->isRegex($testMethodPrefix) === false) {
             $testMethodFilter = function ($methodName) use ($testMethodPrefix) {
-                return (stripos($methodName, $testMethodPrefix) === 0);
+                return stripos($methodName, $testMethodPrefix) === 0;
             };
         } else {
             $testMethodFilter = function ($methodName) use ($testMethodPrefix) {
-                return (preg_match($testMethodPrefix, $methodName) == true);
+                return preg_match($testMethodPrefix, $methodName) == true;
             };
         }
 
@@ -392,6 +392,7 @@ abstract class test implements observable, \countable
                 if ($mixed instanceof \closure) {
                     $mixed($test);
                 }
+
                 return $test;
             })
             ->setHandler('assert', function ($case = null) use ($test) {
@@ -399,6 +400,7 @@ abstract class test implements observable, \countable
                 if ($case !== null) {
                     $test->startCase($case);
                 }
+
                 return $test;
             })
             ->setHandler('mockGenerator', function () use ($test) {
@@ -406,10 +408,12 @@ abstract class test implements observable, \countable
             })
             ->setHandler('mockClass', function ($class, $mockNamespace = null, $mockClass = null) use ($test) {
                 $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass);
+
                 return $test;
             })
             ->setHandler('mockTestedClass', function ($mockNamespace = null, $mockClass = null) use ($test) {
                 $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass);
+
                 return $test;
             })
             ->setHandler('newMockInstance', function ($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = null) use ($test) {
@@ -434,18 +438,21 @@ abstract class test implements observable, \countable
                 if ($test->debugModeIsEnabled() === true) {
                     call_user_func_array('var_dump', func_get_args());
                 }
+
                 return $test;
             })
             ->setHandler('stop', function () use ($test) {
                 if ($test->debugModeIsEnabled() === true) {
                     throw new test\exceptions\stop();
                 }
+
                 return $test;
             })
             ->setHandler('executeOnFailure', function ($callback) use ($test) {
                 if ($test->debugModeIsEnabled() === true) {
                     $test->executeOnFailure($callback);
                 }
+
                 return $test;
             })
             ->setHandler('dumpOnFailure', function ($variable) use ($test) {
@@ -454,6 +461,7 @@ abstract class test implements observable, \countable
                         var_dump($variable);
                     });
                 }
+
                 return $test;
             })
             ->setPropertyHandler('function', function () use ($test) {
@@ -523,6 +531,7 @@ abstract class test implements observable, \countable
 
         $this->assertionManager->setHandler('resetFunction', function (test\adapter\invoker $invoker) use ($phpFunctionMocker) {
             $phpFunctionMocker->resetCalls($invoker->getFunction());
+
             return $invoker;
         });
 
@@ -534,21 +543,24 @@ abstract class test implements observable, \countable
             })
             ->setHandler('from', function ($class) use ($assertionAliaser, $test) {
                 $assertionAliaser->from($class);
+
                 return $test;
             })
             ->setHandler('use', function ($target) use ($assertionAliaser, $test) {
                 $assertionAliaser->alias($target);
+
                 return $test;
             })
             ->setHandler('as', function ($alias) use ($assertionAliaser, $test) {
                 $assertionAliaser->to($alias);
+
                 return $test;
             })
         ;
 
         $asserterGenerator = $this->asserterGenerator;
 
-        $this->assertionManager->setDefaultHandler(function ($keyword, $arguments) use ($asserterGenerator, $assertionAliaser, & $lastAsserter) {
+        $this->assertionManager->setDefaultHandler(function ($keyword, $arguments) use ($asserterGenerator, $assertionAliaser, &$lastAsserter) {
             static $lastAsserter = null;
 
             if ($lastAsserter !== null) {
@@ -559,7 +571,7 @@ abstract class test implements observable, \countable
                 }
             }
 
-            return ($lastAsserter = $asserterGenerator->getAsserterInstance($keyword, $arguments));
+            return $lastAsserter = $asserterGenerator->getAsserterInstance($keyword, $arguments);
         }
         );
 
@@ -721,7 +733,7 @@ abstract class test implements observable, \countable
 
     public function methodIsNotVoid($method)
     {
-        return (isset($this->methodsAreNotVoid[$method]) === false ? $this->classHasNotVoidMethods : $this->methodsAreNotVoid[$method]);
+        return isset($this->methodsAreNotVoid[$method]) === false ? $this->classHasNotVoidMethods : $this->methodsAreNotVoid[$method];
     }
 
     public function setMethodEngine($method, $engine)
@@ -735,7 +747,7 @@ abstract class test implements observable, \countable
     {
         $method = (string) $method;
 
-        return (isset($this->methodEngines[$method]) === false ? null : $this->methodEngines[$method]);
+        return isset($this->methodEngines[$method]) === false ? null : $this->methodEngines[$method];
     }
 
     public function enableDebugMode()
@@ -1249,7 +1261,7 @@ abstract class test implements observable, \countable
                         )
                     ;
 
-                    $this->assertionManager->setPropertyHandler('testedInstance', function () use (& $instance) {
+                    $this->assertionManager->setPropertyHandler('testedInstance', function () use (&$instance) {
                         if ($instance === null) {
                             throw new exceptions\runtime('Use $this->newTestedInstance before using $this->testedInstance');
                         }
@@ -1618,31 +1630,31 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    protected function setMethodAnnotations(annotations\extractor $extractor, & $methodName)
+    protected function setMethodAnnotations(annotations\extractor $extractor, &$methodName)
     {
         $test = $this;
 
         $extractor
             ->resetHandlers()
-            ->setHandler('ignore', function ($value) use ($test, & $methodName) {
+            ->setHandler('ignore', function ($value) use ($test, &$methodName) {
                 $test->ignoreMethod($methodName, annotations\extractor::toBoolean($value));
             })
-            ->setHandler('tags', function ($value) use ($test, & $methodName) {
+            ->setHandler('tags', function ($value) use ($test, &$methodName) {
                 $test->setMethodTags($methodName, annotations\extractor::toArray($value));
             })
-            ->setHandler('dataProvider', function ($value) use ($test, & $methodName) {
+            ->setHandler('dataProvider', function ($value) use ($test, &$methodName) {
                 $test->setDataProvider($methodName, $value === true ? null : $value);
             })
-            ->setHandler('engine', function ($value) use ($test, & $methodName) {
+            ->setHandler('engine', function ($value) use ($test, &$methodName) {
                 $test->setMethodEngine($methodName, $value);
             })
-            ->setHandler('isVoid', function ($value) use ($test, & $methodName) {
+            ->setHandler('isVoid', function ($value) use ($test, &$methodName) {
                 $test->setMethodVoid($methodName);
             })
-            ->setHandler('isNotVoid', function ($value) use ($test, & $methodName) {
+            ->setHandler('isNotVoid', function ($value) use ($test, &$methodName) {
                 $test->setMethodNotVoid($methodName);
             })
-            ->setHandler('php', function ($value) use ($test, & $methodName) {
+            ->setHandler('php', function ($value) use ($test, &$methodName) {
                 $value = annotations\extractor::toArray($value);
 
                 if (isset($value[0]) === true) {
@@ -1668,7 +1680,7 @@ abstract class test implements observable, \countable
                 }
             }
             )
-            ->setHandler('extensions', function ($value) use ($test, & $methodName) {
+            ->setHandler('extensions', function ($value) use ($test, &$methodName) {
                 foreach (annotations\extractor::toArray($value) as $mandatoryExtension) {
                     $test->addMandatoryMethodExtension($methodName, $mandatoryExtension);
                 }
@@ -1691,7 +1703,7 @@ abstract class test implements observable, \countable
 
                 return [
                     $debugBacktrace[$key]['file'],
-                    $debugBacktrace[$key]['line']
+                    $debugBacktrace[$key]['line'],
                 ];
             }
         }
@@ -1778,7 +1790,7 @@ abstract class test implements observable, \countable
                     }
 
                     if ($engine->isAsynchronous() === true) {
-                        $this->asynchronousEngines--;
+                        --$this->asynchronousEngines;
                     }
                 }
             }
@@ -1817,7 +1829,7 @@ abstract class test implements observable, \countable
                 $this->engines[$this->currentMethod] = $engine->run($this->callObservers(self::beforeTestMethod));
 
                 if ($engine->isAsynchronous() === true) {
-                    $this->asynchronousEngines++;
+                    ++$this->asynchronousEngines;
                 }
             }
 
@@ -1829,7 +1841,7 @@ abstract class test implements observable, \countable
 
     private function canRunEngine(test\engine $engine)
     {
-        return ($engine->isAsynchronous() === false || $this->maxAsynchronousEngines === null || $this->asynchronousEngines < $this->maxAsynchronousEngines);
+        return $engine->isAsynchronous() === false || $this->maxAsynchronousEngines === null || $this->asynchronousEngines < $this->maxAsynchronousEngines;
     }
 
     private function doTearDown()
