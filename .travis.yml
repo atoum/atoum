@@ -27,6 +27,7 @@ before_script:
   - cp resources/configurations/ci/.travis.php.dist .atoum.php
 script:
   - bin/atoum +verbose
+  - phpenv config-rm xdebug.ini || return 0
   - vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
   - mkdir ../phar
   - php -n -dphar.readonly=Off scripts/phar/generator.php -d ../phar
