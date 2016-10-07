@@ -8,6 +8,8 @@ return
         ->fixers([
             'blankline_after_open_tag',
             'concat_with_spaces',
+            'join_function',
+            'native_function_casing',
             'no_blank_lines_after_class_opening',
             'ordered_use',
             'phpdoc_no_access',
