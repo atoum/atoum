@@ -208,7 +208,7 @@ namespace mageekguy\atoum\tests\units\test
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Function \'require()\' is not invokable by an adapter')
                     ->exception(function () use ($adapter) {
-                        $adapter->REQUIRE(uNiqid());
+                        $adapter->REQUIRE(uniqid());
                     }
                         )
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')

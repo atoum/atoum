@@ -73,7 +73,7 @@ class clover extends atoum\test
             ->and($observable->getMockController()->getScore = $score)
             ->and($score->getMockController()->getCoverage = $coverage)
             ->and($coverage->getMockController()->getClasses = [])
-            ->and($filepath = join(
+            ->and($filepath = implode(
                 DIRECTORY_SEPARATOR,
                 [
                     __DIR__,
@@ -123,7 +123,7 @@ class clover extends atoum\test
                     9 => 1
                 ]
             ])
-            ->and($filepath = join(
+            ->and($filepath = implode(
                 DIRECTORY_SEPARATOR,
                 [
                     __DIR__,
