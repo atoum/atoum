@@ -61,17 +61,17 @@ class AtoumTask extends task
 
     public function codeCoverageEnabled()
     {
-        return ($this->codeCoverage === true || $this->codeCoverageReportPath !== null || $this->codeCoverageTreemapPath !== null);
+        return $this->codeCoverage === true || $this->codeCoverageReportPath !== null || $this->codeCoverageTreemapPath !== null;
     }
 
     public function branchAndPathCoverageEnabled()
     {
-        return ($this->branchAndPathCoverage === true);
+        return $this->branchAndPathCoverage === true;
     }
 
     public function telemetryEnabled()
     {
-        return ($this->telemetry === true || $this->telemetryProjectName !== null);
+        return $this->telemetry === true || $this->telemetryProjectName !== null;
     }
 
     public function createFileSet()
@@ -91,7 +91,7 @@ class AtoumTask extends task
             $srcFiles = $ds->getIncludedFiles();
 
             foreach ($srcFiles as $file) {
-                $files[] = $dir . FileSystem::getFileSystem()->getSeparator() . $file;
+                $files[] = $dir.FileSystem::getFileSystem()->getSeparator().$file;
             }
         }
 
@@ -158,7 +158,7 @@ class AtoumTask extends task
             $coverageReportUrl = null;
             if (($path = $this->codeCoverageReportPath) !== null) {
                 $coverageHtmlField = new coverage\html(isset($this->project) === true ? $this->project->getName() : 'Code coverage report', $path);
-                $coverageHtmlField->setRootUrl($this->codeCoverageReportUrl ?: 'file://' . $path . '/index.html');
+                $coverageHtmlField->setRootUrl($this->codeCoverageReportUrl ?: 'file://'.$path.'/index.html');
 
                 $report->addField($coverageHtmlField);
             }
@@ -199,7 +199,7 @@ class AtoumTask extends task
         $failures = ($score->getUncompletedMethodNumber() + $score->getFailNumber() + $score->getErrorNumber() + $score->getExceptionNumber() + $score->getRuntimeExceptionNumber());
 
         if ($failures > 0) {
-            throw new BuildException("Tests did not pass");
+            throw new BuildException('Tests did not pass');
         }
 
         return $this;
@@ -254,7 +254,7 @@ class AtoumTask extends task
     public function configureCoverageTreemapField($coverageTreemapPath, $coverageReportUrl = null)
     {
         $coverageTreemapField = new coverage\treemap(isset($this->project) ? $this->project->getName() : 'Code coverage treemap', $coverageTreemapPath);
-        $coverageTreemapField->setTreemapUrl($this->codeCoverageTreemapUrl ?: 'file://' . $coverageTreemapPath . '/index.html');
+        $coverageTreemapField->setTreemapUrl($this->codeCoverageTreemapUrl ?: 'file://'.$coverageTreemapPath.'/index.html');
 
         if ($coverageReportUrl !== null) {
             $coverageTreemapField->setHtmlReportBaseUrl($coverageReportUrl);
@@ -277,7 +277,7 @@ class AtoumTask extends task
 
     public function setCodeCoverage($codeCoverage)
     {
-        $this->codeCoverage = (boolean) $codeCoverage;
+        $this->codeCoverage = (bool) $codeCoverage;
 
         return $this;
     }
@@ -289,7 +289,7 @@ class AtoumTask extends task
 
     public function setBranchAndPathCoverage($branchAndPathCoverage)
     {
-        $this->branchAndPathCoverage = (boolean) $branchAndPathCoverage;
+        $this->branchAndPathCoverage = (bool) $branchAndPathCoverage;
 
         return $this;
     }
@@ -301,7 +301,7 @@ class AtoumTask extends task
 
     public function setTelemetry($telemetry)
     {
-        $this->telemetry = (boolean) $telemetry;
+        $this->telemetry = (bool) $telemetry;
 
         return $this;
     }
@@ -349,7 +349,7 @@ class AtoumTask extends task
 
     public function setShowCodeCoverage($showCodeCoverage)
     {
-        $this->showCodeCoverage = (boolean) $showCodeCoverage;
+        $this->showCodeCoverage = (bool) $showCodeCoverage;
 
         return $this;
     }
@@ -361,7 +361,7 @@ class AtoumTask extends task
 
     public function setShowDuration($showDurationReport)
     {
-        $this->showDuration = (boolean) $showDurationReport;
+        $this->showDuration = (bool) $showDurationReport;
 
         return $this;
     }
@@ -373,7 +373,7 @@ class AtoumTask extends task
 
     public function setShowMemory($showMemoryReport)
     {
-        $this->showMemory = (boolean) $showMemoryReport;
+        $this->showMemory = (bool) $showMemoryReport;
 
         return $this;
     }
@@ -385,7 +385,7 @@ class AtoumTask extends task
 
     public function setShowMissingCodeCoverage($showMissingCodeCoverage)
     {
-        $this->showMissingCodeCoverage = (boolean) $showMissingCodeCoverage;
+        $this->showMissingCodeCoverage = (bool) $showMissingCodeCoverage;
 
         return $this;
     }
@@ -397,7 +397,7 @@ class AtoumTask extends task
 
     public function setShowProgress($showProgress)
     {
-        $this->showProgress = (boolean) $showProgress;
+        $this->showProgress = (bool) $showProgress;
 
         return $this;
     }
