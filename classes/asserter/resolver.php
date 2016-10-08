@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\asserter;
 
-use mageekguy\atoum\tools\variable\analyzer
-;
+use mageekguy\atoum\tools\variable\analyzer;
 
 class resolver
 {

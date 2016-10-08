@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\mock\streams\fs\directory;
 
-use mageekguy\atoum\mock\streams\fs
-;
+use mageekguy\atoum\mock\streams\fs;
 
 class controller extends fs\controller
 {

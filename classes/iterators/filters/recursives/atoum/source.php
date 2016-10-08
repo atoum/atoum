@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\iterators\filters\recursives\atoum;
 
-use mageekguy\atoum\iterators\filters\recursives
-;
+use mageekguy\atoum\iterators\filters\recursives;
 
 class source extends recursives\dot
 {

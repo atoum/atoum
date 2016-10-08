@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\test\adapter\calls;
 
-use mageekguy\atoum\test\adapter\calls
-;
+use mageekguy\atoum\test\adapter\calls;
 
 class decorator
 {

@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\tools\diff;
 
-use mageekguy\atoum\tools
-;
+use mageekguy\atoum\tools;
 
 class decorator
 {

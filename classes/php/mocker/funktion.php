@@ -56,7 +56,7 @@ class funktion extends mocker
 
         if ($this->functionExists($fqdn) === false) {
             if (function_exists($fqdn) === true) {
-                throw new exceptions\logic\invalidArgument('Function \'' . $fqdn . '\' already exists');
+                throw new exceptions\logic\invalidArgument('Function \''.$fqdn.'\' already exists');
             }
 
             $lastAntislash = strrpos($fqdn, '\\');
@@ -85,7 +85,7 @@ class funktion extends mocker
 
     protected function getFqdn($functionName)
     {
-        return $this->defaultNamespace . $functionName;
+        return $this->defaultNamespace.$functionName;
     }
 
     protected function generateIfNotExists($functionName)
@@ -110,7 +110,7 @@ class funktion extends mocker
                 return null;
             };
         } else {
-            $closure = eval('return function(' . static::getParametersSignature($reflectedFunction) . ') { return call_user_func_array(\'\\' . $function . '\', ' . static::getParameters($reflectedFunction) . '); };');
+            $closure = eval('return function('.static::getParametersSignature($reflectedFunction).') { return call_user_func_array(\'\\'.$function.'\', '.static::getParameters($reflectedFunction).'); };');
         }
 
         static::$adapter->{$fqdn}->setClosure($closure);
@@ -128,11 +128,11 @@ class funktion extends mocker
         $parameters = [];
 
         foreach (self::filterParameters($function) as $parameter) {
-            $parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
+            $parameterCode = self::getParameterType($parameter).($parameter->isPassedByReference() == false ? '' : '& ').'$'.$parameter->getName();
 
             switch (true) {
                 case $parameter->isDefaultValueAvailable():
-                    $parameterCode .= ' = ' . var_export($parameter->getDefaultValue(), true);
+                    $parameterCode .= ' = '.var_export($parameter->getDefaultValue(), true);
                     break;
                 case $parameter->isOptional():
                     $parameterCode .= ' = null';
@@ -149,10 +149,10 @@ class funktion extends mocker
         $parameters = [];
 
         foreach (self::filterParameters($function) as $parameter) {
-            $parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
+            $parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ').'$'.$parameter->getName();
         }
 
-        return 'array(' . implode(',', $parameters) . ')';
+        return 'array('.implode(',', $parameters).')';
     }
 
     protected static function getParameterType(\reflectionParameter $parameter)
@@ -165,7 +165,7 @@ class funktion extends mocker
                 return 'callable ';
 
             case $class = $parameter->getClass():
-                return '\\' . $class->getName() . ' ';
+                return '\\'.$class->getName().' ';
 
             default:
                 return '';

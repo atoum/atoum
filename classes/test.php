@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum;
 
-use mageekguy\atoum\tools\variable\analyzer
-;
+use mageekguy\atoum\tools\variable\analyzer;
 
 abstract class test implements observable, \countable
 {

@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\test\exceptions;
 
-use mageekguy\atoum\exceptions
-;
+use mageekguy\atoum\exceptions;
 
 class skip extends exceptions\runtime
 {

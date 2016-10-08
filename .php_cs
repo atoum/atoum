@@ -23,7 +23,9 @@ return
         ])
         ->finder(
             CS\Finder::create()
-                ->name('/\.php$/')
-                ->name('/\.php\.dist$/')
-                ->in(__DIR__)
+                ->files()
+                    ->name(__FILE__)
+                    ->name('*.php')
+                    ->name('*.php.dist')
+                    ->in(__DIR__)
         );

@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\exceptions\runtime;
 
-use mageekguy\atoum
-;
+use mageekguy\atoum;
 
 class unexpectedValue extends \unexpectedValueException implements atoum\exception
 {

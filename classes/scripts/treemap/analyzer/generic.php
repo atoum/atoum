@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\scripts\treemap\analyzer;
 
-use mageekguy\atoum\scripts\treemap\analyzer
-;
+use mageekguy\atoum\scripts\treemap\analyzer;
 
 class generic implements analyzer
 {

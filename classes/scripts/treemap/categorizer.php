@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\scripts\treemap;
 
-use mageekguy\atoum\exceptions
-;
+use mageekguy\atoum\exceptions;
 
 class categorizer
 {

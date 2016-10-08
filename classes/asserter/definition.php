@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\asserter;
 
-use mageekguy\atoum
-;
+use mageekguy\atoum;
 
 interface definition
 {

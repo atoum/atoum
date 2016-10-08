@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\cli\commands;
 
-use mageekguy\atoum\cli
-;
+use mageekguy\atoum\cli;
 
 class git
 {

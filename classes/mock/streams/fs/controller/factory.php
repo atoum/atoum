@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\mock\streams\fs\controller;
 
-use mageekguy\atoum\mock\streams\fs\controller
-;
+use mageekguy\atoum\mock\streams\fs\controller;
 
 class factory
 {

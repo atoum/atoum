@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\fs;
 
-use mageekguy\atoum\fs\path\exception
-;
+use mageekguy\atoum\fs\path\exception;
 
 class path
 {

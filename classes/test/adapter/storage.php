@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\test\adapter;
 
-use mageekguy\atoum\test\adapter
-;
+use mageekguy\atoum\test\adapter;
 
 class storage implements \countable, \iteratorAggregate
 {
