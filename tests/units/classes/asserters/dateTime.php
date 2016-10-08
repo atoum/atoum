@@ -398,48 +398,6 @@ namespace mageekguy\atoum\tests\units\asserters
 			;
 		}
 
-		public function testIsInYear()
-		{
-			$this
-				->if($this->newTestedInstance)
-				->then
-					->exception(function($test) {
-							$test->testedInstance->isInYear(rand(0, PHP_INT_MAX));
-						}
-					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-						->hasMessage('The method ' . $this->getTestedClassName() . '::isInYear is deprecated, please use ' . $this->getTestedClassName() . '::hasYear instead')
-			;
-		}
-
-		public function testIsInMonth()
-		{
-			$this
-				->if($this->newTestedInstance)
-				->then
-					->exception(function($test) {
-							$test->testedInstance->isInMonth(rand(0, PHP_INT_MAX));
-						}
-					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-						->hasMessage('The method ' . $this->getTestedClassName() . '::isInMonth is deprecated, please use ' . $this->getTestedClassName() . '::hasMonth instead')
-			;
-		}
-
-		public function testIsInDay()
-		{
-			$this
-				->if($this->newTestedInstance)
-				->then
-					->exception(function($test) {
-							$test->testedInstance->isInDay(rand(0, PHP_INT_MAX));
-						}
-					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-						->hasMessage('The method ' . $this->getTestedClassName() . '::isInDay is deprecated, please use ' . $this->getTestedClassName() . '::hasDay instead')
-			;
-		}
-
 		public function testIsImmutable(atoum\locale $locale)
 		{
 			$this

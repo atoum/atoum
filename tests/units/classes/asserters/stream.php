@@ -81,12 +81,12 @@ class stream extends atoum\test
 		;
 	}
 
-	public function testIsWrited()
+	public function testIsWritten()
 	{
 		$this
 			->if($asserter = $this->newTestedInstance)
 			->then
-				->exception(function() use ($asserter) { $asserter->isWrited(); })
+				->exception(function() use ($asserter) { $asserter->isWritten(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Stream is undefined')
 
@@ -96,20 +96,20 @@ class stream extends atoum\test
 				$asserter
 					->setWith($streamName)
 					->setLocale($locale = new \mock\atoum\locale()),
-				$this->calling($locale)->_ = $streamNotWrited = uniqid()
+				$this->calling($locale)->_ = $streamNotWritten = uniqid()
 			)
 			->then
-				->exception(function() use ($asserter) { $asserter->isWrited(); })
+				->exception(function() use ($asserter) { $asserter->isWritten(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($streamNotWrited)
+					->hasMessage($streamNotWritten)
 				->mock($locale)->call('_')->withArguments('stream %s is not written', $streamController)->once
 
-				->exception(function() use ($asserter, & $failMessage) { $asserter->isWrited($failMessage = uniqid()); })
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isWritten($failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
 
 			->when(function() use ($streamName, $contents) { file_put_contents('atoum://' . $streamName, $contents); })
-				->object($asserter->isWrited())->isIdenticalTo($asserter)
+				->object($asserter->isWritten())->isIdenticalTo($asserter)
 
 			->if(
 				$streamController = atoum\mock\stream::get(uniqid()),
@@ -117,17 +117,17 @@ class stream extends atoum\test
 				$asserter->setWith($streamController)
 			)
 			->then
-				->exception(function() use ($asserter) { $asserter->isWrited(); })
+				->exception(function() use ($asserter) { $asserter->isWritten(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($streamNotWrited)
+					->hasMessage($streamNotWritten)
 				->mock($locale)->call('_')->withArguments('stream %s is not written', $streamController)->once
 
-				->exception(function() use ($asserter, & $failMessage) { $asserter->isWrited($failMessage = uniqid()); })
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isWritten($failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($failMessage)
 
 			->when(function() use ($streamController, $contents) { file_put_contents($streamController, $contents); })
-				->object($asserter->isWrited())->isIdenticalTo($asserter)
+				->object($asserter->isWritten())->isIdenticalTo($asserter)
 		;
 	}
 }
