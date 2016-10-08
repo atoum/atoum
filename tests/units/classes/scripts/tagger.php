@@ -45,6 +45,7 @@ class tagger extends atoum\test
 			->and($tagger->setEngine($engine = new \mock\mageekguy\atoum\scripts\tagger\engine()))
 			->and($tagger->setHelpWriter($helpWriter))
 			->and($this->calling($engine)->tagVersion = function() {})
+			->and($this->calling($engine)->tagChangelog = function() {})
 			->then
 				->object($tagger->run())->isIdenticalTo($tagger)
 				->mock($engine)->call('tagVersion')->once()
