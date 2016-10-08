@@ -67,11 +67,6 @@ class dateTime extends object
 		return $this;
 	}
 
-	public function isInYear()
-	{
-		throw new exceptions\runtime('The method ' . __METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::hasYear instead');
-	}
-
 	public function hasMonth($month, $failMessage = null)
 	{
 		if ($this->valueIsSet()->value->format('m') === sprintf('%02d', $month))
@@ -86,11 +81,6 @@ class dateTime extends object
 		return $this;
 	}
 
-	public function isInMonth()
-	{
-		throw new exceptions\runtime('The method ' . __METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::hasMonth instead');
-	}
-
 	public function hasDay($day, $failMessage = null)
 	{
 		if ($this->valueIsSet()->value->format('d') === sprintf('%02d', $day))
@@ -103,11 +93,6 @@ class dateTime extends object
 		}
 
 		return $this;
-	}
-
-	public function isInDay()
-	{
-		throw new exceptions\runtime('The method ' . __METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::hasDay instead');
 	}
 
 	public function hasDate($year, $month, $day, $failMessage = null)

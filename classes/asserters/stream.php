@@ -40,11 +40,6 @@ class stream extends atoum\asserter
 		return $this;
 	}
 
-	public function isWrited($failMessage = null)
-	{
-		return $this->isWritten($failMessage);
-	}
-
 	public function isWritten($failMessage = null)
 	{
 		if (sizeof($this->streamIsSet()->streamController->getCalls(new test\adapter\call('stream_write'))) > 0)
