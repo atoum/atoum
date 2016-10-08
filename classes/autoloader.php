@@ -402,10 +402,8 @@ class autoloader
 	{
 		return (
 			class_exists($class, false) === true ||
-			interface_exists($class, false) === true || (
-				version_compare(PHP_VERSION, '5.4.0') >= 0 &&
-				trait_exists($class, false) === true
-			)
+			interface_exists($class, false) === true ||
+			trait_exists($class, false) === true
 		);
 	}
 }

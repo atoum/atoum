@@ -196,7 +196,7 @@ class dateTime extends object
 
 	public function isImmutable($failMessage = null)
 	{
-		if (version_compare(PHP_VERSION, '5.5.0') < 0 || $this->valueIsSet()->value instanceof \dateTimeImmutable === false)
+		if ($this->valueIsSet()->value instanceof \dateTimeImmutable === false)
 		{
 			$this->fail($failMessage ?: $this->_('%s is not immutable', $this));
 		}
@@ -222,6 +222,6 @@ class dateTime extends object
 
 	private static function isDateTime($value)
 	{
-		return $value instanceof \dateTime || (version_compare(PHP_VERSION, '5.5.0') >= 0 && $value instanceof \dateTimeInterface);
+		return $value instanceof \dateTime || $value instanceof \dateTimeInterface;
 	}
 }
