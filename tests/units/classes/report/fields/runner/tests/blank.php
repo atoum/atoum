@@ -5,12 +5,12 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\tests;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\runner,
-	mock\mageekguy\atoum\report\fields\runner\tests\void as testedClass
+	mock\mageekguy\atoum\report\fields\runner\tests\blank as testedClass
 ;
 
 require __DIR__ . '/../../../../../runner.php';
 
-class void extends atoum\test
+class blank extends atoum\test
 {
 	public function testClass()
 	{

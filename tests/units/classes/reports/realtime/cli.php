@@ -103,7 +103,7 @@ class cli extends atoum\test
 					->setMethodPrompt(new prompt('=> ', new colorizer('0;37')))
 					->setOutputPrompt(new prompt('==> ', new colorizer('0;37')))
 				)
-			->define($runnerVoidField = new fields\runner\tests\void\cli())
+			->define($runnerVoidField = new fields\runner\tests\blank\cli())
 				->and($runnerVoidField
 					->setTitlePrompt(new prompt('> '))
 					->setTitleColorizer(new colorizer('0;34'))

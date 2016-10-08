@@ -61,7 +61,7 @@ class light extends atoum\test
 					->setMethodPrompt(new prompt('=> ', new colorizer('0;37')))
 					->setOutputPrompt(new prompt('==> ', new colorizer('0;37')))
 			)
-			->define($voidTestField = new fields\runner\tests\void\cli())
+			->define($voidTestField = new fields\runner\tests\blank\cli())
 			->define($voidTestField
 					->setTitlePrompt(new prompt('> '))
 					->setTitleColorizer(new colorizer('0;34'))

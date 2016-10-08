@@ -158,7 +158,7 @@ class santa extends realtime
 		$voidTestMethodPrompt = clone $secondLevelPrompt;
 		$voidTestMethodPrompt->setColorizer($voidTestColorizer);
 
-		$runnerVoidField = new runner\tests\void\cli();
+		$runnerVoidField = new runner\tests\blank\cli();
 		$runnerVoidField
 			->setTitlePrompt($firstLevelPrompt)
 			->setTitleColorizer($voidTestColorizer)

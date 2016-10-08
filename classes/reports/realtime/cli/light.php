@@ -109,7 +109,7 @@ class light extends realtime
 		$voidTestOutputPrompt = clone $thirdLevelPrompt;
 		$voidTestOutputPrompt->setColorizer($voidTestColorizer);
 
-		$voidTestField = new runner\tests\void\cli();
+		$voidTestField = new runner\tests\blank\cli();
 		$voidTestField
 			->setTitlePrompt($firstLevelPrompt)
 			->setTitleColorizer($voidTestColorizer)

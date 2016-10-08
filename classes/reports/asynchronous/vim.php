@@ -95,7 +95,7 @@ class vim extends reports\asynchronous
 
 		$this->addField($uncompletedField);
 
-		$voidField = new runner\tests\void\cli();
+		$voidField = new runner\tests\blank\cli();
 		$voidField
 			->setTitlePrompt($firstLevelPrompt)
 			->setMethodPrompt($secondLevelPrompt)

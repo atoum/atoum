@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\observable
 ;
 
-abstract class void extends report\field
+abstract class blank extends report\field
 {
 	protected $runner = null;
 

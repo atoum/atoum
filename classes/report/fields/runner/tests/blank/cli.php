@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\tests\void;
+namespace mageekguy\atoum\report\fields\runner\tests\blank;
 
 use
 	mageekguy\atoum,
@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\cli\colorizer
 ;
 
-class cli extends report\fields\runner\tests\void
+class cli extends report\fields\runner\tests\blank
 {
 	protected $titlePrompt = null;
 	protected $titleColorizer = null;
