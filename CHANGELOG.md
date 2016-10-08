@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 2.9.0-beta1 - 2016-10-08
+
 * [#604](https://github.com/atoum/atoum/pull/604) Add a `addConfigurationCallable` method on the runner to allow extensions to register themselves ([@agallou], [@jubianchi])
 * [#634](https://github.com/atoum/atoum/pull/634) Only one extension of a kind can be loaded. Extensions can be unloaded ([@agallou], [@jubianchi])
 * [#619](https://github.com/atoum/atoum/pull/619) Add branches and paths coverage support to AtoumTask for Phing ([@oxman])
