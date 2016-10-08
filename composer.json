@@ -51,7 +51,8 @@
 	},
 	"suggest": {
 		"ext-mbstring": "Provides support for UTF-8 strings",
-		"atoum/stubs": "Provides IDE support (like autocompletion) for atoum"
+		"atoum/stubs": "Provides IDE support (like autocompletion) for atoum",
+		"ext-xdebug": "Provides code coverage result (>= 2.3)"
 	},
 	"extra": {
 		"branch-alias": {

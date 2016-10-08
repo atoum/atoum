@@ -142,12 +142,12 @@ On UNIX, in order to check whether you have this module or not, you just need to
 	# php -m | grep -i xml
 
 If `Xml` or equivalent gets displayed, then the module is properly installed.  
-Should you wish to monitor the coverage rate of your code by the unit tests, the [Xdebug](http://xdebug.org/) 2.2 module will be required.  
+Should you wish to monitor the coverage rate of your code by the unit tests, the [Xdebug](http://xdebug.org/) 2.3 (or higher) module will be required.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal:
 
-	# php -v | grep -oi 'xdebug v2.2.[0-9]*'
+	# php -v | grep -oi 'xdebug v2.[3-9].[0-9]*'
 
-If `Xdebug v2.2.x` or equivalent gets displayed, then the module is properly installed.
+If `Xdebug v2.3.x` or equivalent gets displayed, then the module is properly installed.
 
 ## A unit testing framework that can be made operational in 5 minutes!
 
