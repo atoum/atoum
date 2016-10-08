@@ -657,7 +657,7 @@ class generator
 
 		foreach ($method->getParameters() as $parameter)
 		{
-			$parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . (self::isVariadic($parameter) == false ? '' : '... ') . '$' . $parameter->getName();
+			$parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . ($parameter->isVariadic() == false ? '' : '... ') . '$' . $parameter->getName();
 
 			switch (true)
 			{
@@ -665,7 +665,7 @@ class generator
 					$parameterCode .= ' = ' . var_export($parameter->getDefaultValue(), true);
 					break;
 
-				case $parameter->isOptional() && self::isVariadic($parameter) == false:
+				case $parameter->isOptional() && $parameter->isVariadic() == false:
 				case $mustBeNull:
 					$parameterCode .= ' = null';
 			}
@@ -696,7 +696,7 @@ class generator
 			case $parameter->isArray():
 				return 'array ';
 
-			case method_exists($parameter, 'isCallable') && $parameter->isCallable():
+			case $parameter->isCallable():
 				return 'callable ';
 
 			case ($class = $parameter->getClass()):
@@ -710,16 +710,6 @@ class generator
 		}
 	}
 
-	protected static function isVariadic(\reflectionParameter $parameter)
-	{
-		if (method_exists($parameter, 'isVariadic'))
-		{
-			return $parameter->isVariadic();
-		}
-
-		return false;
-	}
-
 	protected static function hasVariadic(\reflectionMethod $method)
 	{
 		$parameters = $method->getParameters();
@@ -729,7 +719,8 @@ class generator
 			return false;
 		}
 
-		return self::isVariadic(end($parameters));
+		$parameter = end($parameters);
+		return $parameter->isVariadic();
 	}
 
 	protected static function generateMockControllerMethods()

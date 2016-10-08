@@ -831,7 +831,7 @@ class coverage implements \countable, \serializable
 	{
 		$declaringClass = $method->getDeclaringClass();
 
-		$traits = ($this->adapter->method_exists($declaringClass, 'getTraits') === false ? array() : $declaringClass->getTraits());
+		$traits = $declaringClass->getTraits();
 
 		if (sizeof($traits) > 0)
 		{

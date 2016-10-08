@@ -32,7 +32,7 @@ class closure implements factory\builder
 					{
 						$closureParameters[$position] = ($parameter->isPassedByReference() === false ? '' : '& ') . $constructorParameters[$position] = '$' . $parameter->getName();
 
-						if (self::isVariadic($parameter))
+						if ($parameter->isVariadic())
 						{
 							$closureParameters[$position] = '...' . $closureParameters[$position];
 							$constructorParameters[$position] = '...' . $constructorParameters[$position];
@@ -44,7 +44,7 @@ class closure implements factory\builder
 								$defaultValue = var_export($parameter->getDefaultValue(), true);
 								break;
 
-							case $parameter->isOptional() && self::isVariadic($parameter) === false:
+							case $parameter->isOptional() && $parameter->isVariadic() === false:
 								$defaultValue = 'null';
 								break;
 
@@ -93,10 +93,5 @@ class closure implements factory\builder
 		}
 
 		return $this;
-	}
-
-	private static function isVariadic(\reflectionParameter $parameter)
-	{
-		return (method_exists($parameter, 'isVariadic') && $parameter->isVariadic());
 	}
 }
