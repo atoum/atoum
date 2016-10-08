@@ -170,7 +170,7 @@ class funktion extends mocker
 			case $parameter->isArray():
 				return 'array ';
 
-			case method_exists($parameter, 'isCallable') && $parameter->isCallable():
+			case $parameter->isCallable():
 				return 'callable ';
 
 			case ($class = $parameter->getClass()):
