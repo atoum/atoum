@@ -19,7 +19,7 @@ class extension
     public function requireExtension()
     {
         if ($this->isLoaded() === false) {
-            throw new exception('PHP extension \'' . $this->name . '\' is not loaded');
+            throw new exception('PHP extension \''.$this->name.'\' is not loaded');
         }
 
         return $this;

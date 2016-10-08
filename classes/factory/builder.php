@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\factory;
 
-use mageekguy\atoum\test
-;
+use mageekguy\atoum\test;
 
 interface builder
 {

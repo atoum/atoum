@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\test;
 
-use mageekguy\atoum
-;
+use mageekguy\atoum;
 
 abstract class engine
 {

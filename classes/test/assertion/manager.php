@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\test\assertion;
 
-use mageekguy\atoum\test\assertion
-;
+use mageekguy\atoum\test\assertion;
 
 class manager
 {

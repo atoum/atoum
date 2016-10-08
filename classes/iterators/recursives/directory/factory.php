@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\iterators\recursives\directory;
 
-use mageekguy\atoum\iterators\filters
-;
+use mageekguy\atoum\iterators\filters;
 
 class factory implements \iteratorAggregate
 {

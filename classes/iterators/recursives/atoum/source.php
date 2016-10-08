@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\iterators\recursives\atoum;
 
-use mageekguy\atoum\iterators
-;
+use mageekguy\atoum\iterators;
 
 class source implements \outerIterator
 {

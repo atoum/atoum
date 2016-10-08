@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\test\adapter;
 
-use mageekguy\atoum\exceptions
-;
+use mageekguy\atoum\exceptions;
 
 class invoker implements \arrayAccess, \countable
 {
