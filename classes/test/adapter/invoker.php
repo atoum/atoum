@@ -218,14 +218,9 @@ class invoker implements \arrayAccess, \countable
 
 	protected static function isBindable(\closure $closure)
 	{
-		$isBindable = (version_compare(PHP_VERSION, '5.4.0') >= 0);
+		$reflectedClosure = new \reflectionFunction($closure);
 
-		if ($isBindable === true)
-		{
-			$reflectedClosure = new \reflectionFunction($closure);
-
-			$isBindable = ($reflectedClosure->getClosureThis() !== null || $reflectedClosure->getClosureScopeClass() === null);
-		}
+		$isBindable = ($reflectedClosure->getClosureThis() !== null || $reflectedClosure->getClosureScopeClass() === null);
 
 		return $isBindable;
 	}
