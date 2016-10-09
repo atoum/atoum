@@ -155,11 +155,6 @@ class coverage extends atoum\test
 							'Execute atoum unit tests'
 						),
 						array(
-							array('--test-all'),
-							null,
-							'DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead'
-						),
-						array(
 							array('-ft', '--force-terminal'),
 							null,
 							'Force output as in terminal'
@@ -346,11 +341,6 @@ class coverage extends atoum\test
 							array('--test-it'),
 							null,
 							'Execute atoum unit tests'
-						),
-						array(
-							array('--test-all'),
-							null,
-							'DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead'
 						),
 						array(
 							array('-ft', '--force-terminal'),

@@ -195,13 +195,6 @@ class runner extends atoum\script\configurable
 		return $this->defaultArguments;
 	}
 
-	public function addTestAllDirectory($directory)
-	{
-		$this->writeError('--test-all argument is deprecated, please replace call to ' . __METHOD__ . '(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead');
-
-		return $this;
-	}
-
 	public function run(array $arguments = array())
 	{
 		# Default bootstrap file MUST be included here because some arguments on the command line can include some tests which depends of this file.
@@ -1010,14 +1003,6 @@ class runner extends atoum\script\configurable
 					array('--test-it'),
 					null,
 					$this->locale->_('Execute atoum unit tests')
-				)
-			->addArgumentHandler(
-					function($script, $argument, $values) {
-						$script->writeError('--test-all argument is deprecated, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead');
-					},
-					array('--test-all'),
-					null,
-					$this->locale->_('DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead')
 				)
 			->addArgumentHandler(
 					function($script, $argument, $values) {
