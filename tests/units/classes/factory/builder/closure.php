@@ -52,6 +52,16 @@ class classWithConstructorWithOptionalArguments
 	public function __construct($a = null, $b = null) {}
 }
 
+class classWithConstructorWithVariadicArgument
+{
+	public $variadicArguments;
+
+	public function __construct(...$a)
+	{
+		$this->variadicArguments = $a;
+	}
+}
+
 class closure extends atoum
 {
 	public function testClass()
@@ -147,21 +157,8 @@ class closure extends atoum
 		;
 	}
 
-	/**
-	 * @php >= 5.6
-	 */
 	public function testBuildWithVariadicArguments()
 	{
-		eval('namespace ' . __NAMESPACE__ . ' { class classWithConstructorWithVariadicArgument
-		{
-			public $variadicArguments;
-
-			public function __construct(...$a)
-			{
-				$this->variadicArguments = $a;
-			}
-		} }');
-
 		$this
 			->given($this->newTestedInstance)
 			->then

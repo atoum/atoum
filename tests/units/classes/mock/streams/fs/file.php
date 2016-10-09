@@ -75,7 +75,6 @@ class file extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
 	public function testChmod()
 	{
 		$this
@@ -486,7 +485,6 @@ class file extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
 	public function testFtruncate()
 	{
 		$this
