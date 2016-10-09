@@ -81,7 +81,6 @@ class controller extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
 	public function test__setAndBindToMock()
 	{
 		$this
@@ -118,7 +117,6 @@ class controller extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
 	public function testEnableAutoBind()
 	{
 		$this
@@ -140,7 +138,6 @@ class controller extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
 	public function testDisableAutoBind()
 	{
 		$this

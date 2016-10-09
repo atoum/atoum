@@ -63,58 +63,6 @@ class autoloader extends atoum\test
 		;
 	}
 
-	/**
-	 * @php >= 7.1
-	 */
-	public function testAddClassAliasphp71()
-	{
-		$this
-			->if($autoloader = new testedClass())
-			->then
-				->object($autoloader->addClassAlias($alias = uniqid(), $target = uniqid()))->isIdenticalTo($autoloader)
-				->array($autoloader->getClassAliases())->isEqualTo(array(
-						'atoum' => 'mageekguy\\atoum\\test',
-						'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
-						$alias => $target
-					)
-				)
-				->object($autoloader->addClassAlias($alias, $target))->isIdenticalTo($autoloader)
-				->array($autoloader->getClassAliases())->isEqualTo(array(
-						'atoum' => 'mageekguy\\atoum\\test',
-						'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
-						$alias => $target
-					)
-				)
-				->object($autoloader->addClassAlias('\\' . ($otherAlias = uniqid()), '\\' . ($otherTarget = uniqid())))->isIdenticalTo($autoloader)
-				->array($autoloader->getClassAliases())->isEqualTo(array(
-						'atoum' => 'mageekguy\\atoum\\test',
-						'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
-						$alias => $target,
-						$otherAlias => $otherTarget
-					)
-				)
-				->object($autoloader->addClassAlias('\\' . ($anOtherAlias = uniqid()) . '\\', '\\' . ($anOtherTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
-				->array($autoloader->getClassAliases())->isEqualTo(array(
-						'atoum' => 'mageekguy\\atoum\\test',
-						'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
-						$alias => $target,
-						$otherAlias => $otherTarget,
-						$anOtherAlias => $anOtherTarget
-					)
-				)
-				->object($autoloader->addClassAlias('FOO', '\\' . ($fooTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
-				->array($autoloader->getClassAliases())->isEqualTo(array(
-						'atoum' => 'mageekguy\\atoum\\test',
-						'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
-						$alias => $target,
-						$otherAlias => $otherTarget,
-						$anOtherAlias => $anOtherTarget,
-						'foo' => $fooTarget
-					)
-				)
-		;
-	}
-
 	public function testAddClassAlias()
 	{
 		$this

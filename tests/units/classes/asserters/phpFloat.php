@@ -133,7 +133,6 @@ class phpFloat extends atoum\test
 				->exception(function() use ($asserter) { $asserter->isNearlyEqualTo(1.1, 0.1); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-
 			->if(
 				$asserter->setWith(100.0),
 				$this->calling($diff)->__toString = $diffValue = uniqid(),
@@ -149,7 +148,6 @@ class phpFloat extends atoum\test
 				->object($asserter->isNearlyEqualTo(99.99, 0.1))->isIdenticalTo($asserter)
 				->object($asserter->isNearlyEqualTo(100.0, 1))->isIdenticalTo($asserter)
 				->object($asserter->isNearlyEqualTo(101.0, 0.01))->isIdenticalTo($asserter)
-
 				->exception(function() use ($asserter, & $lessValue) { $asserter->isNearlyEqualTo(101.0, 0.001); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
@@ -158,7 +156,6 @@ class phpFloat extends atoum\test
 				->mock($diff)
 					->call('setExpected')->withArguments(101.0)->once
 					->call('setActual')->withArguments(100.0)->once
-
 			->if($asserter->setWith(101.0))
 			->then
 				->object($asserter->isNearlyEqualTo(100.0, 0.01))->isIdenticalTo($asserter)
@@ -171,7 +168,6 @@ class phpFloat extends atoum\test
 				->mock($diff)
 					->call('setExpected')->withArguments(100.0)->once
 					->call('setActual')->withArguments(100.0)->once
-
 			->if($asserter->setWith(- 10001.0))
 			->then
 				->object($asserter->isNearlyEqualTo(- 10000.0, 0.0001))->isIdenticalTo($asserter)
@@ -184,7 +180,6 @@ class phpFloat extends atoum\test
 				->mock($diff)
 					->call('setExpected')->withArguments(- 10000.0)->once
 					->call('setActual')->withArguments(- 10001.0)->once
-
 			->if($asserter->setWith(- 1.0001))
 			->then
 				->object($asserter->isNearlyEqualTo(- 1.0, 0.0001))->isIdenticalTo($asserter)
@@ -197,7 +192,6 @@ class phpFloat extends atoum\test
 				->mock($diff)
 					->call('setExpected')->withArguments(- 1.0)->once
 					->call('setActual')->withArguments(- 1.0001)->once
-
 			->if($asserter->setWith(0.0001))
 			->then
 				->object($asserter->isNearlyEqualTo(- 0.0001, 0.0001))->isIdenticalTo($asserter)
@@ -212,27 +206,9 @@ class phpFloat extends atoum\test
 				->exception(function() use ($asserter, & $lessValue) { $asserter->isNearlyEqualTo(0); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
-		;
-	}
-
-	/** @php 5.4 */
-	public function testIsNearlyEqualToWithINF()
-	{
-		$this
-			->given($asserter = $this->newTestedInstance
-				->setLocale($locale = new \mock\atoum\locale())
-				->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-				->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-			)
-			->if(
-				$asserter->setWith(INF),
-				$this->calling($diff)->__toString = $diffValue = uniqid(),
-				$this->calling($locale)->_ = $notNearlyEqualTo = uniqid(),
-				$this->calling($analyzer)->getTypeOf = $type = uniqid()
-			)
+			->if($asserter->setWith(INF))
 			->then
 				->object($asserter->isNearlyEqualTo(INF, 1))->isIdenticalTo($asserter)
-
 				->exception(function() use ($asserter, & $lessValue) { $asserter->isNearlyEqualTo(- INF, 1); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
