@@ -15,7 +15,7 @@ class builder extends atoum\script\configurable
 	const defaultUnitTestRunnerScript = 'scripts/runner.php';
 	const defaultPharGeneratorScript = 'scripts/phar/generator.php';
 
-	private   $lockResource = null;
+	private $lockResource = null;
 
 	protected $php = null;
 	protected $vcs = null;
@@ -481,7 +481,6 @@ class builder extends atoum\script\configurable
 		if ($callback === null)
 		{
 			$builder = $this;
-
 			$callback = function($path) use ($builder) { include_once($path); };
 		}
 
@@ -490,11 +489,9 @@ class builder extends atoum\script\configurable
 
 	protected function setArgumentHandlers()
 	{
-		$builder = $this;
-
 		return parent::setArgumentHandlers()
 			->addArgumentHandler(
-				function($script, $argument, $files) use ($builder) {
+				function($script, $argument, $files) {
 					if (sizeof($files) <= 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));

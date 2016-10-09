@@ -502,12 +502,10 @@ class runner implements observable
 			return new $testClass();
 		};
 
-		$runner = $this;
-
-		$this->testFactory = function($testClass) use ($testFactory, $runner) {
+		$this->testFactory = function($testClass) use ($testFactory) {
 			$test = call_user_func($testFactory, $testClass);
 
-			if ($runner->usageOfUndefinedMethodInMockAreAllowed() === false)
+			if ($this->usageOfUndefinedMethodInMockAreAllowed() === false)
 			{
 				$test->getMockGenerator()->disallowUndefinedMethodUsage();
 			}
