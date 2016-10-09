@@ -165,11 +165,6 @@ class runner extends atoum\test
 							'Execute atoum unit tests'
 						),
 						array(
-							array('--test-all'),
-							null,
-							'DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead'
-						),
-						array(
 							array('-ft', '--force-terminal'),
 							null,
 							'Force output as in terminal'
@@ -347,11 +342,6 @@ class runner extends atoum\test
 							'Execute atoum unit tests'
 						),
 						array(
-							array('--test-all'),
-							null,
-							'DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead'
-						),
-						array(
 							array('-ft', '--force-terminal'),
 							null,
 							'Force output as in terminal'
@@ -432,20 +422,6 @@ class runner extends atoum\test
 				->boolean($runner->getRunner()->codeCoverageIsEnabled())->isTrue()
 				->object($runner->useConfigFile((string) $configFile))->isIdenticalTo($runner)
 				->boolean($runner->getRunner()->codeCoverageIsEnabled())->isFalse()
-		;
-	}
-
-	public function testAddTestAllDirectory()
-	{
-		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-			->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
-			->and($this->calling($stderr)->clear = $stderr)
-			->and($this->calling($stderr)->write = function() {})
-			->and($runner->setErrorWriter($stderr))
-			->then
-				->object($runner->addTestAllDirectory(uniqid()))->isIdenticalTo($runner)
-				->mock($stderr)->call('write')->withArguments('--test-all argument is deprecated, please replace call to mageekguy\atoum\scripts\runner::addTestAllDirectory(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead')->once()
 		;
 	}
 
