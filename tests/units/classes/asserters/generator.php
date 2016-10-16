@@ -39,6 +39,25 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testUsage()
+	{
+		$generator = function() {
+			for ($i=0; $i<3; $i++) {
+				yield ($i+1);
+			}
+		};
+
+		$this
+			->generator($generator())
+				->yields->isEqualTo(1)
+				->yields->isEqualTo(2)
+				->yields->isEqualTo(3)
+				->yields->isNull(4)
+			->generator($generator())
+				->size->isEqualTo(3)
+		;
+	}
+
 	public function testYields()
 	{
 		$generator = function() {
@@ -55,17 +74,13 @@ class generator extends atoum\test
 			->then
 				->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
 
-			->when($yieldAsserter = $asserter->yields())
+			->when($yieldAsserter = $asserter->yields)
 				->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
 				->integer($yieldAsserter->getValue())->isEqualTo(1)
 
-			->when($yieldAsserter = $asserter->yields())
-				->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
-				->integer($yieldAsserter->getValue())->isEqualTo(2)
-
 			->when($yieldAsserter = $asserter->yields)
 				->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
-				->integer($yieldAsserter->getValue())->isEqualTo(3)
+				->integer($yieldAsserter->getValue())->isEqualTo(2)
 		;
 	}
 

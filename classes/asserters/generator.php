@@ -9,8 +9,14 @@ class generator extends iterator
 		switch (strtolower($property))
 		{
 			case 'yields':
-				return $this->{$property}();
+				$asserter = new generator\child($this);
 
+				$generator = $this->valueIsSet()->value;
+
+				$childAsserter = $asserter->setWith($generator->current());
+				$generator->next();
+
+				return $childAsserter;
 			default:
 				return parent::__get($property);
 		}
@@ -30,12 +36,5 @@ class generator extends iterator
 		}
 
 		return $this;
-	}
-
-	public function yields()
-	{
-		$asserter = $this->generator->__call('variable', array($this->getValue()->current()));
-		$this->getValue()->next();
-		return $asserter;
 	}
 }
