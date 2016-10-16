@@ -202,7 +202,7 @@ PHP
 			}
 		};
 
-		$notAgenerator = function() {
+		$notAGenerator = function() {
 			for ($i=0; $i<10; $i++) {
 			}
 		};
@@ -221,7 +221,7 @@ PHP
 					->hasMessage("boolean(true) is not an object")
 
 			->then
-				->exception(function() use ($asserter, $notAgenerator) { $asserter->setWith($notAgenerator()); })
+				->exception(function() use ($asserter, $notAGenerator) { $asserter->setWith($notAGenerator()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage("null is not an object")
 
