@@ -140,6 +140,7 @@ class pusher extends atoum
 			->if(
 				$this->function->file_put_contents = function($path, $data) { return strlen($data); },
 				$this->calling($taggerEngine)->tagVersion->doesNothing(),
+				$this->calling($taggerEngine)->tagChangelog->doesNothing(),
 				$this->calling($git)->addAllAndCommit = $git,
 				$this->calling($git)->checkoutAllFiles = $git,
 				$this->calling($git)->createTag = $git,
@@ -154,20 +155,23 @@ class pusher extends atoum
 				->function('file_put_contents')->wasCalledWithArguments($pusher->getTagFile(), '0.0.1')->once()
 				->mock($taggerEngine)
 					->call('tagVersion')
-						->before($this->mock($git)
-							->call('addAllAndCommit')->withArguments('Set version to 0.0.1.')
-							->before($this->mock($git)
-								->call('createTag')->withArguments('0.0.1')
+						->before($this->mock($taggerEngine)
+							->call('tagChangelog')->withArguments('0.0.1')
 								->before($this->mock($git)
-									->call('push')->withArguments($pusher->getRemote())
-									->once()
-								)
-								->before($this->mock($git)
-									->call('pushTag')->withArguments('0.0.1', $pusher->getRemote())
-									->once()
-								)
-								->once()
-							)
+									->call('addAllAndCommit')->withArguments('Set version to 0.0.1.')
+									->before($this->mock($git)
+										->call('createTag')->withArguments('0.0.1')
+										->before($this->mock($git)
+											->call('push')->withArguments($pusher->getRemote())
+											->once()
+										)
+										->before($this->mock($git)
+											->call('pushTag')->withArguments('0.0.1', $pusher->getRemote())
+											->once()
+										)
+										->once()
+									)
+								->once())
 							->once())
 						->after($this->mock($taggerEngine)
 							->call('setSrcDirectory')->withArguments($pusher->getWorkingDirectory())

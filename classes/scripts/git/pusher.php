@@ -28,6 +28,7 @@ class pusher extends script\configurable
 	protected $forceMode = false;
 	protected $tagMajorVersion = false;
 	protected $tagMinorVersion = false;
+	protected $tagBetaVersion = false;
 
 	public function __construct($name, atoum\adapter $adapter = null)
 	{
@@ -135,11 +136,15 @@ class pusher extends script\configurable
 		$this->tagMinorVersion = true;
 	}
 
-
 	public function tagPatchVersion()
 	{
 		$this->tagMajorVersion = false;
 		$this->tagMinorVersion = false;
+	}
+
+	public function tagBetaVersion()
+	{
+		$this->tagBetaVersion = true;
 	}
 
 	protected function setArgumentHandlers()
@@ -202,6 +207,14 @@ class pusher extends script\configurable
 				null,
 				$this->locale->_('Tag a new patch version')
 			)
+			->addArgumentHandler(
+				function($script, $argument, $value) {
+					$script->tagBetaVersion();
+				},
+				array('-B', '--beta-release'),
+				null,
+				$this->locale->_('Tag a new beta version')
+			)
 		;
 
 		return $this;
@@ -260,9 +273,37 @@ class pusher extends script\configurable
 
 	protected function getNextVersion($tag)
 	{
+		$nextVersionSuffix = '';
+		$betaVersionPattern = '/-beta(\d+)$/';
+		if (preg_match($betaVersionPattern, $tag, $matches) > 0)
+		{
+			$tag = preg_replace($betaVersionPattern, '', $tag);
+
+			if ($this->tagBetaVersion === false)
+			{
+				return $tag;
+			}
+
+			if ($this->tagMajorVersion === false && $this->tagMinorVersion == false)
+			{
+				$nextVersionSuffix = '-beta' . (((int) $matches[1]) + 1);
+			}
+			else
+			{
+				$nextVersionSuffix = '-beta1';
+			}
+		}
+		else
+		{
+			if ($this->tagBetaVersion === true)
+			{
+				$nextVersionSuffix = '-beta1';
+			}
+		}
+
 		$versionPattern = '/^(\d+)\.(\d+)\.(\d+)$/';
-		$increment = function($position) {
-			return function($matches) use ($position) {
+		$increment = function($position) use ($nextVersionSuffix) {
+			return function($matches) use ($position, $nextVersionSuffix) {
 				for ($i = 1; $i <= 3; $i++)
 				{
 					if ($i > $position)
@@ -276,7 +317,7 @@ class pusher extends script\configurable
 					}
 				}
 
-				return implode('.', array_slice($matches, 1));
+				return implode('.', array_slice($matches, 1)) . $nextVersionSuffix;
 			};
 		};
 
@@ -290,22 +331,32 @@ class pusher extends script\configurable
 			return preg_replace_callback($versionPattern, $increment(self::minorVersion), $tag);
 		}
 
+		if ($this->tagBetaVersion === true && $this->tagMajorVersion === false && $this->tagMajorVersion === false)
+		{
+			return $tag . $nextVersionSuffix;
+		}
+
 		return preg_replace_callback($versionPattern, $increment(self::patchVersion), $tag);
 	}
 
-	private function tagSrcWith($tag)
+	private function tagSrcWith($tag, $tagChangelog = false)
 	{
 		$this->taggerEngine
 			->setVersion(sprintf(static::versionPattern, $tag))
 			->tagVersion()
 		;
 
+		if ($tagChangelog === true)
+		{
+			$this->taggerEngine->tagChangelog($tag);
+		}
+
 		return $this;
 	}
 
 	private function tagStableVersion($tag)
 	{
-		$this->tagSrcWith($tag);
+		$this->tagSrcWith($tag, true);
 
 		try
 		{
