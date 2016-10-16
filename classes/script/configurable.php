@@ -169,7 +169,6 @@ abstract class configurable extends atoum\script
 		if ($callback === null)
 		{
 			$script = $this;
-
 			$callback = function($path) use ($script) { include_once($path); };
 		}
 

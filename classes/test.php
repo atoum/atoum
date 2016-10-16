@@ -397,23 +397,21 @@ abstract class test implements observable, \countable
 	{
 		$this->assertionManager = $assertionManager ?: new test\assertion\manager();
 
-		$test = $this;
-
 		$this->assertionManager
-			->setHandler('when', function($mixed) use ($test) { if ($mixed instanceof \closure) { $mixed($test); } return $test; })
-			->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test; })
-			->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); })
-			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $test; })
-			->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass); return $test; })
-			->setHandler('newMockInstance', function($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = null) use ($test)
+			->setHandler('when', function($mixed) { if ($mixed instanceof \closure) { $mixed($this); } return $this; })
+			->setHandler('assert', function($case = null) { $this->stopCase(); if ($case !== null) { $this->startCase($case); } return $this; })
+			->setHandler('mockGenerator', function() { return $this->getMockGenerator(); })
+			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) { $this->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $this; })
+			->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null) { $this->getMockGenerator()->generate($this->getTestedClassName(), $mockNamespace, $mockClass); return $this; })
+			->setHandler('newMockInstance', function($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = null)
 				{
-					$mockNamespace = trim($mockNamespace ?: $test->getMockGenerator()->getDefaultNamespace(), '\\');
+					$mockNamespace = trim($mockNamespace ?: $this->getMockGenerator()->getDefaultNamespace(), '\\');
 					$mockClass = trim($mockClass ?: $class, '\\');
 					$className = $mockNamespace . '\\' . $mockClass;
 
 					if (class_exists($className) === false)
 					{
-						$test->mockClass($class, $mockNamespace, $mockClass);
+						$this->mockClass($class, $mockNamespace, $mockClass);
 					}
 
 					if ($constructorArguments !== null)
@@ -426,21 +424,21 @@ abstract class test implements observable, \countable
 					return new $className();
 				}
 			)
-			->setHandler('dump', function() use ($test) { if ($test->debugModeIsEnabled() === true) { call_user_func_array('var_dump', func_get_args()); } return $test; })
-			->setHandler('stop', function() use ($test) { if ($test->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $test; })
-			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
-			->setHandler('dumpOnFailure', function($variable) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $test; })
-			->setPropertyHandler('function', function() use ($test) { return $test->getPhpFunctionMocker(); })
-			->setPropertyHandler('constant', function() use ($test) { return $test->getPhpConstantMocker(); })
+			->setHandler('dump', function() { if ($this->debugModeIsEnabled() === true) { call_user_func_array('var_dump', func_get_args()); } return $this; })
+			->setHandler('stop', function() { if ($this->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $this; })
+			->setHandler('executeOnFailure', function($callback) { if ($this->debugModeIsEnabled() === true) { $this->executeOnFailure($callback); } return $this; })
+			->setHandler('dumpOnFailure', function($variable) { if ($this->debugModeIsEnabled() === true) { $this->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $this; })
+			->setPropertyHandler('function', function() { return $this->getPhpFunctionMocker(); })
+			->setPropertyHandler('constant', function() { return $this->getPhpConstantMocker(); })
 			->setPropertyHandler('exception', function() { return asserters\exception::getLastValue(); })
 		;
 
 		$this->assertionManager
-			->setHandler('callStaticOnTestedClass', function() use ($test) {
+			->setHandler('callStaticOnTestedClass', function() {
 					$args = func_get_args();
 					$method = array_shift($args);
 
-					return call_user_func_array(array($test->getTestedClassName(), $method), $args);
+					return call_user_func_array(array($this->getTestedClassName(), $method), $args);
 				}
 			)
 		;
@@ -451,7 +449,7 @@ abstract class test implements observable, \countable
 			->setPropertyHandler('nextMockedMethod', function() use ($mockGenerator) { return $mockGenerator->getMethod(); })
 		;
 
-		$returnTest = function() use ($test) { return $test; };
+		$returnTest = function() { return $this; };
 
 		$this->assertionManager
 			->setHandler('if', $returnTest)
@@ -482,10 +480,10 @@ abstract class test implements observable, \countable
 		$assertionAliaser = $this->assertionManager->getAliaser();
 
 		$this->assertionManager
-			->setPropertyHandler('define', function() use ($assertionAliaser, $test) { return $assertionAliaser; })
-			->setHandler('from', function($class) use ($assertionAliaser, $test) { $assertionAliaser->from($class); return $test; })
-			->setHandler('use', function($target) use ($assertionAliaser, $test) { $assertionAliaser->alias($target); return $test; })
-			->setHandler('as', function($alias) use ($assertionAliaser, $test) { $assertionAliaser->to($alias); return $test; })
+			->setPropertyHandler('define', function() use ($assertionAliaser) { return $assertionAliaser; })
+			->setHandler('from', function($class) use ($assertionAliaser) { $assertionAliaser->from($class); return $this; })
+			->setHandler('use', function($target) use ($assertionAliaser) { $assertionAliaser->alias($target); return $this; })
+			->setHandler('as', function($alias) use ($assertionAliaser) { $assertionAliaser->to($alias); return $this; })
 		;
 
 		$asserterGenerator = $this->asserterGenerator;
@@ -1606,19 +1604,17 @@ abstract class test implements observable, \countable
 
 	protected function setClassAnnotations(annotations\extractor $extractor)
 	{
-		$test = $this;
-
 		$extractor
 			->resetHandlers()
-			->setHandler('ignore', function($value) use ($test) { $test->ignore(annotations\extractor::toBoolean($value)); })
-			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
-			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value === true ? static::defaultNamespace : $value); })
-			->setHandler('methodPrefix', function($value) use ($test) { $test->setTestMethodPrefix($value === true ? static::defaultMethodPrefix : $value); })
-			->setHandler('maxChildrenNumber', function($value) use ($test) { $test->setMaxChildrenNumber($value); })
-			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
-			->setHandler('hasVoidMethods', function($value) use ($test) { $test->classHasVoidMethods(); })
-			->setHandler('hasNotVoidMethods', function($value) use ($test) { $test->classHasNotVoidMethods(); })
-			->setHandler('php', function($value) use ($test) {
+			->setHandler('ignore', function($value) { $this->ignore(annotations\extractor::toBoolean($value)); })
+			->setHandler('tags', function($value) { $this->setTags(annotations\extractor::toArray($value)); })
+			->setHandler('namespace', function($value) { $this->setTestNamespace($value === true ? static::defaultNamespace : $value); })
+			->setHandler('methodPrefix', function($value) { $this->setTestMethodPrefix($value === true ? static::defaultMethodPrefix : $value); })
+			->setHandler('maxChildrenNumber', function($value) { $this->setMaxChildrenNumber($value); })
+			->setHandler('engine', function($value) { $this->setClassEngine($value); })
+			->setHandler('hasVoidMethods', function($value) { $this->classHasVoidMethods(); })
+			->setHandler('hasNotVoidMethods', function($value) { $this->classHasNotVoidMethods(); })
+			->setHandler('php', function($value) {
 					$value = annotations\extractor::toArray($value);
 
 					if (isset($value[0]) === true)
@@ -1645,14 +1641,14 @@ abstract class test implements observable, \countable
 							}
 						}
 
-						$test->addClassPhpVersion($version, $operator);
+						$this->addClassPhpVersion($version, $operator);
 					}
 				}
 			)
-			->setHandler('extensions', function($value) use ($test) {
+			->setHandler('extensions', function($value) {
 					foreach (annotations\extractor::toArray($value) as $mandatoryExtension)
 					{
-						$test->addMandatoryClassExtension($mandatoryExtension);
+						$this->addMandatoryClassExtension($mandatoryExtension);
 					}
 				}
 			)
@@ -1663,17 +1659,15 @@ abstract class test implements observable, \countable
 
 	protected function setMethodAnnotations(annotations\extractor $extractor, & $methodName)
 	{
-		$test = $this;
-
 		$extractor
 			->resetHandlers()
-			->setHandler('ignore', function($value) use ($test, & $methodName) { $test->ignoreMethod($methodName, annotations\extractor::toBoolean($value)); })
-			->setHandler('tags', function($value) use ($test, & $methodName) { $test->setMethodTags($methodName, annotations\extractor::toArray($value)); })
-			->setHandler('dataProvider', function($value) use ($test, & $methodName) { $test->setDataProvider($methodName, $value === true ? null : $value); })
-			->setHandler('engine', function($value) use ($test, & $methodName) { $test->setMethodEngine($methodName, $value); })
-			->setHandler('isVoid', function($value) use ($test, & $methodName) { $test->setMethodVoid($methodName); })
-			->setHandler('isNotVoid', function($value) use ($test, & $methodName) { $test->setMethodNotVoid($methodName); })
-			->setHandler('php', function($value) use ($test, & $methodName) {
+			->setHandler('ignore', function($value) use (& $methodName) { $this->ignoreMethod($methodName, annotations\extractor::toBoolean($value)); })
+			->setHandler('tags', function($value) use (& $methodName) { $this->setMethodTags($methodName, annotations\extractor::toArray($value)); })
+			->setHandler('dataProvider', function($value) use (& $methodName) { $this->setDataProvider($methodName, $value === true ? null : $value); })
+			->setHandler('engine', function($value) use (& $methodName) { $this->setMethodEngine($methodName, $value); })
+			->setHandler('isVoid', function($value) use (& $methodName) { $this->setMethodVoid($methodName); })
+			->setHandler('isNotVoid', function($value) use (& $methodName) { $this->setMethodNotVoid($methodName); })
+			->setHandler('php', function($value) use (& $methodName) {
 					$value = annotations\extractor::toArray($value);
 
 					if (isset($value[0]) === true)
@@ -1700,14 +1694,14 @@ abstract class test implements observable, \countable
 							}
 						}
 
-						$test->addMethodPhpVersion($methodName, $version, $operator);
+						$this->addMethodPhpVersion($methodName, $version, $operator);
 					}
 				}
 			)
-			->setHandler('extensions', function($value) use ($test, & $methodName) {
+			->setHandler('extensions', function($value) use (& $methodName) {
 					foreach (annotations\extractor::toArray($value) as $mandatoryExtension)
 					{
-						$test->addMandatoryMethodExtension($methodName, $mandatoryExtension);
+						$this->addMandatoryMethodExtension($methodName, $mandatoryExtension);
 					}
 				}
 			)
