@@ -39,22 +39,132 @@ class generator extends atoum\test
 		;
 	}
 
+	/**
+	 * @php >= 7.0
+	 */
 	public function testUsage()
 	{
-		$generator = function() {
-			for ($i=0; $i<3; $i++) {
-				yield ($i+1);
-			}
-		};
+		if (version_compare(PHP_VERSION, '7.0') >= 0) {
+			$generator = eval(<<<'PHP'
+return function() {
+    for ($i=0; $i<3; $i++) {
+        yield ($i+1);
+    }
+
+    return 42;
+};
+PHP
+			);
+		}
 
 		$this
 			->generator($generator())
 				->yields->isEqualTo(1)
 				->yields->isEqualTo(2)
 				->yields->isEqualTo(3)
-				->yields->isNull(4)
+				->yields->isNull()
+				->returns->isEqualTo(42)
 			->generator($generator())
 				->size->isEqualTo(3)
+		;
+	}
+
+	/**
+	 * @php < 7.0
+	 */
+	public function testReturnsBeforePhp7()
+	{
+		$generator = function() {
+			yield 1;
+			yield 2;
+		};
+
+		$this
+			->assert('Use all yields then return')
+			->given($asserter = $this->newTestedInstance
+				->setLocale($locale = new \mock\atoum\locale())
+				->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+			)
+			->then
+			->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
+
+			->when($yieldAsserter = $asserter->yields)
+				->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
+				->integer($yieldAsserter->getValue())->isEqualTo(1)
+
+			->when($yieldAsserter = $asserter->yields)
+				->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
+				->integer($yieldAsserter->getValue())->isEqualTo(2)
+
+			->exception(function() use ($asserter) {
+				$asserter->returns;
+			})
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('The returns asserter could only be used with PHP>=7.0')
+		;
+	}
+
+
+
+	/**
+	 * @php >= 7.0
+	 */
+	public function testReturns()
+	{
+		if (version_compare(PHP_VERSION, '7.0') >= 0) {
+			$generator = eval(<<<'PHP'
+return function() {
+    for ($i=0; $i<2; $i++) {
+        yield ($i+1);
+    }
+
+    return 42;
+};
+PHP
+			);
+		}
+
+		$this
+			->assert('Use all yields then return')
+				->given($asserter = $this->newTestedInstance
+					->setLocale($locale = new \mock\atoum\locale())
+					->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+				)
+				->then
+				->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
+
+				->when($yieldAsserter = $asserter->yields)
+					->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
+					->integer($yieldAsserter->getValue())->isEqualTo(1)
+
+				->when($yieldAsserter = $asserter->yields)
+					->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
+					->integer($yieldAsserter->getValue())->isEqualTo(2)
+
+				->when($yieldAsserter = $asserter->returns)
+					->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
+					->integer($yieldAsserter->getValue())->isEqualTo(42)
+
+			->assert('Use return before all yields')
+				->given($asserter = $this->newTestedInstance
+					->setLocale($locale = new \mock\atoum\locale())
+					->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+				)
+				->then
+					->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
+
+				->when($yieldAsserter = $asserter->yields)
+					->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
+					->integer($yieldAsserter->getValue())->isEqualTo(1)
+
+
+				->exception(
+					function() use($asserter) {
+						$asserter->returns;
+					}
+				)
+					->isInstanceOf('\Exception')
+					->hasMessage("Cannot get return value of a generator that hasn't returned")
 		;
 	}
 

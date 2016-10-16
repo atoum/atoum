@@ -2,6 +2,10 @@
 
 namespace mageekguy\atoum\asserters;
 
+use
+	mageekguy\atoum\exceptions
+;
+
 class generator extends iterator
 {
 	public function __get($property)
@@ -17,6 +21,14 @@ class generator extends iterator
 				$generator->next();
 
 				return $childAsserter;
+			case 'returns':
+				$generator = $this->valueIsSet()->value;
+
+				if (!method_exists($generator, 'getReturn')) {
+					throw new exceptions\logic("The returns asserter could only be used with PHP>=7.0");
+				}
+
+				return $this->generator->__call('variable', array($generator->getReturn()));
 			default:
 				return parent::__get($property);
 		}
