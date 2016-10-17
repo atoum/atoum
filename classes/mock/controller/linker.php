@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\mock\controller;
 
-use mageekguy\atoum\mock
-;
+use mageekguy\atoum\mock;
 
 class linker
 {

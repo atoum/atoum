@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\report\fields\runner\atoum;
 
-use mageekguy\atoum\report
-;
+use mageekguy\atoum\report;
 
 class phing extends report\fields\runner\atoum\cli
 {

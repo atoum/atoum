@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\mock\php;
 
-use mageekguy\atoum\exceptions
-;
+use mageekguy\atoum\exceptions;
 
 class method
 {

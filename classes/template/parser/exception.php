@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\template\parser;
 
-use mageekguy\atoum\exceptions
-;
+use mageekguy\atoum\exceptions;
 
 class exception extends exceptions\runtime
 {

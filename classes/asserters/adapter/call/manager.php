@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\asserters\adapter\call;
 
-use mageekguy\atoum\asserters\adapter
-;
+use mageekguy\atoum\asserters\adapter;
 
 class manager
 {

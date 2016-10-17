@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\report;
 
-use mageekguy\atoum
-;
+use mageekguy\atoum;
 
 abstract class field
 {

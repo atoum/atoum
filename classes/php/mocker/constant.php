@@ -10,16 +10,16 @@ class constant extends mocker
     public function __get($name)
     {
         if ($this->__isset($name) === false) {
-            throw new exceptions\constant('Constant \'' . $name . '\' is not defined in namespace \'' . trim($this->getDefaultNamespace(), '\\') . '\'');
+            throw new exceptions\constant('Constant \''.$name.'\' is not defined in namespace \''.trim($this->getDefaultNamespace(), '\\').'\'');
         }
 
-        return $this->getAdapter()->constant($this->getDefaultNamespace() . $name);
+        return $this->getAdapter()->constant($this->getDefaultNamespace().$name);
     }
 
     public function __set($name, $value)
     {
-        if (@$this->getAdapter()->define($this->getDefaultNamespace() . $name, $value) === false) {
-            throw new exceptions\constant('Could not mock constant \'' . $name . '\' in namespace \'' . trim($this->getDefaultNamespace(), '\\') . '\'');
+        if (@$this->getAdapter()->define($this->getDefaultNamespace().$name, $value) === false) {
+            throw new exceptions\constant('Could not mock constant \''.$name.'\' in namespace \''.trim($this->getDefaultNamespace(), '\\').'\'');
         }
 
         return $this;
@@ -27,12 +27,12 @@ class constant extends mocker
 
     public function __isset($name)
     {
-        return $this->getAdapter()->defined($this->getDefaultNamespace() . $name);
+        return $this->getAdapter()->defined($this->getDefaultNamespace().$name);
     }
 
     public function __unset($name)
     {
-        throw new exceptions\constant('Could not unset constant \'' . $name . '\' in namespace \'' . trim($this->getDefaultNamespace(), '\\') . '\'');
+        throw new exceptions\constant('Could not unset constant \''.$name.'\' in namespace \''.trim($this->getDefaultNamespace(), '\\').'\'');
     }
 
     public function addToTest(atoum\test $test)

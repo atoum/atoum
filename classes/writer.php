@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum;
 
-use mageekguy\atoum\writer\decorator
-;
+use mageekguy\atoum\writer\decorator;
 
 abstract class writer
 {

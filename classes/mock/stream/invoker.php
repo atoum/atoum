@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\mock\stream;
 
-use mageekguy\atoum\test\adapter
-;
+use mageekguy\atoum\test\adapter;
 
 class invoker extends adapter\invoker
 {
