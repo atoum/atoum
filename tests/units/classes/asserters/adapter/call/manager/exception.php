@@ -8,11 +8,11 @@ use atoum;
 
 class exception extends atoum
 {
-	public function testClass()
-	{
-		$this->testedClass
-			->extends('runtimeException')
-			->implements('mageekguy\atoum\exception')
-		;
-	}
+    public function testClass()
+    {
+        $this->testedClass
+            ->extends('runtimeException')
+            ->implements('mageekguy\atoum\exception')
+        ;
+    }
 }

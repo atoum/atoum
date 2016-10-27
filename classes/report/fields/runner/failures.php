@@ -2,38 +2,32 @@
 
 namespace mageekguy\atoum\report\fields\runner;
 
-use
-	mageekguy\atoum\locale,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report,
-	mageekguy\atoum\observable
-;
+use mageekguy\atoum\observable;
+use mageekguy\atoum\report;
+use mageekguy\atoum\runner;
 
 abstract class failures extends report\field
 {
-	protected $runner = null;
+    protected $runner = null;
 
-	public function __construct()
-	{
-		parent::__construct(array(runner::runStop));
-	}
+    public function __construct()
+    {
+        parent::__construct([runner::runStop]);
+    }
 
-	public function getRunner()
-	{
-		return $this->runner;
-	}
+    public function getRunner()
+    {
+        return $this->runner;
+    }
 
-	public function handleEvent($event, observable $observable)
-	{
-		if (parent::handleEvent($event, $observable) === false)
-		{
-			return false;
-		}
-		else
-		{
-			$this->runner = $observable;
+    public function handleEvent($event, observable $observable)
+    {
+        if (parent::handleEvent($event, $observable) === false) {
+            return false;
+        } else {
+            $this->runner = $observable;
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 }

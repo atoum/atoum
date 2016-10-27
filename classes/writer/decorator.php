@@ -4,5 +4,5 @@ namespace mageekguy\atoum\writer;
 
 interface decorator
 {
-	public function decorate($message);
+    public function decorate($message);
 }

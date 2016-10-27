@@ -4,49 +4,47 @@ namespace mageekguy\atoum\iterators\filters\recursives;
 
 class closure extends \recursiveFilterIterator
 {
-	protected $closures = array();
+    protected $closures = [];
 
-	public function __construct(\recursiveIterator $iterator, $closure = null)
-	{
-		parent::__construct($iterator);
+    public function __construct(\recursiveIterator $iterator, $closure = null)
+    {
+        parent::__construct($iterator);
 
-		if ($closure !== null)
-		{
-			foreach ((array) $closure as $c)
-				$this->addClosure($c);
-		}
-	}
+        if ($closure !== null) {
+            foreach ((array) $closure as $c) {
+                $this->addClosure($c);
+            }
+        }
+    }
 
-	public function addClosure(\closure $closure)
-	{
-		$this->closures[] = $closure;
+    public function addClosure(\closure $closure)
+    {
+        $this->closures[] = $closure;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getClosures()
-	{
-		return $this->closures;
-	}
+    public function getClosures()
+    {
+        return $this->closures;
+    }
 
-	public function accept()
-	{
-		foreach ($this->closures as $closure)
-		{
-			if ($closure($this->current(), $this->key(), $this->getInnerIterator()) === false)
-			{
-				return false;
-			}
-		}
+    public function accept()
+    {
+        foreach ($this->closures as $closure) {
+            if ($closure($this->current(), $this->key(), $this->getInnerIterator()) === false) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public function getChildren()
-	{
-		return new static(
-			$this->getInnerIterator()->getChildren(),
-			$this->closures
-		);
-	}
+    public function getChildren()
+    {
+        return new static(
+            $this->getInnerIterator()->getChildren(),
+            $this->closures
+        );
+    }
 }
