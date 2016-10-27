@@ -2,106 +2,100 @@
 
 namespace mageekguy\atoum\asserter;
 
-use
-	mageekguy\atoum\tools\variable\analyzer
-;
+use mageekguy\atoum\tools\variable\analyzer;
 
 class resolver
 {
-	const defaultBaseClass = 'mageekguy\atoum\asserter';
-	const defaultNamespace = 'mageekguy\atoum\asserters';
+    const defaultBaseClass = 'mageekguy\atoum\asserter';
+    const defaultNamespace = 'mageekguy\atoum\asserters';
 
-	protected $baseClass = '';
-	protected $namespaces = array();
-	private $analyzer;
-	private $resolved = array();
+    protected $baseClass = '';
+    protected $namespaces = [];
+    private $analyzer;
+    private $resolved = [];
 
-	public function __construct($baseClass = null, $namespace = null, analyzer $analyzer = null)
-	{
-		$this
-			->setBaseClass($baseClass ?: static::defaultBaseClass)
-			->addNamespace($namespace ?: static::defaultNamespace)
-			->setAnalyzer($analyzer)
-		;
-	}
+    public function __construct($baseClass = null, $namespace = null, analyzer $analyzer = null)
+    {
+        $this
+            ->setBaseClass($baseClass ?: static::defaultBaseClass)
+            ->addNamespace($namespace ?: static::defaultNamespace)
+            ->setAnalyzer($analyzer)
+        ;
+    }
 
-	public function setAnalyzer(analyzer $analyzer = null)
-	{
-		$this->analyzer = $analyzer ?: new analyzer();
+    public function setAnalyzer(analyzer $analyzer = null)
+    {
+        $this->analyzer = $analyzer ?: new analyzer();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getAnalyzer()
-	{
-		return $this->analyzer;
-	}
+    public function getAnalyzer()
+    {
+        return $this->analyzer;
+    }
 
-	public function setBaseClass($baseClass)
-	{
-		$this->baseClass = trim($baseClass, '\\');
+    public function setBaseClass($baseClass)
+    {
+        $this->baseClass = trim($baseClass, '\\');
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getBaseClass()
-	{
-		return $this->baseClass;
-	}
+    public function getBaseClass()
+    {
+        return $this->baseClass;
+    }
 
-	public function addNamespace($namespace)
-	{
-		$this->namespaces[] = trim($namespace, '\\');
+    public function addNamespace($namespace)
+    {
+        $this->namespaces[] = trim($namespace, '\\');
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getNamespaces()
-	{
-		return $this->namespaces;
-	}
+    public function getNamespaces()
+    {
+        return $this->namespaces;
+    }
 
-	public function resolve($asserter)
-	{
-		if (isset($this->resolved[$asserter])) {
-			return $this->resolved[$asserter];
-		}
+    public function resolve($asserter)
+    {
+        if (isset($this->resolved[$asserter])) {
+            return $this->resolved[$asserter];
+        }
 
-		if (false === $this->analyzer->isValidNamespace($asserter))
-		{
-			return null;
-		}
+        if (false === $this->analyzer->isValidNamespace($asserter)) {
+            return null;
+        }
 
-		$class = null;
+        $class = null;
 
-		if (strpos($asserter, '\\') !== false)
-		{
-			$class = $this->checkClass($asserter);
-		}
-		else foreach ($this->namespaces as $namespace)
-		{
-			$class = $this->checkClass($namespace . '\\' . $asserter);
+        if (strpos($asserter, '\\') !== false) {
+            $class = $this->checkClass($asserter);
+        } else {
+            foreach ($this->namespaces as $namespace) {
+                $class = $this->checkClass($namespace . '\\' . $asserter);
 
-			if ($class !== null)
-			{
-				break;
-			}
+                if ($class !== null) {
+                    break;
+                }
 
-			$class = $this->checkClass($namespace . '\\php' . ucfirst($asserter));
+                $class = $this->checkClass($namespace . '\\php' . ucfirst($asserter));
 
-			if ($class !== null)
-			{
-				break;
-			}
-		}
+                if ($class !== null) {
+                    break;
+                }
+            }
+        }
 
-		$this->resolved[$asserter] = $class;
+        $this->resolved[$asserter] = $class;
 
-		return $class;
-	}
+        return $class;
+    }
 
-	private function checkClass($class)
-	{
-		return (class_exists($class, true) === false || is_subclass_of($class, $this->baseClass) === false ? null : $class);
-	}
+    private function checkClass($class)
+    {
+        return (class_exists($class, true) === false || is_subclass_of($class, $this->baseClass) === false ? null : $class);
+    }
 }

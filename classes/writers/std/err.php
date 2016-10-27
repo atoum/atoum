@@ -2,27 +2,22 @@
 
 namespace mageekguy\atoum\writers\std;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\writers
-;
+use mageekguy\atoum\writers;
 
 class err extends writers\std
 {
-	protected function init()
-	{
-		if ($this->resource === null)
-		{
-			$resource = $this->adapter->fopen('php://stderr', 'w');
+    protected function init()
+    {
+        if ($this->resource === null) {
+            $resource = $this->adapter->fopen('php://stderr', 'w');
 
-			if ($resource === false)
-			{
-				throw new exceptions\runtime('Unable to open php://stderr stream');
-			}
+            if ($resource === false) {
+                throw new exceptions\runtime('Unable to open php://stderr stream');
+            }
 
-			$this->resource = $resource;
-		}
+            $this->resource = $resource;
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 }

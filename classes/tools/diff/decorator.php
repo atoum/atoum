@@ -2,50 +2,50 @@
 
 namespace mageekguy\atoum\tools\diff;
 
-use
-	mageekguy\atoum\tools
-;
+use mageekguy\atoum\tools;
 
 class decorator
 {
-	public function decorate(tools\diff $diff)
-	{
-		$string = '';
+    public function decorate(tools\diff $diff)
+    {
+        $string = '';
 
-		$diff = array_filter($diff->make(), function($value) { return is_array($value) === true; });
+        $diff = array_filter($diff->make(), function ($value) {
+            return is_array($value) === true;
+        });
 
-		if (sizeof($diff) > 0)
-		{
-			$string .= '-Expected' . PHP_EOL;
-			$string .= '+Actual' . PHP_EOL;
+        if (sizeof($diff) > 0) {
+            $string .= '-Expected' . PHP_EOL;
+            $string .= '+Actual' . PHP_EOL;
 
-			foreach ($diff as $lineNumber => $diff)
-			{
-				$lineNumber++;
+            foreach ($diff as $lineNumber => $diff) {
+                $lineNumber++;
 
-				$sizeofMinus = sizeof($diff['-']);
-				$sizeofPlus = sizeof($diff['+']);
+                $sizeofMinus = sizeof($diff['-']);
+                $sizeofPlus = sizeof($diff['+']);
 
-				$string .= '@@ -' . $lineNumber . ($sizeofMinus <= 1 ? '' : ',' . $sizeofMinus) . ' +' . $lineNumber . ($sizeofPlus <= 1 ? '' : ',' . $sizeofPlus) . ' @@' . PHP_EOL;
+                $string .= '@@ -' . $lineNumber . ($sizeofMinus <= 1 ? '' : ',' . $sizeofMinus) . ' +' . $lineNumber . ($sizeofPlus <= 1 ? '' : ',' . $sizeofPlus) . ' @@' . PHP_EOL;
 
-				array_walk($diff['-'], function(& $value) { $value = ($value == '' ? '' : '-' . $value); });
-				$minus = join(PHP_EOL, $diff['-']);
+                array_walk($diff['-'], function (& $value) {
+                    $value = ($value == '' ? '' : '-' . $value);
+                });
+                $minus = implode(PHP_EOL, $diff['-']);
 
-				if ($minus != '')
-				{
-					$string .= $minus . PHP_EOL;
-				}
+                if ($minus != '') {
+                    $string .= $minus . PHP_EOL;
+                }
 
-				array_walk($diff['+'], function(& $value) { $value = ($value == '' ? '' : '+' . $value); });
-				$plus = join(PHP_EOL, $diff['+']);
+                array_walk($diff['+'], function (& $value) {
+                    $value = ($value == '' ? '' : '+' . $value);
+                });
+                $plus = implode(PHP_EOL, $diff['+']);
 
-				if ($plus != '')
-				{
-					$string .= $plus . PHP_EOL;
-				}
-			}
-		}
+                if ($plus != '') {
+                    $string .= $plus . PHP_EOL;
+                }
+            }
+        }
 
-		return trim($string);
-	}
+        return trim($string);
+    }
 }

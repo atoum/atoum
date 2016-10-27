@@ -2,43 +2,40 @@
 
 namespace mageekguy\atoum\test\engines;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\test\engines
-;
+use mageekguy\atoum;
+use mageekguy\atoum\test\engines;
 
 class isolate extends engines\concurrent
 {
-	protected $score = null;
+    protected $score = null;
 
-	public function __construct(atoum\score $score = null)
-	{
-		parent::__construct($score);
-	}
+    public function __construct(atoum\score $score = null)
+    {
+        parent::__construct($score);
+    }
 
-	public function setScore(atoum\score $score = null)
-	{
-		$this->score = $score ?: new atoum\score();
+    public function setScore(atoum\score $score = null)
+    {
+        $this->score = $score ?: new atoum\score();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function run(atoum\test $test)
-	{
-		parent::run($test);
+    public function run(atoum\test $test)
+    {
+        parent::run($test);
 
-		$this->score = parent::getScore();
+        $this->score = parent::getScore();
 
-		while ($this->score === null)
-		{
-			$this->score = parent::getScore();
-		}
+        while ($this->score === null) {
+            $this->score = parent::getScore();
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getScore()
-	{
-		return $this->score;
-	}
+    public function getScore()
+    {
+        return $this->score;
+    }
 }

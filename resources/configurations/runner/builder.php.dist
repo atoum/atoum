@@ -8,21 +8,21 @@ use \mageekguy\atoum;
 
 $mailer = new atoum\mailers\mail();
 $mailer
-	->addTo('to@domain')
-	->setFrom('from@domain')
-	->setXMailer('atoum builder')
-	->setReplyTo('reply@domain')
-	->setContentType('text/plain', 'utf-8')
+    ->addTo('to@domain')
+    ->setFrom('from@domain')
+    ->setXMailer('atoum builder')
+    ->setReplyTo('reply@domain')
+    ->setContentType('text/plain', 'utf-8')
 ;
 
 $mailWriter = new atoum\writers\mail();
 $mailWriter
-	->setMailer($mailer)
+    ->setMailer($mailer)
 ;
 
 $builderReport = new atoum\reports\asynchronous\builder();
 $builderReport
-	->addWriter($mailWriter)
+    ->addWriter($mailWriter)
 ;
 
 $runner->addReport($builderReport);

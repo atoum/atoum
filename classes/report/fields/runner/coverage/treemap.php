@@ -4,268 +4,245 @@ namespace mageekguy\atoum\report\fields\runner\coverage;
 
 require_once __DIR__ . '/../../../../../constants.php';
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\report,
-	mageekguy\atoum\template,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer
-;
+use mageekguy\atoum;
+use mageekguy\atoum\cli\colorizer;
+use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\exceptions;
+use mageekguy\atoum\locale;
+use mageekguy\atoum\report;
 
 class treemap extends report\fields\runner\coverage\cli
 {
-	const dataFile = 'data.json';
+    const dataFile = 'data.json';
 
-	protected $urlPrompt = null;
-	protected $urlColorizer = null;
-	protected $treemapUrl = '';
-	protected $projectName = '';
-	protected $htmlReportBaseUrl = null;
-	protected $resourcesDirectory = array();
-	protected $destinationDirectory = null;
-	protected $reflectionClassFactory = null;
+    protected $urlPrompt = null;
+    protected $urlColorizer = null;
+    protected $treemapUrl = '';
+    protected $projectName = '';
+    protected $htmlReportBaseUrl = null;
+    protected $resourcesDirectory = [];
+    protected $destinationDirectory = null;
+    protected $reflectionClassFactory = null;
 
-	public function __construct($projectName, $destinationDirectory)
-	{
-		parent::__construct();
+    public function __construct($projectName, $destinationDirectory)
+    {
+        parent::__construct();
 
-		$this
-			->setProjectName($projectName)
-			->setDestinationDirectory($destinationDirectory)
-			->setAdapter()
-			->setUrlPrompt()
-			->setUrlColorizer()
-			->setTreemapUrl('/')
-			->setResourcesDirectory()
-		;
-	}
+        $this
+            ->setProjectName($projectName)
+            ->setDestinationDirectory($destinationDirectory)
+            ->setAdapter()
+            ->setUrlPrompt()
+            ->setUrlColorizer()
+            ->setTreemapUrl('/')
+            ->setResourcesDirectory()
+        ;
+    }
 
-	public function __toString()
-	{
-		$string = '';
+    public function __toString()
+    {
+        $string = '';
 
-		if (sizeof($this->coverage) > 0)
-		{
-			try
-			{
-				$nodes = array(
-					'coverage' => round($this->coverage->getValue() * 100, 2),
-					'project' => $this->projectName,
-					'name' => '',
-					'fullname' => '',
-					'htmlReportBaseUrl' => $this->htmlReportBaseUrl,
-					'date' => time(),
-					'children' => array()
-				);
+        if (sizeof($this->coverage) > 0) {
+            try {
+                $nodes = [
+                    'coverage' => round($this->coverage->getValue() * 100, 2),
+                    'project' => $this->projectName,
+                    'name' => '',
+                    'fullname' => '',
+                    'htmlReportBaseUrl' => $this->htmlReportBaseUrl,
+                    'date' => time(),
+                    'children' => []
+                ];
 
-				foreach ($this->coverage->getClasses() as $className => $classPath)
-				{
-					$node = & $nodes;
+                foreach ($this->coverage->getClasses() as $className => $classPath) {
+                    $node = & $nodes;
 
-					$class = new \reflectionClass($className);
+                    $class = new \reflectionClass($className);
 
-					$namespaces = explode('\\', $class->getNamespaceName());
+                    $namespaces = explode('\\', $class->getNamespaceName());
 
-					foreach ($namespaces as $namespace)
-					{
-						$childFound = false;
+                    foreach ($namespaces as $namespace) {
+                        $childFound = false;
 
-						foreach ($node['children'] as $key => $child)
-						{
-							$childFound = ($child['name'] === $namespace);
+                        foreach ($node['children'] as $key => $child) {
+                            $childFound = ($child['name'] === $namespace);
 
-							if ($childFound === true)
-							{
-								break;
-							}
-						}
+                            if ($childFound === true) {
+                                break;
+                            }
+                        }
 
-						if ($childFound === false)
-						{
-							$key = sizeof($node['children']);
-							$node['children'][] = array(
-								'name' => $namespace,
-								'fullname' => $node['fullname'] . ($node['fullname'] == '' ? '' : '\\') . $namespace,
-								'children' => array()
-							);
-						}
+                        if ($childFound === false) {
+                            $key = sizeof($node['children']);
+                            $node['children'][] = [
+                                'name' => $namespace,
+                                'fullname' => $node['fullname'] . ($node['fullname'] == '' ? '' : '\\') . $namespace,
+                                'children' => []
+                            ];
+                        }
 
-						$node = & $node['children'][$key];
-					}
+                        $node = & $node['children'][$key];
+                    }
 
-					$child = array(
-						'name' => $class->getShortName(),
-						'fullname' => $node['fullname'] . '\\' . $class->getShortName(),
-						'covered' => $this->coverage->getNumberOfCoveredLinesInClass($className),
-						'coverable' => $this->coverage->getNumberOfCoverableLinesInClass($className),
-						'pourcent' => round($this->coverage->getValueForClass($className) * 100, 2),
-						'children' => array()
-					);
+                    $child = [
+                        'name' => $class->getShortName(),
+                        'fullname' => $node['fullname'] . '\\' . $class->getShortName(),
+                        'covered' => $this->coverage->getNumberOfCoveredLinesInClass($className),
+                        'coverable' => $this->coverage->getNumberOfCoverableLinesInClass($className),
+                        'pourcent' => round($this->coverage->getValueForClass($className) * 100, 2),
+                        'children' => []
+                    ];
 
-					$node['children'][] = $child;
-				}
+                    $node['children'][] = $child;
+                }
 
-				if (@file_put_contents($this->destinationDirectory . DIRECTORY_SEPARATOR . self::dataFile, json_encode($nodes)) === false)
-				{
-					throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->destinationDirectory . '\''));
-				}
+                if (@file_put_contents($this->destinationDirectory . DIRECTORY_SEPARATOR . self::dataFile, json_encode($nodes)) === false) {
+                    throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->destinationDirectory . '\''));
+                }
 
-				try
-				{
-					$resourcesDirectoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($this->resourcesDirectory));
-				}
-				catch (\exception $exception)
-				{
-					throw new exceptions\runtime($this->locale->_('Directory \'' . $this->resourcesDirectory . '\' does not exist'));
-				}
+                try {
+                    $resourcesDirectoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($this->resourcesDirectory));
+                } catch (\exception $exception) {
+                    throw new exceptions\runtime($this->locale->_('Directory \'' . $this->resourcesDirectory . '\' does not exist'));
+                }
 
-				foreach ($resourcesDirectoryIterator as $file)
-				{
-					if (@copy($file, $this->destinationDirectory . DIRECTORY_SEPARATOR . $resourcesDirectoryIterator->getSubPathname()) === false)
-					{
-						throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->destinationDirectory . '\''));
-					}
-				}
+                foreach ($resourcesDirectoryIterator as $file) {
+                    if (@copy($file, $this->destinationDirectory . DIRECTORY_SEPARATOR . $resourcesDirectoryIterator->getSubPathname()) === false) {
+                        throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->destinationDirectory . '\''));
+                    }
+                }
 
-				$string .= $this->urlPrompt . $this->urlColorizer->colorize($this->locale->_('Treemap of code coverage are available at %s.', $this->treemapUrl)) . PHP_EOL;
-			}
-			catch (\exception $exception)
-			{
-				$string .= $this->urlPrompt . $this->urlColorizer->colorize($this->locale->_('Unable to generate code coverage at %s: %s.', $this->treemapUrl, $exception->getMessage())) . PHP_EOL;
-			}
-		}
+                $string .= $this->urlPrompt . $this->urlColorizer->colorize($this->locale->_('Treemap of code coverage are available at %s.', $this->treemapUrl)) . PHP_EOL;
+            } catch (\exception $exception) {
+                $string .= $this->urlPrompt . $this->urlColorizer->colorize($this->locale->_('Unable to generate code coverage at %s: %s.', $this->treemapUrl, $exception->getMessage())) . PHP_EOL;
+            }
+        }
 
-		return $string;
-	}
+        return $string;
+    }
 
-	public function getHtmlReportBaseUrl()
-	{
-		return $this->htmlReportBaseUrl;
-	}
+    public function getHtmlReportBaseUrl()
+    {
+        return $this->htmlReportBaseUrl;
+    }
 
-	public function setHtmlReportBaseUrl($url)
-	{
-		$this->htmlReportBaseUrl = (string) $url;
+    public function setHtmlReportBaseUrl($url)
+    {
+        $this->htmlReportBaseUrl = (string) $url;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function setReflectionClassFactory(\closure $factory)
-	{
-		$closure = new \reflectionMethod($factory, '__invoke');
+    public function setReflectionClassFactory(\closure $factory)
+    {
+        $closure = new \reflectionMethod($factory, '__invoke');
 
-		if ($closure->getNumberOfParameters() != 1)
-		{
-			throw new exceptions\logic\invalidArgument('Reflection class factory must take one argument');
-		}
+        if ($closure->getNumberOfParameters() != 1) {
+            throw new exceptions\logic\invalidArgument('Reflection class factory must take one argument');
+        }
 
-		$this->reflectionClassFactory = $factory;
+        $this->reflectionClassFactory = $factory;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getReflectionClass($class)
-	{
-		if ($this->reflectionClassFactory === null)
-		{
-			$reflectionClass = new \reflectionClass($class);
-		}
-		else
-		{
-			$reflectionClass = $this->reflectionClassFactory->__invoke($class);
+    public function getReflectionClass($class)
+    {
+        if ($this->reflectionClassFactory === null) {
+            $reflectionClass = new \reflectionClass($class);
+        } else {
+            $reflectionClass = $this->reflectionClassFactory->__invoke($class);
 
-			if ($reflectionClass instanceof \reflectionClass === false)
-			{
-				throw new exceptions\runtime\unexpectedValue('Reflection class injector must return a \reflectionClass instance');
-			}
-		}
+            if ($reflectionClass instanceof \reflectionClass === false) {
+                throw new exceptions\runtime\unexpectedValue('Reflection class injector must return a \reflectionClass instance');
+            }
+        }
 
-		return $reflectionClass;
-	}
+        return $reflectionClass;
+    }
 
-	public function setProjectName($projectName)
-	{
-		$this->projectName = (string) $projectName;
+    public function setProjectName($projectName)
+    {
+        $this->projectName = (string) $projectName;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getProjectName()
-	{
-		return $this->projectName;
-	}
+    public function getProjectName()
+    {
+        return $this->projectName;
+    }
 
-	public function setDestinationDirectory($path)
-	{
-		$this->destinationDirectory = (string) $path;
+    public function setDestinationDirectory($path)
+    {
+        $this->destinationDirectory = (string) $path;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getDestinationDirectory()
-	{
-		return $this->destinationDirectory;
-	}
+    public function getDestinationDirectory()
+    {
+        return $this->destinationDirectory;
+    }
 
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
+    public function setAdapter(atoum\adapter $adapter = null)
+    {
+        $this->adapter = $adapter ?: new atoum\adapter();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
+    public function getAdapter()
+    {
+        return $this->adapter;
+    }
 
-	public function setUrlPrompt(prompt $prompt = null)
-	{
-		$this->urlPrompt = $prompt ?: new prompt();
+    public function setUrlPrompt(prompt $prompt = null)
+    {
+        $this->urlPrompt = $prompt ?: new prompt();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getUrlPrompt()
-	{
-		return $this->urlPrompt;
-	}
+    public function getUrlPrompt()
+    {
+        return $this->urlPrompt;
+    }
 
-	public function setUrlColorizer(colorizer $colorizer = null)
-	{
-		$this->urlColorizer = $colorizer ?: new colorizer();
+    public function setUrlColorizer(colorizer $colorizer = null)
+    {
+        $this->urlColorizer = $colorizer ?: new colorizer();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getUrlColorizer()
-	{
-		return $this->urlColorizer;
-	}
+    public function getUrlColorizer()
+    {
+        return $this->urlColorizer;
+    }
 
-	public function setTreemapUrl($treemapUrl)
-	{
-		$this->treemapUrl = (string) $treemapUrl;
+    public function setTreemapUrl($treemapUrl)
+    {
+        $this->treemapUrl = (string) $treemapUrl;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getTreemapUrl()
-	{
-		return $this->treemapUrl;
-	}
+    public function getTreemapUrl()
+    {
+        return $this->treemapUrl;
+    }
 
-	public function setResourcesDirectory($directory = null)
-	{
-		$this->resourcesDirectory = $directory ?: atoum\directory . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'coverage' . DIRECTORY_SEPARATOR . 'treemap';
+    public function setResourcesDirectory($directory = null)
+    {
+        $this->resourcesDirectory = $directory ?: atoum\directory . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'coverage' . DIRECTORY_SEPARATOR . 'treemap';
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getResourcesDirectory()
-	{
-		return $this->resourcesDirectory;
-	}
+    public function getResourcesDirectory()
+    {
+        return $this->resourcesDirectory;
+    }
 }

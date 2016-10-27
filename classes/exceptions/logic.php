@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\exceptions;
 
-use
-	mageekguy\atoum
-;
+use mageekguy\atoum;
 
-class logic extends \logicException implements atoum\exception {}
+class logic extends \logicException implements atoum\exception
+{
+}

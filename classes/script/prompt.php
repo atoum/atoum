@@ -2,54 +2,52 @@
 
 namespace mageekguy\atoum\script;
 
-use
-	mageekguy\atoum\writer,
-	mageekguy\atoum\writers,
-	mageekguy\atoum\reader,
-	mageekguy\atoum\readers\std
-;
+use mageekguy\atoum\reader;
+use mageekguy\atoum\readers\std;
+use mageekguy\atoum\writer;
+use mageekguy\atoum\writers;
 
 class prompt
 {
-	protected $inputReader = null;
-	protected $outputWriter = null;
+    protected $inputReader = null;
+    protected $outputWriter = null;
 
-	public function __construct()
-	{
-		$this
-			->setInputReader()
-			->setOutputWriter()
-		;
-	}
+    public function __construct()
+    {
+        $this
+            ->setInputReader()
+            ->setOutputWriter()
+        ;
+    }
 
-	public function getInputReader()
-	{
-		return $this->inputReader;
-	}
+    public function getInputReader()
+    {
+        return $this->inputReader;
+    }
 
-	public function setInputReader(reader $inputReader = null)
-	{
-		$this->inputReader = $inputReader ?: new std\in();
+    public function setInputReader(reader $inputReader = null)
+    {
+        $this->inputReader = $inputReader ?: new std\in();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getOutputWriter()
-	{
-		return $this->outputWriter;
-	}
+    public function getOutputWriter()
+    {
+        return $this->outputWriter;
+    }
 
-	public function setOutputWriter(writer $writer = null)
-	{
-		$this->outputWriter = $writer ?: new writers\std\out();
+    public function setOutputWriter(writer $writer = null)
+    {
+        $this->outputWriter = $writer ?: new writers\std\out();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function ask($message)
-	{
-		$this->outputWriter->write($message);
+    public function ask($message)
+    {
+        $this->outputWriter->write($message);
 
-		return $this->inputReader->read();
-	}
+        return $this->inputReader->read();
+    }
 }

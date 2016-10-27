@@ -2,79 +2,74 @@
 
 namespace mageekguy\atoum\autoloader;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
-;
+use mageekguy\atoum;
+use mageekguy\atoum\exceptions;
 
 class mock
 {
-	protected $mockGenerator;
-	protected $adapter;
+    protected $mockGenerator;
+    protected $adapter;
 
-	public function __construct(atoum\mock\generator $generator = null, atoum\adapter $adapter = null)
-	{
-		$this
-			->setAdapter($adapter)
-			->setMockGenerator($generator)
-		;
-	}
+    public function __construct(atoum\mock\generator $generator = null, atoum\adapter $adapter = null)
+    {
+        $this
+            ->setAdapter($adapter)
+            ->setMockGenerator($generator)
+        ;
+    }
 
-	public function setMockGenerator(atoum\mock\generator $generator = null)
-	{
-		$this->mockGenerator = $generator ?: new atoum\mock\generator();
+    public function setMockGenerator(atoum\mock\generator $generator = null)
+    {
+        $this->mockGenerator = $generator ?: new atoum\mock\generator();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getMockGenerator()
-	{
-		return $this->mockGenerator;
-	}
-	
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
+    public function getMockGenerator()
+    {
+        return $this->mockGenerator;
+    }
 
-		return $this;
-	}
+    public function setAdapter(atoum\adapter $adapter = null)
+    {
+        $this->adapter = $adapter ?: new atoum\adapter();
 
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
+        return $this;
+    }
 
-	public function register()
-	{
-		if ($this->adapter->spl_autoload_register(array($this, 'requireClass'), true, true) === false)
-		{
-			throw new exceptions\runtime('Unable to register mock autoloader');
-		}
+    public function getAdapter()
+    {
+        return $this->adapter;
+    }
 
-		return $this;
-	}
+    public function register()
+    {
+        if ($this->adapter->spl_autoload_register([$this, 'requireClass'], true, true) === false) {
+            throw new exceptions\runtime('Unable to register mock autoloader');
+        }
 
-	public function unregister()
-	{
-		if ($this->adapter->spl_autoload_unregister(array($this, 'requireClass')) === false)
-		{
-			throw new exceptions\runtime('Unable to unregister mock autoloader');
-		}
+        return $this;
+    }
 
-		return $this;
-	}
+    public function unregister()
+    {
+        if ($this->adapter->spl_autoload_unregister([$this, 'requireClass']) === false) {
+            throw new exceptions\runtime('Unable to unregister mock autoloader');
+        }
 
-	public function requireClass($class)
-	{
-		$mockNamespace = ltrim($this->mockGenerator->getDefaultNamespace(), '\\');
-		$mockNamespacePattern = '/^\\\?' . preg_quote($mockNamespace) . '\\\/i';
-		$mockedClass = preg_replace($mockNamespacePattern, '', $class);
+        return $this;
+    }
 
-		if ($mockedClass !== $class)
-		{
-			$this->mockGenerator->generate($mockedClass);
-		}
+    public function requireClass($class)
+    {
+        $mockNamespace = ltrim($this->mockGenerator->getDefaultNamespace(), '\\');
+        $mockNamespacePattern = '/^\\\?' . preg_quote($mockNamespace) . '\\\/i';
+        $mockedClass = preg_replace($mockNamespacePattern, '', $class);
 
-		return $this;
-	}
-} 
+        if ($mockedClass !== $class) {
+            $this->mockGenerator->generate($mockedClass);
+        }
+
+        return $this;
+    }
+}

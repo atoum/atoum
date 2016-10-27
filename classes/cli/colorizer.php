@@ -2,112 +2,104 @@
 
 namespace mageekguy\atoum\cli;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\writer
-;
+use mageekguy\atoum;
+use mageekguy\atoum\writer;
 
 class colorizer implements writer\decorator
 {
-	protected $cli = null;
-	protected $pattern = null;
-	protected $foreground = null;
-	protected $background = null;
+    protected $cli = null;
+    protected $pattern = null;
+    protected $foreground = null;
+    protected $background = null;
 
-	public function __construct($foreground = null, $background = null, atoum\cli $cli = null)
-	{
-		if ($foreground !== null)
-		{
-			$this->setForeground($foreground);
-		}
+    public function __construct($foreground = null, $background = null, atoum\cli $cli = null)
+    {
+        if ($foreground !== null) {
+            $this->setForeground($foreground);
+        }
 
-		if ($background !== null)
-		{
-			$this->setBackground($background);
-		}
+        if ($background !== null) {
+            $this->setBackground($background);
+        }
 
-		$this->setCli($cli);
-	}
+        $this->setCli($cli);
+    }
 
-	public function setCli(atoum\cli $cli = null)
-	{
-		$this->cli = $cli ?: new atoum\cli();
+    public function setCli(atoum\cli $cli = null)
+    {
+        $this->cli = $cli ?: new atoum\cli();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getCli()
-	{
-		return $this->cli;
-	}
+    public function getCli()
+    {
+        return $this->cli;
+    }
 
-	public function setPattern($pattern)
-	{
-		$this->pattern = $pattern;
+    public function setPattern($pattern)
+    {
+        $this->pattern = $pattern;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getPattern()
-	{
-		return $this->pattern;
-	}
+    public function getPattern()
+    {
+        return $this->pattern;
+    }
 
-	public function setForeground($foreground)
-	{
-		$this->foreground = (string) $foreground;
+    public function setForeground($foreground)
+    {
+        $this->foreground = (string) $foreground;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getForeground()
-	{
-		return $this->foreground;
-	}
+    public function getForeground()
+    {
+        return $this->foreground;
+    }
 
-	public function setBackground($background)
-	{
-		$this->background = (string) $background;
+    public function setBackground($background)
+    {
+        $this->background = (string) $background;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getBackground()
-	{
-		return $this->background;
-	}
+    public function getBackground()
+    {
+        return $this->background;
+    }
 
-	public function colorize($string)
-	{
-		if ($this->cli->isTerminal() === true && ($this->foreground !== null || $this->background !== null))
-		{
-			$pattern = $this->pattern ?: '/^(.*)$/';
+    public function colorize($string)
+    {
+        if ($this->cli->isTerminal() === true && ($this->foreground !== null || $this->background !== null)) {
+            $pattern = $this->pattern ?: '/^(.*)$/';
 
-			$replace = '\1';
+            $replace = '\1';
 
-			if ($this->background !== null || $this->foreground !== null)
-			{
-				if ($this->background !== null)
-				{
-					$replace = "\033[" . $this->background . 'm' . $replace;
-				}
+            if ($this->background !== null || $this->foreground !== null) {
+                if ($this->background !== null) {
+                    $replace = "\033[" . $this->background . 'm' . $replace;
+                }
 
-				if ($this->foreground !== null)
-				{
-					$replace = "\033[" . $this->foreground . 'm' . $replace;
-				}
+                if ($this->foreground !== null) {
+                    $replace = "\033[" . $this->foreground . 'm' . $replace;
+                }
 
-				$replace .= "\033[0m";
-			}
+                $replace .= "\033[0m";
+            }
 
-			$string = preg_replace($pattern, $replace, $string);
-		}
+            $string = preg_replace($pattern, $replace, $string);
+        }
 
-		return $string;
-	}
+        return $string;
+    }
 
-	public function decorate($string)
-	{
-		return $this->colorize($string);
-	}
+    public function decorate($string)
+    {
+        return $this->colorize($string);
+    }
 }

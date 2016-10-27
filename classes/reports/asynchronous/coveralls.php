@@ -2,207 +2,192 @@
 
 namespace mageekguy\atoum\reports\asynchronous;
 
-use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\score,
-	mageekguy\atoum\report
-;
+use mageekguy\atoum;
+use mageekguy\atoum\exceptions;
+use mageekguy\atoum\report;
+use mageekguy\atoum\score;
 
 class coveralls extends atoum\reports\asynchronous
 {
-	const defaultServiceName = 'atoum';
-	const defaultEvent = 'manual';
-	const defaultCoverallsApiUrl = 'https://coveralls.io/api/v1/jobs';
-	const defaultCoverallsApiMethod = 'POST';
-	const defaultCoverallsApiParameter = 'json';
+    const defaultServiceName = 'atoum';
+    const defaultEvent = 'manual';
+    const defaultCoverallsApiUrl = 'https://coveralls.io/api/v1/jobs';
+    const defaultCoverallsApiMethod = 'POST';
+    const defaultCoverallsApiParameter = 'json';
 
-	protected $sourceDir = null;
-	protected $repositoryToken = null;
-	protected $score = null;
-	protected $branchFinder;
-	protected $serviceName;
-	protected $serviceJobId;
+    protected $sourceDir = null;
+    protected $repositoryToken = null;
+    protected $score = null;
+    protected $branchFinder;
+    protected $serviceName;
+    protected $serviceJobId;
 
-	public function __construct($sourceDir, $repositoryToken = null, atoum\adapter $adapter = null)
-	{
-		parent::__construct();
+    public function __construct($sourceDir, $repositoryToken = null, atoum\adapter $adapter = null)
+    {
+        parent::__construct();
 
-		$this
-			->setAdapter($adapter)
-			->setBranchFinder()
-			->setServiceName()
-		;
+        $this
+            ->setAdapter($adapter)
+            ->setBranchFinder()
+            ->setServiceName()
+        ;
 
-		if ($this->adapter->extension_loaded('json') === false)
-		{
-			throw new exceptions\runtime('JSON PHP extension is mandatory for coveralls report');
-		}
+        if ($this->adapter->extension_loaded('json') === false) {
+            throw new exceptions\runtime('JSON PHP extension is mandatory for coveralls report');
+        }
 
-		$this->repositoryToken = $repositoryToken;
-		$this->sourceDir = new atoum\fs\path($sourceDir);
-	}
+        $this->repositoryToken = $repositoryToken;
+        $this->sourceDir = new atoum\fs\path($sourceDir);
+    }
 
-	public function setBranchFinder(\closure $finder = null)
-	{
-		$adapter = $this->adapter;
+    public function setBranchFinder(\closure $finder = null)
+    {
+        $adapter = $this->adapter;
 
-		$this->branchFinder = $finder ?: function() use ($adapter) { return $adapter->exec('git rev-parse --abbrev-ref HEAD'); };
+        $this->branchFinder = $finder ?: function () use ($adapter) {
+            return $adapter->exec('git rev-parse --abbrev-ref HEAD');
+        };
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getBranchFinder()
-	{
-		return $this->branchFinder;
-	}
+    public function getBranchFinder()
+    {
+        return $this->branchFinder;
+    }
 
-	public function setServiceName($name = null)
-	{
-		$this->serviceName = $name ?: static::defaultServiceName;
+    public function setServiceName($name = null)
+    {
+        $this->serviceName = $name ?: static::defaultServiceName;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getServiceName()
-	{
-		return $this->serviceName;
-	}
+    public function getServiceName()
+    {
+        return $this->serviceName;
+    }
 
-	public function setServiceJobId($id = null)
-	{
-		$this->serviceJobId = $id;
+    public function setServiceJobId($id = null)
+    {
+        $this->serviceJobId = $id;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getServiceJobId()
-	{
-		return $this->serviceJobId;
-	}
+    public function getServiceJobId()
+    {
+        return $this->serviceJobId;
+    }
 
-	public function addDefaultWriter(atoum\writers\http $writer = null)
-	{
-		$writer = $writer ?: new atoum\writers\http($this->adapter);
-		$writer
-			->setUrl(static::defaultCoverallsApiUrl)
-			->setMethod(static::defaultCoverallsApiMethod)
-			->setParameter(static::defaultCoverallsApiParameter)
-			->addHeader('Content-Type', 'multipart/form-data')
-		;
+    public function addDefaultWriter(atoum\writers\http $writer = null)
+    {
+        $writer = $writer ?: new atoum\writers\http($this->adapter);
+        $writer
+            ->setUrl(static::defaultCoverallsApiUrl)
+            ->setMethod(static::defaultCoverallsApiMethod)
+            ->setParameter(static::defaultCoverallsApiParameter)
+            ->addHeader('Content-Type', 'multipart/form-data')
+        ;
 
-		return parent::addWriter($writer);
-	}
+        return parent::addWriter($writer);
+    }
 
-	public function getSourceDir()
-	{
-		return $this->sourceDir;
-	}
+    public function getSourceDir()
+    {
+        return $this->sourceDir;
+    }
 
-	public function handleEvent($event, atoum\observable $observable)
-	{
-		$this->score = ($event !== atoum\runner::runStop ? null : $observable->getScore());
+    public function handleEvent($event, atoum\observable $observable)
+    {
+        $this->score = ($event !== atoum\runner::runStop ? null : $observable->getScore());
 
-		try
-		{
-			return parent::handleEvent($event, $observable);
-		}
-		catch (atoum\writers\http\exception $exception)
-		{
-			return $this;
-		}
-	}
+        try {
+            return parent::handleEvent($event, $observable);
+        } catch (atoum\writers\http\exception $exception) {
+            return $this;
+        }
+    }
 
-	public function build($event)
-	{
-		if ($event === atoum\runner::runStop)
-		{
-			$coverage = $this->makeRootElement($this->score->getCoverage());
-			$this->string = json_encode($coverage);
-		}
+    public function build($event)
+    {
+        if ($event === atoum\runner::runStop) {
+            $coverage = $this->makeRootElement($this->score->getCoverage());
+            $this->string = json_encode($coverage);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	protected function makeRootElement(score\coverage $coverage)
-	{
-		$root = array(
-			'service_name' => $this->serviceName,
-			'service_event_type' => static::defaultEvent,
-			'service_job_id' => $this->serviceJobId,
-			'run_at' => $this->adapter->date('Y-m-d H:i:s O'),
-			'source_files' => $this->makeSourceElement($coverage),
-			'git' => $this->makeGitElement()
-		);
+    protected function makeRootElement(score\coverage $coverage)
+    {
+        $root = [
+            'service_name' => $this->serviceName,
+            'service_event_type' => static::defaultEvent,
+            'service_job_id' => $this->serviceJobId,
+            'run_at' => $this->adapter->date('Y-m-d H:i:s O'),
+            'source_files' => $this->makeSourceElement($coverage),
+            'git' => $this->makeGitElement()
+        ];
 
-		if ($this->repositoryToken !== null)
-		{
-			$root['repo_token'] = $this->repositoryToken;
-		}
+        if ($this->repositoryToken !== null) {
+            $root['repo_token'] = $this->repositoryToken;
+        }
 
-		return $root;
-	}
+        return $root;
+    }
 
-	protected function makeGitElement()
-	{
-		$head = $this->adapter->exec('git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'');
-		$infos = array('head' => json_decode($head));
+    protected function makeGitElement()
+    {
+        $head = $this->adapter->exec('git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'');
+        $infos = ['head' => json_decode($head)];
 
-		$branch = call_user_func($this->getBranchFinder());
-		if ($branch != null)
-		{
-			$infos['branch'] = $branch;
-		}
+        $branch = call_user_func($this->getBranchFinder());
+        if ($branch != null) {
+            $infos['branch'] = $branch;
+        }
 
-		return $infos;
-	}
+        return $infos;
+    }
 
-	protected function makeSourceElement(score\coverage $coverage)
-	{
-		$sources = array();
+    protected function makeSourceElement(score\coverage $coverage)
+    {
+        $sources = [];
 
-		foreach ($coverage->getClasses() as $class => $file)
-		{
-			$path = new atoum\fs\path($file);
-			$source = $this->adapter->file_get_contents((string) $path->resolve());
+        foreach ($coverage->getClasses() as $class => $file) {
+            $path = new atoum\fs\path($file);
+            $source = $this->adapter->file_get_contents((string) $path->resolve());
 
-			$sources[] = array(
-				'name' => ltrim((string) $path->relativizeFrom($this->sourceDir), '.' . DIRECTORY_SEPARATOR),
-				'source' => $source,
-				'coverage' => $this->makeCoverageElement($coverage->getCoverageForClass($class))
-			);
-		}
+            $sources[] = [
+                'name' => ltrim((string) $path->relativizeFrom($this->sourceDir), '.' . DIRECTORY_SEPARATOR),
+                'source' => $source,
+                'coverage' => $this->makeCoverageElement($coverage->getCoverageForClass($class))
+            ];
+        }
 
-		return $sources;
-	}
+        return $sources;
+    }
 
-	protected function makeCoverageElement(array $coverage)
-	{
-		$cover = array();
+    protected function makeCoverageElement(array $coverage)
+    {
+        $cover = [];
 
-		foreach ($coverage as $method)
-		{
-			foreach ($method as $number => $line)
-			{
-				if ($number > 1)
-				{
-					while (sizeof($cover) < ($number - 1))
-					{
-						$cover[] = null;
-					}
-				}
+        foreach ($coverage as $method) {
+            foreach ($method as $number => $line) {
+                if ($number > 1) {
+                    while (sizeof($cover) < ($number - 1)) {
+                        $cover[] = null;
+                    }
+                }
 
-				if ($line === 1)
-				{
-					$cover[] = 1;
-				}
-				elseif ($line >= -1)
-				{
-					$cover[] = 0;
-				}
-			}
-		}
+                if ($line === 1) {
+                    $cover[] = 1;
+                } elseif ($line >= -1) {
+                    $cover[] = 0;
+                }
+            }
+        }
 
-		return $cover;
-	}
+        return $cover;
+    }
 }

@@ -2,69 +2,66 @@
 
 namespace mageekguy\atoum;
 
-use
-	mageekguy\atoum\writer\decorator
-;
+use mageekguy\atoum\writer\decorator;
 
 abstract class writer
 {
-	protected $adapter = null;
-	protected $decorators = array();
+    protected $adapter = null;
+    protected $decorators = [];
 
-	public function __construct(adapter $adapter = null)
-	{
-		$this->setAdapter($adapter);
-	}
+    public function __construct(adapter $adapter = null)
+    {
+        $this->setAdapter($adapter);
+    }
 
-	public function setAdapter(adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new adapter();
+    public function setAdapter(adapter $adapter = null)
+    {
+        $this->adapter = $adapter ?: new adapter();
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
+    public function getAdapter()
+    {
+        return $this->adapter;
+    }
 
-	public function reset()
-	{
-		return $this;
-	}
+    public function reset()
+    {
+        return $this;
+    }
 
-	public function addDecorator(decorator $decorator)
-	{
-		$this->decorators[] = $decorator;
+    public function addDecorator(decorator $decorator)
+    {
+        $this->decorators[] = $decorator;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getDecorators()
-	{
-		return $this->decorators;
-	}
+    public function getDecorators()
+    {
+        return $this->decorators;
+    }
 
-	public function removeDecorators()
-	{
-		$this->decorators = array();
+    public function removeDecorators()
+    {
+        $this->decorators = [];
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function write($string)
-	{
-		foreach ($this->decorators as $decorator)
-		{
-			$string = $decorator->decorate($string);
-		}
+    public function write($string)
+    {
+        foreach ($this->decorators as $decorator) {
+            $string = $decorator->decorate($string);
+        }
 
-		$this->doWrite($string);
+        $this->doWrite($string);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public abstract function clear();
+    abstract public function clear();
 
-	protected abstract function doWrite($string);
+    abstract protected function doWrite($string);
 }

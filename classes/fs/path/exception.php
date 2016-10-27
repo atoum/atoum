@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\fs\path;
 
-use
-	mageekguy\atoum\exceptions
-;
+use mageekguy\atoum\exceptions;
 
-class exception extends exceptions\runtime {}
+class exception extends exceptions\runtime
+{
+}
