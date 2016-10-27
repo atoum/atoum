@@ -96,7 +96,7 @@ class token extends iterator\value
 
     public function append(iterator\value $value)
     {
-        throw new exceptions\logic(__METHOD__.'() is unavailable');
+        throw new exceptions\logic(__METHOD__ . '() is unavailable');
     }
 
     public function seek($key)
