@@ -32,24 +32,24 @@ class santa extends cli
 	$brown = new colorizer('38;5;94');
 
 	$this->sprite = array(
-	'			_			',
-	'		   {_}		   ',
-	$red->colorize('		   / \\		   '),
-	$red->colorize('		  /   \\		  '),
-	$red->colorize('		 /_____\\		 '),
-	'	   {`_______`}	   ',
-	'		// . . \\\\		',
-	'	   (/(__7__)\\)	   ',
-	'	   |\'-` = `-\'|	   ',
-	'	   |		 |	   ',
-	$red->colorize('	   /') . '\\	   /' . $red->colorize('\\	   '),
-	$red->colorize('	  /  ') . '\'.   .\'' . $red->colorize('  \\	  '),
-	$red->colorize('	 /_/') . '   `"`   ' . $red->colorize('\\_\\	 '),
-	'	{__}' . $brown->colorize('###') . $black->colorize('[_]') . $brown->colorize('###') . '{__}	',
-	'	(_/' . $red->colorize('\\_________/') . '\\_)	',
-	$red->colorize('		|___|___|		'),
-	$red->colorize('		 |--|--|		 '),
-	$brown->colorize('		(__)') . '`' . $brown->colorize('(__)		')
+	'            _            ',
+	'           {_}           ',
+	$red->colorize('           / \\           '),
+	$red->colorize('          /   \\          '),
+	$red->colorize('         /_____\\         '),
+	'       {`_______`}    ',
+	'        // . . \\\\        ',
+	'       (/(__7__)\\)       ',
+	'       |\'-` = `-\'|       ',
+	'       |         |   ',
+	$red->colorize('       /') . '\\       /' . $red->colorize('\\       '),
+	$red->colorize('      /  ') . '\'.   .\'' . $red->colorize('  \\      '),
+	$red->colorize('     /_/') . '   `"`   ' . $red->colorize('\\_\\     '),
+	'    {__}' . $brown->colorize('###') . $black->colorize('[_]') . $brown->colorize('###') . '{__}    ',
+	'    (_/' . $red ->colorize('\\_________/') . '\\_)	',
+	$red->colorize('        |___|___|        '),
+	$red->colorize('         |--|--|         '),
+	$brown->colorize('        (__)') . '`' . $brown->colorize('(__)        ')
 	);
 	}
 
