@@ -272,7 +272,7 @@ class generator
 
 		$constructor = $class->getConstructor();
 
-		if ($constructor === null)
+		if ($constructor === null || $this->allIsInterface)
 		{
 			$mockedMethods .= self::generateDefaultConstructor();
 			$mockedMethodNames[] = '__construct';
