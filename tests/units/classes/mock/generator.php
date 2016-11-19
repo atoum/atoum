@@ -3697,13 +3697,16 @@ class generator extends atoum\test
 	}
 }
 
-class foo
+if (version_compare(PHP_VERSION, '5.6', '>='))
 {
-}
-
-class classWithVariadicInConstructor
-{
-	public function __construct(foo... $foo)
+	class foo
 	{
+	}
+
+	class classWithVariadicInConstructor
+	{
+		public function __construct(foo... $foo)
+		{
+		}
 	}
 }
