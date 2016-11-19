@@ -3699,6 +3699,8 @@ class generator extends atoum\test
 
 if (version_compare(PHP_VERSION, '5.6.0', '>='))
 {
+	eval('
+	namespace ' . __NAMESPACE__ . ';
 	class foo
 	{
 	}
@@ -3709,4 +3711,5 @@ if (version_compare(PHP_VERSION, '5.6.0', '>='))
 		{
 		}
 	}
+	');
 }
