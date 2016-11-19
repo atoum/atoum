@@ -3697,7 +3697,7 @@ class generator extends atoum\test
 	}
 }
 
-if (version_compare(PHP_VERSION, '5.6', '>='))
+if (version_compare(PHP_VERSION, '5.6', '>=') >= 0)
 {
 	class foo
 	{
