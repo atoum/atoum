@@ -312,6 +312,9 @@ class html extends report\fields\runner\coverage\cli
 	{
 		$this->destinationDirectory = (string) $path;
 
+		if (!$this->adapter->is_dir($this->destinationDirectory)) {
+			$this->adapter->mkdir($this->destinationDirectory, 0777, true);
+		}
 		return $this;
 	}
 
