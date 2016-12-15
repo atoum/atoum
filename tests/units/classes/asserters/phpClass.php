@@ -425,12 +425,67 @@ class phpClass extends atoum\test
 		;
 	}
 
+	/** @php 5.4 */
+	public function testIsTrait()
+	{
+		$this
+			->given($asserter = $this->newTestedInstance)
+			->then
+				->exception(function() use ($asserter) { $asserter->isTrait(); })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+
+				->exception(function() use ($asserter) { $asserter->isTrait; })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+
+			->given(
+				$this->testedInstance
+					->setReflectionClassInjector(function($class) use (& $reflectionClass) {
+							$mockController = new atoum\mock\controller();
+							$mockController->__construct = function() {};
+							$mockController->getName = $class;
+
+							return $reflectionClass = new \mock\reflectionClass($class, $mockController);
+						}
+					)
+					->setWith(uniqid())
+					->setLocale($locale = new \mock\atoum\locale()),
+				$this->calling($locale)->_ = $notAbstract = uniqid()
+			)
+
+			->if($this->calling($reflectionClass)->isTrait = false)
+			->then
+				->exception(function() use ($asserter) { $asserter->isTrait(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notAbstract)
+				->mock($locale)->call('_')->withArguments('%s is not a trait', $asserter)->once
+
+				->exception(function() use ($asserter, & $failMessage) { $asserter->isTrait($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+
+				->exception(function() use ($asserter) { $asserter->isTrait; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($notAbstract)
+				->mock($locale)->call('_')->withArguments('%s is not a trait', $asserter)->twice
+
+			->if($this->calling($reflectionClass)->isTrait = true)
+				->object($this->testedInstance->isTrait())->isTestedInstance
+				->object($this->testedInstance->isTrait)->isTestedInstance
+		;
+	}
+
 	public function testIsFinal()
 	{
 		$this
 			->given($asserter = $this->newTestedInstance)
 			->then
 				->exception(function() use ($asserter) { $asserter->isFinal(); })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+
+				->exception(function() use ($asserter) { $asserter->isFinal; })
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
 
