@@ -3610,7 +3610,7 @@ class generator extends atoum\test
 					$this->getMockControllerMethods() .
 					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
-					"\t\t" . '$this->id = uniqid();' . PHP_EOL .
+					"\t\t" . '$this->{\'mock\' . uniqid()} = true;' . PHP_EOL .
 					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .

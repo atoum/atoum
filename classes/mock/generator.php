@@ -327,7 +327,7 @@ class generator
 
 			if ($this->eachInstanceIsUnique === true)
 			{
-				$mockedMethods .= "\t\t" . '$this->id = uniqid();' . PHP_EOL;
+				$mockedMethods .= self::generateUniqueId();
 			}
 
 			if (self::hasVariadic($constructor) === true)
@@ -786,7 +786,7 @@ class generator
 
 		if ($uniqueId === true)
 		{
-			$defaultConstructor .= "\t\t" . '$this->id = uniqid();' . PHP_EOL;
+			$defaultConstructor .= self::generateUniqueId();
 		}
 
 		$defaultConstructor .=
@@ -937,5 +937,10 @@ class generator
 			'while',
 			'xor',
 		);
+	}
+
+	private static function generateUniqueId()
+	{
+		return "\t\t" . '$this->{\'mock\' . uniqid()} = true;' . PHP_EOL;
 	}
 }
