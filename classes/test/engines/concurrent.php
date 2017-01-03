@@ -191,6 +191,9 @@ class concurrent extends test\engine
 				}
 
 				$this->php->XDEBUG_CONFIG = $xdebugConfig;
+				if (getenv('PHP_IDE_CONFIG') !== false) {
+					$this->php->PHP_IDE_CONFIG = getenv('PHP_IDE_CONFIG');
+				}
 			}
 
 			$this->php
