@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#678](https://github.com/atoum/atoum/pull/678) Each mock instance can be made unique by calling `eachInstanceIsUnique` on the mock generator ([@mageekguy])
+
 # 2.9.0-beta1 - 2016-10-08
 
 * [#604](https://github.com/atoum/atoum/pull/604) Add a `addConfigurationCallable` method on the runner to allow extensions to register themselves ([@agallou], [@jubianchi])
