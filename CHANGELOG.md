@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#679](https://github.com/atoum/atoum/pull/679) copy `PHP_IDE_CONFIG` into forked processes ([@mvrhov])
 * [#678](https://github.com/atoum/atoum/pull/678) Each mock instance can be made unique by calling `eachInstanceIsUnique` on the mock generator ([@mageekguy])
 
 # 2.9.0-beta1 - 2016-10-08
@@ -221,3 +222,4 @@
 [@agallou]: https://github.com/agallou
 [@fferriere]: https://github.com/fferriere
 [@oxman]: https://github.com/blackprism
+[@mvrhov]: https://github.com/mvrhov
