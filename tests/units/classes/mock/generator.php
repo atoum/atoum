@@ -909,7 +909,6 @@ class generator extends atoum\test
                     '}' . PHP_EOL .
                     '}'
                 )
-
             ->if($generator->testedClassIs($realClass))
             ->then
                 ->string($generator->getMockedClassCode($realClass))->isEqualTo(
@@ -954,7 +953,42 @@ class generator extends atoum\test
                     '}' . PHP_EOL .
                     '}'
                 )
-        ;
+            ;
+
+        if (version_compare(PHP_VERSION, '5.6.0', '>=')) {
+            $this
+                    ->given($generator = new testedClass())
+                    ->if($generator->allIsInterface())
+                    ->then
+                        ->string($generator->getMockedClassCode('mageekguy\atoum\tests\units\mock\classWithVariadicInConstructor'))->isEqualTo(
+                            'namespace mock\mageekguy\atoum\tests\units\mock {' . PHP_EOL .
+                            'final class classWithVariadicInConstructor extends \mageekguy\atoum\tests\units\mock\classWithVariadicInConstructor implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+                            '{' . PHP_EOL .
+                            $this->getMockControllerMethods() .
+                            "\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                            "\t" . '{' . PHP_EOL .
+                            "\t\t" . 'if ($mockController === null)' . PHP_EOL .
+                            "\t\t" . '{' . PHP_EOL .
+                            "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+                            "\t\t" . '}' . PHP_EOL .
+                            "\t\t" . 'if ($mockController !== null)' . PHP_EOL .
+                            "\t\t" . '{' . PHP_EOL .
+                            "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+                            "\t\t" . '}' . PHP_EOL .
+                            "\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
+                            "\t\t" . '{' . PHP_EOL .
+                            "\t\t\t" . '$this->getMockController()->invoke(\'__construct\', func_get_args());' . PHP_EOL .
+                            "\t\t" . '}' . PHP_EOL .
+                            "\t" . '}' . PHP_EOL .
+                            "\t" . 'public static function getMockedMethods()' . PHP_EOL .
+                            "\t" . '{' . PHP_EOL .
+                            "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
+                            "\t" . '}' . PHP_EOL .
+                            '}' . PHP_EOL .
+                            '}'
+                        )
+                ;
+        }
     }
 
     /** @php >= 7.0 */
@@ -1038,7 +1072,6 @@ class generator extends atoum\test
                     '}' . PHP_EOL .
                     '}'
                 )
-
             ->if($generator->testedClassIs($realClass))
             ->then
                 ->string($generator->getMockedClassCode($realClass))->isEqualTo(
@@ -1079,6 +1112,37 @@ class generator extends atoum\test
                     "\t" . 'public static function getMockedMethods()' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'return ' . var_export(['__construct', 'foo'], true) . ';' . PHP_EOL .
+                    "\t" . '}' . PHP_EOL .
+                    '}' . PHP_EOL .
+                    '}'
+                )
+
+            ->given($generator = new testedClass())
+            ->if($generator->allIsInterface())
+            ->then
+                ->string($generator->getMockedClassCode('mageekguy\atoum\tests\units\mock\classWithVariadicInConstructor'))->isEqualTo(
+                    'namespace mock\mageekguy\atoum\tests\units\mock {' . PHP_EOL .
+                    'final class classWithVariadicInConstructor extends \mageekguy\atoum\tests\units\mock\classWithVariadicInConstructor implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+                    '{' . PHP_EOL .
+                    $this->getMockControllerMethods() .
+                    "\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . '{' . PHP_EOL .
+                    "\t\t" . 'if ($mockController === null)' . PHP_EOL .
+                    "\t\t" . '{' . PHP_EOL .
+                    "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+                    "\t\t" . '}' . PHP_EOL .
+                    "\t\t" . 'if ($mockController !== null)' . PHP_EOL .
+                    "\t\t" . '{' . PHP_EOL .
+                    "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+                    "\t\t" . '}' . PHP_EOL .
+                    "\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
+                    "\t\t" . '{' . PHP_EOL .
+                    "\t\t\t" . '$this->getMockController()->invoke(\'__construct\', func_get_args());' . PHP_EOL .
+                    "\t\t" . '}' . PHP_EOL .
+                    "\t" . '}' . PHP_EOL .
+                    "\t" . 'public static function getMockedMethods()' . PHP_EOL .
+                    "\t" . '{' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
                     '}' . PHP_EOL .
                     '}'
@@ -2142,7 +2206,6 @@ class generator extends atoum\test
                 )
         ;
     }
-
 
     /** @php >= 7.0 */
     public function testGetMockedClassCodeForInterfaceWithReturnTypeNotBuiltIn()
@@ -3790,6 +3853,43 @@ class generator extends atoum\test
         ;
     }
 
+    public function testGenerateWithEachInstanceIsUnique()
+    {
+        $this
+            ->if($generator = new testedClass())
+            ->and($generator->eachInstanceIsUnique())
+            ->then
+                ->string($generator->getMockedClassCode(__NAMESPACE__ . '\mockable'))->isEqualTo(
+                    'namespace mock\\' . __NAMESPACE__ . ' {' . PHP_EOL .
+                    'final class mockable extends \\' . __NAMESPACE__ . '\mockable implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+                    '{' . PHP_EOL .
+                    $this->getMockControllerMethods() .
+                    "\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . '{' . PHP_EOL .
+                    "\t\t" . '$this->{\'mock\' . uniqid()} = true;' . PHP_EOL .
+                    "\t\t" . 'if ($mockController === null)' . PHP_EOL .
+                    "\t\t" . '{' . PHP_EOL .
+                    "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+                    "\t\t" . '}' . PHP_EOL .
+                    "\t\t" . 'if ($mockController !== null)' . PHP_EOL .
+                    "\t\t" . '{' . PHP_EOL .
+                    "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+                    "\t\t" . '}' . PHP_EOL .
+                    "\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
+                    "\t\t" . '{' . PHP_EOL .
+                    "\t\t\t" . '$this->getMockController()->invoke(\'__construct\', func_get_args());' . PHP_EOL .
+                    "\t\t" . '}' . PHP_EOL .
+                    "\t" . '}' . PHP_EOL .
+                    "\t" . 'public static function getMockedMethods()' . PHP_EOL .
+                    "\t" . '{' . PHP_EOL .
+                    "\t\t" . 'return ' . var_export(['__construct'], true) . ';' . PHP_EOL .
+                    "\t" . '}' . PHP_EOL .
+                    '}' . PHP_EOL .
+                    '}'
+                )
+        ;
+    }
+
     protected function testMethodIsMockableWithReservedWordDataProvider()
     {
         # See http://www.php.net/manual/en/reserved.keywords.php
@@ -3869,4 +3969,24 @@ class generator extends atoum\test
             '__halt_compiler',
         ];
     }
+}
+
+class mockable
+{
+}
+
+if (version_compare(PHP_VERSION, '5.6.0', '>=')) {
+    eval('
+	namespace ' . __NAMESPACE__ . ';
+	class foo
+	{
+	}
+
+	class classWithVariadicInConstructor
+	{
+		public function __construct(foo... $foo)
+		{
+		}
+	}
+	');
 }

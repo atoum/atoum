@@ -18,6 +18,7 @@ class generator
     protected $allowUndefinedMethodsUsage = true;
     protected $allIsInterface = false;
     protected $testedClass = '';
+    protected $eachInstanceIsUnique = false;
 
     private $defaultNamespace = null;
 
@@ -138,6 +139,13 @@ class generator
         return $this;
     }
 
+    public function eachInstanceIsUnique()
+    {
+        $this->eachInstanceIsUnique = true;
+
+        return $this;
+    }
+
     public function testedClassIs($testedClass)
     {
         $this->testedClass = strtolower($testedClass);
@@ -166,7 +174,7 @@ class generator
         }
 
         if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false) {
-            $code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);
+            $code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass, $this->eachInstanceIsUnique);
         } else {
             $reflectionClass = call_user_func($this->reflectionClassFactory, $class);
 
@@ -258,8 +266,8 @@ class generator
 
         $constructor = $class->getConstructor();
 
-        if ($constructor === null) {
-            $mockedMethods .= self::generateDefaultConstructor();
+        if ($constructor === null || $this->allIsInterface) {
+            $mockedMethods .= self::generateDefaultConstructor(false, $this->eachInstanceIsUnique);
             $mockedMethodNames[] = '__construct';
         } elseif ($constructor->isFinal() === false) {
             $constructorName = $constructor->getName();
@@ -294,6 +302,10 @@ class generator
 
             $mockedMethods .= PHP_EOL;
             $mockedMethods .= "\t" . '{' . PHP_EOL;
+
+            if ($this->eachInstanceIsUnique === true) {
+                $mockedMethods .= self::generateUniqueId();
+            }
 
             if (self::hasVariadic($constructor) === true) {
                 $mockedMethods .= "\t\t" . '$arguments = func_get_args();' . PHP_EOL;
@@ -504,7 +516,7 @@ class generator
         }
 
         if ($hasConstructor === false) {
-            $mockedMethods .= self::generateDefaultConstructor();
+            $mockedMethods .= self::generateDefaultConstructor(false, $this->eachInstanceIsUnique);
             $mockedMethodNames[] = '__construct';
         }
 
@@ -599,14 +611,14 @@ class generator
         $mustBeNull = $this->isOrphanized($method->getName());
 
         foreach ($method->getParameters() as $parameter) {
-            $parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . ($parameter->isVariadic() == false ? '' : '... ') . '$' . $parameter->getName();
+            $parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . (self::isVariadic($parameter) == false ? '' : '... ') . '$' . $parameter->getName();
 
             switch (true) {
                 case $parameter->isDefaultValueAvailable():
                     $parameterCode .= ' = ' . var_export($parameter->getDefaultValue(), true);
                     break;
 
-                case $parameter->isOptional() && $parameter->isVariadic() == false:
+                case $parameter->isOptional() && self::isVariadic($parameter) == false:
                 case $mustBeNull:
                     $parameterCode .= ' = null';
             }
@@ -635,7 +647,7 @@ class generator
             case $parameter->isArray():
                 return 'array ';
 
-            case $parameter->isCallable():
+            case method_exists($parameter, 'isCallable') && $parameter->isCallable():
                 return 'callable ';
 
             case ($class = $parameter->getClass()):
@@ -649,6 +661,15 @@ class generator
         }
     }
 
+    protected static function isVariadic(\reflectionParameter $parameter)
+    {
+        if (method_exists($parameter, 'isVariadic')) {
+            return $parameter->isVariadic();
+        }
+
+        return false;
+    }
+
     protected static function hasVariadic(\reflectionMethod $method)
     {
         $parameters = $method->getParameters();
@@ -657,8 +678,7 @@ class generator
             return false;
         }
 
-        $parameter = end($parameters);
-        return $parameter->isVariadic();
+        return self::isVariadic(end($parameters));
     }
 
     protected static function generateMockControllerMethods()
@@ -685,11 +705,17 @@ class generator
         ;
     }
 
-    protected static function generateDefaultConstructor($disableMethodChecking = false)
+    protected static function generateDefaultConstructor($disableMethodChecking = false, $uniqueId = false)
     {
         $defaultConstructor =
             "\t" . 'public function __construct(\\' . __NAMESPACE__ . '\\controller $mockController = null)' . PHP_EOL .
-            "\t" . '{' . PHP_EOL .
+            "\t" . '{' . PHP_EOL;
+
+        if ($uniqueId === true) {
+            $defaultConstructor .= self::generateUniqueId();
+        }
+
+        $defaultConstructor .=
             "\t\t" . 'if ($mockController === null)' . PHP_EOL .
             "\t\t" . '{' . PHP_EOL .
             "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
@@ -743,13 +769,13 @@ class generator
         ;
     }
 
-    protected static function generateUnknownClassCode($class, $mockNamespace, $mockClass)
+    protected static function generateUnknownClassCode($class, $mockNamespace, $mockClass, $uniqueId = false)
     {
         return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
             'final class ' . $mockClass . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
             '{' . PHP_EOL .
             self::generateMockControllerMethods() .
-            self::generateDefaultConstructor(true) .
+            self::generateDefaultConstructor(true, $uniqueId) .
             self::generate__call() .
             self::generateGetMockedMethod(['__call']) .
             '}' . PHP_EOL .
@@ -835,5 +861,10 @@ class generator
             'while',
             'xor',
         ];
+    }
+
+    private static function generateUniqueId()
+    {
+        return "\t\t" . '$this->{\'mock\' . uniqid()} = true;' . PHP_EOL;
     }
 }

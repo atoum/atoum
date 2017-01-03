@@ -5,6 +5,9 @@ php:
   - nightly
   - hhvm
   - hhvm-nightly
+cache:
+  directories:
+    - vendor
 matrix:
   allow_failures:
     - php: nightly
