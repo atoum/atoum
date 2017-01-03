@@ -387,7 +387,7 @@ abstract class test implements observable, \countable
         $this->assertionManager
             ->setHandler('when', function ($mixed) {
                 if ($mixed instanceof \closure) {
-                    $mixed($this);
+                    $mixed();
                 }
                 return $this;
             })
