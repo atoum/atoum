@@ -480,5 +480,30 @@ namespace mageekguy\atoum\tests\units\asserters
 				->dateTime($value = new \DateTimeImmutable())
 					->isEqualTo($value);
 		}
+
+		public function testIsEqualTo(atoum\locale $locale)
+		{
+			$this
+				->given(
+					$this->newTestedInstance
+						->setLocale($locale),
+					$this->calling($locale)->_ = $notEqual = uniqid(),
+					$now = date(DATE_ISO8601)
+				)
+				->if($this->testedInstance->setWith(new \dateTime($now)))
+				->then
+					->object($this->testedInstance->isEqualTo(new \DateTime($now)))->isTestedInstance
+				->given(
+					$nowUTC = '2017-01-17 23:00:00+0000',
+					$nowUTCPlusOne = '2017-01-18 00:00:00+0100'
+				)
+				->if($this->testedInstance->setWith($value = new \dateTime($nowUTC)))
+				->then
+					->object($this->testedInstance->isEqualTo(new \dateTime($nowUTCPlusOne)))->isTestedInstance
+				->if($this->testedInstance->setWith($value = new \dateTime($nowUTCPlusOne)))
+				->then
+					->object($this->testedInstance->isEqualTo(new \dateTime($nowUTC)))->isTestedInstance
+			;
+		}
 	}
 }
