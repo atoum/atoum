@@ -369,7 +369,7 @@ class generator
 				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
 				$mockedMethods .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $constructorName . '\', $arguments);' . PHP_EOL;
 
-				if ($this->shuntParentClassCalls === false)
+				if ($this->canCallParent())
 				{
 					$mockedMethods .= "\t\t\t" . 'call_user_func_array(\'parent::' . $constructorName . '\', $arguments);' . PHP_EOL;
 				}
@@ -437,7 +437,7 @@ class generator
 
 					$mockedMethods .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 
-					if ($this->shuntParentClassCalls === false)
+					if ($this->canCallParent())
 					{
 						$mockedMethods .= "\t\t\t" . '$return = call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
 						$mockedMethods .= "\t\t\t" . 'return $return;' . PHP_EOL;
@@ -701,6 +701,11 @@ class generator
 		}
 
 		return join(', ', $parameters);
+	}
+
+	protected function canCallParent()
+	{
+		return $this->shuntParentClassCalls === false && $this->allIsInterface === false;
 	}
 
 	protected static function getClassName($class)

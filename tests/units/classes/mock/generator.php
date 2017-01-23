@@ -872,8 +872,6 @@ class generator extends atoum\test
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->addCall(\'foo\', $arguments);' . PHP_EOL .
-					"\t\t\t" . '$return = call_user_func_array(\'parent::foo\', $arguments);' . PHP_EOL .
-					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
@@ -1029,8 +1027,6 @@ class generator extends atoum\test
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->addCall(\'foo\', $arguments);' . PHP_EOL .
-					"\t\t\t" . '$return = call_user_func_array(\'parent::foo\', $arguments);' . PHP_EOL .
-					"\t\t\t" . 'return $return;' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
