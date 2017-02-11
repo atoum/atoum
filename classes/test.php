@@ -78,6 +78,7 @@ abstract class test implements observable, \countable
 	private $classHasNotVoidMethods = false;
 	private $extensions = null;
 	private $analyzer;
+	private $errorHandlers = array();
 
 	private static $namespace = null;
 	private static $methodPrefix = null;
@@ -1517,8 +1518,23 @@ abstract class test implements observable, \countable
 
 			$doNotCallDefaultErrorHandler = !($errno & E_RECOVERABLE_ERROR);
 		}
+		
+		foreach ($this->errorHandlers as $handler)
+		{
+			call_user_func($handler, $errno, $errstr, $errfile, $errline);
+		}
 
 		return $doNotCallDefaultErrorHandler;
+	}
+	
+	public function registerErrorHandler($errorHandler)
+	{
+		if (!is_callable($errorHandler))
+		{
+			throw new exceptions\logic\invalidArgument('Error handler is not callable');
+		}
+
+		$this->errorHandlers[] = $errorHandler;
 	}
 
 	public function setUp() {}
