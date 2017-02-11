@@ -2,7 +2,12 @@
 
 * [#615](https://github.com/atoum/atoum/pull/615) Remove reserved keyword, replace void by blank ([@vonglasow])
 * [#643](https://github.com/atoum/atoum/pull/643) atoum now requires PHP `>=5.6.0` ([@jubianchi])
-* [#679](https://github.com/atoum/atoum/pull/679) copy `PHP_IDE_CONFIG` into forked processes ([@mvrhov])
+
+# 2.9.0 - 2017-02-11
+
+* [#667](https://github.com/atoum/atoum/pull/667) Assert on array values using `mageekguy\atoum\asserters\phpArray::$values` ([@krtek4])
+* [#682](https://github.com/atoum/atoum/pull/682) Do not call parent class when mocking as interface ([@mageekguy])
+* [#679](https://github.com/atoum/atoum/pull/679) Copy `PHP_IDE_CONFIG` into forked processes ([@mvrhov])
 * [#678](https://github.com/atoum/atoum/pull/678) Each mock instance can be made unique by calling `eachInstanceIsUnique` on the mock generator ([@mageekguy])
 
 # 2.9.0-beta1 - 2016-10-08
@@ -225,3 +230,4 @@
 [@fferriere]: https://github.com/fferriere
 [@oxman]: https://github.com/blackprism
 [@mvrhov]: https://github.com/mvrhov
+[@krtek4]: https://github.com/krtek4

@@ -18,6 +18,9 @@ class phpArray extends variable implements \arrayAccess
             case 'keys':
                 return $this->getKeysAsserter();
 
+			case 'values':
+				return $this->getValuesAsserter();
+
             case 'size':
                 return $this->getSizeAsserter();
 
@@ -471,6 +474,11 @@ class phpArray extends variable implements \arrayAccess
     protected function getKeysAsserter()
     {
         return $this->generator->__call('phpArray', [array_keys($this->valueIsSet()->value)]);
+    }
+
+    protected function getValuesAsserter()
+    {
+        return $this->generator->__call('phpArray', array(array_values($this->valueIsSet()->value)));
     }
 
     protected function getSizeAsserter()
