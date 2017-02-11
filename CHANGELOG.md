@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#667](https://github.com/atoum/atoum/pull/667) Assert on array values using `mageekguy\atoum\asserters\phpArray::$values` ([@krtek4])
 * [#682](https://github.com/atoum/atoum/pull/682) Do not call parent class when mocking as interface ([@mageekguy])
 * [#679](https://github.com/atoum/atoum/pull/679) Copy `PHP_IDE_CONFIG` into forked processes ([@mvrhov])
 * [#678](https://github.com/atoum/atoum/pull/678) Each mock instance can be made unique by calling `eachInstanceIsUnique` on the mock generator ([@mageekguy])
@@ -224,3 +225,4 @@
 [@fferriere]: https://github.com/fferriere
 [@oxman]: https://github.com/blackprism
 [@mvrhov]: https://github.com/mvrhov
+[@krtek4]: https://github.com/krtek4
