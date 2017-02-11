@@ -65,7 +65,7 @@ class command
 		}
 		else
 		{
-			$command = escapeshellcmd($this->binaryPath . $command);
+			$command = escapeshellcmd($this->binaryPath) . $command;
 		}
 
 		return $command;
