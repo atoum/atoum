@@ -50,8 +50,8 @@ class adapter extends atoum\test
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
             )
             ->then
-                ->exception(function ($test) use (& $value) {
-                    $test->testedInstance->setWith($value = uniqid());
+                ->exception(function () use (& $value) {
+                    $this->testedInstance->setWith($value = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notAnAdapter)
@@ -97,8 +97,8 @@ class adapter extends atoum\test
             ->mockGenerator->orphanize('asserterFail')
             ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->call(uniqid());
+                ->exception(function () {
+                    $this->testedInstance->call(uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
@@ -122,16 +122,16 @@ class adapter extends atoum\test
             ->mockGenerator->orphanize('asserterFail')
             ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->withArguments(uniqid());
+                ->exception(function () {
+                    $this->testedInstance->withArguments(uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
             ->if($this->testedInstance->setWith($adapter = new test\adapter()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->withArguments(uniqid());
+                ->exception(function () {
+                    $this->testedInstance->withArguments(uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
@@ -153,16 +153,16 @@ class adapter extends atoum\test
             ->mockGenerator->orphanize('asserterFail')
             ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->withArguments(uniqid());
+                ->exception(function () {
+                    $this->testedInstance->withArguments(uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
             ->if($this->testedInstance->setWith($adapter = new test\adapter()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->withArguments(uniqid());
+                ->exception(function () {
+                    $this->testedInstance->withArguments(uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
@@ -187,16 +187,16 @@ class adapter extends atoum\test
             ->mockGenerator->orphanize('asserterFail')
             ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->withoutAnyArgument();
+                ->exception(function () {
+                    $this->testedInstance->withoutAnyArgument();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
             ->if($this->testedInstance->setWith($adapter = new test\adapter()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->withoutAnyArgument();
+                ->exception(function () {
+                    $this->testedInstance->withoutAnyArgument();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
@@ -213,40 +213,40 @@ class adapter extends atoum\test
         $this
             ->if($this->newTestedInstance($generator = new asserter\generator()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->once();
+                ->exception(function () {
+                    $this->testedInstance->once();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->once;
+                ->exception(function () {
+                    $this->testedInstance->once;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->oNCE;
+                ->exception(function () {
+                    $this->testedInstance->oNCE;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
             ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->once();
+                ->exception(function () {
+                    $this->testedInstance->once();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->once;
+                ->exception(function () {
+                    $this->testedInstance->once;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->oNCE;
+                ->exception(function () {
+                    $this->testedInstance->oNCE;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
@@ -262,29 +262,29 @@ class adapter extends atoum\test
                 $this->calling($locale)->__ = $notCalled = uniqid()
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->once();
+                ->exception(function () {
+                    $this->testedInstance->once();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 1)->once
 
-                ->exception(function ($test) {
-                    $test->testedInstance->once;
+                ->exception(function () {
+                    $this->testedInstance->once;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 1)->twice
 
-                ->exception(function ($test) {
-                    $test->testedInstance->OncE;
+                ->exception(function () {
+                    $this->testedInstance->OncE;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 1)->thrice
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->once($failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->once($failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -302,29 +302,29 @@ class adapter extends atoum\test
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->once();
+                ->exception(function () {
+                    $this->testedInstance->once();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 1)->once
 
-                ->exception(function ($test) {
-                    $test->testedInstance->once;
+                ->exception(function () {
+                    $this->testedInstance->once;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 1)->twice
 
-                ->exception(function ($test) {
-                    $test->testedInstance->OncE;
+                ->exception(function () {
+                    $this->testedInstance->OncE;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 1)->thrice
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->once($failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->once($failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -336,40 +336,40 @@ class adapter extends atoum\test
         $this
             ->if($this->newTestedInstance($generator = new asserter\generator()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->twice();
+                ->exception(function () {
+                    $this->testedInstance->twice();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->twice;
+                ->exception(function () {
+                    $this->testedInstance->twice;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->TWICe;
+                ->exception(function () {
+                    $this->testedInstance->TWICe;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
             ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->twice();
+                ->exception(function () {
+                    $this->testedInstance->twice();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->twice;
+                ->exception(function () {
+                    $this->testedInstance->twice;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->twICE;
+                ->exception(function () {
+                    $this->testedInstance->twICE;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
@@ -385,29 +385,29 @@ class adapter extends atoum\test
                 $this->calling($locale)->__ = $notCalled = uniqid()
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->twice();
+                ->exception(function () {
+                    $this->testedInstance->twice();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 2)->once
 
-                ->exception(function ($test) {
-                    $test->testedInstance->twice;
+                ->exception(function () {
+                    $this->testedInstance->twice;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 2)->twice
 
-                ->exception(function ($test) {
-                    $test->testedInstance->TWICe;
+                ->exception(function () {
+                    $this->testedInstance->TWICe;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 2)->thrice
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->twice($failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->twice($failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -419,29 +419,29 @@ class adapter extends atoum\test
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->twice();
+                ->exception(function () {
+                    $this->testedInstance->twice();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 1, $callAsString, 1, 2)->once
 
-                ->exception(function ($test) {
-                    $test->testedInstance->twice;
+                ->exception(function () {
+                    $this->testedInstance->twice;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 1, $callAsString, 1, 2)->twice
 
-                ->exception(function ($test) {
-                    $test->testedInstance->TWICe;
+                ->exception(function () {
+                    $this->testedInstance->TWICe;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 1, $callAsString, 1, 2)->thrice
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->twice($failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->twice($failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -459,29 +459,29 @@ class adapter extends atoum\test
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->twice();
+                ->exception(function () {
+                    $this->testedInstance->twice();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 2)->once
 
-                ->exception(function ($test) {
-                    $test->testedInstance->twice;
+                ->exception(function () {
+                    $this->testedInstance->twice;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 2)->twice
 
-                ->exception(function ($test) {
-                    $test->testedInstance->TWICe;
+                ->exception(function () {
+                    $this->testedInstance->TWICe;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 2)->thrice
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->once($failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->once($failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -493,40 +493,40 @@ class adapter extends atoum\test
         $this
             ->if($this->newTestedInstance($generator = new asserter\generator()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->thrice();
+                ->exception(function () {
+                    $this->testedInstance->thrice();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->thrice;
+                ->exception(function () {
+                    $this->testedInstance->thrice;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->tHRICe;
+                ->exception(function () {
+                    $this->testedInstance->tHRICe;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
             ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->thrice();
+                ->exception(function () {
+                    $this->testedInstance->thrice();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->thrice;
+                ->exception(function () {
+                    $this->testedInstance->thrice;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->thRICE;
+                ->exception(function () {
+                    $this->testedInstance->thRICE;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
@@ -542,29 +542,29 @@ class adapter extends atoum\test
                 $this->calling($locale)->__ = $notCalled = uniqid()
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->thrice();
+                ->exception(function () {
+                    $this->testedInstance->thrice();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 3)->once
 
-                ->exception(function ($test) {
-                    $test->testedInstance->thrice;
+                ->exception(function () {
+                    $this->testedInstance->thrice;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 3)->twice
 
-                ->exception(function ($test) {
-                    $test->testedInstance->THRIce;
+                ->exception(function () {
+                    $this->testedInstance->THRIce;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 3)->thrice
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->thrice($failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->thrice($failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -576,29 +576,29 @@ class adapter extends atoum\test
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->thrice();
+                ->exception(function () {
+                    $this->testedInstance->thrice();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->once
 
-                ->exception(function ($test) {
-                    $test->testedInstance->thrice;
+                ->exception(function () {
+                    $this->testedInstance->thrice;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->twice
 
-                ->exception(function ($test) {
-                    $test->testedInstance->tHRICe;
+                ->exception(function () {
+                    $this->testedInstance->tHRICe;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->thrice
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->thrice($failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->thrice($failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -616,29 +616,29 @@ class adapter extends atoum\test
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->thrice();
+                ->exception(function () {
+                    $this->testedInstance->thrice();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->once
 
-                ->exception(function ($test) {
-                    $test->testedInstance->thrice;
+                ->exception(function () {
+                    $this->testedInstance->thrice;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->twice
 
-                ->exception(function ($test) {
-                    $test->testedInstance->tHRICe;
+                ->exception(function () {
+                    $this->testedInstance->tHRICe;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualTo)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 3)->thrice
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->thrice($failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->thrice($failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -650,40 +650,40 @@ class adapter extends atoum\test
         $this
             ->if($this->newTestedInstance($generator = new asserter\generator()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->atLeastOnce();
+                ->exception(function () {
+                    $this->testedInstance->atLeastOnce();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->atLeastOnce;
+                ->exception(function () {
+                    $this->testedInstance->atLeastOnce;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->atLEASToNce;
+                ->exception(function () {
+                    $this->testedInstance->atLEASToNce;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
             ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->atLeastOnce();
+                ->exception(function () {
+                    $this->testedInstance->atLeastOnce();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->atLeastOnce;
+                ->exception(function () {
+                    $this->testedInstance->atLeastOnce;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->atLeASTonce;
+                ->exception(function () {
+                    $this->testedInstance->atLeASTonce;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
@@ -699,29 +699,29 @@ class adapter extends atoum\test
                 $this->calling($locale)->_ = $notCalled = uniqid()
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->atLeastOnce();
+                ->exception(function () {
+                    $this->testedInstance->atLeastOnce();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('_')->withArguments('%s is called 0 time', $callAsString)->once
 
-                ->exception(function ($test) {
-                    $test->testedInstance->atLeastOnce;
+                ->exception(function () {
+                    $this->testedInstance->atLeastOnce;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('_')->withArguments('%s is called 0 time', $callAsString)->twice
 
-                ->exception(function ($test) {
-                    $test->testedInstance->atLEASToNCE;
+                ->exception(function () {
+                    $this->testedInstance->atLEASToNCE;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('_')->withArguments('%s is called 0 time', $callAsString)->thrice
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->atLeastOnce($failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->atLeastOnce($failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -739,16 +739,16 @@ class adapter extends atoum\test
         $this
             ->if($this->newTestedInstance($generator = new asserter\generator()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->exactly(2);
+                ->exception(function () {
+                    $this->testedInstance->exactly(2);
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
             ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->exactly(2);
+                ->exception(function () {
+                    $this->testedInstance->exactly(2);
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
@@ -764,15 +764,15 @@ class adapter extends atoum\test
                 $this->calling($locale)->__ = $notCalled = uniqid()
             )
             ->then
-                ->exception(function ($test) use (& $callNumber) {
-                    $test->testedInstance->exactly($callNumber = rand(1, PHP_INT_MAX));
+                ->exception(function () use (& $callNumber) {
+                    $this->testedInstance->exactly($callNumber = rand(1, PHP_INT_MAX));
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, $callNumber)->once
 
-                ->exception(function ($test) use (& $callNumber, & $failMessage) {
-                    $test->testedInstance->exactly($callNumber = rand(1, PHP_INT_MAX), $failMessage = uniqid());
+                ->exception(function () use (& $callNumber, & $failMessage) {
+                    $this->testedInstance->exactly($callNumber = rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -786,15 +786,15 @@ class adapter extends atoum\test
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->exactly(0);
+                ->exception(function () {
+                    $this->testedInstance->exactly(0);
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualToAsString)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->once
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->exactly(0, $failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->exactly(0, $failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)
@@ -808,28 +808,28 @@ class adapter extends atoum\test
         $this
             ->if($this->newTestedInstance($generator = new asserter\generator()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->never();
+                ->exception(function () {
+                    $this->testedInstance->never();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->never;
+                ->exception(function () {
+                    $this->testedInstance->never;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Adapter is undefined')
 
             ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->never();
+                ->exception(function () {
+                    $this->testedInstance->never();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
 
-                ->exception(function ($test) {
-                    $test->testedInstance->never;
+                ->exception(function () {
+                    $this->testedInstance->never;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
                     ->hasMessage('Call is undefined')
@@ -845,29 +845,29 @@ class adapter extends atoum\test
                 $this->calling($locale)->__ = $wasCalled = uniqid()
             )
             ->then
-                ->exception(function ($test) use (& $callNumber) {
-                    $test->testedInstance->never();
+                ->exception(function () use (& $callNumber) {
+                    $this->testedInstance->never();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($wasCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->once
 
-                ->exception(function ($test) use (& $callNumber) {
-                    $test->testedInstance->never;
+                ->exception(function () use (& $callNumber) {
+                    $this->testedInstance->never;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($wasCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->twice
 
-                ->exception(function ($test) use (& $callNumber) {
-                    $test->testedInstance->NEvEr;
+                ->exception(function () use (& $callNumber) {
+                    $this->testedInstance->NEvEr;
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($wasCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->thrice
 
-                ->exception(function ($test) use (& $failMessage) {
-                    $test->testedInstance->never($failMessage = uniqid());
+                ->exception(function () use (& $failMessage) {
+                    $this->testedInstance->never($failMessage = uniqid());
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($failMessage)

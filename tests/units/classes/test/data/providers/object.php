@@ -26,10 +26,9 @@ class object extends atoum\test
         $this
             ->given($this->newTestedInstance)
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->generate();
-                }
-                )
+                ->exception(function () {
+                    $this->testedInstance->generate();
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Class is undefined')
             ->given($class = 'stdClass')
@@ -40,20 +39,18 @@ class object extends atoum\test
             ->given($class = 'splFileObject')
             ->if($this->testedInstance->setClass($class))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->generate();
-                }
-                )
+                ->exception(function () {
+                    $this->testedInstance->generate();
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() has at least one mandatory argument')
             ->assert('Fail to instanciate an object from a class with a private constructor')
             ->given($class = __NAMESPACE__ . '\\dummy')
             ->if($this->testedInstance->setClass($class))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->generate();
-                }
-                )
+                ->exception(function () {
+                    $this->testedInstance->generate();
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() is private')
         ;
@@ -65,10 +62,9 @@ class object extends atoum\test
             ->given($this->newTestedInstance)
             ->then
                 ->variable($this->testedInstance->getClass())->isNull
-                ->exception(function ($test) {
-                    $test->testedInstance->setClass(uniqid());
-                }
-                )
+                ->exception(function () {
+                    $this->testedInstance->setClass(uniqid());
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Argument must be a class name')
             ->given($class = 'stdClass')

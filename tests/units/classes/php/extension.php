@@ -28,10 +28,9 @@ class extension extends atoum\test
             ->given($this->newTestedInstance($extensionName = uniqid()))
             ->if($this->function->extension_loaded = false)
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->requireExtension();
-                }
-                )
+                ->exception(function () {
+                    $this->testedInstance->requireExtension();
+                })
                     ->isInstanceOf('mageekguy\atoum\php\exception')
                     ->hasMessage('PHP extension \'' . $extensionName . '\' is not loaded')
             ->if($this->function->extension_loaded = true)

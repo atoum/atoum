@@ -62,9 +62,9 @@ namespace mageekguy\atoum\tests\units\asserters
                     $this->calling($analyzer)->getTypeOf = $type = uniqid()
                 )
                 ->then
-                    ->exception(function ($test) use (& $line, & $value) {
+                    ->exception(function () use (& $line, & $value) {
                         $line = __LINE__;
-                        $test->testedInstance->setWith($value = uniqid());
+                        $this->testedInstance->setWith($value = uniqid());
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($notAnException)
@@ -86,9 +86,9 @@ namespace mageekguy\atoum\tests\units\asserters
                     $this->calling($analyzer)->getTypeOf = $type = uniqid()
                 )
                 ->then
-                    ->exception(function ($test) use (& $line, & $value) {
+                    ->exception(function () use (& $line, & $value) {
                         $line = __LINE__;
-                        $test->testedInstance->setWith($value = new \throwable);
+                        $this->testedInstance->setWith($value = new \throwable);
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($notAnException)
@@ -116,8 +116,8 @@ namespace mageekguy\atoum\tests\units\asserters
                     ->setLocale($locale = new \mock\atoum\locale())
                 )
                 ->then
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasSize(rand(0, PHP_INT_MAX));
+                    ->exception(function () {
+                        $this->testedInstance->hasSize(rand(0, PHP_INT_MAX));
                     })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                         ->hasMessage('Exception is undefined')
@@ -129,23 +129,23 @@ namespace mageekguy\atoum\tests\units\asserters
                     ->object($this->testedInstance->isInstanceOf('\exception'))->isTestedInstance
                     ->object($this->testedInstance->isInstanceOf('exception'))->isTestedInstance
 
-                    ->exception(function ($test) {
-                        $test->testedInstance->isInstanceOf(uniqid());
+                    ->exception(function () {
+                        $this->testedInstance->isInstanceOf(uniqid());
                     })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Argument of mageekguy\atoum\asserters\exception::isInstanceOf() must be a \exception instance or an exception class name')
 
                 ->if($this->calling($locale)->_ = $isNotAnInstance = uniqid())
                 ->then
-                    ->exception(function ($test) {
-                        $test->testedInstance->isInstanceOf('mageekguy\atoum\exceptions\runtime');
+                    ->exception(function () {
+                        $this->testedInstance->isInstanceOf('mageekguy\atoum\exceptions\runtime');
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($isNotAnInstance)
                     ->mock($locale)->call('_')->withArguments('%s is not an instance of %s', $this->testedInstance)->once
 
-                    ->exception(function ($test) use (& $failMessage) {
-                        $test->testedInstance->isInstanceOf('mageekguy\atoum\exceptions\runtime', $failMessage = uniqid());
+                    ->exception(function () use (& $failMessage) {
+                        $this->testedInstance->isInstanceOf('mageekguy\atoum\exceptions\runtime', $failMessage = uniqid());
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($failMessage)
@@ -159,8 +159,8 @@ namespace mageekguy\atoum\tests\units\asserters
                     ->setLocale($locale = new \mock\atoum\locale())
                 )
                 ->then
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasCode(rand(- PHP_INT_MAX, PHP_INT_MAX));
+                    ->exception(function () {
+                        $this->testedInstance->hasCode(rand(- PHP_INT_MAX, PHP_INT_MAX));
                     })
                         ->isInstanceOf('logicException')
                         ->hasMessage('Exception is undefined')
@@ -171,15 +171,15 @@ namespace mageekguy\atoum\tests\units\asserters
 
                 ->if($this->calling($locale)->_ = $hasNotCode = uniqid())
                 ->then
-                    ->exception(function ($test) use (& $badCode) {
-                        $test->testedInstance->hasCode($badCode = 1);
+                    ->exception(function () use (& $badCode) {
+                        $this->testedInstance->hasCode($badCode = 1);
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($hasNotCode)
                     ->mock($locale)->call('_')->withArguments('code is %s instead of %s', $code, $badCode)->once
 
-                    ->exception(function ($test) use (& $failMessage) {
-                        $test->testedInstance->hasCode(rand(1, PHP_INT_MAX), $failMessage = uniqid());
+                    ->exception(function () use (& $failMessage) {
+                        $this->testedInstance->hasCode(rand(1, PHP_INT_MAX), $failMessage = uniqid());
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($failMessage)
@@ -193,14 +193,14 @@ namespace mageekguy\atoum\tests\units\asserters
                     ->setLocale($locale = new \mock\atoum\locale())
                 )
                 ->then
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasDefaultCode();
+                    ->exception(function () {
+                        $this->testedInstance->hasDefaultCode();
                     })
                         ->isInstanceOf('logicException')
                         ->hasMessage('Exception is undefined')
 
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasDefaultCode;
+                    ->exception(function () {
+                        $this->testedInstance->hasDefaultCode;
                     })
                         ->isInstanceOf('logicException')
                         ->hasMessage('Exception is undefined')
@@ -215,22 +215,22 @@ namespace mageekguy\atoum\tests\units\asserters
                     $this->calling($locale)->_ = $hasNotDefaultCode = uniqid()
                 )
                 ->then
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasDefaultCode();
+                    ->exception(function () {
+                        $this->testedInstance->hasDefaultCode();
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($hasNotDefaultCode)
                     ->mock($locale)->call('_')->withArguments('code is %s instead of 0', $code)->once
 
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasDefaultCode;
+                    ->exception(function () {
+                        $this->testedInstance->hasDefaultCode;
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($hasNotDefaultCode)
                     ->mock($locale)->call('_')->withArguments('code is %s instead of 0', $code)->twice
 
-                    ->exception(function ($test) use (& $failMessage) {
-                        $test->testedInstance->hasDefaultCode($failMessage = uniqid());
+                    ->exception(function () use (& $failMessage) {
+                        $this->testedInstance->hasDefaultCode($failMessage = uniqid());
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($failMessage)
@@ -244,8 +244,8 @@ namespace mageekguy\atoum\tests\units\asserters
                     ->setLocale($locale = new \mock\atoum\locale())
                 )
                 ->then
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasMessage(uniqid());
+                    ->exception(function () {
+                        $this->testedInstance->hasMessage(uniqid());
                     })
                         ->isInstanceOf('logicException')
                         ->hasMessage('Exception is undefined')
@@ -256,15 +256,15 @@ namespace mageekguy\atoum\tests\units\asserters
 
                 ->if($this->calling($locale)->_ = $hasNotMessage = uniqid())
                 ->then
-                    ->exception(function ($test) use (& $badMessage) {
-                        $test->testedInstance->hasMessage($badMessage = uniqid());
+                    ->exception(function () use (& $badMessage) {
+                        $this->testedInstance->hasMessage($badMessage = uniqid());
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($hasNotMessage)
                     ->mock($locale)->call('_')->withArguments('message \'%s\' is not identical to \'%s\'', $message, $badMessage)->once
 
-                    ->exception(function ($test) use (& $failMessage) {
-                        $test->testedInstance->hasMessage(uniqid(), $failMessage = uniqid());
+                    ->exception(function () use (& $failMessage) {
+                        $this->testedInstance->hasMessage(uniqid(), $failMessage = uniqid());
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($failMessage)
@@ -276,8 +276,8 @@ namespace mageekguy\atoum\tests\units\asserters
             $this
                 ->if($this->newTestedInstance)
                 ->then
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasNestedException();
+                    ->exception(function () {
+                        $this->testedInstance->hasNestedException();
                     })
                         ->isInstanceOf('logicException')
                         ->hasMessage('Exception is undefined')
@@ -289,28 +289,28 @@ namespace mageekguy\atoum\tests\units\asserters
                     $this->calling($locale)->_ = $hasNoNestedException = uniqid()
                 )
                 ->then
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasNestedException();
+                    ->exception(function () {
+                        $this->testedInstance->hasNestedException();
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($hasNoNestedException)
                     ->mock($locale)->call('_')->withArguments('exception does not contain any nested exception')->once
 
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasNestedException;
+                    ->exception(function () {
+                        $this->testedInstance->hasNestedException;
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($hasNoNestedException)
                     ->mock($locale)->call('_')->withArguments('exception does not contain any nested exception')->twice
 
-                    ->exception(function ($test) use (& $failMessage) {
-                        $test->testedInstance->hasNestedException(null, $failMessage = uniqid());
+                    ->exception(function () use (& $failMessage) {
+                        $this->testedInstance->hasNestedException(null, $failMessage = uniqid());
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($failMessage)
 
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasNestedException(new \exception());
+                    ->exception(function () {
+                        $this->testedInstance->hasNestedException(new \exception());
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($hasNoNestedException)
@@ -322,8 +322,8 @@ namespace mageekguy\atoum\tests\units\asserters
 
                     ->object($this->testedInstance->hasNestedException($nestedException))->isTestedInstance
 
-                    ->exception(function ($test) {
-                        $test->testedInstance->hasNestedException(new \exception());
+                    ->exception(function () {
+                        $this->testedInstance->hasNestedException(new \exception());
                     })
                         ->isInstanceOf('mageekguy\atoum\asserter\exception')
                         ->hasMessage($hasNoNestedException)
@@ -336,14 +336,14 @@ namespace mageekguy\atoum\tests\units\asserters
             $this
                 ->if($this->newTestedInstance)
                 ->then
-                    ->exception(function ($test) {
-                        $test->testedInstance->message;
+                    ->exception(function () {
+                        $this->testedInstance->message;
                     })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                         ->hasMessage('Exception is undefined')
 
-                    ->exception(function ($test) {
-                        $test->testedInstance->mESSAGe;
+                    ->exception(function () {
+                        $this->testedInstance->mESSAGe;
                     })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                         ->hasMessage('Exception is undefined')

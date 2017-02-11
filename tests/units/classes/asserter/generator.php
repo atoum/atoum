@@ -30,8 +30,8 @@ class generator extends atoum\test
         $this
             ->given($this->newTestedInstance)
             ->then
-                ->exception(function ($test) use (& $asserter) {
-                    $test->testedInstance->{$asserter = uniqid()};
+                ->exception(function () use (& $asserter) {
+                    $this->testedInstance->{$asserter = uniqid()};
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Asserter \'' . $asserter . '\' does not exist')
@@ -45,8 +45,8 @@ class generator extends atoum\test
         $this
             ->given($this->newTestedInstance)
             ->then
-                ->exception(function ($test) use (& $asserter) {
-                    $test->testedInstance->{$asserter = uniqid()}();
+                ->exception(function () use (& $asserter) {
+                    $this->testedInstance->{$asserter = uniqid()}();
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Asserter \'' . $asserter . '\' does not exist')

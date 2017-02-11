@@ -511,12 +511,11 @@ class template extends atoum\test
                 ->array($this->testedInstance->getChildren())->isIdenticalTo([$templateWithId])
                 ->object($this->testedInstance->addChild($templateWithId))->isTestedInstance
                 ->array($this->testedInstance->getChildren())->isIdenticalTo([$templateWithId])
-                ->exception(function ($test) use ($templateWithSameId) {
-                    $test->testedInstance->addChild($templateWithSameId);
-                }
-                    )
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-                        ->hasMessage('Id \'' . $id . '\' is already defined')
+                ->exception(function () use ($templateWithSameId) {
+                    $this->testedInstance->addChild($templateWithSameId);
+                })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->hasMessage('Id \'' . $id . '\' is already defined')
             ;
     }
 

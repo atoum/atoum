@@ -29,10 +29,9 @@ class constant extends atoum\test
 
             ->if($adapter->define = false)
             ->then
-                ->exception(function (atoum\test $test) use (& $constant, & $value) {
-                    $test->testedInstance->{$constant = uniqid('a')} = $value = uniqid();
-                }
-                )
+                ->exception(function () use (& $constant, & $value) {
+                    $this->testedInstance->{$constant = uniqid('a')} = $value = uniqid();
+                })
                     ->isInstanceOf('mageekguy\atoum\php\mocker\exceptions\constant')
                     ->hasMessage('Could not mock constant \'' . $constant . '\' in namespace \'' . $namespace . '\'')
                 ->adapter($adapter)
@@ -54,10 +53,9 @@ class constant extends atoum\test
                 $this->testedInstance->setDefaultNameSpace($namespace = uniqid())
             )
             ->then
-                ->exception(function (atoum\test $test) use (& $constant) {
-                    $test->testedInstance->{$constant = uniqid()};
-                }
-                )
+                ->exception(function () use (& $constant) {
+                    $this->testedInstance->{$constant = uniqid()};
+                })
                     ->isInstanceOf('mageekguy\atoum\php\mocker\exceptions\constant')
                     ->hasMessage('Constant \'' . $constant . '\' is not defined in namespace \'' . $namespace . '\'')
                 ->adapter($adapter)
@@ -111,10 +109,9 @@ class constant extends atoum\test
 
             ->if($this->testedInstance->setDefaultNameSpace($namespace = uniqid()))
             ->then
-                ->exception(function (atoum\test $test) use (& $constant, & $value) {
-                    unset($test->testedInstance->{$constant = uniqid()});
-                }
-                )
+                ->exception(function () use (& $constant, & $value) {
+                    unset($this->testedInstance->{$constant = uniqid()});
+                })
                     ->isInstanceOf('mageekguy\atoum\php\mocker\exceptions\constant')
                     ->hasMessage('Could not unset constant \'' . $constant . '\' in namespace \'' . $namespace . '\'')
         ;

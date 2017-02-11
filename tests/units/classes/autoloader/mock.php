@@ -42,10 +42,9 @@ class mock extends atoum\test
             )
             ->if($adapter->spl_autoload_register = false)
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->register();
-                }
-                )
+                ->exception(function () {
+                    $this->testedInstance->register();
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to register mock autoloader')
                 ->adapter($adapter)
@@ -67,10 +66,9 @@ class mock extends atoum\test
             )
             ->if($adapter->spl_autoload_unregister = false)
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->unregister();
-                }
-                )
+                ->exception(function () {
+                    $this->testedInstance->unregister();
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to unregister mock autoloader')
                 ->adapter($adapter)

@@ -432,8 +432,8 @@ class dateTime extends atoum\test
             )
             ->if($this->testedInstance->setWith($value = new \dateTime()))
             ->then
-                ->exception(function ($test) use (& $value) {
-                    $test->testedInstance->isImmutable();
+                ->exception(function () use (& $value) {
+                    $this->testedInstance->isImmutable();
                 })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage($notImmutable)

@@ -37,7 +37,7 @@ class exception extends object
                 }
             } else {
                 try {
-                    $value($this->getTest());
+                    $value();
                 } catch (\exception $exception) {
                 }
             }

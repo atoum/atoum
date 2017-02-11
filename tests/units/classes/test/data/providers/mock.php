@@ -41,10 +41,9 @@ class mock extends atoum\test
                 $this->newTestedInstance($mockGenerator)
             )
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->generate();
-                }
-                )
+                ->exception(function () {
+                    $this->testedInstance->generate();
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Class is undefined')
             ->given($class = 'stdClass')
@@ -57,10 +56,9 @@ class mock extends atoum\test
             ->given($class = 'splFileObject')
             ->if($this->testedInstance->setClass($class))
             ->then
-                ->exception(function ($test) {
-                    $test->testedInstance->generate();
-                }
-                )
+                ->exception(function () {
+                    $this->testedInstance->generate();
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Could not instanciate a mock from ' . $namespace . '\\' . $class . ' because ' . $class . '::__construct() has at least one mandatory argument')
 
@@ -79,10 +77,9 @@ class mock extends atoum\test
             ->given($this->newTestedInstance)
             ->then
                 ->variable($this->testedInstance->getClass())->isNull
-                ->exception(function ($test) {
-                    $test->testedInstance->setClass(uniqid());
-                }
-                )
+                ->exception(function () {
+                    $this->testedInstance->setClass(uniqid());
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Argument must be a class name')
             ->given($class = 'stdClass')
