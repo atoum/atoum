@@ -245,7 +245,7 @@ class coverage extends atoum\test
 			->and($coverage->setReflectionClassFactory(function() use ($class) { return $class; }))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->and($coverage->excludeClass($excludedClass =uniqid()))
-			->and($coverage->excludeNamespace($excludedNamespace= uniqid()))
+			->and($coverage->excludeNamespace($excludedNamespace = 'My\Namespace'))
 			->and($coverage->excludeDirectory($excludedDirectory = uniqid()))
 			->then
 				->array($coverage->getClasses())->isNotEmpty()
@@ -297,7 +297,7 @@ class coverage extends atoum\test
 			->then
 				->object($coverage->resetExcludedNamespaces())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedNamespaces())->isEmpty()
-			->if($coverage->excludeNamespace(uniqid()))
+			->if($coverage->excludeNamespace('My\Namespace'))
 			->then
 				->object($coverage->resetExcludedNamespaces())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedNamespaces())->isEmpty()
@@ -1288,14 +1288,24 @@ class coverage extends atoum\test
 		$this
 			->if($coverage = new testedClass())
 			->then
-				->object($coverage->excludeNamespace($namespace = uniqid()))->isIdenticalTo($coverage)
+				->object($coverage->excludeNamespace($namespace = 'My\Namespace'))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace))
-				->object($coverage->excludeNamespace($otherNamespace = rand(1, PHP_INT_MAX)))->isIdenticalTo($coverage)
-				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, (string) $otherNamespace))
+				->object($coverage->excludeNamespace($otherNamespace = 'My\Other\Namespace'))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, $otherNamespace))
 				->object($coverage->excludeNamespace($namespace))->isIdenticalTo($coverage)
-				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, (string) $otherNamespace))
-				->object($coverage->excludeNamespace('\\' . ($anotherNamespace = uniqid()) . '\\'))->isIdenticalTo($coverage)
-				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, (string) $otherNamespace, $anotherNamespace))
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, $otherNamespace))
+				->object($coverage->excludeNamespace('\\' . ($anotherNamespace = 'AnotherNamespace')))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, $otherNamespace, $anotherNamespace))
+				->exception(function() use ($coverage, & $namespace) {
+					$coverage->excludeNamespace($namespace = rand(1, PHP_INT_MAX));
+				})
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->hasMessage(sprintf('"%s" is not a valid namespace', $namespace))
+				->exception(function() use ($coverage, & $namespace) {
+					$coverage->excludeNamespace($namespace = '\0Namespace');
+				})
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->hasMessage(sprintf('"%s" is not a valid namespace', trim($namespace, '\\')))
 		;
 	}
 
@@ -1350,7 +1360,7 @@ class coverage extends atoum\test
 			->if($coverage = new testedClass())
 			->then
 				->boolean($coverage->isInExcludedNamespaces(uniqid()))->isFalse()
-			->if($coverage->excludeNamespace($namespace = uniqid()))
+			->if($coverage->excludeNamespace($namespace = 'My\Namespace'))
 			->then
 				->boolean($coverage->isInExcludedNamespaces(uniqid()))->isFalse()
 				->boolean($coverage->isInExcludedNamespaces($namespace . '\\' . uniqid()))->isTrue()
