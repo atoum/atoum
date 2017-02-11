@@ -18,4 +18,4 @@ Generate a Santa report.
 $santaReport = new atoum\reports\realtime\santa();
 $santaReport->addWriter($stdOutWriter);
 
-$runner->addReport($cliReport);
+$runner->addReport($santaReport);
