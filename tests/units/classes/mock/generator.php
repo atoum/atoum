@@ -3862,29 +3862,29 @@ class generator extends atoum\test
         ;
     }
 
-	protected function getMockControllerMethods()
-	{
-		return
-			"\t" . 'public function getMockController()' . PHP_EOL .
-			"\t" . '{' . PHP_EOL .
-			"\t\t" . '$mockController = \mageekguy\atoum\mock\controller::getForMock($this);' . PHP_EOL .
-			"\t\t" . 'if ($mockController === null)' . PHP_EOL .
-			"\t\t" . '{' . PHP_EOL .
-			"\t\t\t" . '$this->setMockController($mockController = new \mageekguy\atoum\mock\controller());' . PHP_EOL .
-			"\t\t" . '}' . PHP_EOL .
-			"\t\t" . 'return $mockController;' . PHP_EOL .
-			"\t" . '}' . PHP_EOL .
-			"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
-			"\t" . '{' . PHP_EOL .
-			"\t\t" . 'return $controller->control($this);' . PHP_EOL .
-			"\t" . '}' . PHP_EOL .
-			"\t" . 'public function resetMockController()' . PHP_EOL .
-			"\t" . '{' . PHP_EOL .
-			"\t\t" . '\mageekguy\atoum\mock\controller::getForMock($this)->reset();' . PHP_EOL .
-			"\t\t" . 'return $this;' . PHP_EOL .
-			"\t" . '}' . PHP_EOL
-		;
-	}
+    protected function getMockControllerMethods()
+    {
+        return
+            "\t" . 'public function getMockController()' . PHP_EOL .
+            "\t" . '{' . PHP_EOL .
+            "\t\t" . '$mockController = \mageekguy\atoum\mock\controller::getForMock($this);' . PHP_EOL .
+            "\t\t" . 'if ($mockController === null)' . PHP_EOL .
+            "\t\t" . '{' . PHP_EOL .
+            "\t\t\t" . '$this->setMockController($mockController = new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+            "\t\t" . '}' . PHP_EOL .
+            "\t\t" . 'return $mockController;' . PHP_EOL .
+            "\t" . '}' . PHP_EOL .
+            "\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+            "\t" . '{' . PHP_EOL .
+            "\t\t" . 'return $controller->control($this);' . PHP_EOL .
+            "\t" . '}' . PHP_EOL .
+            "\t" . 'public function resetMockController()' . PHP_EOL .
+            "\t" . '{' . PHP_EOL .
+            "\t\t" . '\mageekguy\atoum\mock\controller::getForMock($this)->reset();' . PHP_EOL .
+            "\t\t" . 'return $this;' . PHP_EOL .
+            "\t" . '}' . PHP_EOL
+        ;
+    }
 
     protected function testMethodIsMockableWithReservedWordDataProvider()
     {

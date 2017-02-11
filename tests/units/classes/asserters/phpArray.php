@@ -1114,25 +1114,27 @@ class phpArray extends atoum\test
     }
 
     public function testValues()
-	{
-		$this
-			->given($asserter = $this->newTestedInstance)
-			->then
-				->exception(function() use ($asserter) { $asserter->values; })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Array is undefined')
+    {
+        $this
+            ->given($asserter = $this->newTestedInstance)
+            ->then
+                ->exception(function () use ($asserter) {
+                    $asserter->values;
+                })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->hasMessage('Array is undefined')
 
-			->if($asserter->setWith(array()))
-			->then
-				->object($array = $asserter->values)->isInstanceOf('mageekguy\atoum\asserters\phpArray')
-				->array($array->getValue())->isEqualTo(array())
+            ->if($asserter->setWith([]))
+            ->then
+                ->object($array = $asserter->values)->isInstanceOf('mageekguy\atoum\asserters\phpArray')
+                ->array($array->getValue())->isEqualTo([])
 
-			->if($asserter->setWith(array('one' => 'first value', 'two' => 'second value')))
-			->then
-				->object($array = $asserter->values)->isInstanceOf('mageekguy\atoum\asserters\phpArray')
-				->array($array->getValue())->isEqualTo(array('first value', 'second value'))
-		;
-	}
+            ->if($asserter->setWith(['one' => 'first value', 'two' => 'second value']))
+            ->then
+                ->object($array = $asserter->values)->isInstanceOf('mageekguy\atoum\asserters\phpArray')
+                ->array($array->getValue())->isEqualTo(['first value', 'second value'])
+        ;
+    }
 
     public function testSize()
     {
