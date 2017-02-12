@@ -195,6 +195,16 @@ class runner extends atoum\test
 							'Use TAP report'
 						),
 						array(
+							array('-ucr', '--use-clover-report'),
+							null,
+							'Use clover report'
+						),
+						array(
+							array('-uxr', '--use-xunit-report'),
+							null,
+							'Use xUnit report'
+						),
+						array(
 							array('--debug'),
 							null,
 							'Enable debug mode'
@@ -375,6 +385,16 @@ class runner extends atoum\test
 							array('-utr', '--use-tap-report'),
 							null,
 							'Use TAP report'
+						),
+						array(
+							array('-ucr', '--use-clover-report'),
+							null,
+							'Use clover report'
+						),
+						array(
+							array('-uxr', '--use-xunit-report'),
+							null,
+							'Use xUnit report'
 						),
 						array(
 							array('--debug'),

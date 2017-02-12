@@ -1158,6 +1158,40 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
+						$cloverReport = new atoum\reports\asynchronous\clover();
+						$cloverReport->addWriter($script->getOutputWriter());
+
+						$script->setReport($cloverReport);
+					},
+					array('-ucr', '--use-clover-report'),
+					null,
+					$this->locale->_('Use clover report'),
+					PHP_INT_MAX
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) != 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$xunitReport = new atoum\reports\asynchronous\xunit();
+						$xunitReport->addWriter($script->getOutputWriter());
+
+						$script->setReport($xunitReport);
+					},
+					array('-uxr', '--use-xunit-report'),
+					null,
+					$this->locale->_('Use xUnit report'),
+					PHP_INT_MAX
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) != 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
 						$script->enableDebugMode();
 					},
 					array('--debug'),
