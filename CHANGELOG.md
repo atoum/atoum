@@ -5,6 +5,10 @@
 * [#615](https://github.com/atoum/atoum/pull/615) Remove reserved keyword, replace void by blank ([@vonglasow])
 * [#643](https://github.com/atoum/atoum/pull/643) atoum now requires PHP `>=5.6.0` ([@jubianchi])
 
+## Bugfix
+
+* [#691](https://github.com/atoum/atoum/pull/691) Fix how annotations are extracted. Only those actually starting with `@` are handled ([@jubianchi])
+
 # 2.9.0 - 2017-02-11
 
 * [#667](https://github.com/atoum/atoum/pull/667) Assert on array values using `mageekguy\atoum\asserters\phpArray::$values` ([@krtek4])
