@@ -43,7 +43,7 @@ install:
   - echo extension=php_fileinfo.dll >> php.ini
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   - cd c:\projects\atoum
-  - php c:\php\composer.phar require atoum/reports-extension
+  - php c:\php\composer.phar require atoum/reports-extension:^2.0.1
   - copy resources\configurations\ci\.appveyor.php.dist .atoum.php
 
 test_script:
