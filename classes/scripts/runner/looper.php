@@ -4,5 +4,5 @@ namespace mageekguy\atoum\scripts\runner;
 
 interface looper
 {
-	public function runAgain();
+    public function runAgain();
 }

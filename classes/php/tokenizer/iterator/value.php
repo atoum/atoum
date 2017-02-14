@@ -2,51 +2,47 @@
 
 namespace mageekguy\atoum\php\tokenizer\iterator;
 
-use
-	mageekguy\atoum\exceptions
-;
+use mageekguy\atoum\exceptions;
 
 abstract class value implements \iterator, \countable
 {
-	protected $parent = null;
+    protected $parent = null;
 
-	public function setParent(value $parent)
-	{
-		if ($this->parent !== null)
-		{
-			throw new exceptions\runtime('Parent is already set');
-		}
+    public function setParent(value $parent)
+    {
+        if ($this->parent !== null) {
+            throw new exceptions\runtime('Parent is already set');
+        }
 
-		$parent->append($this);
+        $parent->append($this);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getParent()
-	{
-		return $this->parent;
-	}
+    public function getParent()
+    {
+        return $this->parent;
+    }
 
-	public function getRoot()
-	{
-		$root = null;
+    public function getRoot()
+    {
+        $root = null;
 
-		$parent = $this->getParent();
+        $parent = $this->getParent();
 
-		while ($parent !== null)
-		{
-			$root = $parent;
+        while ($parent !== null) {
+            $root = $parent;
 
-			$parent = $parent->getParent();
-		}
+            $parent = $parent->getParent();
+        }
 
-		return $root;
-	}
+        return $root;
+    }
 
-	public abstract function __toString();
-	public abstract function prev();
-	public abstract function end();
-	public abstract function append(value $value);
-	public abstract function getValue();
-	public abstract function seek($key);
+    abstract public function __toString();
+    abstract public function prev();
+    abstract public function end();
+    abstract public function append(value $value);
+    abstract public function getValue();
+    abstract public function seek($key);
 }

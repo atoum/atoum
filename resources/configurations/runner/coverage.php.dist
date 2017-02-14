@@ -30,12 +30,12 @@ $coverageTreemapField = new atoum\report\fields\runner\coverage\treemap('Your pr
 Please replace in next line http://url/of/treemap by the root url of your treemap web site.
 */
 $coverageTreemapField
-	->setTreemapUrl('http://url/of/treemap')
-	->setHtmlReportBaseUrl($coverageHtmlField->getRootUrl())
+    ->setTreemapUrl('http://url/of/treemap')
+    ->setHtmlReportBaseUrl($coverageHtmlField->getRootUrl())
 ;
 
 $script
-	->addDefaultReport()
-		->addField($coverageHtmlField)
-		->addField($coverageTreemapField)
+    ->addDefaultReport()
+        ->addField($coverageHtmlField)
+        ->addField($coverageTreemapField)
 ;

@@ -86,242 +86,35 @@ You **must** write unit tests to cover your modifications.
 
 Your commit history **should** be as clean as possible:
 
-* you **should** squash your commits to hide non-valudable commits (coding style fix, unit tests, ...)
-* you **should** rebase your branch on top of master to make your pull-request fast-forward
-* you **must** add a changelog entry
+* You **should** squash your commits to hide non-valudable commits (coding style fix, unit tests, …),
+* You **should** rebase your branch on top of master to make your pull-request fast-forward,
+* You **must** add a changelog entry.
 
 You **must** also provide a descriptive title and a description for your changes. It **may** include code snippets to illustrate how to use
 the feature you added.
 
 ## Coding style
 
-__Thanks to the Drupal community for its work about its [coding convention](https://drupal.org/coding-standards).__
+Coding style respects [the PSR-2 recommendation](http://www.php-fig.org/psr/psr-2/), in addition to some other fixers provided by [the PHP CS Fixer tool](https://github.com/FriendsOfPhp/PHP-CS-Fixer).
+
+To check the coding style, please run the following script:
+
+```sh
+$ vendor/bin/php-cs-fixer --dry-run --diff --verbose
+```
 
 ### Compatibility
 
-Your code **must** work on PHP from version 5.3 to the latest stable. 
+Your code **must** work on PHP from version 5.6 to the latest stable.
 
-You **must not**:
-
-* Use short array syntax,
-* Use variadic functions,
-* Use traits,
-* `$this` inside closures,
-* ...
-
-When you need to use a feature that is only available on PHP version greater than 5.3, you **must** either:
+When you need to use a feature that is only available on PHP version greater than 5.6, you **must** either:
 
 * Use version sniffing (`version_compare`),
 * Check if class exists,
 * Check if method exists,
-* ...
+* …
 
 You **must** ensure a consistent behavior on all supported version. If it is not possible, you **must** ensure a correct behavior.
-
-### Indenting and Whitespace
-
-* Tabs **must** be used to indent lines,
-* Lines **must not** have any trailing whitespace at the end,
-* Files **must** be formatted with `\n` as the line ending (Unix line endings), not `\r\n` (Windows line endings),
-* PHP files **must** be in UTF-8,
-* PHP files **must** begin with `<?php ` and **should not** have an end tag (no `?>`).
-
-### Operators
-
-All binary operators (operators that come between two values), such as `+`, `-`, `=`, `!=`, `==`, `>`, etc. **must** have a space before and after the operator, for readability.
-For example, an assignment should be formatted as `$foo = $bar;` rather than `$foo=$bar;`.
-
-Unary operators (operators that operate on only one value), such as `++`, **must not** have a space between the operator and the variable or number they are operating on.
-
-### Casting
-
-There **must** be a space between the `(type)` and the `$variable` in a cast: `(int) $mynumber`.
-
-### Control Structures
-
-_Control structures include `if`, `for`, `while`, `switch`, etc._
-
-Here is a sample `if` statement, since it is the most complicated of them:
-
-```php
-if ($condition1 || $condition2)
-{
-	// action1;
-}
-else if ($condition3 && $condition4)
-{
-	// action2;
-}
-else
-{
-	// default action;
-}
-```
-
-* `elseif` must not be used, `else if` **must** be used.
-* If there are more than three `else if`, a `switch` statement **should** be used:
-
-```php
-switch (true)
-{
-	case $condition1 || $condition2:
-		// action1;
-		break;
-
-	case $condition3 && $condition4:
-		// action2;
-		break;
-
-	case $condition5:
-		// action3;
-		break;
-
-	default:
-		// default action;
-}
-```
-
-Control statements **must** have one space between the control keyword and opening parenthesis to distinguish them from function calls.
-Curly braces **must** always be used even in situations where they are technically optional.
-Having them increases readability and decreases the likelihood of logic errors being introduced when new lines are added. 
-
-For `switch` statements:
-
-```php
-switch ($condition)
-{
-	case 1:
-		// action1;
-		break;
-
-	case 2:
-		// action2;
-		break;
-
-	default:
-		// defaultaction;
-}
-```
-
-For do-while statements:
-
-```php
-do
-{
-	// actions;
-}
-while ($condition);
-```
-
-### Line length and wrapping
-
-Lines **should not** be wrapped at any specific length.
-
-### Function Calls
-
-* There **must not** be any space between the function name, the opening parenthesis, and the first parameter
-* The **must** be a space between commas and each parameter
-* There **must not** be any space between the last parameter, the closing parenthesis, and the semicolon.
-
-Here's an example:
-
-```php
-$var = $object->foo($bar, $baz, $quux);
-```
-
-As displayed above, there **must** be one space on either side of an equals sign used to assign the return value of a function to a variable.
-In the case of a block of related assignments, more space **must not** be used to align them:
-
-```php
-$short = foo($bar);
-$long_variable = foo($baz);
-```
-
-
-A meaningful value **should** be returned from any function.
-If there is no meaningful value, methods **should** return `$this` (fluent syntax).
-
-### Class Constructor Calls
-
-When calling class constructors with no arguments parenthesis **must** be used:
-
-```php
-$foo = new MyClassName();
-```
-
-Note that if the class name is a variable, the variable will be evaluated first to get the class name, and then the constructor will be called. Use the same syntax:
-
-```php
-$bar = 'MyClassName';
-$foo = new $bar();
-$foo = new $bar($arg1, $arg2);
-```
-
-### Arrays
-
-Arrays **must** be formatted with a space separating each element (after the comma), and spaces around the `=>` key association operator, if applicable.
-If an array contains several values, they **must** be on their own lines:
-
-```php
-$array = array(
-	'hello',
-	'world',
-	'foo' => 'bar'
-);
-```
-
-To get the length of an array, `sizeof` **must** be used instead of `count` (no technical reason about that, it's just the current convention).
-
-### Quotes
-
-* Single quotes **must** be used.
-* There **must** be a space between the dot and the concatenated parts to improve readability:
-
-```php
-$string = 'Foo' . $bar;
-$string = $bar . 'foo';
-$string = bar() . 'foo';
-$string = 'foo' . 'bar';
-```
-
-When using the concatenating assignment operator (`.=`), there **must** be a space on each side as with the assignment operator:
-
-```php
-$string .= 'Foo';
-$string .= $bar;
-$string .= baz();
-```
-
-### Comments
-
-Try to avoid useless comment, ie. they **may** only be used to add a link to a technical documentation or an explanation about the code.
-`//` or `#` **must** be used to add comment, and they **must** be in english.
-This is a good example:
-
-```php
-# Default bootstrap file MUST be included here because some arguments on the command line can include some tests which depends of this file.
-# So, this file must be included BEFORE argument parsing which is done in script::run().
-# Default bootstrap file can be overrided in a default config file included in script\configurable::run() which extends script::run().
-# So, if a bootstrap file is defined in a default config file, it will be available when arguments on CLI will be parsed
-
-// see http://www.floating-point-gui.de/errors/comparison/ for more informations
-```
-
-Currently, atoum does not support PHPDoc.
-
-### Including code
-
-* Anywhere you are unconditionally including a class file, `require_once` **must** be used.
-* Anywhere you are conditionally including a class file, `include_once` **must** be used.
-
-Both of these will ensure that class files are included only once.
-They share the same file list, so you don't need to worry about mixing them (a file included with `require_once` will not be included again by `include_once`).
-Parenthesis around the file name to be included **must not** be used.
-When including code, you **must** always use a relative path from the current directory:
-
-```php
-require_once __DIR__ . '/../../../path/to/the/included/php/file.php';
-```
 
 ### Naming Conventions
 

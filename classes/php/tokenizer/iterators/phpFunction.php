@@ -2,57 +2,53 @@
 
 namespace mageekguy\atoum\php\tokenizer\iterators;
 
-use
-	mageekguy\atoum\php\tokenizer,
-	mageekguy\atoum\php\tokenizer\iterators
-;
+use mageekguy\atoum\php\tokenizer;
+use mageekguy\atoum\php\tokenizer\iterators;
 
 class phpFunction extends tokenizer\iterator
 {
-	protected $arguments = array();
+    protected $arguments = [];
 
-	public function getName()
-	{
-		$name = null;
+    public function getName()
+    {
+        $name = null;
 
-		$key = $this->findTag(T_FUNCTION);
+        $key = $this->findTag(T_FUNCTION);
 
-		if ($key !== null)
-		{
-			$this->goToNextTagWhichIsNot(array(T_WHITESPACE, T_COMMENT));
+        if ($key !== null) {
+            $this->goToNextTagWhichIsNot([T_WHITESPACE, T_COMMENT]);
 
-			$token = $this->current();
+            $token = $this->current();
 
-			if ($token !== null && $token->getTag() === T_STRING)
-			{
-				$name = $token->getValue();
-			}
-		}
+            if ($token !== null && $token->getTag() === T_STRING) {
+                $name = $token->getValue();
+            }
+        }
 
-		return $name;
-	}
+        return $name;
+    }
 
-	public function reset()
-	{
-		$this->arguments = array();
+    public function reset()
+    {
+        $this->arguments = [];
 
-		return parent::reset();
-	}
+        return parent::reset();
+    }
 
-	public function appendArgument(iterators\phpArgument $phpArgument)
-	{
-		$this->arguments[] = $phpArgument;
+    public function appendArgument(iterators\phpArgument $phpArgument)
+    {
+        $this->arguments[] = $phpArgument;
 
-		return $this->append($phpArgument);
-	}
+        return $this->append($phpArgument);
+    }
 
-	public function getArguments()
-	{
-		return $this->arguments;
-	}
+    public function getArguments()
+    {
+        return $this->arguments;
+    }
 
-	public function getArgument($index)
-	{
-		return (isset($this->arguments[$index]) === false ? null : $this->arguments[$index]);
-	}
+    public function getArgument($index)
+    {
+        return (isset($this->arguments[$index]) === false ? null : $this->arguments[$index]);
+    }
 }

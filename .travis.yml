@@ -1,8 +1,5 @@
 language: php
 php:
-  - 5.3
-  - 5.4
-  - 5.5
   - 5.6
   - 7.0
   - nightly
@@ -29,10 +26,12 @@ env:
         - secure: "vJ1TnFhU9muqLwkiBd13lFqdPJIrwKJ5OJjR3/jQROWQsRO4NPd/I7OfdDKk\noJGYbgjGMw7bmBYI0xjhYfZAnrClwIBvn1Qx5x5UDGxTHC8ZP6xs49AGa37I\n7BJlWC7+nRwPmmLhoLsbut/O7Kkn8IkdJIeChHbdn8RHQIJTJ4Y="
 sudo: false
 before_script:
-  - "[[ \"$TRAVIS_PHP_VERSION\" != '5.3' && \"$TRAVIS_PHP_VERSION\" != '5.4' ]] && composer require 'atoum/reports-extension:^2.0.1' || true"
-  - "cp resources/configurations/ci/.travis.php.dist .atoum.php"
+  - composer require 'atoum/reports-extension:^2.0.1'
+  - cp resources/configurations/ci/.travis.php.dist .atoum.php
 script:
   - bin/atoum +verbose
+  - phpenv config-rm xdebug.ini || return 0
+  - vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
   - mkdir ../phar
   - php -n -dphar.readonly=Off scripts/phar/generator.php -d ../phar
   - php -n -ddate.timezone=Europe/Paris ../phar/atoum.phar --test-it -ncc +verbose -c .atoum.php

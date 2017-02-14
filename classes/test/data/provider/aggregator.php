@@ -6,46 +6,45 @@ use mageekguy\atoum\test\data\provider;
 
 class aggregator implements provider, \countable
 {
-	protected $providers = array();
+    protected $providers = [];
 
-	public function __invoke()
-	{
-		return $this->generate();
-	}
+    public function __invoke()
+    {
+        return $this->generate();
+    }
 
-	public function __toString()
-	{
-		$types = array_map(
-			function(provider $provider) {
-				return $provider->__toString();
-			},
-			$this->providers
-		);
+    public function __toString()
+    {
+        $types = array_map(
+            function (provider $provider) {
+                return $provider->__toString();
+            },
+            $this->providers
+        );
 
-		return __CLASS__ . '<' . implode(', ', $types) . '>';
-	}
+        return __CLASS__ . '<' . implode(', ', $types) . '>';
+    }
 
-	public function generate()
-	{
-		$data = array();
+    public function generate()
+    {
+        $data = [];
 
-		foreach ($this->providers as $provider)
-		{
-			$data[] = $provider->generate();
-		}
+        foreach ($this->providers as $provider) {
+            $data[] = $provider->generate();
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
-	public function addProvider(provider $provider)
-	{
-		$this->providers[] = $provider;
+    public function addProvider(provider $provider)
+    {
+        $this->providers[] = $provider;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function count()
-	{
-		return sizeof($this->providers);
-	}
+    public function count()
+    {
+        return sizeof($this->providers);
+    }
 }

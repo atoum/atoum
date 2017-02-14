@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\test\generator;
 
-use
-	mageekguy\atoum
-;
+use mageekguy\atoum;
 
-class exception extends atoum\exceptions\runtime {}
+class exception extends atoum\exceptions\runtime
+{
+}

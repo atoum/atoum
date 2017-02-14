@@ -2,97 +2,88 @@
 
 namespace mageekguy\atoum\test\data\providers;
 
-use
-	mageekguy\atoum\exceptions\logic,
-	mageekguy\atoum\mock\generator,
-	mageekguy\atoum\test\data\provider,
-	mageekguy\atoum\exceptions\runtime
-;
+use mageekguy\atoum\exceptions\logic;
+use mageekguy\atoum\exceptions\runtime;
+use mageekguy\atoum\test\data\provider;
 
 class object implements provider
 {
-	protected $class;
+    protected $class;
 
-	public function __invoke()
-	{
-		return $this->generate();
-	}
+    public function __invoke()
+    {
+        return $this->generate();
+    }
 
-	public function __toString()
-	{
-		return __CLASS__ . '<' . $this->class . '>';
-	}
+    public function __toString()
+    {
+        return __CLASS__ . '<' . $this->class . '>';
+    }
 
-	public function __sleep()
-	{
-		return array('class');
-	}
+    public function __sleep()
+    {
+        return ['class'];
+    }
 
-	public function getClass()
-	{
-		return $this->class;
-	}
+    public function getClass()
+    {
+        return $this->class;
+    }
 
-	public function setClass($class)
-	{
-		if (static::classExists($class) === false)
-		{
-			throw new logic\invalidArgument('Argument must be a class name');
-		}
+    public function setClass($class)
+    {
+        if (static::classExists($class) === false) {
+            throw new logic\invalidArgument('Argument must be a class name');
+        }
 
-		$this->class = $class;
+        $this->class = $class;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function generate()
-	{
-		if (static::canInstanciateClass($this->classIsSet()->class))
-		{
-			$className = $this->class;
+    public function generate()
+    {
+        if (static::canInstanciateClass($this->classIsSet()->class)) {
+            $className = $this->class;
 
-			return new $className();
-		}
+            return new $className();
+        }
 
-		throw new runtime('Could not instanciate an object from ' . $this->class);
-	}
+        throw new runtime('Could not instanciate an object from ' . $this->class);
+    }
 
-	protected function classIsSet()
-	{
-		if ($this->class === null)
-		{
-			throw new logic('Class is undefined');
-		}
+    protected function classIsSet()
+    {
+        if ($this->class === null) {
+            throw new logic('Class is undefined');
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	protected static function canInstanciateClass($class)
-	{
-		$reflection = new \reflectionClass($class);
+    protected static function canInstanciateClass($class)
+    {
+        $reflection = new \reflectionClass($class);
 
-		if ($reflection->hasMethod('__construct') === false)
-		{
-			return true;
-		}
+        if ($reflection->hasMethod('__construct') === false) {
+            return true;
+        }
 
-		$constructor = $reflection->getMethod('__construct');
+        $constructor = $reflection->getMethod('__construct');
 
-		if ($constructor->isPublic() === false)
-		{
-			throw new provider\object\exceptions\privateConstructor('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() is private');
-		}
+        if ($constructor->isPublic() === false) {
+            throw new provider\object\exceptions\privateConstructor('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() is private');
+        }
 
-		if ($constructor->getNumberOfRequiredParameters() > 0)
-		{
-			throw new provider\object\exceptions\mandatoryArgument('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() has at least one mandatory argument');
-		}
+        if ($constructor->getNumberOfRequiredParameters() > 0) {
+            throw new provider\object\exceptions\mandatoryArgument('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() has at least one mandatory argument');
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	protected static function classExists($class)
-	{
-		return class_exists($class);
-	}
+    protected static function classExists($class)
+    {
+        return class_exists($class);
+    }
 }
