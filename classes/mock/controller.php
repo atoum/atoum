@@ -261,10 +261,11 @@ class controller extends test\adapter
             }
 
             if (isset($this->__call) === false) {
-                parent::__set('__call', function ($method, $arguments) {
-                    return $this->invoke($method, $arguments);
-                }
-                );
+                $controller = $this;
+
+                parent::__set('__call', function ($method, $arguments) use ($controller) {
+                    return $controller->invoke($method, $arguments);
+                });
             }
         }
 
