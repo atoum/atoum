@@ -30,7 +30,7 @@ abstract class path extends report\field
 		}
 		else
 		{
-			$this->path = $observable->getScore()->getAtoumPath() . DIRECTORY_SEPARATOR . $_SERVER['argv'][0];
+			$this->path = realpath($_SERVER['argv'][0]);
 
 			return true;
 		}
