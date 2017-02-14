@@ -531,7 +531,7 @@ class runner implements observable
 
         $declaredTestClasses = $this->getDeclaredTestClasses($testBaseClass);
 
-        if (sizeof($runTestClasses) <= 0) {
+        if (count($runTestClasses) <= 0) {
             $runTestClasses = $declaredTestClasses;
         } else {
             $runTestClasses = array_intersect($runTestClasses, $declaredTestClasses);
@@ -545,7 +545,7 @@ class runner implements observable
             $test = call_user_func($this->testFactory, $runTestClass);
 
             if ($test->isIgnored($namespaces, $tags) === false) {
-                $testMethodNumber = sizeof($test->runTestMethods($runTestMethods, $tags));
+                $testMethodNumber = count($test->runTestMethods($runTestMethods, $tags));
 
                 if ($testMethodNumber > 0) {
                     $tests[] = $test;
@@ -765,7 +765,7 @@ class runner implements observable
 
     public function hasReports()
     {
-        return (sizeof($this->reports) > 0);
+        return (count($this->reports) > 0);
     }
 
     public function getReports()
@@ -837,13 +837,13 @@ class runner implements observable
         if ($isIgnored === false && $namespaces) {
             $classNamespace = strtolower($test->getClassNamespace());
 
-            $isIgnored = sizeof(array_filter($namespaces, function ($value) use ($classNamespace) {
+            $isIgnored = count(array_filter($namespaces, function ($value) use ($classNamespace) {
                 return strpos($classNamespace, strtolower($value)) === 0;
             })) <= 0;
         }
 
         if ($isIgnored === false && $tags) {
-            $isIgnored = sizeof($testTags = $test->getAllTags()) <= 0 || sizeof(array_intersect($tags, $testTags)) == 0;
+            $isIgnored = count($testTags = $test->getAllTags()) <= 0 || count(array_intersect($tags, $testTags)) == 0;
         }
 
         return $isIgnored;
@@ -872,11 +872,11 @@ class runner implements observable
         foreach ($this->testPaths as $testPath) {
             try {
                 $declaredTestClasses = $this->findTestClasses();
-                $numberOfIncludedFiles = sizeof(get_included_files());
+                $numberOfIncludedFiles = count(get_included_files());
 
                 $this->includer->includePath($testPath, $includer);
 
-                if ($numberOfIncludedFiles < sizeof(get_included_files()) && sizeof(array_diff($this->findTestClasses(), $declaredTestClasses)) <= 0 && $this->testGenerator !== null) {
+                if ($numberOfIncludedFiles < count(get_included_files()) && count(array_diff($this->findTestClasses(), $declaredTestClasses)) <= 0 && $this->testGenerator !== null) {
                     $this->testGenerator->generate($testPath);
 
                     try {

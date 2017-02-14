@@ -37,7 +37,7 @@ class cli extends report\fields\runner\errors
         if ($this->runner !== null) {
             $errors = $this->runner->getScore()->getErrors();
 
-            $sizeOfErrors = sizeof($errors);
+            $sizeOfErrors = count($errors);
 
             if ($sizeOfErrors > 0) {
                 $string .=

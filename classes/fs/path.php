@@ -89,7 +89,7 @@ class path
                     break;
 
                 case '..':
-                    if (sizeof($components) <= 0) {
+                    if (count($components) <= 0) {
                         throw new exception('Unable to resolve path \'' . $this . '\'');
                     }
 

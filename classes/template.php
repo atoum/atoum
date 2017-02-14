@@ -31,7 +31,7 @@ class template extends template\data
 
     public function __isset($tag)
     {
-        return (sizeof($this->getByTag($tag)) > 0);
+        return (count($this->getByTag($tag)) > 0);
     }
 
     public function getByTag($tag)
@@ -99,7 +99,7 @@ class template extends template\data
 
     public function hasChildren()
     {
-        return (sizeof($this->children) > 0);
+        return (count($this->children) > 0);
     }
 
     public function isChild(template\data $child)
@@ -127,7 +127,7 @@ class template extends template\data
                 $child->unsetParent();
             }
 
-            $child->rank = sizeof($this->children);
+            $child->rank = count($this->children);
             $this->children[$child->rank] = $child;
             $child->parent = $this;
         }

@@ -50,7 +50,7 @@ class closure implements factory\builder
                     }
                 }
 
-                if ($constructor === null || sizeof($closureParameters) <= 0) {
+                if ($constructor === null || count($closureParameters) <= 0) {
                     $this->factory = function () use (& $instance, $class) {
                         return ($instance = $class->newInstanceArgs(func_get_args()));
                     };

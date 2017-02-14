@@ -44,7 +44,7 @@ class html extends report\fields\runner\coverage\cli
     {
         $string = '';
 
-        if (sizeof($this->coverage) > 0) {
+        if (count($this->coverage) > 0) {
             try {
                 $this->cleanDestinationDirectory();
 
@@ -134,7 +134,7 @@ class html extends report\fields\runner\coverage\cli
                         $reflectedMethods[$reflectedMethod->getName()] = $reflectedMethod;
                     }
 
-                    if (sizeof($reflectedMethods) > 0) {
+                    if (count($reflectedMethods) > 0) {
                         foreach (array_intersect(array_keys($reflectedMethods), array_keys($methods)) as $methodName) {
                             $methodCoverageValue = $this->coverage->getValueForMethod($className, $methodName);
 

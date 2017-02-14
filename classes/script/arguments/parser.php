@@ -104,7 +104,7 @@ class parser implements \iteratorAggregate
 
     public function hasFoundArguments()
     {
-        return (sizeof($this->values) > 0);
+        return (count($this->values) > 0);
     }
 
     public function addHandler(\closure $handler, array $arguments, $priority = 0)
@@ -166,7 +166,7 @@ class parser implements \iteratorAggregate
 
     public function init(array $array = [])
     {
-        if (sizeof($array) <= 0) {
+        if (count($array) <= 0) {
             $array = array_slice($this->superglobals->_SERVER['argv'], 1);
         }
 
@@ -174,7 +174,7 @@ class parser implements \iteratorAggregate
 
         $arguments = new \arrayIterator($array);
 
-        if (sizeof($arguments) > 0) {
+        if (count($arguments) > 0) {
             $value = $arguments->current();
 
             if (self::isArgument($value) === false && $this->defaultHandler === null) {

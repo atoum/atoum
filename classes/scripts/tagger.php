@@ -39,7 +39,7 @@ class tagger extends atoum\script
             $this
                 ->addArgumentHandler(
                     function ($script, $argument, $values) {
-                        if (sizeof($values) != 0) {
+                        if (count($values) != 0) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
 
@@ -51,7 +51,7 @@ class tagger extends atoum\script
                 )
                 ->addArgumentHandler(
                     function ($script, $argument, $version) use ($engine) {
-                        if (sizeof($version) != 1) {
+                        if (count($version) != 1) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
 
@@ -63,7 +63,7 @@ class tagger extends atoum\script
                 )
                 ->addArgumentHandler(
                     function ($script, $argument, $versionPattern) use ($engine) {
-                        if (sizeof($versionPattern) != 1) {
+                        if (count($versionPattern) != 1) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
 
@@ -75,7 +75,7 @@ class tagger extends atoum\script
                 )
                 ->addArgumentHandler(
                     function ($script, $argument, $directory) use ($engine) {
-                        if (sizeof($directory) != 1) {
+                        if (count($directory) != 1) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
 
@@ -87,7 +87,7 @@ class tagger extends atoum\script
                 )
                 ->addArgumentHandler(
                     function ($script, $argument, $directory) use ($engine) {
-                        if (sizeof($directory) != 1) {
+                        if (count($directory) != 1) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
 

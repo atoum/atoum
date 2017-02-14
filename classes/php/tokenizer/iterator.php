@@ -178,7 +178,7 @@ class iterator extends value
             $this->key = 0;
         }
 
-        $size = sizeof($value);
+        $size = count($value);
 
         if ($size > 0) {
             $value->rewind();
@@ -235,7 +235,7 @@ class iterator extends value
 
     public function seek($key)
     {
-        if ($key > sizeof($this) / 2) {
+        if ($key > count($this) / 2) {
             $this->end();
         } elseif ($this->valid() === false) {
             $this->rewind();

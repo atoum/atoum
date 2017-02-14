@@ -10,7 +10,7 @@ class decorator
     {
         $string = '';
 
-        $sizeOfCalls = sizeof($calls);
+        $sizeOfCalls = count($calls);
 
         if ($sizeOfCalls > 0) {
             $format = '[%' . strlen((string) $sizeOfCalls) . 's] %s';

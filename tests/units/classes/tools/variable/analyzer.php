@@ -52,7 +52,7 @@ class analyzer extends atoum\test
 
                 ->if(
                     $this->function->gettype = 'array',
-                    $this->function->sizeof = $size = rand(1, PHP_INT_MAX)
+                    $this->function->count = $size = rand(1, PHP_INT_MAX)
                 )
                 ->then
                     ->string($this->testedInstance->getTypeOf(uniqid()))->isEqualTo('array(' . $size . ')')

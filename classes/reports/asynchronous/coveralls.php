@@ -175,7 +175,7 @@ class coveralls extends atoum\reports\asynchronous
         foreach ($coverage as $method) {
             foreach ($method as $number => $line) {
                 if ($number > 1) {
-                    while (sizeof($cover) < ($number - 1)) {
+                    while (count($cover) < ($number - 1)) {
                         $cover[] = null;
                     }
                 }

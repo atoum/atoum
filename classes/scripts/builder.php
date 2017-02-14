@@ -288,11 +288,11 @@ class builder extends atoum\script\configurable
             $this->php->addArgument('-sf', $scoreFile);
 
             if ($this->reportTitle !== null) {
-                $this->php->addArgument('-drt',  sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()));
+                $this->php->addArgument('-drt', sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()));
             }
 
             foreach ($this->runnerConfigurationFiles as $runnerConfigurationFile) {
-                $this->php->addArgument('-c',  $runnerConfigurationFile);
+                $this->php->addArgument('-c', $runnerConfigurationFile);
             }
 
             try {
@@ -371,7 +371,7 @@ class builder extends atoum\script\configurable
 
             $revisions = $this->vcs->getNextRevisions();
 
-            while (sizeof($revisions) > 0) {
+            while (count($revisions) > 0) {
                 $revision = array_shift($revisions);
 
                 $this->vcs->setRevision($revision);
@@ -457,7 +457,7 @@ class builder extends atoum\script\configurable
         return parent::setArgumentHandlers()
             ->addArgumentHandler(
                 function ($script, $argument, $files) {
-                    if (sizeof($files) <= 0) {
+                    if (count($files) <= 0) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -479,7 +479,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $path) {
-                    if (sizeof($path) != 1) {
+                    if (count($path) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -491,7 +491,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $directory) {
-                    if (sizeof($directory) != 1) {
+                    if (count($directory) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -503,7 +503,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $directory) {
-                    if (sizeof($directory) != 1) {
+                    if (count($directory) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -516,7 +516,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $directory) {
-                    if (sizeof($directory) != 1) {
+                    if (count($directory) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -528,7 +528,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $directory) {
-                    if (sizeof($directory) != 1) {
+                    if (count($directory) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -540,7 +540,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $url) {
-                    if (sizeof($url) != 1) {
+                    if (count($url) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -552,7 +552,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $file) {
-                    if (sizeof($file) != 1) {
+                    if (count($file) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -564,7 +564,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $version) {
-                    if (sizeof($version) != 1) {
+                    if (count($version) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -576,7 +576,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $unitTestRunnerScript) {
-                    if (sizeof($unitTestRunnerScript) != 1) {
+                    if (count($unitTestRunnerScript) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -586,7 +586,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $pharGeneratorScript) {
-                    if (sizeof($pharGeneratorScript) != 1) {
+                    if (count($pharGeneratorScript) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -596,7 +596,7 @@ class builder extends atoum\script\configurable
             )
             ->addArgumentHandler(
                 function ($script, $argument, $reportTitle) {
-                    if (sizeof($reportTitle) != 1) {
+                    if (count($reportTitle) != 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
