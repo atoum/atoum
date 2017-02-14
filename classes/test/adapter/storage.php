@@ -15,7 +15,7 @@ class storage implements \countable, \iteratorAggregate
 
     public function count()
     {
-        return sizeof($this->adapters);
+        return count($this->adapters);
     }
 
     public function add(adapter $adapter)

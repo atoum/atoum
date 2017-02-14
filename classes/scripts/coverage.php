@@ -24,7 +24,7 @@ class coverage extends runner
 
     protected function doRun()
     {
-        if (sizeof($this->getReports()) === 0) {
+        if (count($this->getReports()) === 0) {
             $this->addDefaultReport();
         }
 
@@ -88,7 +88,7 @@ class coverage extends runner
         return parent::setArgumentHandlers()
             ->addArgumentHandler(
                     function ($script, $argument, $values) {
-                        if (sizeof($values) === 0) {
+                        if (count($values) === 0) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
 
@@ -100,7 +100,7 @@ class coverage extends runner
                 )
             ->addArgumentHandler(
                     function ($script, $argument, $values) {
-                        if (sizeof($values) === 0) {
+                        if (count($values) === 0) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
 

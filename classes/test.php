@@ -1046,7 +1046,7 @@ abstract class test implements observable, \countable
 
     public function count()
     {
-        return sizeof($this->runTestMethods);
+        return count($this->runTestMethods);
     }
 
     public function addObserver(observer $observer)
@@ -1086,18 +1086,18 @@ abstract class test implements observable, \countable
 
     public function isIgnored(array $namespaces = [], array $tags = [])
     {
-        $isIgnored = (sizeof($this) <= 0 || $this->ignore === true);
+        $isIgnored = (count($this) <= 0 || $this->ignore === true);
 
-        if ($isIgnored === false && sizeof($namespaces) > 0) {
+        if ($isIgnored === false && count($namespaces) > 0) {
             $classNamespace = strtolower($this->getClassNamespace());
 
-            $isIgnored = sizeof(array_filter($namespaces, function ($value) use ($classNamespace) {
+            $isIgnored = count(array_filter($namespaces, function ($value) use ($classNamespace) {
                 return strpos($classNamespace, strtolower($value)) === 0;
             })) <= 0;
         }
 
-        if ($isIgnored === false && sizeof($tags) > 0) {
-            $isIgnored = sizeof($testTags = $this->getAllTags()) <= 0 || sizeof(array_intersect($tags, $testTags)) == 0;
+        if ($isIgnored === false && count($tags) > 0) {
+            $isIgnored = count($testTags = $this->getAllTags()) <= 0 || count(array_intersect($tags, $testTags)) == 0;
         }
 
         return $isIgnored;
@@ -1120,7 +1120,7 @@ abstract class test implements observable, \countable
             }
 
             if ($isIgnored === false && $tags) {
-                $isIgnored = sizeof($methodTags = $this->getMethodTags($methodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
+                $isIgnored = count($methodTags = $this->getMethodTags($methodName)) <= 0 || count(array_intersect($tags, $methodTags)) <= 0;
             }
         }
 
@@ -1145,7 +1145,7 @@ abstract class test implements observable, \countable
             $runTestMethods = [];
         }
 
-        if (sizeof($runTestMethods) <= 0) {
+        if (count($runTestMethods) <= 0) {
             $runTestMethods = $this->getTestMethods($tags);
         } else {
             $runTestMethods = $this->getTaggedTestMethods($runTestMethods, $tags);
@@ -1294,7 +1294,7 @@ abstract class test implements observable, \countable
                                 $arguments = [$arguments];
                             }
 
-                            if (sizeof($arguments) < $numberOfArguments) {
+                            if (count($arguments) < $numberOfArguments) {
                                 throw new test\exceptions\runtime('Data provider ' . ($dataProvider instanceof test\data\provider ? '' : $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() ') . 'does not provide enough arguments at key ' . $key . ' for test method ' . $this->getClass() . '::' . $testMethod . '()');
                             }
 
@@ -1733,7 +1733,7 @@ abstract class test implements observable, \countable
 
                     $runtimeExceptions = $score->getRuntimeExceptions();
 
-                    if (sizeof($runtimeExceptions) > 0) {
+                    if (count($runtimeExceptions) > 0) {
                         $this->callObservers(self::runtimeException);
 
                         throw reset($runtimeExceptions);

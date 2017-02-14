@@ -45,6 +45,6 @@ class aggregator implements provider, \countable
 
     public function count()
     {
-        return sizeof($this->providers);
+        return count($this->providers);
     }
 }

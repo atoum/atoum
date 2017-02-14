@@ -34,6 +34,6 @@ class token implements analyzer
             return true;
         };
 
-        return sizeof(array_filter(token_get_all(file_get_contents($file)), $tokenFilter));
+        return count(array_filter(token_get_all(file_get_contents($file)), $tokenFilter));
     }
 }

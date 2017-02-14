@@ -14,15 +14,15 @@ class decorator
             return is_array($value) === true;
         });
 
-        if (sizeof($diff) > 0) {
+        if (count($diff) > 0) {
             $string .= '-Expected' . PHP_EOL;
             $string .= '+Actual' . PHP_EOL;
 
             foreach ($diff as $lineNumber => $diff) {
                 $lineNumber++;
 
-                $sizeofMinus = sizeof($diff['-']);
-                $sizeofPlus = sizeof($diff['+']);
+                $sizeofMinus = count($diff['-']);
+                $sizeofPlus = count($diff['+']);
 
                 $string .= '@@ -' . $lineNumber . ($sizeofMinus <= 1 ? '' : ',' . $sizeofMinus) . ' +' . $lineNumber . ($sizeofPlus <= 1 ? '' : ',' . $sizeofPlus) . ' @@' . PHP_EOL;
 

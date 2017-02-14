@@ -26,7 +26,7 @@ class stream extends atoum\asserter
 
     public function isRead($failMessage = null)
     {
-        if (sizeof($this->streamIsSet()->streamController->getCalls(new test\adapter\call('stream_read'))) > 0) {
+        if (count($this->streamIsSet()->streamController->getCalls(new test\adapter\call('stream_read'))) > 0) {
             $this->pass();
         } else {
             $this->fail($failMessage ?: $this->_('stream %s is not read', $this->streamController));
@@ -37,7 +37,7 @@ class stream extends atoum\asserter
 
     public function isWritten($failMessage = null)
     {
-        if (sizeof($this->streamIsSet()->streamController->getCalls(new test\adapter\call('stream_write'))) > 0) {
+        if (count($this->streamIsSet()->streamController->getCalls(new test\adapter\call('stream_write'))) > 0) {
             $this->pass();
         } else {
             $this->fail($failMessage ?: $this->_('stream %s is not written', $this->streamController));

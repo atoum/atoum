@@ -94,7 +94,7 @@ class clover extends atoum\reports\asynchronous
         $project->setAttribute('name', $this->getTitle());
 
         $project->appendChild($this->makePackageElement($document, $coverage));
-        $project->appendChild($this->makeProjectMetricsElement($document, sizeof($coverage->getClasses())));
+        $project->appendChild($this->makeProjectMetricsElement($document, count($coverage->getClasses())));
 
         return $project;
     }
@@ -118,7 +118,7 @@ class clover extends atoum\reports\asynchronous
             $package->appendChild($this->makeFileElement($document, $file, $class, $coverage->getCoverageForClass($class), $coverage->getBranchesCoverageForClass($class), $coverage->getPathsCoverageForClass($class)));
         }
 
-        $package->appendChild($this->makePackageMetricsElement($document, sizeof($coverage->getClasses())));
+        $package->appendChild($this->makePackageMetricsElement($document, count($coverage->getClasses())));
 
         return $package;
     }
@@ -139,7 +139,7 @@ class clover extends atoum\reports\asynchronous
         $file->setAttribute('name', basename($filename));
         $file->setAttribute('path', $filename);
 
-        $methods = sizeof($coverage);
+        $methods = count($coverage);
         $coveredMethods = 0;
         $totalLines = $coveredLines = 0;
         $totalBranches = $coveredBranches = 0;
@@ -149,14 +149,14 @@ class clover extends atoum\reports\asynchronous
             $totalMethodLines = $coveredMethodLines = 0;
 
             if (isset($branches[$method])) {
-                $totalBranches += sizeof($branches[$method]);
-                $coveredBranches += sizeof(array_filter($branches[$method], function (array $branch) {
+                $totalBranches += count($branches[$method]);
+                $coveredBranches += count(array_filter($branches[$method], function (array $branch) {
                     return $branch['hit'] === 1;
                 }));
             }
 
             if (isset($paths[$method])) {
-                $totalPaths += sizeof($paths[$method]);
+                $totalPaths += count($paths[$method]);
             }
 
             foreach ($lines as $lineNumber => $cover) {
@@ -216,7 +216,7 @@ class clover extends atoum\reports\asynchronous
 
         $class->setAttribute('name', basename(str_replace('\\', DIRECTORY_SEPARATOR, $classname)));
 
-        $methods = sizeof($coverage);
+        $methods = count($coverage);
         $coveredMethods = 0;
         $totalLines = $coveredLines = 0;
         $totalBranches = $coveredBranches = 0;
@@ -224,14 +224,14 @@ class clover extends atoum\reports\asynchronous
 
         foreach ($coverage as $method => $lines) {
             if (isset($branches[$method])) {
-                $totalBranches += sizeof($branches[$method]);
-                $coveredBranches += sizeof(array_filter($branches[$method], function (array $branch) {
+                $totalBranches += count($branches[$method]);
+                $coveredBranches += count(array_filter($branches[$method], function (array $branch) {
                     return $branch['hit'] === 1;
                 }));
             }
 
             if (isset($paths[$method])) {
-                $totalPaths += sizeof($paths[$method]);
+                $totalPaths += count($paths[$method]);
             }
 
             foreach ($lines as $cover) {

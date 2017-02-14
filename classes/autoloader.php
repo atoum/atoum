@@ -26,7 +26,7 @@ class autoloader
     {
         $this->version = static::version;
 
-        if (sizeof($namespaces) <= 0) {
+        if (count($namespaces) <= 0) {
             $namespaces = [__NAMESPACE__ => __DIR__];
         }
 
