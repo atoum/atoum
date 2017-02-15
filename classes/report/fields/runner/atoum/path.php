@@ -24,10 +24,10 @@ abstract class path extends report\field
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;
-        } else {
-            $this->path = $observable->getScore()->getAtoumPath() . DIRECTORY_SEPARATOR . $_SERVER['argv'][0];
-
-            return true;
         }
+
+        $this->path = realpath($_SERVER['argv'][0]);
+
+        return true;
     }
 }
