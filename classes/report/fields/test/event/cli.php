@@ -31,7 +31,7 @@ class cli extends report\fields\test\event
                 default:
                     switch ($this->event) {
                         case test::runStart:
-                            $this->progressBar->reset()->setIterations(sizeof($this->observable));
+                            $this->progressBar->reset()->setIterations(count($this->observable));
                             break;
 
                         case test::success:

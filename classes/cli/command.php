@@ -38,7 +38,7 @@ class command
             }
         }
 
-        if (sizeof($this->arguments) > 0) {
+        if (count($this->arguments) > 0) {
             $command .= ' --';
 
             foreach ($this->arguments as $argument) {
@@ -209,7 +209,7 @@ class command
             $pipes[0] = ['pipe', 'r'];
         }
 
-        $this->processus = @call_user_func_array([$this->adapter, 'proc_open'], [(string) $this, $pipes, & $this->streams, null, sizeof($this->env) <= 0 ? null : $this->env]);
+        $this->processus = @call_user_func_array([$this->adapter, 'proc_open'], [(string) $this, $pipes, & $this->streams, null, count($this->env) <= 0 ? null : $this->env]);
 
         if ($this->processus === false) {
             throw new command\exception('Unable to run \'' . $this . '\'');

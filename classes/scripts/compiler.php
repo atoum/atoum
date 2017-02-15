@@ -55,7 +55,7 @@ class compiler extends atoum\script
         return $this
             ->addArgumentHandler(
                 function ($script, $argument, $values) {
-                    if (sizeof($values) !== 0) {
+                    if (count($values) !== 0) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -67,7 +67,7 @@ class compiler extends atoum\script
             )
             ->addArgumentHandler(
                 function ($script, $argument, $values) {
-                    if (sizeof($values) !== 1) {
+                    if (count($values) !== 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -79,7 +79,7 @@ class compiler extends atoum\script
             )
             ->addArgumentHandler(
                 function ($script, $argument, $values) {
-                    if (sizeof($values) !== 1) {
+                    if (count($values) !== 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 
@@ -91,7 +91,7 @@ class compiler extends atoum\script
             )
             ->addArgumentHandler(
                 function ($script, $argument, $values) {
-                    if (sizeof($values) !== 1) {
+                    if (count($values) !== 1) {
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                     }
 

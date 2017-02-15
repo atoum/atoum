@@ -37,7 +37,7 @@ class cli extends outputs
         if ($this->runner !== null) {
             $outputs = $this->runner->getScore()->getOutputs();
 
-            $sizeOfOutputs = sizeof($outputs);
+            $sizeOfOutputs = count($outputs);
 
             if ($sizeOfOutputs > 0) {
                 $string .=
