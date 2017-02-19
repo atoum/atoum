@@ -31,7 +31,6 @@ before_script:
 script:
   - bin/atoum +verbose
   - phpenv config-rm xdebug.ini || return 0
-  - vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
   - mkdir ../phar
   - php -n -dphar.readonly=Off scripts/phar/generator.php -d ../phar
   - php -n -ddate.timezone=Europe/Paris ../phar/atoum.phar --test-it -ncc +verbose -c .atoum.php
