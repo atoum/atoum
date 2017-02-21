@@ -21,7 +21,7 @@ atoum `2.x`:
 ```php
 $this
     ->when(function(atoum\test $test) { 
-    	$test->testedInstance->doSomething();
+        $test->testedInstance->doSomething();
     })
 ;  
 ```
@@ -31,7 +31,7 @@ atoum `3.x`:
 ```php
 $this
     ->when(function() { 
-    	$this->testedInstance->doSomething();
+        $this->testedInstance->doSomething();
     })
 ;  
 ```
@@ -43,7 +43,7 @@ atoum `2.x`:
 ```php
 $this
     ->exception(function(atoum\test $test) { 
-    	$test->testedInstance->doSomethingAndThrow();
+        $test->testedInstance->doSomethingAndThrow();
     })
 ;    
 ```
@@ -53,7 +53,7 @@ atoum `3.x`:
 ```php
 $this
     ->exception(function() { 
-    	$this->testedInstance->doSomethingAndThrow();
+        $this->testedInstance->doSomethingAndThrow();
     })
 ;    
 ```
