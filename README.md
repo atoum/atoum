@@ -12,7 +12,7 @@ However, it has been designed from the start with the following ideas in mind:
 * Allow for writing *reliable, readable, and clear* unit tests.
 
 To accomplish that, it massively uses capabilities provided by *PHP*, to give the developer *a whole new way* of writing unit tests.
-Therefore, it can be installed and integrated inside an existing project extremely easily, since it is only a *single PHAR archive*, which is the one and only entry point for the developper.
+Therefore, it can be installed and integrated into an existing project extremely easily, since it is only a *single PHAR archive*, which is the one and only entry point for the developer.
 Also, thanks to its *fluent interface*, it allows for writing unit tests in a fashion close to natural language.
 It also makes it easier to implement stubbing within tests, thanks to intelligent uses of *anonymous functions and closures*.
 *atoum* natively, and by default, performs the execution of each unit test within a separate [PHP](http://www.php.net) process, to warrant *isolation*.
@@ -24,7 +24,7 @@ Finally, even though it is developed mainly on UNIX, it can also work on Windows
 
 ## Why atoum?
 
-* *atoum* is really [easy to install](http://docs.atoum.org/en/latest/installation.html): clone it [from github](https://github.com/atoum/atoum), download [its PHAR](https://github.com/atoum/atoum/releases/download/2.6.0/atoum.phar) or simply [use composer](https://packagist.org/packages/atoum/atoum),
+* *atoum* is really [easy to install](http://docs.atoum.org/en/latest/installation.html): clone it [from github](https://github.com/atoum/atoum), download [its PHAR](https://github.com/atoum/atoum/releases/download/3.0.0/atoum.phar) or simply [use composer](https://packagist.org/packages/atoum/atoum),
 * *atoum* provides a high level of security during test execution by isolating each test method in its own PHP process. Of course, this feature is available out of the box, no need to install any additional extension,
 * *atoum* runs tests in a parallelized environment making the suite run as fast as possible by taking advantage of today's multi-core CPUs,
 * *atoum* provides a [full-featured set of natural and expressive assertions](http://docs.atoum.org/en/latest/asserters.html) making tests as readable as possible. Here is an example:
@@ -34,8 +34,8 @@ Finally, even though it is developed mainly on UNIX, it can also work on Windows
 
 $this
     ->integer(150)
-		->isGreaterThan(100)
-		->isLowerThanOrEqualTo(200)
+        ->isGreaterThan(100)
+        ->isLowerThanOrEqualTo(200)
 ;
 ```
 
@@ -46,10 +46,10 @@ $this
 
 $this
     ->given($testedInstance = new testedClass())
-	->and($testedClass[] = $firstValue = uniqid())
-	->then
-		->sizeof($testedInstance)->isEqualTo(1)
-		->string($testedClass[0])->isEqualTo($firstValue)
+    ->and($testedClass[] = $firstValue = uniqid())
+    ->then
+        ->sizeof($testedInstance)->isEqualTo(1)
+        ->string($testedClass[0])->isEqualTo($firstValue)
 ;
 ```
 
@@ -59,14 +59,14 @@ $this
 <?php
 
 $this
-	->given($testedInstance = new testedClass())
-	->and($aMock = new \mock\foo\bar()) // here a mock of the class \foo\bar is created dynamically
-	->and($this->calling($aMock)->doOtherThing = true) // each call to doOtherThing() by the instance will return true
-	->and($testedInstance->setDependency($aMock))
-	->then
-		->boolean($testedInstance->doSomething())->isTrue()
-		->mock($aMock)
-			->call('doOtherThing')->withArguments($testedInstance)->once() // Asserts that the doOtherThing() method of $aMock was called once
+    ->given($testedInstance = new testedClass())
+    ->and($aMock = new \mock\foo\bar()) // here a mock of the class \foo\bar is created dynamically
+    ->and($this->calling($aMock)->doOtherThing = true) // each call to doOtherThing() by the instance will return true
+    ->and($testedInstance->setDependency($aMock))
+    ->then
+        ->boolean($testedInstance->doSomething())->isTrue()
+        ->mock($aMock)
+            ->call('doOtherThing')->withArguments($testedInstance)->once() // Asserts that the doOtherThing() method of $aMock was called once
 ;
 ```
 
@@ -76,13 +76,13 @@ $this
 <?php
 
 $this
-	->given($testedInstance = new testedClass())
-	->and($aMock = new \mock\foo\bar()) // here a mock of the class \foo\bar is created dynamically
-	->and($this->calling($aMock)->doOtherThing->throw = $exception = new \exception()) // Call to doOtherThing() will throw an exception
-	->and($testedInstance->setDependency($aMock))
-	->then
-		->exception(function() use ($testedInstance) { $testedInstance->doSomething(); })
-			->isIdenticalTo($exception)
+    ->given($testedInstance = new testedClass())
+    ->and($aMock = new \mock\foo\bar()) // here a mock of the class \foo\bar is created dynamically
+    ->and($this->calling($aMock)->doOtherThing->throw = $exception = new \exception()) // Call to doOtherThing() will throw an exception
+    ->and($testedInstance->setDependency($aMock))
+    ->then
+        ->exception(function() use ($testedInstance) { $testedInstance->doSomething(); })
+            ->isIdenticalTo($exception)
 ;
 ```
 
@@ -92,13 +92,13 @@ $this
 <?php
 
 $this
-	->given($this->function->session_start = false)
-	->and($session = new testedClass())
-	->then
-		->exception(function () use ($session) { $session->start(); })
-			->isInstanceOf('project\namespace\exception')
-			->hasMessage('Unable to start session')
-		->function('session_start')->wasCalled()->once()
+    ->given($this->function->session_start = false)
+    ->and($session = new testedClass())
+    ->then
+        ->exception(function () use ($session) { $session->start(); })
+            ->isInstanceOf('project\namespace\exception')
+            ->hasMessage('Unable to start session')
+        ->function('session_start')->wasCalled()->once()
 ;
 ```
 
@@ -116,11 +116,11 @@ $runner->addTestsFromDirectory(__DIR__ . '/tests/units/classes');
 
 $testGenerator = new mageekguy\atoum\test\generator();
 $testGenerator
-	->setTestClassesDirectory(__DIR__ . '/tests/units/classes');
-	->setTestClassNamespace('mageekguy\atoum\tests\units');
-	->setTestedClassesDirectory(__DIR__ . '/classes');
-	->setTestedClassNamespace('mageekguy\atoum')
-	->setRunnerPath(__DIR__ . '/scripts/runner.php')
+    ->setTestClassesDirectory(__DIR__ . '/tests/units/classes');
+    ->setTestClassNamespace('mageekguy\atoum\tests\units');
+    ->setTestedClassesDirectory(__DIR__ . '/classes');
+    ->setTestedClassNamespace('mageekguy\atoum')
+    ->setRunnerPath(__DIR__ . '/scripts/runner.php')
 ;
 
 $runner->setTestGenerator($testGenerator);
@@ -171,7 +171,7 @@ If `Xdebug` or equivalent gets displayed, then the module is properly installed.
 
 You just have to download [its PHAR archive](https://github.com/atoum/atoum/releases/download/2.6.0/atoum.phar) and store it where you wish, for example under `/path/to/project/tests/atoum.phar`.
 This PHAR archive contains the latest development version to pass the totality of *atoum*'s unit tests.
-*atoum*'s source code is also available via [the github repository](https://github.com/atoum/atoum).
+*atoum*'s source code is also available via [the GitHub repository](https://github.com/atoum/atoum).
 To check if *atoum* works correctly with your configuration, you can execute all its unit tests.
 To do that, you just need to run the following command in your terminal:
 
@@ -197,16 +197,16 @@ use vendor\project;
 
 class helloWorld extends atoum\test
 {
-	public function testSay()
-	{
-		$helloWorld = new project\helloWorld();
+    public function testSay()
+    {
+        $helloWorld = new project\helloWorld();
 
-		$this->string($helloWorld->say())->isEqualTo('Hello World!');
-	}
+        $this->string($helloWorld->say())->isEqualTo('Hello World!');
+    }
 }
 ```
 
-### Step 3: Run your test with the commandline
+### Step 3: Run your test with the command line
 
 Launch your terminal and run the following command:
 
@@ -214,7 +214,7 @@ Launch your terminal and run the following command:
 $ php path/to/test/file[enter]
 ```
 
-You should get the following result, or something equivalent:
+You should get the following result or something equivalent:
 
 ```sh
 > atoum version XXX by Frédéric Hardy.
@@ -232,10 +232,10 @@ namespace vendor\project;
 
 class helloWorld
 {
-	public function say()
-	{
-		return 'Hello World!';
-	}
+    public function say()
+    {
+        return 'Hello World!';
+    }
 }
 ```
 
@@ -278,15 +278,15 @@ use vendor\project;
 
 class helloWorld extends atoum\test
 {
-	public function test__construct()
-	{
-		$helloWorld = new project\helloWorld();
+    public function test__construct()
+    {
+        $helloWorld = new project\helloWorld();
 
-		$this
-			->string($helloWorld->say())->isEqualTo('Hello!')
-			->string($helloWorld->say($name = 'Frédéric Hardy'))->isEqualTo('Hello ' . $name . '!')
-		;
-	}
+        $this
+            ->string($helloWorld->say())->isEqualTo('Hello!')
+            ->string($helloWorld->say($name = 'Frédéric Hardy'))->isEqualTo('Hello ' . $name . '!')
+        ;
+    }
 }
 ```
 
@@ -301,7 +301,7 @@ However, if you want to further explore immediately *atoum*'s possibilities, we 
 * Exploring the contents of the `tests/unit/classes` directory in *atoum*'s source, as it contains all of the unit tests,
 * Read the (french) [conference slides](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) about it, available online,
 * Read the (french) [wiki](https://github.com/atoum/atoum/wiki),
-* Join the IRC channel *##atoum* on the *freenode* network,
+* Join the IRC channel *##atoum* on the *Freenode* network,
 * Ask questions by e-mail at the address *support[AT]atoum(DOT)org*.
 
 ## Troubleshooting
@@ -318,7 +318,7 @@ $ php -n atoum.phar -v
 
 If you get *atoum*'s version number, then the problem is coming from your PHP configuration.
 In most cases, the cause would be within extensions, that might be incompatible with the PHAR format, or that would prevent executing PHAR archives as a security measure.
-The `ioncube` extension for instance seems incompatible with PHAR archives, and you must therefore deactivate it if you are using it, by commenting the following line out of your `php.ini`, by prefixing it with the `;` character:
+The `ioncube` extension for instance seems incompatible with PHAR archives, and you must, therefore, deactivate it if you are using it, by commenting the following line out of your `php.ini`, by prefixing it with the `;` character:
 
 ```
 zend_extension = /path/to/ioncube_loader*.*
@@ -338,7 +338,7 @@ $ php -d detect_unicode=0 atoum.phar [options]
 ```
 
 If these three operations do not allow *atoum* to work, we suggest you send an e-mail to the address *support[AT]atoum(DOT)org*, describing in detail your configuration and your problem.
-You can also ask for help from the *atoum* development staff on the IRC channel *##atoum* on the *freenode* network.
+You can also ask for help from the *atoum* development staff on the IRC channel *##atoum* on the *Freenode* network.
 
 ### Error: Constant `__COMPILER_HALT_OFFSET__` already defined `/path/to/atoum.phar`
 
@@ -363,7 +363,7 @@ These segfaults are caused by [XDebug](http://xdebug.org/) in version less than 
 To check the current version of [XDebug](http://xdebug.org/), you can run `php -v`.
 To fix this issue, you have to update [XDebug](http://xdebug.org/) to the latest [stable version](http://xdebug.org/download.php).
 If you can't update [XDebug](http://xdebug.org/) on your system, you can still disable the extension to avoid getting segfaults.
-To be sure that [XDebug](http://xdebug.org/) has been succefully updated or disabled, you can run `php -v`.
+To be sure that [XDebug](http://xdebug.org/) has been successfully updated or disabled, you can run `php -v`.
 When you are done updating or disabling [XDebug](http://xdebug.org/), run `php atoum.phar --test-it` to be sure that all the segfaults have gone and that *atoum* is working.
 
 ---
