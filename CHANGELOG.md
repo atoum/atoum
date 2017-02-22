@@ -1,7 +1,6 @@
 # `dev-master`
 
 * [#664](https://github.com/atoum/atoum/pull/664) New asserter: `generator` ([@agallou])
-* [#688](https://github.com/atoum/atoum/pull/688) Avoid reporting incorrect atoum path ([@hywan])
 * [#694](https://github.com/atoum/atoum/pull/694) The VIM plugin has been moved to atoum/vim-plugin ([@jubianchi])
 * [#615](https://github.com/atoum/atoum/pull/615) Remove reserved keyword, replace void by blank ([@vonglasow])
 * [#643](https://github.com/atoum/atoum/pull/643) atoum now requires PHP `>=5.6.0` ([@jubianchi])
@@ -9,6 +8,7 @@
 ## Bugfix
 
 * [#691](https://github.com/atoum/atoum/pull/691) Fix how annotations are extracted. Only those actually starting with `@` are handled ([@jubianchi])
+* [#688](https://github.com/atoum/atoum/pull/688) Avoid reporting incorrect atoum path ([@hywan])
 
 # 2.9.0 - 2017-02-11
 
