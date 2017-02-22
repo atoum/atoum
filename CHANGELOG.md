@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 3.0.0 - 2017-02-22
+
 * [#664](https://github.com/atoum/atoum/pull/664) New asserter: `generator` ([@agallou])
 * [#694](https://github.com/atoum/atoum/pull/694) The VIM plugin has been moved to atoum/vim-plugin ([@jubianchi])
 * [#615](https://github.com/atoum/atoum/pull/615) Remove reserved keyword, replace void by blank ([@vonglasow])
