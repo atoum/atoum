@@ -19,6 +19,7 @@ class generator
     protected $allIsInterface = false;
     protected $testedClass = '';
     protected $eachInstanceIsUnique = false;
+    protected $useStrictTypes = false;
 
     private $defaultNamespace = null;
 
@@ -142,6 +143,13 @@ class generator
     public function eachInstanceIsUnique()
     {
         $this->eachInstanceIsUnique = true;
+
+        return $this;
+    }
+
+    public function useStrictTypes()
+    {
+        $this->useStrictTypes = true;
 
         return $this;
     }
@@ -376,15 +384,40 @@ class generator
                 if ($this->isShunted($methodName) === true || $method->isAbstract() === true) {
                     $mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
                     $mockedMethods .= "\t\t" . '{' . PHP_EOL;
-                    $mockedMethods .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {};' . PHP_EOL;
+                    $mockedMethods .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {' . PHP_EOL;
+
+                    if ($this->hasReturnType($method) === true && $this->isVoid($method) === false) {
+                        $returnType = $this->getReflectionType($method);
+
+                        switch (true) {
+                            case (string) $returnType === 'self':
+                            case (string) $returnType === 'parent':
+                            case (string) $returnType === $class->getName():
+                            case interface_exists((string) $returnType) && $class->implementsInterface((string) $returnType):
+                                $mockedMethods .= "\t\t\t\t" . 'return $this;' . PHP_EOL;
+                                break;
+
+                            default:
+                                $mockedMethods .= "\t\t\t\t" . 'return null;' . PHP_EOL;
+                        }
+                    }
+
+                    $mockedMethods .= "\t\t\t" . '};' . PHP_EOL;
                     $mockedMethods .= "\t\t" . '}' . PHP_EOL;
                     $mockedMethods .= "\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
-                    $mockedMethods .= "\t\t" . 'return $return;' . PHP_EOL;
+
+                    if ($this->isVoid($method) === false) {
+                        $mockedMethods .= "\t\t" . 'return $return;' . PHP_EOL;
+                    }
                 } else {
                     $mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL;
                     $mockedMethods .= "\t\t" . '{' . PHP_EOL;
                     $mockedMethods .= "\t\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
-                    $mockedMethods .= "\t\t\t" . 'return $return;' . PHP_EOL;
+
+                    if ($this->isVoid($method) === false) {
+                        $mockedMethods .= "\t\t\t" . 'return $return;' . PHP_EOL;
+                    }
+
                     $mockedMethods .= "\t\t" . '}' . PHP_EOL;
                     $mockedMethods .= "\t\t" . 'else' . PHP_EOL;
                     $mockedMethods .= "\t\t" . '{' . PHP_EOL;
@@ -397,7 +430,26 @@ class generator
 
                     if ($this->canCallParent()) {
                         $mockedMethods .= "\t\t\t" . '$return = call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
-                        $mockedMethods .= "\t\t\t" . 'return $return;' . PHP_EOL;
+
+                        if ($this->isVoid($method) === false) {
+                            $mockedMethods .= "\t\t\t" . 'return $return;' . PHP_EOL;
+                        }
+                    } else {
+                        if ($this->hasReturnType($method) === true && $this->isVoid($method) === false) {
+                            $returnType = $this->getReflectionType($method);
+
+                            switch (true) {
+                                case (string) $returnType === 'self':
+                                case (string) $returnType === 'parent':
+                                case (string) $returnType === $class->getName():
+                                case interface_exists((string) $returnType) && $class->implementsInterface((string) $returnType):
+                                    $mockedMethods .= "\t\t\t" . 'return $this;' . PHP_EOL;
+                                    break;
+
+                                default:
+                                    $mockedMethods .= "\t\t\t" . 'return null;' . PHP_EOL;
+                            }
+                        }
                     }
 
                     $mockedMethods .= "\t\t" . '}' . PHP_EOL;
@@ -422,7 +474,8 @@ class generator
 
     protected function generateClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
     {
-        return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
+        return ($this->useStrictTypes ? 'declare(strict_types=1);' . PHP_EOL : '') .
+            'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
             'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
             '{' . PHP_EOL .
             self::generateMockControllerMethods() .
@@ -488,14 +541,35 @@ class generator
 
                     $methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
                     $methodCode .= "\t\t" . '{' . PHP_EOL;
-                    $methodCode .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {};' . PHP_EOL;
+                    $methodCode .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {' . PHP_EOL;
+
+                    if ($this->hasReturnType($method) === true && $this->isVoid($method) === false) {
+                        $returnType = $this->getReflectionType($method);
+
+                        switch (true) {
+                            case (string) $returnType === 'self':
+                            case (string) $returnType === 'parent':
+                            case (string) $returnType === $class->getName():
+                            case interface_exists((string) $returnType) && $class->implementsInterface((string) $returnType):
+                                $methodCode .= "\t\t\t\t" . 'return $this;' . PHP_EOL;
+                                break;
+
+                            default:
+                                $methodCode .= "\t\t\t\t" . 'return null;' . PHP_EOL;
+                        }
+                    }
+
+                    $methodCode .= "\t\t\t" . '};' . PHP_EOL;
                     $methodCode .= "\t\t" . '}' . PHP_EOL;
 
                     if ($isConstructor === true) {
                         $methodCode .= "\t\t" . '$this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
                     } else {
                         $methodCode .= "\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
-                        $methodCode .= "\t\t" . 'return $return;' . PHP_EOL;
+
+                        if ($this->isVoid($method) === false) {
+                            $methodCode .= "\t\t" . 'return $return;' . PHP_EOL;
+                        }
                     }
                     $methodCode .= "\t" . '}' . PHP_EOL;
                     break;
@@ -504,7 +578,11 @@ class generator
                     $methodCode = "\t" . 'public static function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . PHP_EOL;
                     $methodCode .= "\t" . '{' . PHP_EOL;
                     $methodCode .= "\t\t" . '$arguments = array_merge(array(' . implode(', ', $parameters) . '), array_slice(func_get_args(), ' . count($parameters) . ', -1));' . PHP_EOL;
-                    $methodCode .= "\t\t" . 'return call_user_func_array(array(\'parent\', \'' . $methodName . '\'), $arguments);' . PHP_EOL;
+
+                    if ($this->isVoid($method) === false) {
+                        $methodCode .= "\t\t" . 'return call_user_func_array(array(\'parent\', \'' . $methodName . '\'), $arguments);' . PHP_EOL;
+                    }
+
                     $methodCode .= "\t" . '}' . PHP_EOL;
                     break;
 
@@ -563,26 +641,51 @@ class generator
     {
         $returnTypeCode = '';
 
-        if ($method->getName() !== '__construct' && method_exists($method, 'hasReturnType') && $method->hasReturnType()) {
-            switch (true) {
-                case (string) $method->getReturnType() === 'self':
-                    $returnTypeCode = ': \\' . $method->getDeclaringClass()->getName();
-                    break;
+        if ($method->getName() === '__construct' || $this->hasReturnType($method) === false) {
+            return $returnTypeCode;
+        }
 
-                case (string) $method->getReturnType() === 'parent':
-                    $returnTypeCode = ': \\' . $method->getDeclaringClass()->getParentClass()->getName();
-                    break;
+        $returnType = $this->getReflectionType($method);
+        $isNullable = $this->isNullable($returnType);
 
-                case $method->getReturnType()->isBuiltin():
-                    $returnTypeCode = ': ' . $method->getReturnType();
-                    break;
+        switch (true) {
+            case (string) $returnType === 'self':
+                $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $method->getDeclaringClass()->getName();
+                break;
 
-                default:
-                    $returnTypeCode = ': \\' . $method->getReturnType();
-            }
+            case (string) $returnType === 'parent':
+                $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $method->getDeclaringClass()->getParentClass()->getName();
+                break;
+
+            case $returnType->isBuiltin():
+                $returnTypeCode = ': ' . ($isNullable ? '?' : '') . $returnType;
+                break;
+
+            default:
+                $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $returnType;
         }
 
         return $returnTypeCode;
+    }
+
+    protected function isNullable(\reflectionType $type)
+    {
+        return version_compare(PHP_VERSION, '7.0') >= 0 && $type->allowsNull() === true;
+    }
+
+    protected function hasReturnType(\reflectionMethod $method)
+    {
+        return version_compare(PHP_VERSION, '7.0') >= 0 && $method->hasReturnType() === true;
+    }
+
+    protected function getReflectionType(\reflectionMethod $method)
+    {
+        return $this->hasReturnType($method) ? $method->getReturnType() : null;
+    }
+
+    protected function isVoid(\reflectionMethod $method)
+    {
+        return $this->hasReturnType($method) ? (string) $method->getReturnType() === 'void' : false;
     }
 
     protected function getParameters(\reflectionMethod $method)
@@ -611,14 +714,14 @@ class generator
         $mustBeNull = $this->isOrphanized($method->getName());
 
         foreach ($method->getParameters() as $parameter) {
-            $parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . (self::isVariadic($parameter) == false ? '' : '... ') . '$' . $parameter->getName();
+            $parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . ($parameter->isVariadic() == false ? '' : '... ') . '$' . $parameter->getName();
 
             switch (true) {
                 case $parameter->isDefaultValueAvailable():
                     $parameterCode .= ' = ' . var_export($parameter->getDefaultValue(), true);
                     break;
 
-                case $parameter->isOptional() && self::isVariadic($parameter) == false:
+                case $parameter->isOptional() && $parameter->isVariadic() == false:
                 case $mustBeNull:
                     $parameterCode .= ' = null';
             }
@@ -666,15 +769,6 @@ class generator
         }
     }
 
-    protected static function isVariadic(\reflectionParameter $parameter)
-    {
-        if (method_exists($parameter, 'isVariadic')) {
-            return $parameter->isVariadic();
-        }
-
-        return false;
-    }
-
     protected static function hasVariadic(\reflectionMethod $method)
     {
         $parameters = $method->getParameters();
@@ -683,7 +777,7 @@ class generator
             return false;
         }
 
-        return self::isVariadic(end($parameters));
+        return end($parameters)->isVariadic();
     }
 
     protected static function generateMockControllerMethods()
@@ -774,9 +868,10 @@ class generator
         ;
     }
 
-    protected static function generateUnknownClassCode($class, $mockNamespace, $mockClass, $uniqueId = false)
+    protected static function generateUnknownClassCode($class, $mockNamespace, $mockClass, $uniqueId = false, $useStrictTypes = false)
     {
-        return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
+        return ($useStrictTypes ? 'declare(strict_types=1);' . PHP_EOL  : '') .
+            'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
             'final class ' . $mockClass . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
             '{' . PHP_EOL .
             self::generateMockControllerMethods() .
