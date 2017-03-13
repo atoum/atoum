@@ -23,8 +23,8 @@ class light extends atoum\test
             ->define($eventField = new fields\runner\event\cli())
             ->define($resultField = new fields\runner\result\cli())
             ->define($resultField
-                ->setSuccessColorizer(new colorizer('0;37', '42'))
-                ->setFailureColorizer(new colorizer('0;37', '41'))
+                ->setSuccessColorizer(new colorizer('1;30', '42'))
+                ->setFailureColorizer(new colorizer('1;37', '41'))
             )
             ->define($failuresField = new fields\runner\failures\cli())
             ->define($failuresField

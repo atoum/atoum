@@ -65,8 +65,8 @@ class cli extends atoum\test
                 )
             ->define($runnerResultField = new fields\runner\result\cli())
                 ->and($runnerResultField
-                    ->setSuccessColorizer(new colorizer('0;37', '42'))
-                    ->setFailureColorizer(new colorizer('0;37', '41'))
+                    ->setSuccessColorizer(new colorizer('1;30', '42'))
+                    ->setFailureColorizer(new colorizer('1;37', '41'))
                 )
             ->define($runnerFailuresField = new fields\runner\failures\cli())
                 ->and($runnerFailuresField
