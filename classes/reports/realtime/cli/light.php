@@ -23,8 +23,8 @@ class light extends realtime
 
         $resultField = new runner\result\cli();
         $resultField
-            ->setSuccessColorizer(new colorizer('0;37', '42'))
-            ->setFailureColorizer(new colorizer('0;37', '41'))
+            ->setSuccessColorizer(new colorizer('1;30', '42'))
+            ->setFailureColorizer(new colorizer('1;37', '41'))
         ;
 
         $this->addField($resultField);
