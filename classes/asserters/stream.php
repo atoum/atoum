@@ -10,6 +10,17 @@ class stream extends atoum\asserter
 {
     protected $streamController = null;
 
+    public function __get($property)
+    {
+        switch (strtolower($property)) {
+            case 'isread':
+            case 'iswritten':
+                return $this->{$property}();
+            default:
+                return parent::__get($property);
+        }
+    }
+
     public function setWith($stream)
     {
         parent::setWith($stream);
