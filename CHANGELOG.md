@@ -1,10 +1,11 @@
 # `dev-master`
 
-# [#701](https://github.com/atoum/atoum/pull/701) Mock generator supports `strict_types` ([@jubianchi])
+* [#705](https://github.com/atoum/atoum/pull/705) Stream asserter now has isRead and isWritten assertion (without brackets) ([@guiled])
+* [#701](https://github.com/atoum/atoum/pull/701) Mock generator supports `strict_types` ([@jubianchi])
 
 ## Bugfix
 
-# [#701](https://github.com/atoum/atoum/pull/701) Mock generator correctly handles `void` return type ([@jubianchi])
+* [#701](https://github.com/atoum/atoum/pull/701) Mock generator correctly handles `void` return type ([@jubianchi])
 
 # 3.0.0 - 2017-02-22
 
@@ -246,3 +247,4 @@
 [@oxman]: https://github.com/blackprism
 [@mvrhov]: https://github.com/mvrhov
 [@krtek4]: https://github.com/krtek4
+[@guiled]: https://github.com/guiled

@@ -84,6 +84,7 @@ class stream extends atoum\test
                     file_get_contents('atoum://' . $streamName);
                 })
                     ->object($asserter->isRead())->isIdenticalTo($asserter)
+                    ->object($asserter->isRead)->isIdenticalTo($asserter)
         ;
     }
 
@@ -124,6 +125,7 @@ class stream extends atoum\test
                 file_put_contents('atoum://' . $streamName, $contents);
             })
                 ->object($asserter->isWritten())->isIdenticalTo($asserter)
+                ->object($asserter->isWritten)->isIdenticalTo($asserter)
 
             ->if(
                 $streamController = atoum\mock\stream::get(uniqid()),
