@@ -388,5 +388,19 @@ namespace mageekguy\atoum\tests\units\asserters
                     ->object(asserters\exception::getLastValue())->isIdenticalTo($otherException)
             ;
         }
+
+        public function test__get()
+        {
+            $this
+                ->given(
+                    $generator = new \mock\atoum\asserter\generator(),
+                    $this->newTestedInstance($generator)
+                )
+                ->if($this->calling($generator)->__get = $asserterInstance = new \mock\atoum\asserter())
+                ->then
+                    ->object($this->testedInstance->{$asserterClass = uniqid()})->isIdenticalTo($asserterInstance)
+                    ->mock($generator)->call('__get')->withArguments($asserterClass)->once
+            ;
+        }
     }
 }

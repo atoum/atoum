@@ -19,7 +19,7 @@ class exception extends object
                 return $this->getMessageAsserter();
 
             default:
-                return $this->generator->__get($asserter);
+                return parent::__get($asserter);
         }
     }
 
