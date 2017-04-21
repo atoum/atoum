@@ -5,7 +5,6 @@ namespace mageekguy\atoum\report\fields\runner\atoum\path;
 use mageekguy\atoum;
 use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
 use mageekguy\atoum\report;
 
 class cli extends report\fields\runner\atoum\path

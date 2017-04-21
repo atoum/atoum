@@ -4,7 +4,6 @@ namespace mageekguy\atoum\report\fields\runner\duration;
 
 use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\runner\duration;
 
 class cli extends duration

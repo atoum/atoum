@@ -2,8 +2,6 @@
 
 namespace mageekguy\atoum\report\fields\test\duration;
 
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
 use mageekguy\atoum\report;
 
 class phing extends report\fields\test\duration\cli
