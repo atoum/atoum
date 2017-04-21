@@ -4,7 +4,6 @@ namespace mageekguy\atoum\report\fields\runner\failures;
 
 use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
 use mageekguy\atoum\report\fields\runner;
 
 class cli extends runner\failures
