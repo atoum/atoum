@@ -13,6 +13,7 @@ matrix:
     - php: nightly
     - php: hhvm
     - php: hhvm-nightly
+sudo: false
 notifications:
   irc: "irc.freenode.org##atoum"
   webhooks:
