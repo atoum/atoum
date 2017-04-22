@@ -1,5 +1,11 @@
 # `dev-master`
 
+# [#701](https://github.com/atoum/atoum/pull/701) Mock generator supports `strict_types` ([@jubianchi])
+
+## Bugfix
+
+# [#701](https://github.com/atoum/atoum/pull/701) Mock generator correctly handles `void` return type ([@jubianchi])
+
 # 3.0.0 - 2017-02-22
 
 * [#664](https://github.com/atoum/atoum/pull/664) New asserter: `generator` ([@agallou])
