@@ -122,6 +122,11 @@ class runner extends atoum\script\configurable
     {
         $this->defaultReportFactory = $factory ?: function ($script) {
             $report = new atoum\reports\realtime\cli();
+
+            if ($this->getAdapter()->getenv('TRAVIS') !== false) {
+                $report = new atoum\reports\realtime\cli\travis();
+            }
+
             $report->addWriter($script->getOutputWriter());
 
             return $report;

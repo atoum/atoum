@@ -1,17 +1,16 @@
 <?php
 
-namespace mageekguy\atoum\reports\realtime;
+namespace mageekguy\atoum\reports\realtime\cli;
 
 use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\cli\prompt;
+use mageekguy\atoum\report\field\decorators\travis\fold;
 use mageekguy\atoum\report\fields\runner;
 use mageekguy\atoum\report\fields\test;
 use mageekguy\atoum\reports\realtime;
 
-class cli extends realtime
+class travis extends realtime
 {
-    protected $runnerTestsCoverageField = false;
-
     public function __construct()
     {
         parent::__construct();
@@ -79,7 +78,7 @@ class cli extends realtime
             ->setMethodPrompt(new prompt('==> ', $defaultColorizer))
         ;
 
-        $this->addField($this->runnerTestsCoverageField);
+        $this->addField(new fold($this->runnerTestsCoverageField, 'coverage'));
 
         $runnerDurationField = new runner\duration\cli();
         $runnerDurationField
@@ -108,7 +107,7 @@ class cli extends realtime
             ->setMethodPrompt($failurePrompt)
         ;
 
-        $this->addField($runnerFailuresField);
+        $this->addField(new fold($runnerFailuresField, 'failures'));
 
         $runnerOutputsField = new runner\outputs\cli();
         $runnerOutputsField
@@ -117,7 +116,7 @@ class cli extends realtime
             ->setMethodPrompt($secondLevelPrompt)
         ;
 
-        $this->addField($runnerOutputsField);
+        $this->addField(new fold($runnerOutputsField, 'outputs'));
 
         $errorColorizer = new colorizer('0;33');
         $errorMethodPrompt = clone $secondLevelPrompt;
@@ -133,7 +132,7 @@ class cli extends realtime
             ->setErrorPrompt($errorPrompt)
         ;
 
-        $this->addField($runnerErrorsField);
+        $this->addField(new fold($runnerErrorsField, 'errors'));
 
         $exceptionColorizer = new colorizer('0;35');
         $exceptionMethodPrompt = clone $secondLevelPrompt;
@@ -149,7 +148,7 @@ class cli extends realtime
             ->setExceptionPrompt($exceptionPrompt)
         ;
 
-        $this->addField($runnerExceptionsField);
+        $this->addField(new fold($runnerExceptionsField, 'exceptions'));
 
         $uncompletedTestColorizer = new colorizer('0;37');
         $uncompletedTestMethodPrompt = clone $secondLevelPrompt;
@@ -165,7 +164,7 @@ class cli extends realtime
             ->setOutputPrompt($uncompletedTestOutputPrompt)
         ;
 
-        $this->addField($runnerUncompletedField);
+        $this->addField(new fold($runnerUncompletedField, 'uncompleted'));
 
         $voidTestColorizer = new colorizer('0;34');
         $voidTestMethodPrompt = clone $secondLevelPrompt;
@@ -178,7 +177,7 @@ class cli extends realtime
             ->setMethodPrompt($voidTestMethodPrompt)
         ;
 
-        $this->addField($runnerVoidField);
+        $this->addField(new fold($runnerVoidField, 'void'));
 
         $skippedTestColorizer = new colorizer('0;90');
         $skippedTestMethodPrompt = clone $secondLevelPrompt;
@@ -191,7 +190,9 @@ class cli extends realtime
             ->setMethodPrompt($skippedTestMethodPrompt)
         ;
 
-        $this->addField($runnerSkippedField);
+        $this->addField(new fold($runnerSkippedField, 'skipped'));
+
+        $this->addField(new \mageekguy\atoum\report\fields\test\travis\start());
 
         $testRunField = new test\run\cli();
         $testRunField
@@ -216,19 +217,7 @@ class cli extends realtime
         ;
 
         $this->addField($testMemoryField);
-    }
 
-    public function hideClassesCoverageDetails()
-    {
-        $this->runnerTestsCoverageField->hideClassesCoverageDetails();
-
-        return $this;
-    }
-
-    public function hideMethodsCoverageDetails()
-    {
-        $this->runnerTestsCoverageField->hideMethodsCoverageDetails();
-
-        return $this;
+        $this->addField(new \mageekguy\atoum\report\fields\test\travis\stop());
     }
 }

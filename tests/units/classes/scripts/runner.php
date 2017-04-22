@@ -15,7 +15,7 @@ class runner extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\script\configurable');
+        $this->testedClass->extends(atoum\script\configurable::class);
     }
 
     public function testClassConstants()
@@ -34,10 +34,10 @@ class runner extends atoum\test
                 ->boolean($runner->hasDefaultArguments())->isFalse()
                 ->array($runner->getDefaultArguments())->isEmpty()
                 ->string($runner->getName())->isEqualTo($name)
-                ->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-                ->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-                ->object($runner->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+                ->object($runner->getAdapter())->isInstanceOf(atoum\adapter::class)
+                ->object($runner->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($runner->getIncluder())->isInstanceOf(atoum\includer::class)
+                ->object($runner->getRunner())->isInstanceOf(atoum\runner::class)
                 ->variable($runner->getScoreFile())->isNull()
                 ->array($runner->getReports())->isEmpty()
                 ->array($runner->getArguments())->isEmpty()
@@ -213,9 +213,9 @@ class runner extends atoum\test
             ->then
                 ->string($runner->getName())->isEqualTo($name)
                 ->object($runner->getAdapter())->isIdenticalTo($adapter)
-                ->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-                ->object($runner->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+                ->object($runner->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($runner->getIncluder())->isInstanceOf(atoum\includer::class)
+                ->object($runner->getRunner())->isInstanceOf(atoum\runner::class)
                 ->variable($runner->getScoreFile())->isNull()
                 ->array($runner->getArguments())->isEmpty()
                 ->array($runner->getHelp())->isEqualTo([
@@ -411,7 +411,7 @@ class runner extends atoum\test
                     $runner->useConfigFile($file = uniqid());
                 }
                 )
-                    ->isInstanceOf('mageekguy\atoum\includer\exception')
+                    ->isInstanceOf(atoum\includer\exception::class)
                     ->hasMessage('Unable to find configuration file \'' . $file . '\'')
                 ->mock($locale)->call('_')->withArguments('Unable to find configuration file \'%s\'')->once()
             ->if($configFile = stream::get())
@@ -426,10 +426,22 @@ class runner extends atoum\test
     public function testAddDefaultReport()
     {
         $this
-            ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+            ->given(
+                $adapter = new atoum\test\adapter(),
+                $adapter->getenv = false
+            )
+            ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid(), $adapter))
             ->then
-                ->object($report = $runner->addDefaultReport())->isInstanceOf('mageekguy\atoum\reports\realtime\cli')
+                ->object($report = $runner->addDefaultReport())->isInstanceOf(atoum\reports\realtime\cli::class)
                 ->array($report->getWriters())->isEqualTo([new atoum\writers\std\out()])
+                ->adapter($adapter)
+                    ->call('getenv')->withArguments('TRAVIS')->once
+            ->given($adapter->getenv = true)
+            ->then
+                ->object($report = $runner->addDefaultReport())->isInstanceOf(atoum\reports\realtime\cli\travis::class)
+                ->array($report->getWriters())->isEqualTo([new atoum\writers\std\out()])
+                ->adapter($adapter)
+                    ->call('getenv')->withArguments('TRAVIS')->twice
         ;
     }
 
@@ -878,7 +890,7 @@ class runner extends atoum\test
                 ->exception(function () use ($runner) {
                     $runner->init();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to write \'' . atoum\directory . '/resources/configurations/runner/atoum.php.dist\' to \'' . __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile . '\'')
         ;
     }
