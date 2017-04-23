@@ -12,7 +12,7 @@ class report extends atoum\test
     public function testClass()
     {
         $this->testedClass
-            ->implements('mageekguy\atoum\observer')
+            ->implements(atoum\observer::class)
         ;
     }
 
@@ -22,8 +22,8 @@ class report extends atoum\test
             ->if($report = new testedClass())
             ->then
                 ->variable($report->getTitle())->isNull()
-                ->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+                ->object($report->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($report->getAdapter())->isInstanceOf(atoum\adapter::class)
                 ->array($report->getFields())->isEmpty()
                 ->array($report->getWriters())->isEmpty()
         ;

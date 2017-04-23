@@ -213,21 +213,6 @@ class tokenizer implements \iteratorAggregate
         return $this->tokens->valid() === false ? null : $this->tokens->current();
     }
 
-    private function appendCommentAndWhitespace()
-    {
-        $key = $this->tokens->key();
-
-        while (isset($this->tokens[$key + 1]) === true && ($this->tokens[$key + 1][0] === T_WHITESPACE || $this->tokens[$key + 1][0] === T_COMMENT)) {
-            $this->tokens->next();
-
-            $token = $this->tokens->current();
-
-            $this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
-
-            $key = $this->tokens->key();
-        }
-    }
-
     private function nextTokenIs($tokenName, array $skipedTags = [T_WHITESPACE, T_COMMENT, T_INLINE_HTML])
     {
         $key = $this->tokens->key() + 1;

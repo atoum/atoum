@@ -12,7 +12,7 @@ class controller extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\mock\streams\fs\controller');
+        $this->testedClass->extends(atoum\mock\streams\fs\controller::class);
     }
 
     public function test__construct()
@@ -38,7 +38,7 @@ class controller extends atoum\test
                 ->exception(function () use ($controller) {
                     $controller->mkdir = true;
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Unable to override streamWrapper::mkdir() for file')
         ;
     }

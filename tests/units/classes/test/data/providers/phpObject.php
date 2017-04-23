@@ -18,7 +18,7 @@ class phpObject extends atoum\test
     public function testClass()
     {
         $this
-            ->testedClass->implements('mageekguy\atoum\test\data\provider');
+            ->testedClass->implements(atoum\test\data\provider::class);
     }
 
     public function testGenerate()
@@ -29,7 +29,7 @@ class phpObject extends atoum\test
                 ->exception(function () {
                     $this->testedInstance->generate();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Class is undefined')
             ->given($class = 'stdClass')
             ->if($this->testedInstance->setClass($class))
@@ -42,7 +42,7 @@ class phpObject extends atoum\test
                 ->exception(function () {
                     $this->testedInstance->generate();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() has at least one mandatory argument')
             ->assert('Fail to instanciate an object from a class with a private constructor')
             ->given($class = __NAMESPACE__ . '\\dummy')
@@ -51,7 +51,7 @@ class phpObject extends atoum\test
                 ->exception(function () {
                     $this->testedInstance->generate();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Could not instanciate an object from ' . $class . ' because ' . $class . '::__construct() is private')
         ;
     }
@@ -65,7 +65,7 @@ class phpObject extends atoum\test
                 ->exception(function () {
                     $this->testedInstance->setClass(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Argument must be a class name')
             ->given($class = 'stdClass')
             ->then

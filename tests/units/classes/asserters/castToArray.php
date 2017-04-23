@@ -12,7 +12,7 @@ class castToArray extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\asserters\phpArray');
+        $this->testedClass->extends(atoum\asserters\phpArray::class);
     }
 
     public function test__construct()
@@ -62,7 +62,7 @@ class castToArray extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notAnObject)
                     ->string($asserter->getValue())->isEqualTo($value)
                 ->mock($locale)->call('_')->withArguments('%s could not be converted to array', $type)->once

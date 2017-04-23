@@ -13,7 +13,7 @@ class constant extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\asserter');
+        $this->testedClass->extends(atoum\asserter::class);
     }
 
     public function test__construct()
@@ -61,7 +61,7 @@ class constant extends atoum\test
                 ->exception(function () use ($asserter, & $property) {
                     $asserter->{$property = uniqid()};
                 })
-                    ->isInstanceOf('logicException')
+                    ->isInstanceOf(\logicException::class)
                     ->hasMessage('Asserter \'' . $property . '\' does not exist')
                 ->variable($asserter->getValue())->isNull()
 
@@ -109,7 +109,7 @@ class constant extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('logicException')
+                    ->isInstanceOf(\logicException::class)
                     ->hasMessage('Value is undefined')
 
             ->if($asserter->setWith($value = uniqid()))
@@ -125,7 +125,7 @@ class constant extends atoum\test
                 ->exception(function () use ($asserter, & $notEqualValue) {
                     $asserter->isEqualTo($notEqualValue = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($isNotEqual . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($notEqualValue)->once
@@ -147,7 +147,7 @@ class constant extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->equalTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('logicException')
+                    ->isInstanceOf(\logicException::class)
                     ->hasMessage('Value is undefined')
 
             ->if($asserter->setWith($value = uniqid()))
@@ -163,7 +163,7 @@ class constant extends atoum\test
                 ->exception(function () use ($asserter, & $notEqualValue) {
                     $asserter->isEqualTo($notEqualValue = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($isNotEqual . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($notEqualValue)->once

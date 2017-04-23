@@ -13,7 +13,7 @@ class tap extends atoum\test
     public function testClass()
     {
         $this->testedClass
-            ->extends('mageekguy\atoum\reports\realtime')
+            ->extends(atoum\reports\realtime::class)
         ;
     }
 

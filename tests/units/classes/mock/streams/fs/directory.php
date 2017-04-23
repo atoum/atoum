@@ -11,7 +11,7 @@ class directory extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\mock\stream');
+        $this->testedClass->extends(atoum\mock\stream::class);
     }
 
     public function testMkdir()

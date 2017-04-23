@@ -22,7 +22,7 @@ class svn extends atoum\test
 
     public function testClass()
     {
-        $this->testedClass->isSubclassOf('mageekguy\atoum\scripts\builder\vcs');
+        $this->testedClass->isSubclassOf(atoum\scripts\builder\vcs::class);
     }
 
     public function test__construct()
@@ -30,7 +30,7 @@ class svn extends atoum\test
         $this
             ->if($this->newTestedInstance)
             ->then
-                ->object($this->testedInstance->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+                ->object($this->testedInstance->getAdapter())->isInstanceOf(atoum\adapter::class)
                 ->variable($this->testedInstance->getRepositoryUrl())->isNull()
             ->if($this->newTestedInstance($adapter = new atoum\adapter()))
             ->then
@@ -119,8 +119,8 @@ class svn extends atoum\test
                 $this->testedInstance->setWorkingDirectory(__DIR__)
             )
             ->then
-                ->object($recursiveIteratorIterator = $this->testedInstance->getWorkingDirectoryIterator())->isInstanceOf('recursiveIteratorIterator')
-                ->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('recursiveDirectoryIterator')
+                ->object($recursiveIteratorIterator = $this->testedInstance->getWorkingDirectoryIterator())->isInstanceOf(\recursiveIteratorIterator::class)
+                ->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf(\recursiveDirectoryIterator::class)
                 ->string($recursiveDirectoryIterator->current()->getPathInfo()->getPathname())->isEqualTo(__DIR__)
         ;
     }
@@ -139,7 +139,7 @@ class svn extends atoum\test
                 ->exception(function () use ($svn) {
                     $svn->getNextRevisions();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to get logs, repository url is undefined')
                 ->adapter($adapter)
                     ->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->never()
@@ -216,7 +216,7 @@ class svn extends atoum\test
                 ->exception(function () use ($svn) {
                     $svn->exportRepository(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to export repository, repository url is undefined')
                 ->adapter($adapter)
                     ->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->never()
@@ -236,7 +236,7 @@ class svn extends atoum\test
                 ->exception(function () use ($svn) {
                     $svn->exportRepository();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
                 ->adapter($adapter)
                     ->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
@@ -255,7 +255,7 @@ class svn extends atoum\test
                 ->exception(function () use ($svn) {
                     $svn->exportRepository();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
                 ->adapter($adapter)
                     ->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
@@ -274,7 +274,7 @@ class svn extends atoum\test
                 ->exception(function () use ($svn) {
                     $svn->exportRepository();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
                 ->adapter($adapter)
                     ->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()

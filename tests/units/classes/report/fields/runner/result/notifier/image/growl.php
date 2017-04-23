@@ -15,7 +15,7 @@ class growl extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('mageekguy\atoum\report\fields\runner\result\notifier\image')
+                ->extends(atoum\report\fields\runner\result\notifier\image::class)
         ;
     }
 

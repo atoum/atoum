@@ -11,7 +11,7 @@ class aggregator extends atoum\test
     public function testClass()
     {
         $this
-            ->testedClass->implements('mageekguy\atoum\test\data\provider');
+            ->testedClass->implements(atoum\test\data\provider::class);
     }
 
     public function testGenerate(atoum\test\data\provider $dataProvider, atoum\test\data\provider $otherDataProvider)

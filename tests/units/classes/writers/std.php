@@ -11,7 +11,7 @@ class std extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\writer');
+        $this->testedClass->extends(atoum\writer::class);
     }
 
     public function test__construct()
@@ -79,7 +79,7 @@ class std extends atoum\test
             ->and($this->calling($std)->init = $std)
             ->then
                 ->object($std->clear())->isidenticalto($std)
-                ->adapter($adapter)->call('fwrite')->witharguments(null, "[1K")->once()
+                ->adapter($adapter)->call('fwrite')->witharguments(null, "\033[1K\r")->once()
             ->if($this->calling($cli)->isTerminal = false)
             ->then
                 ->object($std->clear())->isidenticalto($std)

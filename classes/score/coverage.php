@@ -345,7 +345,7 @@ class coverage implements \countable, \serializable
             foreach ($this->branches as $methods) {
                 foreach ($methods as $method) {
                     foreach ($method as $node) {
-                        foreach (array_keys($node['out']) as $index) {
+                        foreach ($node['out'] as $index => $_) {
                             $totalBranches++;
 
                             if ($node['out_hit'][$index] === 1) {
@@ -580,7 +580,7 @@ class coverage implements \countable, \serializable
             $coveredBranches = 0;
 
             foreach ($this->branches[$class][$method] as $node) {
-                foreach (array_keys($node['out']) as $index) {
+                foreach ($node['out'] as $index => $_) {
                     $totalBranches++;
 
                     if ($node['out_hit'][$index] === 1) {

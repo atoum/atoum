@@ -12,7 +12,7 @@ class castToString extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\asserters\phpString');
+        $this->testedClass->extends(atoum\asserters\phpString::class);
     }
 
     public function test__construct()
@@ -60,7 +60,7 @@ class castToString extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notAnObject)
                     ->integer($asserter->getValue())->isEqualTo($value)
                     ->variable($asserter->getCharlist())->isNull()

@@ -2,6 +2,7 @@
 
 namespace mageekguy\atoum\tests\units\mock;
 
+use mageekguy\atoum;
 use mageekguy\atoum\adapter;
 use mageekguy\atoum\mock\stream as testedClass;
 use mageekguy\atoum\test;
@@ -35,13 +36,13 @@ class stream extends test
             ->and($adapter->stream_get_wrappers = [])
             ->and($adapter->stream_wrapper_register = true)
             ->then
-                ->object($streamController = testedClass::get($stream = uniqid()))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
+                ->object($streamController = testedClass::get($stream = uniqid()))->isInstanceOf(atoum\mock\stream\controller::class)
                 ->string($streamController->getPath())->isEqualTo(testedClass::defaultProtocol . '://' . testedClass::setDirectorySeparator($stream))
                 ->adapter($adapter)
                     ->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
             ->if($adapter->stream_get_wrappers = [testedClass::defaultProtocol])
             ->then
-                ->object($streamController = testedClass::get())->isInstanceOf('mageekguy\atoum\mock\stream\controller')
+                ->object($streamController = testedClass::get())->isInstanceOf(atoum\mock\stream\controller::class)
                 ->string($streamController->getPath())->matches('#^' . testedClass::defaultProtocol . '://\w+$#')
                 ->adapter($adapter)
                     ->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
@@ -63,7 +64,7 @@ class stream extends test
                 ->exception(function () use ($protocol) {
                     testedClass::get($protocol . '://' . uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to register ' . $protocol . ' stream')
         ;
     }
@@ -77,9 +78,9 @@ class stream extends test
             ->and($stream = testedClass::get())
             ->then
                 ->string($stream . '\\' . uniqid())->matches('#^' . $stream . preg_quote('\\') . '[^' . preg_quote('\\') . ']+$#')
-                ->object($subStream = testedClass::getSubStream($stream))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
+                ->object($subStream = testedClass::getSubStream($stream))->isInstanceOf(atoum\mock\stream\controller::class)
                 ->castToString($subStream)->matches('#^' . $stream . preg_quote(DIRECTORY_SEPARATOR) . '[^' . preg_quote(DIRECTORY_SEPARATOR) . ']+$#')
-                ->object($subStream = testedClass::getSubStream($stream, $basename = uniqid()))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
+                ->object($subStream = testedClass::getSubStream($stream, $basename = uniqid()))->isInstanceOf(atoum\mock\stream\controller::class)
                 ->castToString($subStream)->matches('#^' . $stream . preg_quote(DIRECTORY_SEPARATOR) . $basename . '$#')
         ;
     }

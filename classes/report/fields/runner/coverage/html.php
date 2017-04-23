@@ -75,7 +75,7 @@ class html extends report\fields\runner\coverage\cli
 
                 ksort($classes, \SORT_STRING);
 
-                foreach (array_keys($classes) as $className) {
+                foreach ($classes as $className => $_) {
                     $classCoverageTemplates->className = $className;
                     $classCoverageTemplates->classUrl = str_replace('\\', '/', $className) . self::htmlExtensionFile;
 

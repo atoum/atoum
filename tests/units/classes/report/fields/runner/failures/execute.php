@@ -11,7 +11,7 @@ class execute extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\runner\failures');
+        $this->testedClass->extends(atoum\report\fields\runner\failures::class);
     }
 
     public function test__construct()
@@ -20,8 +20,8 @@ class execute extends atoum\test
             ->if($field = new testedClass($command = uniqid()))
             ->then
                 ->string($field->getCommand())->isEqualTo($command)
-                ->object($field->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-                ->object($field->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+                ->object($field->getAdapter())->isInstanceOf(atoum\adapter::class)
+                ->object($field->getLocale())->isInstanceOf(atoum\locale::class)
         ;
     }
 

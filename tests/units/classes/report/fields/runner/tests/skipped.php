@@ -13,7 +13,7 @@ class skipped extends atoum\test
     public function testClass()
     {
         $this->testedClass
-            ->extends('mageekguy\atoum\report\field')
+            ->extends(atoum\report\field::class)
             ->isAbstract()
         ;
     }

@@ -13,9 +13,9 @@ class out extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('mageekguy\atoum\writers\std')
-                ->implements('mageekguy\atoum\report\writers\realtime')
-                ->implements('mageekguy\atoum\report\writers\asynchronous')
+                ->extends(atoum\writers\std::class)
+                ->implements(atoum\report\writers\realtime::class)
+                ->implements(atoum\report\writers\asynchronous::class)
         ;
     }
 

@@ -12,7 +12,7 @@ class token extends atoum\test
     public function testClass()
     {
         $this
-            ->testedClass->isSubclassOf('mageekguy\atoum\php\tokenizer\iterator\value')
+            ->testedClass->isSubclassOf(atoum\php\tokenizer\iterator\value::class)
         ;
     }
 
@@ -124,7 +124,7 @@ class token extends atoum\test
                 ->exception(function () use ($token) {
                     $token->setParent(new tokenizer\iterator());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Parent is already set')
         ;
     }
@@ -137,7 +137,7 @@ class token extends atoum\test
                 ->exception(function () use ($token) {
                     $token->append(new tokenizer\token(uniqid(), uniqid(), rand(1, PHP_INT_MAX)));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage($this->getTestedClassName() . '::append() is unavailable')
         ;
     }

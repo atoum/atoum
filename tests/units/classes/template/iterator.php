@@ -13,8 +13,8 @@ class iterator extends atoum\test
     {
         $this
             ->testedClass
-                ->hasInterface('Countable')
-                ->hasInterface('Iterator')
+                ->hasInterface(\countable::class)
+                ->hasInterface(\iterator::class)
         ;
     }
 
@@ -23,24 +23,24 @@ class iterator extends atoum\test
         $this
             ->if($iterator = new template\iterator())
             ->then
-                ->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
+                ->object($innerIterator = $iterator->{uniqid()})->isInstanceOf(atoum\template\iterator::class)
                 ->sizeOf($innerIterator)->isZero()
             ->if($template = new atoum\template())
             ->and($template->addChild($tag = new template\tag(uniqid())))
             ->and($iterator->addTag($tag->getTag(), $template))
             ->and($tag->addChild($childTag = new template\tag($tag->getTag())))
             ->then
-                ->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
+                ->object($innerIterator = $iterator->{uniqid()})->isInstanceOf(atoum\template\iterator::class)
                 ->sizeOf($innerIterator)->isZero()
-                ->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+                ->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf(atoum\template\iterator::class)
                 ->sizeOf($innerIterator)->isEqualTo(1)
             ->if($childTag->addChild($littleChildTag = new template\tag(uniqid())))
             ->then
-                ->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
+                ->object($innerIterator = $iterator->{uniqid()})->isInstanceOf(atoum\template\iterator::class)
                 ->sizeOf($innerIterator)->isZero()
-                ->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+                ->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf(atoum\template\iterator::class)
                 ->sizeOf($innerIterator)->isEqualTo(1)
-                ->object($innerIterator = $iterator->{$childTag->getTag()}->{$littleChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+                ->object($innerIterator = $iterator->{$childTag->getTag()}->{$littleChildTag->getTag()})->isInstanceOf(atoum\template\iterator::class)
                 ->sizeOf($innerIterator)->isEqualTo(1)
         ;
     }

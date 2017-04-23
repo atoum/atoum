@@ -36,7 +36,7 @@ class controller extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\test\adapter');
+        $this->testedClass->extends(atoum\test\adapter::class);
     }
 
     public function test__construct()
@@ -199,20 +199,20 @@ class controller extends atoum\test
         $this
             ->if($mockController = new testedClass())
             ->then
-                ->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+                ->object($mockController->{uniqid()})->isInstanceOf(atoum\test\adapter\invoker::class)
             ->if($mockController->{$method = uniqid()} = $function = function () {
             })
             ->then
-                ->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+                ->object($mockController->{uniqid()})->isInstanceOf(atoum\test\adapter\invoker::class)
                 ->object($mockController->{$method}->getClosure())->isIdenticalTo($function)
                 ->object($mockController->{strtoupper($method)}->getClosure())->isIdenticalTo($function)
             ->if($mockController->{$otherMethod = uniqid()} = $return = uniqid())
             ->then
-                ->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+                ->object($mockController->{uniqid()})->isInstanceOf(atoum\test\adapter\invoker::class)
                 ->object($mockController->{$method}->getClosure())->isIdenticalTo($function)
                 ->object($mockController->{strtoupper($method)}->getClosure())->isIdenticalTo($function)
-                ->object($mockController->{$otherMethod}->getClosure())->isInstanceOf('closure')
-                ->object($mockController->{strtoupper($otherMethod)}->getClosure())->isInstanceOf('closure')
+                ->object($mockController->{$otherMethod}->getClosure())->isInstanceOf(\closure::class)
+                ->object($mockController->{strtoupper($otherMethod)}->getClosure())->isInstanceOf(\closure::class)
                 ->string($mockController->{$otherMethod}->invoke())->isEqualTo($return)
                 ->string($mockController->{strtoupper($otherMethod)}->invoke())->isEqualTo($return)
         ;
@@ -376,7 +376,7 @@ class controller extends atoum\test
                 ->exception(function () use ($mockController, $aMock) {
                     $mockController->control($aMock);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Method \'' . get_class($aMock) . '::' . $method . '()\' does not exist')
             ->if($mockController->disableMethodChecking())
             ->and($mockController->{uniqid()} = uniqid())
@@ -424,7 +424,7 @@ class controller extends atoum\test
                 ->exception(function () use ($mockController, $method) {
                     $mockController->invoke($method, []);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Method ' . $method . '() is not under control')
             ->if($return = uniqid())
             ->and($mockController->test = function () use ($return) {
@@ -458,7 +458,7 @@ class controller extends atoum\test
                 ->exception(function () use ($mockController) {
                     $mockController->foo = uniqid();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Method \'mock\\' . __NAMESPACE__ . '\bar::foo()\' does not exist')
         ;
     }
@@ -537,7 +537,7 @@ class controller extends atoum\test
             ->if($mockController = new testedClass())
             ->then
                 ->object($mockController->getCalls())
-                    ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
+                    ->isInstanceOf(atoum\test\adapter\calls::class)
                     ->hasSize(0)
             ->if($mockController->setCalls($calls = new adapter\calls()))
             ->then

@@ -11,7 +11,7 @@ class score extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->isSubClassOf('mageekguy\atoum\score');
+        $this->testedClass->isSubClassOf(atoum\score::class);
     }
 
     public function test__construct()
@@ -59,7 +59,7 @@ class score extends atoum\test
                 ->exception(function () use ($score) {
                     $score->setAtoumPath(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Path of atoum is already set')
                 ->object($score->reset()->setAtoumPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
                 ->string($score->getAtoumPath())->isEqualTo((string) $path)
@@ -76,7 +76,7 @@ class score extends atoum\test
                 ->exception(function () use ($score) {
                     $score->setAtoumVersion(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Version of atoum is already set')
                 ->object($score->reset()->setAtoumVersion($version = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
                 ->string($score->getAtoumVersion())->isEqualTo((string) $version)
@@ -93,7 +93,7 @@ class score extends atoum\test
                 ->exception(function () use ($score) {
                     $score->setPhpPath(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('PHP path is already set')
                 ->object($score->reset()->setPhpPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
                 ->string($score->getPhpPath())->isEqualTo((string) $path)
@@ -110,7 +110,7 @@ class score extends atoum\test
                 ->exception(function () use ($score) {
                     $score->setPhpVersion(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('PHP version is already set')
         ;
     }

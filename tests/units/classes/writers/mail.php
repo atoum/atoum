@@ -16,9 +16,9 @@ class mail extends atoum\test
         $this
             ->if($writer = new writers\mail())
             ->then
-                ->object($writer->getMailer())->isInstanceOf('mageekguy\atoum\mailers\mail')
-                ->object($writer->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($writer->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+                ->object($writer->getMailer())->isInstanceOf(atoum\mailers\mail::class)
+                ->object($writer->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($writer->getAdapter())->isInstanceOf(atoum\adapter::class)
             ->if($writer = new writers\mail($mailer = new atoum\mailers\mail(), $locale = new atoum\locale(), $adapter = new atoum\adapter()))
             ->then
                 ->object($writer->getMailer())->isIdenticalTo($mailer)
@@ -31,8 +31,8 @@ class mail extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('mageekguy\atoum\writer')
-                ->implements('mageekguy\atoum\report\writers\asynchronous')
+                ->extends(atoum\writer::class)
+                ->implements(atoum\report\writers\asynchronous::class)
         ;
     }
 

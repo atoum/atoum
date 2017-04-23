@@ -13,8 +13,8 @@ class coverage extends atoum\test
     public function testClass()
     {
         $this->testedClass
-            ->hasInterface('countable')
-            ->hasInterface('serializable')
+            ->hasInterface(\countable::class)
+            ->hasInterface(\serializable::class)
         ;
     }
 
@@ -26,7 +26,7 @@ class coverage extends atoum\test
                 ->variable($coverage->getValue())->isNull()
                 ->array($coverage->getMethods())->isEmpty()
                 ->object($coverage->getAdapter())->isEqualTo(new atoum\adapter())
-                ->object($defaultReflectionClassFactory = $coverage->getReflectionClassFactory())->isInstanceOf('closure')
+                ->object($defaultReflectionClassFactory = $coverage->getReflectionClassFactory())->isInstanceOf(\closure::class)
                 ->object($defaultReflectionClassFactory($this))->isEqualTo(new \reflectionClass($this))
             ->if($coverage = new testedClass($adapter = new atoum\adapter(), $reflectionClassFactory = function () {
             }))
@@ -47,7 +47,7 @@ class coverage extends atoum\test
                 ->object($coverage->getAdapter())->isIdenticalTo($adapter)
                 ->object($coverage->setAdapter())->isIdenticalTo($coverage)
                 ->object($coverage->getAdapter())
-                    ->isInstanceOf('mageekguy\atoum\adapter')
+                    ->isInstanceOf(atoum\adapter::class)
                     ->isNotIdenticalTo($adapter)
         ;
     }
@@ -62,7 +62,7 @@ class coverage extends atoum\test
                 ->object($coverage->getReflectionClassFactory())->isIdenticalTo($reflectionClassFactory)
                 ->object($coverage->setReflectionClassFactory())->isIdenticalTo($coverage)
                 ->object($defaultReflectionClassFactory = $coverage->getReflectionClassFactory())
-                    ->isInstanceOf('closure')
+                    ->isInstanceOf(\closure::class)
                     ->isNotIdenticalTo($reflectionClassFactory)
                 ->object($defaultReflectionClassFactory($this))->isEqualTo(new \reflectionClass($this))
         ;

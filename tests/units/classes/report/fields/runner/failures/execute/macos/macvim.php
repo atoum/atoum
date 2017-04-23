@@ -11,7 +11,7 @@ class macvim extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\runner\failures\execute');
+        $this->testedClass->extends(atoum\report\fields\runner\failures\execute::class);
     }
 
     public function test__construct()
@@ -20,8 +20,8 @@ class macvim extends atoum\test
             ->if($field = new testedClass())
             ->then
                 ->string($field->getCommand())->isEqualTo('mvim --remote-silent +%2$s %1$s')
-                ->object($field->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-                ->object($field->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+                ->object($field->getAdapter())->isInstanceOf(atoum\adapter::class)
+                ->object($field->getLocale())->isInstanceOf(atoum\locale::class)
         ;
     }
 

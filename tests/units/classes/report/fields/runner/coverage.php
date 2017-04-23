@@ -11,7 +11,7 @@ class coverage extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\field');
+        $this->testedClass->extends(atoum\report\field::class);
     }
 
     public function test__construct()

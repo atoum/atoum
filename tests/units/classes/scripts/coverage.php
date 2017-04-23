@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\tests\units\scripts;
 
-use mageekguy\atoum
-;
+use mageekguy\atoum;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -13,7 +12,7 @@ class coverage extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('mageekguy\atoum\scripts\runner');
+                ->extends(atoum\scripts\runner::class);
     }
 
     public function test__construct()
@@ -25,10 +24,10 @@ class coverage extends atoum\test
                 ->array($this->testedInstance->getDefaultArguments())->isEmpty()
                 ->string($this->testedInstance->getName())->isEqualTo($name)
                 ->string($this->testedInstance->getReportFormat())->isEqualTo('xml')
-                ->object($this->testedInstance->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-                ->object($this->testedInstance->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($this->testedInstance->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-                ->object($this->testedInstance->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+                ->object($this->testedInstance->getAdapter())->isInstanceOf(atoum\adapter::class)
+                ->object($this->testedInstance->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($this->testedInstance->getIncluder())->isInstanceOf(atoum\includer::class)
+                ->object($this->testedInstance->getRunner())->isInstanceOf(atoum\runner::class)
                 ->variable($this->testedInstance->getScoreFile())->isNull()
                 ->array($this->testedInstance->getReports())->isEmpty()
                 ->array($this->testedInstance->getArguments())->isEmpty()
@@ -215,9 +214,9 @@ class coverage extends atoum\test
                 ->string($this->testedInstance->getName())->isEqualTo($name)
                 ->string($this->testedInstance->getReportFormat())->isEqualTo('xml')
                 ->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
-                ->object($this->testedInstance->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($this->testedInstance->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-                ->object($this->testedInstance->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+                ->object($this->testedInstance->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($this->testedInstance->getIncluder())->isInstanceOf(atoum\includer::class)
+                ->object($this->testedInstance->getRunner())->isInstanceOf(atoum\runner::class)
                 ->variable($this->testedInstance->getScoreFile())->isNull()
                 ->array($this->testedInstance->getArguments())->isEmpty()
                 ->array($this->testedInstance->getHelp())->isEqualTo([

@@ -31,7 +31,7 @@ class extension extends atoum\test
                 ->exception(function () {
                     $this->testedInstance->requireExtension();
                 })
-                    ->isInstanceOf('mageekguy\atoum\php\exception')
+                    ->isInstanceOf(atoum\php\exception::class)
                     ->hasMessage('PHP extension \'' . $extensionName . '\' is not loaded')
             ->if($this->function->extension_loaded = true)
             ->then

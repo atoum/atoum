@@ -176,7 +176,7 @@ class php extends atoum\test
                 ->exception(function () use ($php, & $code) {
                     $php->run($code = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\cli\command\exception')
+                    ->isInstanceOf(atoum\cli\command\exception::class)
                     ->hasMessage('Unable to run \'' . $php . '\'')
                 ->adapter($adapter)
                     ->call('proc_open')->withArguments((string) $php, [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], [])->once()

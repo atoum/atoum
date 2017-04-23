@@ -25,7 +25,7 @@ class iterator extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->implements('iteratorAggregate');
+        $this->testedClass->implements(\iteratorAggregate::class);
     }
 
     public function test__construct()
@@ -84,7 +84,7 @@ class iterator extends atoum\test
             ->exception(function () use ($iterator) {
                 $iterator->{uniqid()} = uniqid();
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
         ;
     }
 

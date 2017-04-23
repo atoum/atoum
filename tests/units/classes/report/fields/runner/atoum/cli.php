@@ -2,6 +2,7 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
 
+use mageekguy\atoum;
 use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\locale;
@@ -15,7 +16,7 @@ class cli extends \mageekguy\atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\field');
+        $this->testedClass->extends(atoum\report\field::class);
     }
 
     public function test__construct()

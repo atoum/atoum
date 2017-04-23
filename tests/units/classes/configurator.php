@@ -2,8 +2,7 @@
 
 namespace mageekguy\atoum\tests\units;
 
-use mageekguy\atoum
-;
+use mageekguy\atoum;
 
 require_once __DIR__ . '/../runner.php';
 
@@ -49,7 +48,7 @@ class configurator extends atoum\test
             ->exception(function () use ($configurator, & $method) {
                 $configurator->{$method = uniqid()}();
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+                ->isInstanceOf(atoum\exceptions\runtime\unexpectedValue::class)
                 ->hasMessage('Method \'' . $method . '\' is unavailable')
         ;
     }

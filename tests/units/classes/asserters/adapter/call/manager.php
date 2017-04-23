@@ -4,10 +4,9 @@ namespace mageekguy\atoum\tests\units\asserters\adapter\call;
 
 require __DIR__ . '/../../../../runner.php';
 
-use atoum
-;
+use mageekguy\atoum;
 
-class manager extends atoum
+class manager extends atoum\test
 {
     public function testAdd()
     {
@@ -45,7 +44,7 @@ class manager extends atoum
                 ->exception(function () use ($manager) {
                     $manager->check();
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserters\adapter\call\manager\exception')
+                    ->isInstanceOf(atoum\asserters\adapter\call\manager\exception::class)
                     ->hasMessage('Asserter ' . get_class($call) . ' is not evaluated in file \'' . $file . '\' on line ' . $line);
         ;
     }

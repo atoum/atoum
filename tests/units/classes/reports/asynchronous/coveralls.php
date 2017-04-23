@@ -17,7 +17,7 @@ class coveralls extends atoum\test
 
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\reports\asynchronous');
+        $this->testedClass->extends(atoum\reports\asynchronous::class);
     }
 
     public function testClassConstants()
@@ -37,12 +37,12 @@ class coveralls extends atoum\test
             ->if($report = new testedClass($sourceDir = uniqid(), $token = uniqid()))
             ->then
                 ->array($report->getFields(atoum\runner::runStart))->isEmpty()
-                ->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+                ->object($report->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($report->getAdapter())->isInstanceOf(atoum\adapter::class)
                 ->array($report->getFields())->isEmpty()
-                ->object($report->getSourceDir())->isInstanceOf('\\mageekguy\\atoum\\fs\\path')
+                ->object($report->getSourceDir())->isInstanceOf(atoum\fs\path::class)
                 ->castToString($report->getSourceDir())->isEqualTo($sourceDir)
-                ->object($report->getBranchFinder())->isInstanceOf('\\Closure')
+                ->object($report->getBranchFinder())->isInstanceOf(\closure::class)
                 ->string($report->getServiceName())->isEqualTo('atoum')
                 ->variable($report->getServiceJobId())->isNull()
             ->if($report = new testedClass($sourceDir, $token, $adapter = new atoum\test\adapter()))
@@ -53,7 +53,7 @@ class coveralls extends atoum\test
                 ->exception(function () use ($adapter) {
                     new testedClass(uniqid(), uniqid(), $adapter);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('JSON PHP extension is mandatory for coveralls report')
         ;
     }
@@ -63,7 +63,7 @@ class coveralls extends atoum\test
         $this
             ->if($report = new testedClass(uniqid(), uniqid()))
             ->then
-                ->object($report->getBranchFinder())->isInstanceOf('\\Closure')
+                ->object($report->getBranchFinder())->isInstanceOf(\closure::class)
             ->if($finder = function () {
             })
             ->then

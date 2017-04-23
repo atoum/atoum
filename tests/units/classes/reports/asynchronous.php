@@ -11,7 +11,7 @@ class asynchronous extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report');
+        $this->testedClass->extends(atoum\report::class);
     }
 
     public function testHandleEvent()

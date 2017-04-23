@@ -12,7 +12,7 @@ class testedClass extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->isSubclassOf('mageekguy\atoum\asserters\phpClass');
+        $this->testedClass->isSubclassOf(atoum\asserters\phpClass::class);
     }
 
     public function testSetWith()
@@ -23,7 +23,7 @@ class testedClass extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->setWith(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\badMethodCall')
+                    ->isInstanceOf(atoum\exceptions\logic\badMethodCall::class)
                     ->hasMessage('Unable to call method ' . get_class($asserter) . '::setWith()')
         ;
     }

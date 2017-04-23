@@ -12,7 +12,7 @@ class cli extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\test\event');
+        $this->testedClass->extends(atoum\report\fields\test\event::class);
     }
 
     public function test__construct()

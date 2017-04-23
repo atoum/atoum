@@ -849,7 +849,7 @@ class path extends atoum\test
                 ->exception(function () use ($path) {
                     $path->getRealPath();
                 })
-                    ->isInstanceOf('mageekguy\atoum\fs\path\exception')
+                    ->isInstanceOf(atoum\fs\path\exception::class)
                     ->hasMessage('Unable to get real path for \'' . $this->testedInstance . '\'')
         ;
     }
@@ -946,7 +946,7 @@ class path extends atoum\test
                 ->exception(function () use ($path) {
                     $path->createParentDirectory();
                 })
-                    ->isInstanceOf('mageekguy\atoum\fs\path\exception')
+                    ->isInstanceOf(atoum\fs\path\exception::class)
                     ->hasMessage('Unable to create directory \'/a\'')
                 ->function('file_exists')->wasCalledWithArguments('/a')->twice()
                 ->function('mkdir')->wasCalled()->twice()
@@ -980,7 +980,7 @@ class path extends atoum\test
                 ->exception(function () use ($path, & $data) {
                     $path->putContents($data = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\fs\path\exception')
+                    ->isInstanceOf(atoum\fs\path\exception::class)
                     ->hasMessage('Unable to put data \'' . $data . '\' in file \'' . $this->testedInstance . '\'')
         ;
     }

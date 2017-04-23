@@ -62,9 +62,9 @@ class script extends atoum\test
             ->if($script = new mock\script($name = uniqid()))
             ->then
                 ->string($script->getName())->isEqualTo($name)
-                ->object($script->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-                ->object($script->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($script->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
+                ->object($script->getAdapter())->isInstanceOf(atoum\adapter::class)
+                ->object($script->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($script->getArgumentsParser())->isInstanceOf(atoum\script\arguments\parser::class)
                 ->object($script->getOutputWriter())->isEqualTo($defaultOutputWriter)
                 ->object($script->getInfoWriter())->isEqualTo($defaultInfoWriter)
                 ->object($script->getErrorWriter())->isEqualTo($defaultErrorWriter)
@@ -77,8 +77,8 @@ class script extends atoum\test
             ->then
                 ->string($script->getName())->isEqualTo($name)
                 ->object($script->getAdapter())->isIdenticalTo($adapter)
-                ->object($script->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($script->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
+                ->object($script->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($script->getArgumentsParser())->isInstanceOf(atoum\script\arguments\parser::class)
                 ->object($script->getOutputWriter())->isEqualTo($defaultOutputWriter)
                 ->object($script->getInfoWriter())->isEqualTo($defaultInfoWriter)
                 ->object($script->getErrorWriter())->isEqualTo($defaultErrorWriter)
@@ -93,7 +93,7 @@ class script extends atoum\test
                 ->exception(function () use ($adapter, & $name) {
                     new mock\script($name = uniqid(), $adapter);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('\'' . $name . '\' must be used in CLI only')
         ;
     }

@@ -12,7 +12,7 @@ class factory extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->implements('iteratorAggregate');
+        $this->testedClass->implements(\iteratorAggregate::class);
     }
 
     public function test__construct()
@@ -21,11 +21,11 @@ class factory extends atoum\test
             ->if($iterator = new testedClass())
                 ->boolean($iterator->dotsAreAccepted())->isFalse()
                 ->array($iterator->getAcceptedExtensions())->isEqualTo(['php'])
-                ->object($iteratorFactory = $iterator->getIteratorFactory())->isInstanceOf('closure')
+                ->object($iteratorFactory = $iterator->getIteratorFactory())->isInstanceOf(\closure::class)
                 ->object($defaultIterator = $iteratorFactory(__DIR__))->isEqualTo(new \recursiveDirectoryIterator(__DIR__))
-                ->object($dotFilterFactory = $iterator->getDotFilterFactory())->isInstanceOf('closure')
+                ->object($dotFilterFactory = $iterator->getDotFilterFactory())->isInstanceOf(\closure::class)
                 ->object($dotFilterFactory($defaultIterator))->isEqualTo(new filters\recursives\dot($defaultIterator))
-                ->object($extensionFilterIterator = $iterator->getExtensionFilterFactory())->isInstanceOf('closure')
+                ->object($extensionFilterIterator = $iterator->getExtensionFilterFactory())->isInstanceOf(\closure::class)
                 ->object($extensionFilterIterator($defaultIterator, $extensions = ['foo']))->isEqualTo(new filters\recursives\extension($defaultIterator, $extensions))
 
             ->if($iterator = new testedClass($iteratorFactory = function () {
@@ -51,7 +51,7 @@ class factory extends atoum\test
                 ->object($iterator->getIteratorFactory())->isIdenticalTo($factory)
                 ->object($iterator->setIteratorFactory())->isIdenticalTo($iterator)
                 ->object($defaultFactory = $iterator->getIteratorFactory())
-                    ->isInstanceOf('closure')
+                    ->isInstanceOf(\closure::class)
                     ->isNotIdenticalTo($factory)
                 ->object($defaultFactory(__DIR__))->isEqualTo(new \recursiveDirectoryIterator(__DIR__))
         ;
@@ -67,7 +67,7 @@ class factory extends atoum\test
                 ->object($iterator->getDotFilterFactory())->isIdenticalTo($factory)
                 ->object($iterator->setDotFilterFactory())->isIdenticalTo($iterator)
                 ->object($defaultFactory = $iterator->getDotFilterFactory())
-                    ->isInstanceOf('closure')
+                    ->isInstanceOf(\closure::class)
                     ->isNotIdenticalTo($factory)
                 ->object($defaultFactory($iterator = new \recursiveDirectoryIterator(__DIR__)))->isEqualTo(new filters\recursives\dot($iterator))
         ;
@@ -83,7 +83,7 @@ class factory extends atoum\test
                 ->object($iterator->getExtensionFilterFactory())->isIdenticalTo($factory)
                 ->object($iterator->setExtensionFilterFactory())->isIdenticalTo($iterator)
                 ->object($defaultFactory = $iterator->getExtensionFilterFactory())
-                    ->isInstanceOf('closure')
+                    ->isInstanceOf(\closure::class)
                     ->isNotIdenticalTo($factory)
                 ->object($defaultFactory($iterator = new \recursiveDirectoryIterator(__DIR__), $extensions = ['foo']))->isEqualTo(new filters\recursives\extension($iterator, $extensions))
         ;

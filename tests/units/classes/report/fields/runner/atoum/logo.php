@@ -2,6 +2,7 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
 
+use mageekguy\atoum;
 use mageekguy\atoum\report\fields\runner\atoum\logo as testedClass;
 use mageekguy\atoum\runner;
 use mageekguy\atoum\runner\score;
@@ -12,7 +13,7 @@ class logo extends \mageekguy\atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\runner\atoum\cli');
+        $this->testedClass->extends(atoum\report\fields\runner\atoum\cli::class);
     }
 
     public function testHandleEvent()

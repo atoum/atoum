@@ -13,7 +13,7 @@ class treemap extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\script\configurable');
+        $this->testedClass->extends(atoum\script\configurable::class);
     }
 
     public function testClassConstants()
@@ -164,7 +164,7 @@ class treemap extends atoum\test
                 ->exception(function () use ($treemap, & $file) {
                     $treemap->useConfigFile($file = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\includer\exception')
+                    ->isInstanceOf(atoum\includer\exception::class)
                     ->hasMessage('Unable to find configuration file \'' . $file . '\'')
         ;
     }

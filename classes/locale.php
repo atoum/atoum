@@ -30,14 +30,14 @@ class locale
         return $this->value;
     }
 
-    public function _($string)
+    public function _($string, ...$arguments)
     {
-        return self::format($string, array_slice(func_get_args(), 1));
+        return self::format($string, $arguments);
     }
 
-    public function __($singular, $plural, $quantity)
+    public function __($singular, $plural, $quantity, ...$arguments)
     {
-        return self::format($quantity <= 1 ? $singular : $plural, array_slice(func_get_args(), 3));
+        return self::format($quantity <= 1 ? $singular : $plural, $arguments);
     }
 
     private static function format($string, $arguments)

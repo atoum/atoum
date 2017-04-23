@@ -11,7 +11,7 @@ class invoker extends atoum
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\test\adapter\invoker');
+        $this->testedClass->extends(atoum\test\adapter\invoker::class);
     }
 
     public function test__construct()

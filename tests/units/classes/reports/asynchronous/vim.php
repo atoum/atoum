@@ -11,7 +11,7 @@ class vim extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\reports\asynchronous');
+        $this->testedClass->extends(atoum\reports\asynchronous::class);
     }
 
     public function test__construct()

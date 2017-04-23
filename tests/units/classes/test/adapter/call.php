@@ -36,7 +36,7 @@ class call extends atoum\test
             ->exception(function () {
                 new testedClass('');
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                 ->hasMessage('Function must not be empty')
         ;
     }

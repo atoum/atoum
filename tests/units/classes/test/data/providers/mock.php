@@ -18,7 +18,7 @@ class mock extends atoum\test
     public function testClass()
     {
         $this
-            ->testedClass->implements('mageekguy\atoum\test\data\provider');
+            ->testedClass->implements(atoum\test\data\provider::class);
     }
 
     public function test__construct(atoum\mock\generator $mockGenerator)
@@ -26,7 +26,7 @@ class mock extends atoum\test
         $this
             ->given($this->newTestedInstance)
             ->then
-                ->object($this->testedInstance->getMockGenerator())->isInstanceOf('mageekguy\atoum\mock\generator')
+                ->object($this->testedInstance->getMockGenerator())->isInstanceOf(atoum\mock\generator::class)
             ->if($this->testedInstance->setMockGenerator($mockGenerator))
             ->then
                 ->object($this->testedInstance->getMockGenerator())->isIdenticalTo($mockGenerator)
@@ -44,7 +44,7 @@ class mock extends atoum\test
                 ->exception(function () {
                     $this->testedInstance->generate();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Class is undefined')
             ->given($class = 'stdClass')
             ->if($this->testedInstance->setClass($class))
@@ -59,7 +59,7 @@ class mock extends atoum\test
                 ->exception(function () {
                     $this->testedInstance->generate();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Could not instanciate a mock from ' . $namespace . '\\' . $class . ' because ' . $class . '::__construct() has at least one mandatory argument')
 
             ->assert('Instanciate an object from a class with a private constructor')
@@ -80,7 +80,7 @@ class mock extends atoum\test
                 ->exception(function () {
                     $this->testedInstance->setClass(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Argument must be a class name')
             ->given($class = 'stdClass')
             ->if($this->calling($mockGenerator)->getDefaultNamespace = $namespace = uniqid())

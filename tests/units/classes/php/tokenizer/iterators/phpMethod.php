@@ -12,7 +12,7 @@ class phpMethod extends atoum\test
     {
         $this
             ->testedClass
-                ->isSubClassOf('mageekguy\atoum\php\tokenizer\iterators\phpFunction')
+                ->isSubClassOf(atoum\php\tokenizer\iterators\phpFunction::class)
         ;
     }
 }

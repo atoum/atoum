@@ -12,9 +12,9 @@ class unexpectedValue extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('runtimeException')
-                ->extends('unexpectedValueException')
-                ->implements('mageekguy\atoum\exception')
+                ->extends(\runtimeException::class)
+                ->extends(\unexpectedValueException::class)
+                ->implements(atoum\exception::class)
         ;
     }
 }

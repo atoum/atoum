@@ -14,7 +14,7 @@ class phing extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\reports\realtime');
+        $this->testedClass->extends(atoum\reports\realtime::class);
     }
 
     public function test__construct()

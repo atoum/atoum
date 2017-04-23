@@ -12,7 +12,7 @@ class dateInterval extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\asserters\phpObject');
+        $this->testedClass->extends(atoum\asserters\phpObject::class);
     }
 
     public function test__construct()
@@ -57,7 +57,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notDateInterval)
                 ->mock($locale)->call('_')->withArguments('%s is not an instance of \\dateInterval', $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($value)->once
@@ -73,7 +73,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isGreaterThan(new \DateInterval('P1D'));
                 })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                ->isInstanceOf(atoum\exceptions\logic::class)
                 ->hasMessage('Interval is undefined')
 
             ->if($asserter->setWith(new \DateInterval('P1Y')))
@@ -83,7 +83,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isGreaterThan($interval = new \DateInterval('P2Y'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage('Interval ' . $asserter . ' is not greater than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
         ;
     }
@@ -96,7 +96,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isGreaterThanOrEqualTo(new \DateInterval('P1D'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Interval is undefined')
 
             ->if($asserter->setWith(new \DateInterval('P1Y')))
@@ -106,7 +106,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isGreaterThanOrEqualTo($interval = new \DateInterval('P2Y'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage('Interval ' . $asserter . ' is not greater than or equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
         ;
     }
@@ -119,12 +119,12 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isZero();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Interval is undefined')
                 ->exception(function () use ($asserter) {
                     $asserter->isZero;
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Interval is undefined')
 
             ->if($asserter->setWith(new \DateInterval('P0Y')))
@@ -137,12 +137,12 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isZero();
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage('Interval ' . $asserter . ' is not equal to zero')
                 ->exception(function () use ($asserter) {
                     $asserter->isZero;
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage('Interval ' . $asserter . ' is not equal to zero')
         ;
     }
@@ -155,7 +155,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isLessThan(new \DateInterval('P1D'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Interval is undefined')
 
             ->if($asserter->setWith(new \dateInterval('P2D')))
@@ -165,13 +165,13 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isLessThan($interval = new \dateInterval('P1D'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage('Interval ' . $asserter . ' is not less than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isLessThan($interval = new \dateInterval('P2D'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage('Interval ' . $asserter . ' is not less than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
         ;
     }
@@ -184,7 +184,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isLessThanOrEqualTo(new \DateInterval('P1D'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Interval is undefined')
 
             ->if($asserter->setWith(new \dateInterval('P2D')))
@@ -194,7 +194,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isLessThanOrEqualTo($interval = new \dateInterval('P1D'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage('Interval ' . $asserter . ' is not less than or equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
         ;
     }
@@ -207,7 +207,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isEqualTo(new \dateInterval('P1D'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Interval is undefined')
 
             ->if($asserter->setWith(new \DateInterval('P1D')))
@@ -217,7 +217,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isEqualTo($interval = new \dateInterval('PT1S'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage('Interval ' . $asserter . ' is not equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
         ;
     }

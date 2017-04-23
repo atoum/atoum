@@ -12,9 +12,9 @@ class badMethodCall extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('logicException')
-                ->extends('badMethodCallException')
-                ->implements('mageekguy\atoum\exception')
+                ->extends(\logicException::class)
+                ->extends(\badMethodCallException::class)
+                ->implements(atoum\exception::class)
         ;
     }
 }

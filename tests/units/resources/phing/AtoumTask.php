@@ -5,9 +5,11 @@ namespace
     class Task
     {
     }
+
     class FileSet
     {
     }
+
     class BuildException extends Exception
     {
     }
@@ -15,7 +17,7 @@ namespace
 
 namespace tests\units
 {
-    use atoum;
+    use mageekguy\atoum;
     use AtoumTask as testedClass;
 
     require_once __DIR__ . '/../../runner.php';
@@ -31,7 +33,7 @@ namespace tests\units
             $this
                 ->given($task = new testedClass())
                 ->then
-                    ->object($task->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+                    ->object($task->getRunner())->isInstanceOf(atoum\runner::class)
                     ->variable($task->getBootstrap())->isNull()
                     ->boolean($task->getCodeCoverage())->isFalse()
                     ->variable($task->getAtoumPharPath())->isNull()
@@ -85,7 +87,7 @@ namespace tests\units
                     ->object($task->getRunner())->isIdenticalTo($runner)
                     ->object($task->setRunner())->isIdenticalTo($task)
                     ->object($task->getRunner())
-                        ->isInstanceOf('mageekguy\atoum\runner')
+                        ->isInstanceOf(atoum\runner::class)
                         ->isNotIdenticalTo($runner)
             ;
         }
@@ -166,45 +168,40 @@ namespace tests\units
                 ->then
                     ->exception(function () use ($task) {
                         $task->execute();
-                    }
-                    )
-                        ->isInstanceOf('buildException')
+                    })
+                        ->isInstanceOf(\buildException::class)
                         ->hasMessage('Tests did not pass')
                 ->if($this->calling($score)->getUncompletedMethodNumber = 0)
                 ->and($this->calling($score)->getFailNumber = rand(1, PHP_INT_MAX))
                 ->then
                     ->exception(function () use ($task) {
                         $task->execute();
-                    }
-                    )
-                        ->isInstanceOf('buildException')
+                    })
+                        ->isInstanceOf(\buildException::class)
                         ->hasMessage('Tests did not pass')
                 ->if($this->calling($score)->getFailNumber = 0)
                 ->and($this->calling($score)->getErrorNumber = rand(1, PHP_INT_MAX))
                 ->then
                     ->exception(function () use ($task) {
                         $task->execute();
-                    }
-                    )
-                        ->isInstanceOf('buildException')
+                    })
+                        ->isInstanceOf(\buildException::class)
                         ->hasMessage('Tests did not pass')
                 ->if($this->calling($score)->getErrorNumber = 0)
                 ->and($this->calling($score)->getExceptionNumber = rand(1, PHP_INT_MAX))
                 ->then
                     ->exception(function () use ($task) {
                         $task->execute();
-                    }
-                    )
-                        ->isInstanceOf('buildException')
+                    })
+                        ->isInstanceOf(\buildException::class)
                         ->hasMessage('Tests did not pass')
                 ->if($this->calling($score)->getExceptionNumber = 0)
                 ->and($this->calling($score)->getRuntimeExceptionNumber = rand(1, PHP_INT_MAX))
                 ->then
                     ->exception(function () use ($task) {
                         $task->execute();
-                    }
-                    )
-                        ->isInstanceOf('buildException')
+                    })
+                        ->isInstanceOf(\buildException::class)
                         ->hasMessage('Tests did not pass')
             ;
         }
@@ -231,7 +228,7 @@ namespace tests\units
             $this
                 ->if($task = new testedClass())
                 ->then
-                    ->object($task->configureDefaultReport())->isInstanceOf('mageekguy\atoum\reports\realtime\phing')
+                    ->object($task->configureDefaultReport())->isInstanceOf(atoum\reports\realtime\phing::class)
                 ->if($report = new atoum\reports\realtime\phing())
                 ->then
                     ->object($task->configureDefaultReport($report))->isIdenticalTo($report)
@@ -315,7 +312,7 @@ namespace tests\units
             $this
                 ->given($task = new testedClass())
                 ->then
-                    ->object($field = $task->configureCoverageTreemapField($path = uniqid()))->isInstanceOf('\\mageekguy\\atoum\\report\\fields\\runner\\coverage\\treemap')
+                    ->object($field = $task->configureCoverageTreemapField($path = uniqid()))->isInstanceOf(atoum\report\fields\runner\coverage\treemap::class)
                     ->string($field->getDestinationDirectory())->isEqualTo($path)
                     ->string($field->getTreemapUrl())->isEqualTo('file://' . $path . '/index.html')
                 ->if($field = $task->configureCoverageTreemapField($path = uniqid(), $url = uniqid()))
@@ -329,7 +326,7 @@ namespace tests\units
             $this
                 ->given($task = new testedClass())
                 ->then
-                    ->object($task->createFileSet())->isInstanceOf('fileSet')
+                    ->object($task->createFileSet())->isInstanceOf(\fileSet::class)
             ;
         }
 

@@ -9,6 +9,7 @@ namespace
 
 namespace mageekguy\atoum\tests\units\test
 {
+    use mageekguy\atoum;
     use mageekguy\atoum\test;
     use mageekguy\atoum\test\adapter as testedClass;
     use mageekguy\atoum\test\adapter\call;
@@ -19,7 +20,7 @@ namespace mageekguy\atoum\tests\units\test
     {
         public function testClass()
         {
-            $this->testedClass->extends('mageekguy\atoum\adapter');
+            $this->testedClass->extends(atoum\adapter::class);
         }
 
         public function test__construct()
@@ -69,14 +70,14 @@ namespace mageekguy\atoum\tests\units\test
                     ->object($adapter->md5->getClosure())->isIdenticalTo($closure)
                 ->if($adapter->md5 = $return = uniqid())
                 ->then
-                    ->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
-                    ->object($adapter->MD5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+                    ->object($adapter->md5)->isInstanceOf(test\adapter\invoker::class)
+                    ->object($adapter->MD5)->isInstanceOf(test\adapter\invoker::class)
                     ->string($adapter->invoke('md5'))->isEqualTo($return)
                     ->string($adapter->invoke('MD5'))->isEqualTo($return)
                 ->if($adapter->MD5 = $return = uniqid())
                 ->then
-                    ->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
-                    ->object($adapter->MD5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+                    ->object($adapter->md5)->isInstanceOf(test\adapter\invoker::class)
+                    ->object($adapter->MD5)->isInstanceOf(test\adapter\invoker::class)
                     ->string($adapter->invoke('md5'))->isEqualTo($return)
                     ->string($adapter->invoke('MD5'))->isEqualTo($return)
             ;
@@ -93,8 +94,8 @@ namespace mageekguy\atoum\tests\units\test
                     ->object($adapter->MD5->getClosure())->isIdenticalTo($closure)
                 ->if($adapter->md5 = uniqid())
                 ->then
-                    ->object($adapter->md5->getClosure())->isInstanceOf('closure')
-                    ->object($adapter->MD5->getClosure())->isInstanceOf('closure')
+                    ->object($adapter->md5->getClosure())->isInstanceOf(\closure::class)
+                    ->object($adapter->MD5->getClosure())->isInstanceOf(\closure::class)
             ;
         }
 
@@ -204,12 +205,12 @@ namespace mageekguy\atoum\tests\units\test
                     ->exception(function () use ($adapter) {
                         $adapter->require(uniqid());
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Function \'require()\' is not invokable by an adapter')
                     ->exception(function () use ($adapter) {
                         $adapter->REQUIRE(uniqid());
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Function \'REQUIRE()\' is not invokable by an adapter')
                 ->if($adapter->md5 = 0)
                 ->and($adapter->md5[1] = 1)

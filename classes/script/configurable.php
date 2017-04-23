@@ -164,7 +164,7 @@ abstract class configurable extends atoum\script
         $firstError = $this->includer->getFirstError();
 
         if ($firstError !== null) {
-            list($error, $message,, $line) = $firstError;
+            list($error, $message, , $line) = $firstError;
 
             throw new exceptions\runtime($message . ' in ' . $path . ' at line ' . $line, $error);
         }

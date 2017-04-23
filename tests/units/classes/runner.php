@@ -15,7 +15,7 @@ class runner extends atoum\test
     {
         $this
             ->testedClass
-                ->hasInterface('mageekguy\atoum\observable')
+                ->hasInterface(atoum\observable::class)
             ->string(atoum\runner::atoumVersionConstant)->isEqualTo('mageekguy\atoum\version')
             ->string(atoum\runner::atoumDirectoryConstant)->isEqualTo('mageekguy\atoum\directory')
             ->string(atoum\runner::runStart)->isEqualTo('runnerStart')
@@ -28,17 +28,17 @@ class runner extends atoum\test
         $this
             ->if($runner = new testedClass())
             ->then
-                ->object($runner->getScore())->isInstanceOf('mageekguy\atoum\score')
-                ->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-                ->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+                ->object($runner->getScore())->isInstanceOf(atoum\score::class)
+                ->object($runner->getAdapter())->isInstanceOf(atoum\adapter::class)
+                ->object($runner->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($runner->getIncluder())->isInstanceOf(atoum\includer::class)
                 ->variable($runner->getTestGenerator())->isNull()
-                ->object($runner->getTestDirectoryIterator())->isInstanceOf('mageekguy\atoum\iterators\recursives\directory\factory')
-                ->object($defaultGlobIteratorFactory = $runner->getGlobIteratorFactory())->isInstanceOf('closure')
+                ->object($runner->getTestDirectoryIterator())->isInstanceOf(atoum\iterators\recursives\directory\factory::class)
+                ->object($defaultGlobIteratorFactory = $runner->getGlobIteratorFactory())->isInstanceOf(\closure::class)
                 ->object($defaultGlobIteratorFactory($pattern = uniqid()))->isEqualTo(new \globIterator($pattern))
-                ->object($defaultReflectionClassFactory = $runner->getReflectionClassFactory())->isInstanceOf('closure')
+                ->object($defaultReflectionClassFactory = $runner->getReflectionClassFactory())->isInstanceOf(\closure::class)
                 ->object($defaultReflectionClassFactory($this))->isEqualTo(new \reflectionClass($this))
-                ->object($defaultTestFactory = $runner->getTestFactory())->isInstanceOf('closure')
+                ->object($defaultTestFactory = $runner->getTestFactory())->isInstanceOf(\closure::class)
                 ->object($defaultTestFactory(__CLASS__))->isInstanceOf($this)
                 ->variable($runner->getRunningDuration())->isNull()
                 ->boolean($runner->codeCoverageIsEnabled())->isTrue()
@@ -142,7 +142,7 @@ class runner extends atoum\test
                 ->object($runner->getTestGenerator())->isIdenticalTo($generator)
                 ->object($runner->setTestGenerator())->isIdenticalTo($runner)
                 ->object($runner->getTestGenerator())
-                    ->isInstanceOf('mageekguy\atoum\test\generator')
+                    ->isInstanceOf(atoum\test\generator::class)
                     ->isNotIdenticalTo($generator)
         ;
     }
@@ -514,7 +514,7 @@ class runner extends atoum\test
         $this
             ->if($runner = new testedClass())
             ->then
-                ->object($runner->getExtensions())->isInstanceOf('mageekguy\atoum\extension\aggregator')
+                ->object($runner->getExtensions())->isInstanceOf(atoum\extension\aggregator::class)
                 ->sizeOf($runner->getExtensions())->isZero
                 ->array($runner->getObservers())->isEmpty()
             ->if($extension = new \mock\mageekguy\atoum\extension())
@@ -542,7 +542,7 @@ class runner extends atoum\test
                 ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$otherExtension])
                 ->array($runner->getObservers())->isEqualTo([$otherExtension])
                 ->object($runner->removeExtension($otherExtension))->isIdenticalTo($runner)
-                ->object($runner->getExtensions())->isInstanceOf('mageekguy\atoum\extension\aggregator')
+                ->object($runner->getExtensions())->isInstanceOf(atoum\extension\aggregator::class)
                 ->sizeOf($runner->getExtensions())->isZero
                 ->array($runner->getObservers())->isEmpty()
             ->if($extension = new \mock\mageekguy\atoum\extension())
@@ -550,7 +550,7 @@ class runner extends atoum\test
                 ->exception(function () use ($runner, $extension) {
                     $runner->removeExtension($extension);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Extension ' . get_class($extension) . ' is not loaded')
         ;
     }
@@ -560,11 +560,11 @@ class runner extends atoum\test
         $this
             ->if($runner = new testedClass())
             ->then
-                ->object($runner->getExtensions())->isInstanceOf('mageekguy\atoum\extension\aggregator')
+                ->object($runner->getExtensions())->isInstanceOf(atoum\extension\aggregator::class)
                 ->sizeOf($runner->getExtensions())->isZero
                 ->array($runner->getObservers())->isEmpty()
                 ->object($runner->removeExtensions())->isIdenticalTo($runner)
-                ->object($runner->getExtensions())->isInstanceOf('mageekguy\atoum\extension\aggregator')
+                ->object($runner->getExtensions())->isInstanceOf(atoum\extension\aggregator::class)
                 ->sizeOf($runner->getExtensions())->isZero
                 ->array($runner->getObservers())->isEmpty()
             ->if($extension = new \mock\mageekguy\atoum\extension())
@@ -577,7 +577,7 @@ class runner extends atoum\test
                 ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$extension, $otherExtension])
                 ->array($runner->getObservers())->isEqualTo([$extension, $otherExtension])
                 ->object($runner->removeExtensions())->isIdenticalTo($runner)
-                ->object($runner->getExtensions())->isInstanceOf('mageekguy\atoum\extension\aggregator')
+                ->object($runner->getExtensions())->isInstanceOf(atoum\extension\aggregator::class)
                 ->sizeOf($runner->getExtensions())->isZero
                 ->array($runner->getObservers())->isEmpty()
         ;
@@ -687,7 +687,7 @@ class runner extends atoum\test
                 ->exception(function () use ($runner) {
                     $runner->setPathAndVersionInScore();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to get PHP version from \'' . $php . '\'')
         ;
     }

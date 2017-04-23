@@ -13,7 +13,7 @@ class configurable extends atoum\test
     {
         $this->testedClass
             ->isAbstract()
-            ->extends('mageekguy\atoum\script')
+            ->extends(atoum\script::class)
         ;
     }
 
@@ -29,7 +29,7 @@ class configurable extends atoum\test
             ->then
                 ->string($configurable->getName())->isEqualTo($name)
                 ->object($configurable->getAdapter())->isEqualTo(new atoum\adapter())
-                ->object($configurable->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+                ->object($configurable->getIncluder())->isInstanceOf(atoum\includer::class)
                 ->array($configurable->getConfigFiles())->isEmpty()
                 ->array($configurable->getHelp())->isEqualTo([
                         [
@@ -48,7 +48,7 @@ class configurable extends atoum\test
             ->then
                 ->string($configurable->getName())->isEqualTo($name)
                 ->object($configurable->getAdapter())->isIdenticalTo($adapter)
-                ->object($configurable->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+                ->object($configurable->getIncluder())->isInstanceOf(atoum\includer::class)
                 ->array($configurable->getConfigFiles())->isEmpty()
                 ->array($configurable->getHelp())->isEqualTo([
                         [
@@ -88,7 +88,7 @@ class configurable extends atoum\test
                 ->exception(function () use ($configurable, & $file) {
                     $configurable->useConfigFile($file = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\includer\exception')
+                    ->isInstanceOf(atoum\includer\exception::class)
                     ->hasMessage('Unable to find configuration file \'' . $file . '\'')
             ->if($includer = new \mock\mageekguy\atoum\includer())
             ->and($this->calling($includer)->includePath = function () {

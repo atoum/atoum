@@ -73,7 +73,7 @@ class git extends atoum
                 ->exception(function () use ($git) {
                     $git->addAllAndCommit(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\cli\command\exception')
+                    ->isInstanceOf(atoum\cli\command\exception::class)
                     ->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
         ;
     }
@@ -112,7 +112,7 @@ class git extends atoum
                 ->exception(function () use ($git) {
                     $git->resetHardTo(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\cli\command\exception')
+                    ->isInstanceOf(atoum\cli\command\exception::class)
                     ->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
         ;
     }
@@ -151,7 +151,7 @@ class git extends atoum
                 ->exception(function () use ($git) {
                     $git->createTag(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\cli\command\exception')
+                    ->isInstanceOf(atoum\cli\command\exception::class)
                     ->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
         ;
     }
@@ -190,7 +190,7 @@ class git extends atoum
                 ->exception(function () use ($git) {
                     $git->deleteLocalTag(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\cli\command\exception')
+                    ->isInstanceOf(atoum\cli\command\exception::class)
                     ->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
         ;
     }
@@ -257,7 +257,7 @@ class git extends atoum
                 ->exception(function () use ($git) {
                     $git->push();
                 })
-                    ->isInstanceOf('mageekguy\atoum\cli\command\exception')
+                    ->isInstanceOf(atoum\cli\command\exception::class)
                     ->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
         ;
     }
@@ -324,7 +324,7 @@ class git extends atoum
                 ->exception(function () use ($git) {
                     $git->forcePush();
                 })
-                    ->isInstanceOf('mageekguy\atoum\cli\command\exception')
+                    ->isInstanceOf(atoum\cli\command\exception::class)
                     ->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
         ;
     }
@@ -376,7 +376,7 @@ class git extends atoum
                 ->exception(function () use ($git) {
                     $git->pushTag(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\cli\command\exception')
+                    ->isInstanceOf(atoum\cli\command\exception::class)
                     ->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
         ;
     }
@@ -415,7 +415,7 @@ class git extends atoum
                 ->exception(function () use ($git) {
                     $git->checkoutAllFiles();
                 })
-                    ->isInstanceOf('mageekguy\atoum\cli\command\exception')
+                    ->isInstanceOf(atoum\cli\command\exception::class)
                     ->hasMessage('Unable to execute \'' . $command . '\': ' . $errorMessage)
         ;
     }

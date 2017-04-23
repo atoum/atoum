@@ -12,7 +12,7 @@ class source extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\iterators\filters\recursives\dot');
+        $this->testedClass->extends(atoum\iterators\filters\recursives\dot::class);
     }
 
     public function test__accept()
