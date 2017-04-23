@@ -31,9 +31,8 @@ class generator extends atoum\test
             })
             ->then
                 ->exception(function () use (& $name, $adapter) {
-                    $generator = new phar\generator($name = uniqid(), $adapter);
-                }
-                )
+                    new phar\generator($name = uniqid(), $adapter);
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('\'' . $name . '\' must be used in CLI only')
             ->if($adapter->php_sapi_name = function () {
@@ -66,8 +65,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator) {
                     $generator->setOriginDirectory('');
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Empty origin directory is invalid')
             ->if($adapter->is_dir = function () {
@@ -76,8 +74,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator, & $directory) {
                     $generator->setOriginDirectory($directory = uniqid());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Path \'' . $directory . '\' of origin directory is invalid')
             ->if($adapter->is_dir = function () {
@@ -92,8 +89,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator) {
                     $generator->setOriginDirectory($generator->getDestinationDirectory());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Origin directory must be different from destination directory')
             ->if($realDirectory = $generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . uniqid())
@@ -120,8 +116,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator) {
                     $generator->setDestinationDirectory('');
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Empty destination directory is invalid')
             ->if($adapter->is_dir = function () {
@@ -130,8 +125,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator, & $directory) {
                     $generator->setDestinationDirectory($directory = uniqid());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Path \'' . $directory . '\' of destination directory is invalid')
             ->if($adapter->is_dir = function () {
@@ -148,8 +142,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator) {
                     $generator->setDestinationDirectory($generator->getOriginDirectory());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Destination directory must be different from origin directory')
         ;
@@ -169,8 +162,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator) {
                     $generator->setStubFile('');
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Stub file is invalid')
             ->if($adapter->is_file = function () {
@@ -179,8 +171,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator) {
                     $generator->setStubFile(uniqid());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Stub file is not a valid file')
             ->if($adapter->is_file = function () {
@@ -218,24 +209,21 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator) {
                     $generator->run();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Origin directory must be defined')
             ->if($generator->setOriginDirectory((string) $originDirectory))
             ->then
                 ->exception(function () use ($generator) {
                     $generator->run();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Destination directory must be defined')
             ->if($generator->setDestinationDirectory(uniqid()))
             ->then
                 ->exception(function () use ($generator) {
                     $generator->run();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Stub file must be defined')
             ->if($generator->setStubFile($stubFile = uniqid()))
@@ -245,8 +233,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator) {
                     $generator->run();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Origin directory \'' . $generator->getOriginDirectory() . '\' is not readable')
             ->if($adapter->is_readable = function ($path) use ($originDirectory) {
@@ -258,8 +245,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator) {
                     $generator->run();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Destination directory \'' . $generator->getDestinationDirectory() . '\' is not writable')
             ->if($adapter->is_writable = function () {
@@ -268,8 +254,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator) {
                     $generator->run();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Stub file \'' . $generator->getStubFile() . '\' is not readable')
             ->if($adapter->is_readable = function ($path) use ($originDirectory, $stubFile) {
@@ -293,52 +278,46 @@ class generator extends atoum\test
                 };
 
                 return ($phar = new \mock\phar($name));
-            }
-                )
-            )
+            }))
             ->and($adapter->file_get_contents = function ($file) {
                 return false;
             })
             ->then
                 ->exception(function () use ($generator) {
                     $generator->run();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('ABOUT file is missing in \'' . $generator->getOriginDirectory() . '\'')
             ->if($adapter->file_get_contents = function ($file) use ($generator, & $description) {
                 switch ($file) {
-                        case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
-                            return ($description = uniqid());
+                    case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
+                        return ($description = uniqid());
 
-                        default:
-                            return false;
-                    }
-            }
-            )
+                    default:
+                        return false;
+                }
+            })
             ->then
                 ->exception(function () use ($generator) {
                     $generator->run();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('LICENSE file is missing in \'' . $generator->getOriginDirectory() . '\'')
             ->if($adapter->file_get_contents = function ($file) use ($generator, & $description, & $licence, & $stub) {
                 switch ($file) {
-                        case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
-                            return ($description = uniqid());
+                    case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
+                        return ($description = uniqid());
 
-                        case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'LICENSE':
-                            return ($licence = uniqid());
+                    case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'LICENSE':
+                        return ($licence = uniqid());
 
-                        case $generator->getStubFile():
-                            return ($stub = uniqid());
+                    case $generator->getStubFile():
+                        return ($stub = uniqid());
 
-                        default:
-                            return uniqid();
-                    }
-            }
-            )
+                    default:
+                        return uniqid();
+                }
+            })
             ->then
                 ->object($generator->run())->isIdenticalTo($generator)
                 ->mock($phar)
@@ -397,9 +376,7 @@ class generator extends atoum\test
                 };
 
                 return ($phar = new \mock\phar($name));
-            }
-                )
-            )
+            }))
             ->then
                 ->object($generator->run(['-d', $directory = uniqid()]))->isIdenticalTo($generator)
                 ->string($generator->getDestinationDirectory())->isEqualTo($directory)

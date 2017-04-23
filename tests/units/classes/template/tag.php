@@ -15,33 +15,28 @@ class tag extends atoum\test
             ->testedClass
                 ->isSubClassOf('mageekguy\atoum\template')
             ->exception(function () {
-                $template = new template\tag('');
-            }
-                )
+                new template\tag('');
+            })
                 ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                 ->hasMessage('Tag must not be an empty string')
             ->exception(function () {
-                $template = new template\tag(uniqid(), null, 0);
-            }
-                )
+                new template\tag(uniqid(), null, 0);
+            })
                 ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                 ->hasMessage('Line must be greater than 0')
             ->exception(function () {
-                $template = new template\tag(uniqid(), null, - rand(1, PHP_INT_MAX));
-            }
-                )
+                new template\tag(uniqid(), null, - rand(1, PHP_INT_MAX));
+            })
                 ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                 ->hasMessage('Line must be greater than 0')
             ->exception(function () {
-                $template = new template\tag(uniqid(), null, rand(1, PHP_INT_MAX), 0);
-            }
-                )
+                new template\tag(uniqid(), null, rand(1, PHP_INT_MAX), 0);
+            })
                 ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                 ->hasMessage('Offset must be greater than 0')
             ->exception(function () {
-                $template = new template\tag(uniqid(), null, rand(1, PHP_INT_MAX), - rand(1, PHP_INT_MAX));
-            }
-                )
+                new template\tag(uniqid(), null, rand(1, PHP_INT_MAX), - rand(1, PHP_INT_MAX));
+            })
                 ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                 ->hasMessage('Offset must be greater than 0')
             ->if($template = new template\tag($tag = uniqid()))
@@ -66,8 +61,7 @@ class tag extends atoum\test
             ->then
                 ->exception(function () use ($template) {
                     $template->setId('');
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Id must not be empty')
                 ->object($template->setId($id = uniqid()))->isIdenticalTo($template)
@@ -80,8 +74,7 @@ class tag extends atoum\test
             ->then
                 ->exception(function () use ($template, $id) {
                     $template->setId($id);
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Id \'' . $id . '\' is already defined in line unknown at offset unknown')
         ;
@@ -113,8 +106,7 @@ class tag extends atoum\test
                 ->string($template->getId())->isEqualTo($id)
                 ->exception(function () use ($template, & $attribute) {
                     $template->setAttribute($attribute = uniqid(), uniqid());
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Attribute \'' . $attribute . '\' is unknown')
         ;
@@ -131,8 +123,7 @@ class tag extends atoum\test
                 ->variable($template->getId())->isNull()
                 ->exception(function () use ($template, & $attribute) {
                     $template->unsetAttribute($attribute = uniqid());
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Attribute \'' . $attribute . '\' is unknown')
         ;

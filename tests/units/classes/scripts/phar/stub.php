@@ -176,22 +176,19 @@ class stub extends atoum\test
                 $phar = new \mock\phar($path);
 
                 return $phar;
-            }
-                )
-            )
+            }))
             ->and($adapter->file_get_contents = function ($path) use (& $currentVersion) {
                 switch ($path) {
-                        case 'versions':
-                            return serialize(['1' => $currentVersion = uniqid(), 'current' => '1']);
+                    case 'versions':
+                        return serialize(['1' => $currentVersion = uniqid(), 'current' => '1']);
 
-                        case phar\stub::updateUrl:
-                            return json_encode([]);
+                    case phar\stub::updateUrl:
+                        return json_encode([]);
 
-                        default:
-                            return false;
-                    }
-            }
-            )
+                    default:
+                        return false;
+                }
+            })
             ->then
                 ->object($stub->update())->isIdenticalTo($stub)
                 ->adapter($adapter)

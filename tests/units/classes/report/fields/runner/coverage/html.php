@@ -194,14 +194,13 @@ class html extends atoum\test
             ->and($templateParserController = $templateParser->getMockController())
             ->and($templateParserController->parseFile = function ($path) use ($templatesDirectory, $indexTemplate, $classTemplate) {
                 switch ($path) {
-                            case $templatesDirectory . DIRECTORY_SEPARATOR . 'index.tpl':
-                                return $indexTemplate;
+                    case $templatesDirectory . DIRECTORY_SEPARATOR . 'index.tpl':
+                        return $indexTemplate;
 
-                            case $templatesDirectory . DIRECTORY_SEPARATOR . 'class.tpl':
-                                return $classTemplate;
-                        }
-            }
-                )
+                    case $templatesDirectory . DIRECTORY_SEPARATOR . 'class.tpl':
+                        return $classTemplate;
+                }
+            })
             ->and($adapter->mkdir = function () {
             })
             ->and($adapter->file_put_contents = function () {
@@ -522,8 +521,7 @@ class html extends atoum\test
                 ->exception(function () use ($field) {
                     $field->setReflectionClassInjector(function () {
                     });
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Reflection class injector must take one argument')
         ;
@@ -541,8 +539,7 @@ class html extends atoum\test
             ->then
                 ->exception(function () use ($field) {
                     $field->getReflectionClass(uniqid());
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
                     ->hasMessage('Reflection class injector must return a \reflectionClass instance')
         ;

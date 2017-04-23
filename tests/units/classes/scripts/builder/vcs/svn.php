@@ -138,8 +138,7 @@ class svn extends atoum\test
             ->then
                 ->exception(function () use ($svn) {
                     $svn->getNextRevisions();
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to get logs, repository url is undefined')
                 ->adapter($adapter)
@@ -216,8 +215,7 @@ class svn extends atoum\test
             ->then
                 ->exception(function () use ($svn) {
                     $svn->exportRepository(uniqid());
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to export repository, repository url is undefined')
                 ->adapter($adapter)
@@ -237,8 +235,7 @@ class svn extends atoum\test
             ->then
                 ->exception(function () use ($svn) {
                     $svn->exportRepository();
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
                 ->adapter($adapter)
@@ -257,8 +254,7 @@ class svn extends atoum\test
             ->then
                 ->exception(function () use ($svn) {
                     $svn->exportRepository();
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
                 ->adapter($adapter)
@@ -277,8 +273,7 @@ class svn extends atoum\test
             ->then
                 ->exception(function () use ($svn) {
                     $svn->exportRepository();
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
                 ->adapter($adapter)

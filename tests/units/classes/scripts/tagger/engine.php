@@ -112,8 +112,7 @@ class engine extends atoum\test
                 ->exception(function () use ($tagger) {
                     $tagger->setSrcIteratorInjector(function () {
                     });
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Src iterator injector must take one argument')
                 ->object($this->testedInstance->setSrcIteratorInjector(function ($directory) {
@@ -131,8 +130,7 @@ class engine extends atoum\test
             ->then
                 ->exception(function () use ($tagger) {
                     $tagger->getSrcIterator();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Unable to get files iterator, source directory is undefined')
             ->if($this->testedInstance->setSrcDirectory(__DIR__))
@@ -154,16 +152,14 @@ class engine extends atoum\test
             ->then
                 ->exception(function () use ($tagger) {
                     $tagger->tagVersion(uniqid());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Unable to tag, src directory is undefined')
             ->if($this->testedInstance->setSrcDirectory($srcDirectory = uniqid()))
             ->then
                 ->exception(function () use ($tagger) {
                     $tagger->tagVersion(uniqid());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Unable to tag, version is undefined')
             ->if(
@@ -175,8 +171,7 @@ class engine extends atoum\test
             ->then
                 ->exception(function () use ($tagger) {
                     $tagger->tagVersion(uniqid());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Unable to tag, src iterator injector does not return an iterator')
             ->if(
@@ -208,8 +203,7 @@ class engine extends atoum\test
             ->then
                 ->exception(function () use ($tagger) {
                     $tagger->tagVersion(uniqid());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to tag, path \'' . $file2 . '\' is not readable')
             ->if(
@@ -220,8 +214,7 @@ class engine extends atoum\test
             ->then
                 ->exception(function () use ($tagger) {
                     $tagger->tagVersion(uniqid());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to tag, path \'' . $file2 . '\' is not writable')
             ->if(

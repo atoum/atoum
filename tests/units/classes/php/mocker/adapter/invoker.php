@@ -21,8 +21,7 @@ class invoker extends atoum
             ->then
                 ->exception(function () use ($invoker) {
                     $invoker->invoke();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('There is no closure defined for call 0')
             ->if($invoker->setClosure(function ($string) {

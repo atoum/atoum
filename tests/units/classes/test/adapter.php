@@ -203,14 +203,12 @@ namespace mageekguy\atoum\tests\units\test
                     ->string($adapter->MD5($hash))->isEqualTo($md5)
                     ->exception(function () use ($adapter) {
                         $adapter->require(uniqid());
-                    }
-                        )
+                    })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Function \'require()\' is not invokable by an adapter')
                     ->exception(function () use ($adapter) {
                         $adapter->REQUIRE(uniqid());
-                    }
-                        )
+                    })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Function \'REQUIRE()\' is not invokable by an adapter')
                 ->if($adapter->md5 = 0)

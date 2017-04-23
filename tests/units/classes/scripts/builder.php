@@ -303,8 +303,7 @@ class builder extends atoum\test
             ->then
                 ->exception(function () use ($builder) {
                     $builder->checkUnitTests();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Unable to check unit tests, working directory is undefined')
             ->if->mockGenerator->shunt('__construct')
@@ -415,8 +414,7 @@ class builder extends atoum\test
             ->then
                 ->exception(function () use ($builder) {
                     $builder->checkUnitTests();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to delete score file \'' . $scoreFile . '\'')
             ->if($adapter->unlink = true)
@@ -476,16 +474,14 @@ class builder extends atoum\test
             ->then
                 ->exception(function () use ($builder) {
                     $builder->createPhar();
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Unable to create phar, destination directory is undefined')
             ->if($builder->setDestinationDirectory($destinationDirectory = uniqid()))
             ->then
                 ->exception(function () use ($builder) {
                     $builder->createPhar();
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Unable to create phar, working directory is undefined')
             ->if($builder->setWorkingDirectory($workingDirectory = uniqid()))
@@ -572,8 +568,7 @@ class builder extends atoum\test
             ->then
                 ->exception(function () use ($builder) {
                     $builder->createPhar();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to save last revision in file \'' . $revisionFile . '\'')
             ->if($this->resetMock($vcs))
@@ -651,15 +646,13 @@ class builder extends atoum\test
             ->and($adapterRedmond->function_exists = false)
             ->and($builder = new \mock\mageekguy\atoum\scripts\builder(uniqid(), $adapterRedmond))
             ->and($builder->setRunFile($runFile = uniqid()))
-            ->and($this->calling($builder)->createPhar = function () {
-            })
+            ->and($this->calling($builder)->createPhar->doesNothing)
             ->then
-                    ->exception(function () use ($builder) {
-                        $builder->run();
-                    }
-                    )
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-                        ->hasMessage(sprintf('A process has locked run file \'%s\'', $runFile))
+                ->exception(function () use ($builder) {
+                    $builder->run();
+                })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->hasMessage(sprintf('A process has locked run file \'%s\'', $runFile))
         ;
     }
 
@@ -672,10 +665,7 @@ class builder extends atoum\test
             ->and($adapterPosix->posix_kill = false)
             ->and($builder = new \mock\mageekguy\atoum\scripts\builder(uniqid(), $adapterPosix))
             ->and($builder->setRunFile($runFile = uniqid()))
-            ->and($this->calling($builder)->createPhar = function () {
-            })
-            ->and($this->calling($builder)->createPhar = function () {
-            })
+            ->and($this->calling($builder)->createPhar->doesNothing)
             ->then
                 ->object($builder->run())->isIdenticalTo($builder)
                 ->mock($builder)->call('createPhar')->once()
@@ -699,10 +689,9 @@ class builder extends atoum\test
                 ->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
                 ->exception(function () use ($builder) {
                     $builder->writeErrorInErrorsDirectory(uniqid());
-                }
-                    )
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic')
-                        ->hasMessage('Revision is undefined')
+                })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->hasMessage('Revision is undefined')
                 ->adapter($adapter)->call('file_put_contents')->never()
             ->if->mockGenerator->shunt('__construct')
             ->and($builder->setVcs($vcs = new \mock\mageekguy\atoum\scripts\builder\vcs()))
@@ -717,10 +706,9 @@ class builder extends atoum\test
                 ->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
                 ->exception(function () use ($builder, & $message) {
                     $builder->writeErrorInErrorsDirectory($message = uniqid());
-                }
-                    )
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-                        ->hasMessage('Unable to save error in file \'' . $errorDirectory . \DIRECTORY_SEPARATOR . $revision . '\'')
+                })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->hasMessage('Unable to save error in file \'' . $errorDirectory . \DIRECTORY_SEPARATOR . $revision . '\'')
                 ->adapter($adapter)->call('file_put_contents')->withArguments($errorDirectory . \DIRECTORY_SEPARATOR . $revision, $message, \LOCK_EX | \FILE_APPEND)->once()
         ;
     }

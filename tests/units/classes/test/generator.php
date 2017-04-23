@@ -220,17 +220,16 @@ class generator extends atoum\test
             ->and($this->calling($testClassPath)->putContents = $testClassPath)
             ->and($this->calling($pathFactory)->build = function ($path) use ($testClassesDirectoryPath, $testClassPath, $testedClassPath) {
                 switch ($path) {
-                        case (string) $testClassesDirectoryPath . DIRECTORY_SEPARATOR:
-                            return $testClassesDirectoryPath;
+                    case (string) $testClassesDirectoryPath . DIRECTORY_SEPARATOR:
+                        return $testClassesDirectoryPath;
 
-                        case (string) $testClassPath:
-                            return $testClassPath;
+                    case (string) $testClassPath:
+                        return $testClassPath;
 
-                        default:
-                            return $testedClassPath;
-                    }
-            }
-            )
+                    default:
+                        return $testedClassPath;
+                }
+            })
             ->then
                 ->object($generator->generate((string) $testClassPath))->isIdenticalTo($generator)
                 ->mock($templateParser)

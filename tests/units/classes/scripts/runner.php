@@ -409,8 +409,7 @@ class runner extends atoum\test
             ->then
                 ->exception(function () use ($runner, & $file) {
                     $runner->useConfigFile($file = uniqid());
-                }
-                )
+                })
                     ->isInstanceOf(atoum\includer\exception::class)
                     ->hasMessage('Unable to find configuration file \'' . $file . '\'')
                 ->mock($locale)->call('_')->withArguments('Unable to find configuration file \'%s\'')->once()

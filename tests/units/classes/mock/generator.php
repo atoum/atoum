@@ -2610,16 +2610,14 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator, $class) {
                     $generator->generate($class);
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Class \'\mock\\' . $class . '\' already exists')
             ->if($class = '\\' . uniqid())
             ->then
                 ->exception(function () use ($generator, $class) {
                     $generator->generate($class);
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Class \'\mock' . $class . '\' already exists')
             ->if($class = uniqid())
@@ -2638,8 +2636,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator, $class) {
                     $generator->generate($class);
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Class \'\\' . $class . '\' is final, unable to mock it')
             ->if($class = '\\' . uniqid())
@@ -2649,8 +2646,7 @@ class generator extends atoum\test
             ->then
                 ->exception(function () use ($generator, $class) {
                     $generator->generate($class);
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Class \'' . $class . '\' is final, unable to mock it')
             ->if($reflectionClassController->isFinal = false)

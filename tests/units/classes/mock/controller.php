@@ -423,8 +423,7 @@ class controller extends atoum\test
             ->then
                 ->exception(function () use ($mockController, $method) {
                     $mockController->invoke($method, []);
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Method ' . $method . '() is not under control')
             ->if($return = uniqid())

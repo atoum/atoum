@@ -66,10 +66,9 @@ class image extends atoum\test
             ->then
                 ->exception(function () use ($field) {
                     $field->getImage(true);
-                }
-                    )
-                        ->isInstanceOf('\\mageekguy\\atoum\\exceptions\\runtime')
-                        ->hasMessage(sprintf('File %s does not exist', $successImage))
+                })
+                    ->isInstanceOf('\\mageekguy\\atoum\\exceptions\\runtime')
+                    ->hasMessage(sprintf('File %s does not exist', $successImage))
             ->if($field->setFailureImage($failureImage = uniqid()))
             ->and($adapter->file_exists = true)
             ->then
@@ -78,10 +77,9 @@ class image extends atoum\test
             ->then
                 ->exception(function () use ($field) {
                     $field->getImage(false);
-                }
-                    )
-                        ->isInstanceOf('\\mageekguy\\atoum\\exceptions\\runtime')
-                        ->hasMessage(sprintf('File %s does not exist', $failureImage))
+                })
+                    ->isInstanceOf('\\mageekguy\\atoum\\exceptions\\runtime')
+                    ->hasMessage(sprintf('File %s does not exist', $failureImage))
         ;
     }
 

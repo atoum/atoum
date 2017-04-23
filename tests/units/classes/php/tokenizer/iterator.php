@@ -576,8 +576,7 @@ class iterator extends atoum\test
                 ->object($otherInnerIterator->current())->isIdenticalTo($token3)
                 ->exception(function () use ($iterator, $innerIterator) {
                     $iterator->append($innerIterator);
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to append value because it has already a parent')
             ->if(

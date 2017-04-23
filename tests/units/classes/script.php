@@ -92,8 +92,7 @@ class script extends atoum\test
             ->then
                 ->exception(function () use ($adapter, & $name) {
                     new mock\script($name = uniqid(), $adapter);
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('\'' . $name . '\' must be used in CLI only')
         ;

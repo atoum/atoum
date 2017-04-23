@@ -144,8 +144,7 @@ class template extends atoum\test
                 ->string($childTag->getData())->isEmpty()
             ->when(function () use ($template, $childTag) {
                 unset($template->{$childTag->getTag()});
-            }
-            )
+            })
             ->then
                 ->boolean(isset($this->testedInstance->{$childTag->getTag()}))->isTrue()
                 ->string($childTag->getData())->isEmpty()
@@ -155,8 +154,7 @@ class template extends atoum\test
                 ->string($childTag->getData())->isNotEmpty()
             ->when(function () use ($template, $childTag) {
                 unset($template->{$childTag->getTag()});
-            }
-            )
+            })
             ->then
                 ->boolean(isset($this->testedInstance->{$childTag->getTag()}))->isTrue()
                 ->string($childTag->getData())->isEmpty()
@@ -169,8 +167,7 @@ class template extends atoum\test
             ->when(function () use ($template, $childTag, $otherChildTag) {
                 unset($template->{$childTag->getTag()});
                 unset($template->{$otherChildTag->getTag()});
-            }
-            )
+            })
             ->then
                 ->boolean(isset($this->testedInstance->{$childTag->getTag()}))->isTrue()
                 ->string($childTag->getData())->isEmpty()
@@ -187,8 +184,7 @@ class template extends atoum\test
                 ->string($otherChildTag->getData())->isNotEmpty()
             ->when(function () use ($template, $childTag) {
                 unset($template->{$childTag->getTag()});
-            }
-            )
+            })
             ->then
                 ->boolean(isset($this->testedInstance->{$childTag->getTag()}))->isTrue()
                 ->string($childTag->getData())->isEmpty()
@@ -196,8 +192,7 @@ class template extends atoum\test
                 ->string($otherChildTag->getData())->isNotEmpty()
             ->when(function () use ($template, $otherChildTag) {
                 unset($template->{$otherChildTag->getTag()});
-            }
-            )
+            })
             ->then
                 ->boolean(isset($this->testedInstance->{$childTag->getTag()}))->isTrue()
                 ->string($childTag->getData())->isEmpty()
@@ -225,8 +220,7 @@ class template extends atoum\test
                 ->string($littleChildTag->getData())->isNotEmpty()
             ->when(function () use ($template, $childTag) {
                 unset($template->{$childTag->getTag()});
-            }
-            )
+            })
             ->then
                 ->boolean(isset($this->testedInstance->{$childTag->getTag()}))->isTrue()
                 ->string($childTag->getData())->isEmpty()
@@ -236,8 +230,7 @@ class template extends atoum\test
                 ->string($littleChildTag->getData())->isNotEmpty()
             ->when(function () use ($template, $otherChildTag) {
                 unset($template->{$otherChildTag->getTag()});
-            }
-            )
+            })
             ->then
                 ->boolean(isset($this->testedInstance->{$childTag->getTag()}))->isTrue()
                 ->string($childTag->getData())->isEmpty()
@@ -247,8 +240,7 @@ class template extends atoum\test
                 ->string($littleChildTag->getData())->isNotEmpty()
             ->when(function () use ($template, $littleChildTag) {
                 unset($template->{$littleChildTag->getTag()});
-            }
-            )
+            })
             ->then
                 ->boolean(isset($this->testedInstance->{$childTag->getTag()}))->isTrue()
                 ->string($childTag->getData())->isEmpty()

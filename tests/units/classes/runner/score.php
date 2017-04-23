@@ -58,8 +58,7 @@ class score extends atoum\test
                 ->string($score->getAtoumPath())->isEqualTo($path)
                 ->exception(function () use ($score) {
                     $score->setAtoumPath(uniqid());
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Path of atoum is already set')
                 ->object($score->reset()->setAtoumPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
@@ -76,8 +75,7 @@ class score extends atoum\test
                 ->string($score->getAtoumVersion())->isEqualTo($version)
                 ->exception(function () use ($score) {
                     $score->setAtoumVersion(uniqid());
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Version of atoum is already set')
                 ->object($score->reset()->setAtoumVersion($version = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
@@ -94,8 +92,7 @@ class score extends atoum\test
                 ->string($score->getPhpPath())->isEqualTo($path)
                 ->exception(function () use ($score) {
                     $score->setPhpPath(uniqid());
-                }
-                    )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('PHP path is already set')
                 ->object($score->reset()->setPhpPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
@@ -112,8 +109,7 @@ class score extends atoum\test
                 ->string($score->getPhpVersion())->isEqualTo((string) \PHP_VERSION_ID)
                 ->exception(function () use ($score) {
                     $score->setPhpVersion(uniqid());
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('PHP version is already set')
         ;
