@@ -17,7 +17,7 @@ class clover extends atoum\test
 
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\reports\asynchronous');
+        $this->testedClass->extends(atoum\reports\asynchronous::class);
     }
 
     public function testClassConstants()
@@ -37,8 +37,8 @@ class clover extends atoum\test
             ->if($report = new testedClass($adapter = new atoum\test\adapter()))
             ->then
                 ->array($report->getFields(atoum\runner::runStart))->isEmpty()
-                ->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+                ->object($report->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($report->getAdapter())->isInstanceOf(atoum\adapter::class)
                 ->array($report->getFields())->isEmpty()
                 ->adapter($adapter)->call('extension_loaded')->withArguments('libxml')->once()
             ->if($adapter->extension_loaded = false)
@@ -46,7 +46,7 @@ class clover extends atoum\test
                 ->exception(function () use ($adapter) {
                     new testedClass($adapter);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('libxml PHP extension is mandatory for clover report')
         ;
     }

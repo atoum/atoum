@@ -33,10 +33,10 @@ class generator extends atoum\test
                 ->exception(function () use (& $asserter) {
                     $this->testedInstance->{$asserter = uniqid()};
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Asserter \'' . $asserter . '\' does not exist')
 
-                ->object($this->testedInstance->variable)->isInstanceOf('mageekguy\atoum\asserters\variable')
+                ->object($this->testedInstance->variable)->isInstanceOf(atoum\asserters\variable::class)
         ;
     }
 
@@ -48,10 +48,10 @@ class generator extends atoum\test
                 ->exception(function () use (& $asserter) {
                     $this->testedInstance->{$asserter = uniqid()}();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Asserter \'' . $asserter . '\' does not exist')
 
-                ->object($asserter = $this->testedInstance->variable($variable = uniqid()))->isInstanceOf('mageekguy\atoum\asserters\variable')
+                ->object($asserter = $this->testedInstance->variable($variable = uniqid()))->isInstanceOf(atoum\asserters\variable::class)
                 ->string($asserter->getValue())->isEqualTo($variable)
         ;
     }

@@ -51,8 +51,8 @@ class closure implements factory\builder
                 }
 
                 if ($constructor === null || count($closureParameters) <= 0) {
-                    $this->factory = function () use (& $instance, $class) {
-                        return ($instance = $class->newInstanceArgs(func_get_args()));
+                    $this->factory = function (...$arguments) use (& $instance, $class) {
+                        return ($instance = $class->newInstanceArgs($arguments));
                     };
                 } else {
                     $this->factory = eval('return function(' . implode(', ', $closureParameters) . ') use (& $instance) { return ($instance = new ' . $class->getName() . '(' . implode(', ', $constructorParameters) . ')); };');

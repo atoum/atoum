@@ -185,28 +185,28 @@ class generator extends atoum\test
                 ->exception(function () use ($generator) {
                     $generator->generate(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\test\generator\exception')
+                    ->isInstanceOf(atoum\test\generator\exception::class)
                     ->hasMessage('Tested classes directory is undefined')
             ->if($generator->setTestedClassesDirectory($classesDirectory = uniqid()))
             ->then
                 ->exception(function () use ($generator) {
                     $generator->generate(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\test\generator\exception')
+                    ->isInstanceOf(atoum\test\generator\exception::class)
                     ->hasMessage('Tests directory is undefined')
             ->if($generator->setTestClassesDirectory($testsDirectory = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['a', 'b', 'c'])))
             ->then
                 ->exception(function () use ($generator) {
                     $generator->generate(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\test\generator\exception')
+                    ->isInstanceOf(atoum\test\generator\exception::class)
                     ->hasMessage('Tested class namespace is undefined')
             ->if($generator->setTestedClassNamespace($testedClassNamespace = uniqid()))
             ->then
                 ->exception(function () use ($generator) {
                     $generator->generate(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\test\generator\exception')
+                    ->isInstanceOf(atoum\test\generator\exception::class)
                     ->hasMessage('Test class namespace is undefined')
             ->if($generator->setTestClassNamespace($testClassNamespace = uniqid()))
             ->and($testClassesDirectoryPath = new \mock\mageekguy\atoum\fs\path(DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['a', 'b', 'c'])))

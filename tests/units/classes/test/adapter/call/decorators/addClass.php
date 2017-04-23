@@ -12,7 +12,7 @@ class addClass extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\test\adapter\call\decorator');
+        $this->testedClass->extends(atoum\test\adapter\call\decorator::class);
     }
 
     public function test__construct()

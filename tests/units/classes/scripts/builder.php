@@ -23,7 +23,7 @@ class builder extends atoum\test
 
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\script\configurable');
+        $this->testedClass->extends(atoum\script\configurable::class);
     }
 
     public function testClassConstants()
@@ -40,11 +40,11 @@ class builder extends atoum\test
             ->if($builder = new testedClass($name = uniqid()))
             ->then
                 ->string($builder->getName())->isEqualTo($name)
-                ->object($builder->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-                ->object($builder->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($builder->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
-                ->object($builder->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
-                ->object($builder->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
+                ->object($builder->getAdapter())->isInstanceOf(atoum\adapter::class)
+                ->object($builder->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($builder->getArgumentsParser())->isInstanceOf(atoum\script\arguments\parser::class)
+                ->object($builder->getOutputWriter())->isInstanceOf(atoum\writers\std\out::class)
+                ->object($builder->getErrorWriter())->isInstanceOf(atoum\writers\std\err::class)
                 ->array($builder->getRunnerConfigurationFiles())->isEmpty()
                 ->variable($builder->getVersion())->isNull()
                 ->variable($builder->getWorkingDirectory())->isNull()
@@ -55,16 +55,16 @@ class builder extends atoum\test
                 ->string($builder->getUnitTestRunnerScript())->isEqualTo(scripts\builder::defaultUnitTestRunnerScript)
                 ->string($builder->getPharGeneratorScript())->isEqualTo(scripts\builder::defaultPharGeneratorScript)
                 ->variable($builder->getReportTitle())->isNull()
-                ->object($builder->getVcs())->isInstanceOf('mageekguy\atoum\scripts\builder\vcs\svn')
+                ->object($builder->getVcs())->isInstanceOf(atoum\scripts\builder\vcs\svn::class)
                 ->variable($builder->getTaggerEngine())->isNull()
             ->if($builder = new testedClass($name = uniqid(), $adapter = new atoum\adapter()))
             ->then
                 ->string($builder->getName())->isEqualTo($name)
                 ->object($builder->getAdapter())->isIdenticalTo($adapter)
-                ->object($builder->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-                ->object($builder->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
-                ->object($builder->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
-                ->object($builder->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
+                ->object($builder->getLocale())->isInstanceOf(atoum\locale::class)
+                ->object($builder->getArgumentsParser())->isInstanceOf(atoum\script\arguments\parser::class)
+                ->object($builder->getOutputWriter())->isInstanceOf(atoum\writers\std\out::class)
+                ->object($builder->getErrorWriter())->isInstanceOf(atoum\writers\std\err::class)
                 ->array($builder->getRunnerConfigurationFiles())->isEmpty()
                 ->variable($builder->getVersion())->isNull()
                 ->variable($builder->getWorkingDirectory())->isNull()
@@ -75,7 +75,7 @@ class builder extends atoum\test
                 ->string($builder->getUnitTestRunnerScript())->isEqualTo(scripts\builder::defaultUnitTestRunnerScript)
                 ->string($builder->getPharGeneratorScript())->isEqualTo(scripts\builder::defaultPharGeneratorScript)
                 ->variable($builder->getReportTitle())->isNull()
-                ->object($builder->getVcs())->isInstanceOf('mageekguy\atoum\scripts\builder\vcs\svn')
+                ->object($builder->getVcs())->isInstanceOf(atoum\scripts\builder\vcs\svn::class)
                 ->variable($builder->getTaggerEngine())->isNull()
         ;
     }
@@ -304,7 +304,7 @@ class builder extends atoum\test
                 ->exception(function () use ($builder) {
                     $builder->checkUnitTests();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Unable to check unit tests, working directory is undefined')
             ->if->mockGenerator->shunt('__construct')
             ->and($vcs = new \mock\mageekguy\atoum\scripts\builder\vcs())
@@ -415,7 +415,7 @@ class builder extends atoum\test
                 ->exception(function () use ($builder) {
                     $builder->checkUnitTests();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to delete score file \'' . $scoreFile . '\'')
             ->if($adapter->unlink = true)
             ->and($this->calling($score)->getFailNumber = rand(1, PHP_INT_MAX))
@@ -475,14 +475,14 @@ class builder extends atoum\test
                 ->exception(function () use ($builder) {
                     $builder->createPhar();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Unable to create phar, destination directory is undefined')
             ->if($builder->setDestinationDirectory($destinationDirectory = uniqid()))
             ->then
                 ->exception(function () use ($builder) {
                     $builder->createPhar();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Unable to create phar, working directory is undefined')
             ->if($builder->setWorkingDirectory($workingDirectory = uniqid()))
             ->and($builder->setPhp($php = new \mock\mageekguy\atoum\php()))
@@ -569,7 +569,7 @@ class builder extends atoum\test
                 ->exception(function () use ($builder) {
                     $builder->createPhar();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to save last revision in file \'' . $revisionFile . '\'')
             ->if($this->resetMock($vcs))
             ->and($this->calling($vcs)->getNextRevisions[1] = [1, 2, 3])
@@ -651,7 +651,7 @@ class builder extends atoum\test
                 ->exception(function () use ($builder) {
                     $builder->run();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage(sprintf('A process has locked run file \'%s\'', $runFile))
         ;
     }
@@ -690,7 +690,7 @@ class builder extends atoum\test
                 ->exception(function () use ($builder) {
                     $builder->writeErrorInErrorsDirectory(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Revision is undefined')
                 ->adapter($adapter)->call('file_put_contents')->never()
             ->if->mockGenerator->shunt('__construct')
@@ -707,7 +707,7 @@ class builder extends atoum\test
                 ->exception(function () use ($builder, & $message) {
                     $builder->writeErrorInErrorsDirectory($message = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to save error in file \'' . $errorDirectory . \DIRECTORY_SEPARATOR . $revision . '\'')
                 ->adapter($adapter)->call('file_put_contents')->withArguments($errorDirectory . \DIRECTORY_SEPARATOR . $revision, $message, \LOCK_EX | \FILE_APPEND)->once()
         ;

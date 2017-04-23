@@ -12,8 +12,8 @@ class storage extends atoum\test
     public function testClass()
     {
         $this->testedClass
-            ->implements('iteratorAggregate')
-            ->implements('countable')
+            ->implements(\iteratorAggregate::class)
+            ->implements(\countable::class)
         ;
     }
 

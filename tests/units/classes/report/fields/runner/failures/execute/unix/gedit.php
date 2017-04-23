@@ -12,7 +12,7 @@ class gedit extends atoum\test
     public function testClass()
     {
         $this
-            ->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\failures\execute')
+            ->testedClass->isSubclassOf(atoum\report\fields\runner\failures\execute::class)
         ;
     }
 

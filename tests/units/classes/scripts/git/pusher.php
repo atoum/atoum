@@ -4,16 +4,16 @@ namespace mageekguy\atoum\tests\units\scripts\git;
 
 require __DIR__ . '/../../../runner.php';
 
-use atoum;
-use atoum\cli\commands;
-use atoum\scripts;
-use atoum\scripts\git\pusher as testedClass;
+use mageekguy\atoum;
+use mageekguy\atoum\cli\commands;
+use mageekguy\atoum\scripts;
+use mageekguy\atoum\scripts\git\pusher as testedClass;
 
 class pusher extends atoum
 {
     public function testClass()
     {
-        $this->testedClass->extends('atoum\script\configurable');
+        $this->testedClass->extends(atoum\script\configurable::class);
     }
 
     public function testClassConstants()

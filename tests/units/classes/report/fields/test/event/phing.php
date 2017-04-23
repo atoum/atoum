@@ -12,7 +12,7 @@ class phing extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\test\event\cli');
+        $this->testedClass->extends(atoum\report\fields\test\event\cli::class);
     }
 
     public function test__construct()

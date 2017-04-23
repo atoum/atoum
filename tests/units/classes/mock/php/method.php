@@ -29,7 +29,7 @@ class method extends atoum\test
                 ->exception(function () use ($method) {
                     $method->returnReference();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Constructor can not return a reference')
         ;
     }

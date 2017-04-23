@@ -427,9 +427,9 @@ abstract class test implements observable, \countable
                 return new $className();
             }
             )
-            ->setHandler('dump', function () {
+            ->setHandler('dump', function (...$arguments) {
                 if ($this->debugModeIsEnabled() === true) {
-                    call_user_func_array('var_dump', func_get_args());
+                    call_user_func_array('var_dump', $arguments);
                 }
                 return $this;
             })
@@ -465,13 +465,9 @@ abstract class test implements observable, \countable
         ;
 
         $this->assertionManager
-            ->setHandler('callStaticOnTestedClass', function () {
-                $args = func_get_args();
-                $method = array_shift($args);
-
-                return call_user_func_array([$this->getTestedClassName(), $method], $args);
-            }
-            )
+            ->setHandler('callStaticOnTestedClass', function ($method, ...$arguments) {
+                return call_user_func_array([$this->getTestedClassName(), $method], $arguments);
+            })
         ;
 
         $mockGenerator = $this->mockGenerator;

@@ -11,7 +11,7 @@ class invoker extends atoum
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\test\adapter\invoker');
+        $this->testedClass->extends(atoum\test\adapter\invoker::class);
     }
 
     public function testInvoke()
@@ -22,7 +22,7 @@ class invoker extends atoum
                 ->exception(function () use ($invoker) {
                     $invoker->invoke();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('There is no closure defined for call 0')
             ->if($invoker->setClosure(function ($string) {
                 return md5($string);

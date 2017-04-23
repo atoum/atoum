@@ -183,7 +183,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     public function hasPreviousEqualTo(adapter\call $call, $position)
     {
-        foreach (array_keys($this->getEqualTo($call)->toArray()) as $innerPosition) {
+        foreach ($this->getEqualTo($call)->toArray() as $innerPosition => $_) {
             if ($innerPosition < $position) {
                 return true;
             }
@@ -194,7 +194,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     public function hasPreviousIdenticalTo(adapter\call $call, $position)
     {
-        foreach (array_keys($this->getIdenticalTo($call)->toArray()) as $innerPosition) {
+        foreach ($this->getIdenticalTo($call)->toArray() as $innerPosition => $_) {
             if ($innerPosition < $position) {
                 return true;
             }
@@ -241,7 +241,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
     public function hasAfterEqualTo(adapter\call $call, $position)
     {
-        foreach (array_keys($this->getEqualTo($call)->toArray()) as $innerPosition) {
+        foreach ($this->getEqualTo($call)->toArray() as $innerPosition => $_) {
             if ($innerPosition > $position) {
                 return true;
             }

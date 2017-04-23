@@ -171,12 +171,12 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($test->getScore())->isInstanceOf('mageekguy\atoum\score')
+                    ->object($test->getScore())->isInstanceOf(atoum\score::class)
                     ->object($test->getLocale())->isEqualTo(new atoum\locale())
                     ->object($test->getAdapter())->isEqualTo(new atoum\adapter())
-                    ->object($test->getPhpFunctionMocker())->isInstanceOf('mageekguy\atoum\php\mocker\funktion')
-                    ->object($test->getPhpConstantMocker())->isInstanceOf('mageekguy\atoum\php\mocker\constant')
-                    ->object($test->getFactoryBuilder())->isInstanceOf('mageekguy\atoum\factory\builder\closure')
+                    ->object($test->getPhpFunctionMocker())->isInstanceOf(atoum\php\mocker\funktion::class)
+                    ->object($test->getPhpConstantMocker())->isInstanceOf(atoum\php\mocker\constant::class)
+                    ->object($test->getFactoryBuilder())->isInstanceOf(atoum\factory\builder\closure::class)
                     ->boolean($test->isIgnored())->isTrue()
                     ->boolean($test->debugModeIsEnabled())->isFalse()
                     ->array($test->getAllTags())->isEqualTo($tags = ['empty', 'fake', 'dummy'])
@@ -205,9 +205,9 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($test->assert)->isInstanceOf('mageekguy\atoum\test')
-                    ->object($test->define)->isInstanceOf('mageekguy\atoum\test\assertion\aliaser')
-                    ->object($test->mockGenerator)->isInstanceOf('mageekguy\atoum\mock\generator')
+                    ->object($test->assert)->isInstanceOf(atoum\test::class)
+                    ->object($test->define)->isInstanceOf(atoum\test\assertion\aliaser::class)
+                    ->object($test->mockGenerator)->isInstanceOf(atoum\mock\generator::class)
                 ->if($test->setMockGenerator($mockGenerator = new atoum\test\mock\generator($this)))
                 ->then
                     ->object($test->mockGenerator)->isIdenticalTo($mockGenerator)
@@ -218,10 +218,10 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test, & $property) {
                         $test->{$property = uniqid()};
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Asserter \'' . $property . '\' does not exist')
                     ->exception($test->exception)
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Asserter \'' . $property . '\' does not exist')
             ;
         }
@@ -322,7 +322,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($test->getMockGenerator())->isInstanceOf('mageekguy\atoum\mock\generator')
+                    ->object($test->getMockGenerator())->isInstanceOf(atoum\mock\generator::class)
                 ->if($test->setMockGenerator($mockGenerator = new atoum\test\mock\generator($this)))
                 ->then
                     ->object($test->getMockGenerator())->isIdenticalTo($mockGenerator)
@@ -356,7 +356,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($test->getAsserterGenerator())->isInstanceOf('mageekguy\atoum\test\asserter\generator')
+                    ->object($test->getAsserterGenerator())->isInstanceOf(atoum\test\asserter\generator::class)
                 ->if($test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator($this)))
                 ->then
                     ->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
@@ -381,7 +381,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($test->getFactoryBuilder())->isInstanceOf('mageekguy\atoum\factory\builder\closure')
+                    ->object($test->getFactoryBuilder())->isInstanceOf(atoum\factory\builder\closure::class)
 
                 ->if($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\factory\builder()))
                 ->then
@@ -414,7 +414,7 @@ namespace mageekguy\atoum\tests\units
                     ->object($test->setPhpFunctionMocker())->isIdenticalTo($test)
                     ->object($test->getPhpFunctionMocker())
                         ->isNotIdenticalTo($phpFunctionMocker)
-                        ->isInstanceOf('mageekguy\atoum\php\mocker\funktion')
+                        ->isInstanceOf(atoum\php\mocker\funktion::class)
             ;
         }
 
@@ -454,17 +454,17 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test) {
                         $test->setTestNamespace('');
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test namespace must not be empty')
                     ->exception(function () use ($test) {
                         $test->setTestNamespace('0');
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test namespace must be a valid regex or identifier')
                     ->exception(function () use ($test) {
                         $test->setTestNamespace(uniqid('_') . '\\\\' . uniqid('_'));
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test namespace must be a valid regex or identifier')
             ;
         }
@@ -497,17 +497,17 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test) {
                         $test->setTestMethodPrefix('');
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test method prefix must not be empty')
                     ->exception(function () use ($test) {
                         $test->setTestMethodPrefix('0');
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test method prefix must a valid regex or identifier')
                     ->exception(function () use ($test) {
                         $test->setTestMethodPrefix('/:(/');
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test method prefix must a valid regex or identifier')
             ;
         }
@@ -535,7 +535,7 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test) {
                         $test->getTestedClassName();
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                        ->isInstanceOf(atoum\exceptions\runtime::class)
                         ->hasMessage('Test class \'' . $testClass . '\' is not in a namespace which match pattern \'' . $test->getTestNamespace() . '\'')
                 ->if($test->getMockController()->getClass = 'tests\units\foo')
                 ->then
@@ -557,7 +557,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+                    ->object($test->getAdapter())->isInstanceOf(atoum\adapter::class)
             ;
         }
 
@@ -609,12 +609,12 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test) {
                         $test->setMaxChildrenNumber(- rand(1, PHP_INT_MAX));
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Maximum number of children must be greater or equal to 1')
                     ->exception(function () use ($test) {
                         $test->setMaxChildrenNumber(0);
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Maximum number of children must be greater or equal to 1')
                     ->object($test->setMaxChildrenNumber($maxChildrenNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
                     ->integer($test->getMaxChildrenNumber())->isEqualTo($maxChildrenNumber)
@@ -770,7 +770,7 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test, & $method) {
                         $test->methodIsIgnored($method = uniqid());
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
             ;
         }
@@ -795,7 +795,7 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test, & $method) {
                         $test->setMethodTags($method = uniqid(), []);
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
             ;
         }
@@ -809,7 +809,7 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test, & $method) {
                         $test->getMethodTags($method = uniqid());
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
                 ->if($test = new inheritedTagsTest())
                 ->then
@@ -855,7 +855,7 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test, & $method) {
                         $test->addMandatoryMethodExtension($method = uniqid(), uniqid());
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
                     ->object($test->addMandatoryMethodExtension('testMethod1', $extension = uniqid()))->isIdenticalTo($test)
                     ->array($test->getMandatoryMethodExtensions())->isEqualTo(['testMethod1' => [$extension], 'testMethod2' => ['mbstring', 'socket']])
@@ -897,7 +897,7 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test, & $method) {
                         $test->addMethodPhpVersion($method, '6.0');
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
                     ->object($test->addMethodPhpVersion('testMethod1', '5.3'))->isIdenticalTo($test)
                     ->array($test->getMethodPhpVersions())->isEqualTo(['testMethod1' => ['5.3' => '>='], 'testMethod2' => []])
@@ -946,7 +946,7 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test) {
                         $test->setTestedClassName(uniqid());
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                        ->isInstanceOf(atoum\exceptions\runtime::class)
                         ->hasMessage('Tested class name is already defined')
                 ->if($test = new self())
                 ->then
@@ -955,7 +955,7 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test) {
                         $test->setTestedClassName(uniqid());
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                        ->isInstanceOf(atoum\exceptions\runtime::class)
                         ->hasMessage('Tested class name is already defined')
             ;
         }
@@ -1032,14 +1032,14 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test, & $method) {
                         $test->setDataProvider($method = uniqid(), uniqid());
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
                 ->if($test = new notEmptyTest())
                 ->then
                     ->exception(function () use ($test, & $dataProvider) {
                         $test->setDataProvider('testMethod1', $dataProvider = uniqid());
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Data provider ' . get_class($test) . '::' . $dataProvider . '() is unknown')
                     ->object($test->setDataProvider('testMethod1', 'aDataProvider'))->isIdenticalTo($test)
                     ->array($test->getDataProviders())->isEqualTo(['testMethod1' => 'aDataProvider'])
@@ -1047,18 +1047,18 @@ namespace mageekguy\atoum\tests\units
                 ->then
                     ->object($test->setDataProvider('testMethod2'))->isIdenticalTo($test)
                     ->array($providers = $test->getDataProviders())
-                        ->object['testMethod2']->isInstanceOf('mageekguy\atoum\test\data\provider\aggregator')
+                        ->object['testMethod2']->isInstanceOf(atoum\test\data\provider\aggregator::class)
                     ->exception(function () use ($providers) {
                         $providers['testMethod2']();
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                        ->isInstanceOf(atoum\exceptions\runtime::class)
                         ->hasMessage('Could not instanciate a mock from ' . $test->getMockGenerator()->getDefaultNamespace() . '\\SplFileInfo because SplFileInfo::__construct() has at least one mandatory argument')
                 ->if($test->getMockGenerator()->allIsInterface())
                 ->then
                     ->exception(function () use ($providers) {
                         $providers['testMethod2']();
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                        ->isInstanceOf(atoum\exceptions\runtime::class)
                         ->hasMessage('Could not instanciate a mock from ' . $test->getMockGenerator()->getDefaultNamespace() . '\\SplFileInfo because SplFileInfo::__construct() has at least one mandatory argument')
                 ->if($test->getMockGenerator()->setDefaultNamespace('testMocks'))
                 ->then
@@ -1068,18 +1068,18 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () use ($test, & $dataProvider) {
                         $test->setDataProvider('testMethod3');
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Could not generate a data provider for ' . get_class($test) . '::testMethod3() because it has at least one argument which is not type-hinted with a class or interface name')
                     ->object($test->setDataProvider('testMethod1'))->isIdenticalTo($test)
                     ->array($test->getDataProviders())
-                        ->object['testMethod1']->isInstanceOf('mageekguy\atoum\test\data\provider\aggregator')
+                        ->object['testMethod1']->isInstanceOf(atoum\test\data\provider\aggregator::class)
                 ->if($test = new dataProviderTest())
                 ->then
                     ->exception(function () use ($test, & $dataProvider) {
                         $test->setDataProvider('testMethod3', function () {
                         });
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                        ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                         ->hasMessage('Cannot use a closure as a data provider for method ' . get_class($test) . '::testMethod3()')
             ;
         }
@@ -1215,7 +1215,7 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () {
                         atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass');
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                        ->isInstanceOf(atoum\exceptions\runtime::class)
                         ->hasMessage('Test class \'foo\bar\aaa\bbb\testedClass\' is not in a namespace which contains \'' . atoum\test::getNamespace() . '\'')
                 ->if(atoum\test::setNamespace('#(?:^|\\\)xxxs?\\\yyys?\\\#i'))
                 ->then
@@ -1226,7 +1226,7 @@ namespace mageekguy\atoum\tests\units
                     ->exception(function () {
                         atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass');
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                        ->isInstanceOf(atoum\exceptions\runtime::class)
                         ->hasMessage('Test class \'foo\bar\aaa\bbb\testedClass\' is not in a namespace which match pattern \'' . atoum\test::getNamespace() . '\'')
                     ->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass', '#(?:^|\\\)aaas?\\\bbbs?\\\#i'))->isEqualTo('foo\bar\testedClass')
             ;
@@ -1344,33 +1344,33 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($mock = $test->newMockInstance('stdClass'))
-                        ->isInstanceOf('mock\stdClass')
-                        ->isInstanceOf('stdClass')
-                    ->object($test->newMockInstance('stdClass'))
-                        ->isInstanceOf('mock\stdClass')
-                        ->isInstanceOf('stdClass')
+                    ->object($mock = $test->newMockInstance(\stdClass::class))
+                        ->isInstanceOf(\mock\stdClass::class)
+                        ->isInstanceOf(\stdClass::class)
+                    ->object($test->newMockInstance(\stdClass::class))
+                        ->isInstanceOf(\mock\stdClass::class)
+                        ->isInstanceOf(\stdClass::class)
                         ->isNotIdenticalTo($mock)
-                    ->object($test->newMockInstance('stdClass', 'foobar'))
-                        ->isInstanceOf('foobar\stdClass')
-                        ->isInstanceOf('stdClass')
-                    ->object($test->newMockInstance('stdClass', 'foo', 'bar'))
-                        ->isInstanceOf('foo\bar')
-                        ->isInstanceOf('stdClass')
+                    ->object($test->newMockInstance(\stdClass::class, 'foobar'))
+                        ->isInstanceOf(\foobar\stdClass::class)
+                        ->isInstanceOf(\stdClass::class)
+                    ->object($test->newMockInstance(\stdClass::class, 'foo', 'bar'))
+                        ->isInstanceOf(\foo\bar::class)
+                        ->isInstanceOf(\stdClass::class)
 
                 ->given($arguments = [$firstArgument = uniqid(), $secondArgument = rand(0, PHP_INT_MAX)])
                 ->then
-                    ->object($mock = $test->newMockInstance('mageekguy\atoum\dummy', null, null, $arguments))
-                        ->isInstanceOf('mock\mageekguy\atoum\dummy')
-                        ->isInstanceOf('mageekguy\atoum\dummy')
+                    ->object($mock = $test->newMockInstance(atoum\dummy::class, null, null, $arguments))
+                        ->isInstanceOf(\mock\mageekguy\atoum\dummy::class)
+                        ->isInstanceOf(atoum\dummy::class)
                     ->mock($mock)
                         ->call('__construct')->withArguments($firstArgument, $secondArgument)->once
 
                 ->given($arguments = [uniqid(), rand(0, PHP_INT_MAX), $controller = new mock\controller()])
                 ->then
-                    ->object($mock = $test->newMockInstance('mageekguy\atoum\dummy', null, null, $arguments))
-                        ->isInstanceOf('mock\mageekguy\atoum\dummy')
-                        ->isInstanceOf('mageekguy\atoum\dummy')
+                    ->object($mock = $test->newMockInstance(atoum\dummy::class, null, null, $arguments))
+                        ->isInstanceOf(\mock\mageekguy\atoum\dummy::class)
+                        ->isInstanceOf(atoum\dummy::class)
                     ->object($mock->getMockController())->isIdenticalTo($controller)
 
                 ->given(
@@ -1378,9 +1378,9 @@ namespace mageekguy\atoum\tests\units
                     $controller = new mock\controller()
                 )
                 ->then
-                    ->object($mock = $test->newMockInstance('mageekguy\atoum\dummy', null, null, $arguments))
-                        ->isInstanceOf('mock\mageekguy\atoum\dummy')
-                        ->isInstanceOf('mageekguy\atoum\dummy')
+                    ->object($mock = $test->newMockInstance(atoum\dummy::class, null, null, $arguments))
+                        ->isInstanceOf(\mock\mageekguy\atoum\dummy::class)
+                        ->isInstanceOf(atoum\dummy::class)
                     ->object($mock->getMockController())->isIdenticalTo($controller)
             ;
         }

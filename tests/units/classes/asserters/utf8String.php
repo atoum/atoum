@@ -14,7 +14,7 @@ class utf8String extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\asserters\phpString');
+        $this->testedClass->extends(atoum\asserters\phpString::class);
     }
 
     public function test__construct()
@@ -26,7 +26,7 @@ class utf8String extends atoum\test
                 ->exception(function () {
                     new asserters\utf8String();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('mbstring PHP extension is mandatory to use utf8String asserter')
                 ->function('extension_loaded')->wasCalledWithArguments('mbstring')->once
 
@@ -81,7 +81,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith(null);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notString)
                 ->mock($locale)->call('_')->withArguments('%s is not a string', $type)->once
                 ->mock($analyzer)
@@ -97,7 +97,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith(null);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notUtf8String)
                 ->mock($locale)->call('_')->withArguments('%s is not an UTF-8 string', $type)->once
                 ->mock($analyzer)
@@ -118,7 +118,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasLength(rand(0, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if(
@@ -131,14 +131,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $requiredLength) {
                     $asserter->hasLength($requiredLength = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($hasNotLength)
                 ->mock($locale)->call('_')->withArguments('length of %s is not %d', $asserter, $requiredLength)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasLength(rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith($string = $this->getRandomUtf8String()))
@@ -155,7 +155,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasLengthGreaterThan(rand(0, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if(
@@ -168,14 +168,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $requiredLength) {
                     $asserter->hasLengthGreaterThan($requiredLength = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($lengthNotGreater)
                 ->mock($locale)->call('_')->withArguments('length of %s is not greater than %d', $asserter, $requiredLength)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasLengthGreaterThan(rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith($string = $this->getRandomUtf8String()))
@@ -192,7 +192,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasLengthLessThan(rand(0, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if(
@@ -205,14 +205,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $requiredLength) {
                     $asserter->hasLengthLessThan($requiredLength = 10);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($lengthNotLess)
                 ->mock($locale)->call('_')->withArguments('length of %s is not less than %d', $asserter, $requiredLength)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasLengthLessThan(10, $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith($string = $this->getRandomUtf8String()))
@@ -229,7 +229,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->contains(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if(
@@ -242,14 +242,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->contains($fragment = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notContains)
                 ->mock($locale)->call('_')->withArguments('%s does not contain %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->contains(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith(uniqid() . $string . uniqid()))
@@ -259,7 +259,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, $string, & $fragment) {
                     $asserter->contains($fragment = mb_strtoupper($string, 'UTF-8'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notContains)
                 ->mock($locale)->call('_')->withArguments('%s does not contain %s', $asserter, $fragment)->once
         ;
@@ -273,7 +273,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->notContains(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if(
@@ -286,14 +286,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->notContains($fragment = mb_substr($asserter->getValue(), 2, 6, 'UTF-8'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($contains)
                 ->mock($locale)->call('_')->withArguments('%s contains %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notContains(mb_substr($asserter->getValue(), 2, 6, 'UTF-8'), $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notContains('agent'))->isIdenticalTo($asserter)
@@ -309,7 +309,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->startWith(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if(
@@ -322,27 +322,27 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith($fragment = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notStartWith)
                 ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->startWith(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith($fragment = mb_strtoupper(substr($asserter->getValue(), 0, 6), 'UTF-8'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notStartWith)
                 ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith($fragment = substr($asserter->getValue(), 0, 6) . uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notStartWith)
                 ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
 
@@ -358,7 +358,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->notStartWith(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if(
@@ -371,14 +371,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->notStartWith($fragment = substr($asserter->getValue(), 0, 6));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($startWith)
                 ->mock($locale)->call('_')->withArguments('%s start with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notStartWith(substr($asserter->getValue(), 0, 6), $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notStartWith(mb_strtoupper(substr($asserter->getValue(), 0, 6), 'UTF-8')))->isIdenticalTo($asserter)
@@ -394,7 +394,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->endWith(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if(
@@ -407,27 +407,27 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->endWith($fragment = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notEndWith)
                 ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->endWith(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter, & $failMessage, & $fragment) {
                     $asserter->endWith($fragment = mb_strtoupper(mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'), 'UTF-8'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notEndWith)
                 ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->endWith($fragment = uniqid() . mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notEndWith)
                 ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
 
@@ -443,7 +443,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->notEndWith(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if(
@@ -456,14 +456,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->notEndWith($fragment = mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($endWith)
                 ->mock($locale)->call('_')->withArguments('%s end with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notEndWith(mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'), $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notEndWith(mb_strtoupper(mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'), 'UTF-8')))->isIdenticalTo($asserter)
@@ -479,20 +479,20 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->length;
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if($asserter->setWith(''))
             ->then
                 ->object($integer = $asserter->length)
-                    ->isInstanceOf('mageekguy\atoum\asserters\integer')
+                    ->isInstanceOf(atoum\asserters\integer::class)
                 ->integer($integer->getValue())
                     ->isEqualTo(0)
 
             ->if($asserter->setWith($string = $this->getRandomUtf8String()))
             ->then
                 ->object($integer = $asserter->length)
-                    ->isInstanceOf('mageekguy\atoum\asserters\integer')
+                    ->isInstanceOf(atoum\asserters\integer::class)
                 ->integer($integer->getValue())
                     ->isEqualTo(mb_strlen($string, 'UTF-8'))
         ;

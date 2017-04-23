@@ -11,7 +11,7 @@ class in extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\reader');
+        $this->testedClass->extends(atoum\reader::class);
     }
 
     public function testRead()
@@ -23,7 +23,7 @@ class in extends atoum\test
                 ->exception(function () use ($reader) {
                     $reader->read();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to open php://stdin stream')
                 ->adapter($adapter)
                     ->call('fopen')->withArguments('php://stdin', 'r')->once()

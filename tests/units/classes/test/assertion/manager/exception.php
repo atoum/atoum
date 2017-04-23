@@ -11,6 +11,6 @@ class exception extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->isSubClassOf('mageekguy\atoum\exceptions\runtime');
+        $this->testedClass->isSubClassOf(atoum\exceptions\runtime::class);
     }
 }

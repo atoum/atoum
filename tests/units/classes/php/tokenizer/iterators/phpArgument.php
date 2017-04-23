@@ -13,7 +13,7 @@ class phpArgument extends atoum\test
     {
         $this
             ->testedClass
-                ->isSubClassOf('mageekguy\atoum\php\tokenizer\iterator')
+                ->extends(atoum\php\tokenizer\iterator::class)
         ;
     }
 

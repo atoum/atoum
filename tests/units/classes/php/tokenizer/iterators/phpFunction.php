@@ -14,7 +14,7 @@ class phpFunction extends atoum\test
     {
         $this
             ->testedClass
-                ->isSubClassOf('mageekguy\atoum\php\tokenizer\iterator')
+                ->isSubClassOf(atoum\php\tokenizer\iterator::class)
         ;
     }
 

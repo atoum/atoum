@@ -15,7 +15,7 @@ class terminal extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('mageekguy\atoum\report\fields\runner\result\notifier')
+                ->extends(atoum\report\fields\runner\result\notifier::class)
         ;
     }
 

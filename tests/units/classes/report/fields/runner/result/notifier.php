@@ -13,7 +13,7 @@ class notifier extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\runner\result');
+        $this->testedClass->extends(atoum\report\fields\runner\result::class);
     }
 
     public function test__construct()

@@ -12,7 +12,7 @@ class phpObject extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable');
+        $this->testedClass->isSubclassOf(atoum\asserters\variable::class);
     }
 
     public function test__construct()
@@ -48,7 +48,7 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($isNotAnObject)
                 ->mock($locale)->call('_')->withArguments('%s is not an object', $asserter)->once
                 ->string($asserter->getValue())->isEqualTo($value)
@@ -69,7 +69,7 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasSize(rand(0, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Object is undefined')
 
             ->if($asserter->setWith($this))
@@ -77,12 +77,12 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasSize(0);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d, expected size %d'), $asserter, sizeof($this), 0))
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasSize(0, $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
                 ->object($asserter->hasSize(sizeof($this)))->isIdenticalTo($asserter);
         ;
@@ -96,12 +96,12 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Object is undefined')
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty;
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Object is undefined')
 
             ->if($asserter->setWith($this))
@@ -109,17 +109,17 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty();
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d'), $asserter, sizeof($this)))
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isEmpty($failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty;
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d'), $asserter, sizeof($this)))
 
             ->if($asserter->setWith(new \arrayIterator()))
@@ -137,7 +137,7 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isCloneOf($asserter);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Object is undefined')
 
             ->if(
@@ -152,14 +152,14 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter, $test) {
                     $asserter->isCloneOf($test);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($isNotClone)
                 ->mock($locale)->call('_')->withArguments('%s is not a clone of %s', $asserter, $type)->once
 
                 ->exception(function () use ($asserter, $test, & $failMessage) {
                     $asserter->isCloneOf($test, $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
             ->if($clonedTest = clone $test)
@@ -176,12 +176,12 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isTestedInstance();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Object is undefined')
                 ->exception(function () use ($asserter) {
                     $asserter->isTestedInstance;
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Object is undefined')
 
             ->if($asserter->setWith($this->testedInstance))
@@ -189,12 +189,12 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isTestedInstance();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Tested instance is undefined in the test')
                 ->exception(function () use ($asserter) {
                     $asserter->isTestedInstance;
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Tested instance is undefined in the test')
 
             ->if(
@@ -210,16 +210,16 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isTestedInstance();
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isTestedInstance($failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
                 ->exception(function () use ($asserter) {
                     $asserter->isTestedInstance;
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
         ;
     }
 
@@ -231,7 +231,7 @@ class phpObject extends atoum\test
             ->exception(function () use ($asserter) {
                 $asserter->isNotTestedInstance();
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                ->isInstanceOf(atoum\exceptions\logic::class)
                 ->hasMessage('Object is undefined')
 
             ->if($asserter->setWith(clone $this->testedInstance))
@@ -239,7 +239,7 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotTestedInstance();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Tested instance is undefined in the test')
 
             ->if(
@@ -254,11 +254,11 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotTestedInstance();
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNotTestedInstance($failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -271,7 +271,7 @@ class phpObject extends atoum\test
             ->exception(function () use ($asserter) {
                 $asserter->isInstanceOfTestedClass();
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                ->isInstanceOf(atoum\exceptions\logic::class)
                 ->hasMessage('Object is undefined')
 
             ->if($asserter->setWith(clone $this->testedInstance))
@@ -279,7 +279,7 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isInstanceOfTestedClass();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Tested instance is undefined in the test')
 
             ->if(
@@ -295,11 +295,11 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isInstanceOfTestedClass();
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isInstanceOfTestedClass($failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -312,11 +312,11 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->toString();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Object is undefined')
             ->if($asserter->setWith($this))
             ->then
-                ->object($asserter->toString())->isInstanceOf('mageekguy\atoum\asserters\castToString')
+                ->object($asserter->toString())->isInstanceOf(atoum\asserters\castToString::class)
         ;
     }
 
@@ -328,11 +328,11 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->toArray();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Object is undefined')
             ->if($asserter->setWith($this))
             ->then
-                ->object($asserter->toArray())->isInstanceOf('mageekguy\atoum\asserters\castToArray')
+                ->object($asserter->toArray())->isInstanceOf(atoum\asserters\castToArray::class)
         ;
     }
 
@@ -344,13 +344,13 @@ class phpObject extends atoum\test
             ->exception(function () use ($asserter) {
                 $asserter->isInstanceOf(uniqid());
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                ->isInstanceOf(atoum\exceptions\logic::class)
                 ->hasMessage('Argument of ' . get_class($asserter) . '::isInstanceOf() must be a class instance or a class name')
 
             ->exception(function () use ($asserter) {
-                $asserter->isInstanceOf('stdClass');
+                $asserter->isInstanceOf(\stdClass::class);
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                ->isInstanceOf(atoum\exceptions\logic::class)
                 ->hasMessage('Object is undefined')
 
             ->if(
@@ -363,23 +363,16 @@ class phpObject extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter, $test) {
-                    $asserter->isInstanceOf('stdClass');
+                    $asserter->isInstanceOf(\stdClass::class);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($isNotAnInstance)
-                ->mock($locale)->call('_')->withArguments('%s is not an instance of %s', $asserter, 'stdClass')->once
-
-                ->exception(function () use ($asserter, $test) {
-                    $asserter->isInstanceOf('\stdClass');
-                })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
-                    ->hasMessage($isNotAnInstance)
-                ->mock($locale)->call('_')->withArguments('%s is not an instance of %s', $asserter, '\stdClass')->once
+                ->mock($locale)->call('_')->withArguments('%s is not an instance of %s', $asserter, \stdClass::class)->once
 
                 ->exception(function () use ($asserter, & $object) {
                     $asserter->isInstanceOf($object = new \stdClass());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($isNotAnInstance)
                 ->mock($locale)->call('_')->withArguments('%s is not an instance of %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($object)->once
@@ -387,7 +380,7 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter, & $otherObject, & $failMessage) {
                     $asserter->isInstanceOf($otherObject = new \stdClass(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
                 ->mock($analyzer)->call('getTypeOf')->withArguments($otherObject)->once
 
@@ -405,13 +398,13 @@ class phpObject extends atoum\test
             ->exception(function () use ($asserter) {
                 $asserter->isNotInstanceOf(uniqid());
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                ->isInstanceOf(atoum\exceptions\logic::class)
                 ->hasMessage('Argument of ' . get_class($asserter) . '::isNotInstanceOf() must be a class instance or a class name')
 
             ->exception(function () use ($asserter) {
                 $asserter->isNotInstanceOf('stdClass');
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                ->isInstanceOf(atoum\exceptions\logic::class)
                 ->hasMessage('Object is undefined')
 
             ->if(
@@ -426,28 +419,28 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter, $test) {
                     $asserter->isNotInstanceOf($test);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($isAnInstance)
                 ->mock($locale)->call('_')->withArguments('%s is an instance of %s', $asserter, $type)->once
 
                 ->exception(function () use ($asserter, $test) {
                     $asserter->isNotInstanceOf(get_class($test));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($isAnInstance)
                 ->mock($locale)->call('_')->withArguments('%s is an instance of %s', $asserter, get_class($test))->once
 
                 ->exception(function () use ($asserter, $test) {
                     $asserter->isNotInstanceOf('\\' . get_class($test));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($isAnInstance)
                 ->mock($locale)->call('_')->withArguments('%s is an instance of %s', $asserter, '\\' . get_class($test))->once
 
                 ->exception(function () use ($asserter, $test, & $failMessage) {
                     $asserter->isNotInstanceOf($test, $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->isNotInstanceOf('stdClass'))->isIdenticalTo($asserter)

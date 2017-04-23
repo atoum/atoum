@@ -11,7 +11,7 @@ class parser extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->hasInterface('iteratorAggregate');
+        $this->testedClass->hasInterface(\iteratorAggregate::class);
     }
 
     public function test__construct()
@@ -124,7 +124,7 @@ class parser extends atoum\test
             ->and($parser->parse($script, []))
             ->then
                 ->object($parser->getIterator())
-                    ->isInstanceOf('arrayIterator')
+                    ->isInstanceOf(\arrayIterator::class)
                     ->isEmpty()
             ->if($parser
                     ->addHandler(function ($script, $argument, $value) {
@@ -135,7 +135,7 @@ class parser extends atoum\test
                 )
             ->then
                 ->object($parser->getIterator())
-                    ->isInstanceOf('arrayIterator')
+                    ->isInstanceOf(\arrayIterator::class)
                     ->isEqualTo(new \arrayIterator($parser->getValues()))
         ;
     }
@@ -227,14 +227,14 @@ class parser extends atoum\test
                     ->exception(function () use ($parser, $script) {
                         $parser->parse($script);
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+                        ->isInstanceOf(atoum\exceptions\runtime\unexpectedValue::class)
                         ->hasMessage('Argument \'-ac\' is unknown, did you mean \'--c\'?')
                 ->if($superglobals->_SERVER['argv'] = ['scriptName', '-unknownArgument'])
                 ->then
                     ->exception(function () use ($parser, $script) {
                         $parser->parse($script);
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+                        ->isInstanceOf(atoum\exceptions\runtime\unexpectedValue::class)
                         ->hasMessage('Argument \'-unknownArgument\' is unknown')
                 ->if($parser->setDefaultHandler(function ($script, $argument) use (& $defaultHandlerScript, & $defaultHandlerArgument) {
                     $defaultHandlerScript = $script;
@@ -307,7 +307,7 @@ class parser extends atoum\test
                     ->exception(function () use ($parser, $script) {
                         $parser->parse($script, ['b']);
                     })
-                        ->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+                        ->isInstanceOf(atoum\exceptions\runtime\unexpectedValue::class)
                         ->hasMessage('Argument \'b\' is unknown')
                 ->if($superglobals->_SERVER['argv'] = ['scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '-d', 'd1', 'd2', '--c'])
                 ->and($parser->addHandler(function ($script, $argument, $value) {
@@ -369,25 +369,25 @@ class parser extends atoum\test
                     $parser->addHandler(function () {
                     }, $argument = ['-b']);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Handler must take three arguments')
                 ->exception(function () use ($parser) {
                     $parser->addHandler(function ($script) {
                     }, ['-b']);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Handler must take three arguments')
                 ->exception(function () use ($parser) {
                     $parser->addHandler(function ($script, $argument) {
                     }, ['-b']);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Handler must take three arguments')
                 ->exception(function () use ($parser, & $badArgument) {
                     $parser->addHandler(function ($script, $argument, $values) {
                     }, [$badArgument = 'b']);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Argument \'' . $badArgument . '\' is invalid')
                 ->object($parser->addHandler($otherHandler = function ($script, $argument, $values) {
                 }, [$otherArgument = '-b'], $priority = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($parser)
@@ -408,13 +408,13 @@ class parser extends atoum\test
                     $parser->setDefaultHandler(function () {
                     });
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Handler must take two arguments')
                 ->exception(function () use ($parser) {
                     $parser->setDefaultHandler(function ($script) {
                     });
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Handler must take two arguments')
         ;
     }

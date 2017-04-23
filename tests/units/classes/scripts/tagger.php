@@ -12,7 +12,7 @@ class tagger extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->isSubclassOf('mageekguy\atoum\script');
+        $this->testedClass->isSubclassOf(atoum\script::class);
     }
 
     public function test__construct()
@@ -20,7 +20,7 @@ class tagger extends atoum\test
         $this
             ->if($tagger = new scripts\tagger(uniqid()))
             ->then
-                ->object($tagger->getEngine())->isInstanceOf('mageekguy\atoum\scripts\tagger\engine')
+                ->object($tagger->getEngine())->isInstanceOf(atoum\scripts\tagger\engine::class)
         ;
     }
 

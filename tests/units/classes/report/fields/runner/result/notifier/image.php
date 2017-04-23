@@ -15,7 +15,7 @@ class image extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('mageekguy\atoum\report\fields\runner\result\notifier')
+                ->extends(atoum\report\fields\runner\result\notifier::class)
         ;
     }
 
@@ -67,7 +67,7 @@ class image extends atoum\test
                 ->exception(function () use ($field) {
                     $field->getImage(true);
                 })
-                    ->isInstanceOf('\\mageekguy\\atoum\\exceptions\\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage(sprintf('File %s does not exist', $successImage))
             ->if($field->setFailureImage($failureImage = uniqid()))
             ->and($adapter->file_exists = true)
@@ -78,7 +78,7 @@ class image extends atoum\test
                 ->exception(function () use ($field) {
                     $field->getImage(false);
                 })
-                    ->isInstanceOf('\\mageekguy\\atoum\\exceptions\\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage(sprintf('File %s does not exist', $failureImage))
         ;
     }

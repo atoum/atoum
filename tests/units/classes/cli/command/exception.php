@@ -11,6 +11,6 @@ class exception extends atoum
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\exceptions\runtime');
+        $this->testedClass->extends(atoum\exceptions\runtime::class);
     }
 }

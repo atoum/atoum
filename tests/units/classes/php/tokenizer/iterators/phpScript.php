@@ -14,7 +14,7 @@ class phpScript extends atoum\test
     {
         $this
             ->testedClass
-                ->isSubClassOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                ->isSubClassOf(atoum\php\tokenizer\iterators\phpNamespace::class)
         ;
     }
 

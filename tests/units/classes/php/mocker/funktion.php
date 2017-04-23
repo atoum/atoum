@@ -38,7 +38,7 @@ class funktion extends atoum\test
         $this
             ->given($this->newTestedInstance)
             ->then
-                ->object($this->testedInstance->{$functionName = __NAMESPACE__ . '\version_compare'})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+                ->object($this->testedInstance->{$functionName = __NAMESPACE__ . '\version_compare'})->isInstanceOf(atoum\test\adapter\invoker::class)
                 ->boolean(function_exists($functionName))->isTrue()
         ;
     }
@@ -127,7 +127,7 @@ class funktion extends atoum\test
                 ->exception(function () use ($mocker) {
                     $mocker->generate(__NAMESPACE__ . '\doesSomething');
                 })
-                    ->isInstanceof('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceof(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Function \'' . __NAMESPACE__ . '\doesSomething\' already exists')
 
             ->if($this->testedInstance->{$functionName} = $returnValue = uniqid())

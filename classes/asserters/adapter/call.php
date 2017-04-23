@@ -122,11 +122,11 @@ abstract class call extends atoum\asserter
         return $this->adapter;
     }
 
-    public function before(call $call)
+    public function before(call ...$calls)
     {
         $this->setTrace();
 
-        foreach (func_get_args() as $call) {
+        foreach ($calls as $call) {
             $this->addBeforeCall($call);
         }
 
@@ -138,11 +138,11 @@ abstract class call extends atoum\asserter
         return $this->beforeCalls;
     }
 
-    public function after(call $call)
+    public function after(call ...$calls)
     {
         $this->setTrace();
 
-        foreach (func_get_args() as $call) {
+        foreach ($calls as $call) {
             $this->addAfterCall($call);
         }
 

@@ -12,9 +12,9 @@ class mock extends atoum\tests\functionals\test\functional
     public function testCloneMock(\stdClass $mock, \stdClass $otherMock)
     {
         $this
-            ->object($mock)->isInstanceOf('stdClass')
+            ->object($mock)->isInstanceOf(\stdClass::class)
             ->mock($mock)
-            ->object($otherMock)->isInstanceOf('stdClass')
+            ->object($otherMock)->isInstanceOf(\stdClass::class)
             ->mock($otherMock)
         ;
     }

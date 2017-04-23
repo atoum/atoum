@@ -12,7 +12,7 @@ class sizeOf extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->isSubclassOf('mageekguy\atoum\asserters\integer');
+        $this->testedClass->isSubclassOf(atoum\asserters\integer::class);
     }
 
     public function test__construct()

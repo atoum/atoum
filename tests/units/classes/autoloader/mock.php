@@ -15,7 +15,7 @@ class mock extends atoum\test
             ->given($this->newTestedInstance)
             ->then
                 ->object($this->testedInstance->setMockGenerator())->isTestedInstance
-                ->object($this->testedInstance->getMockGenerator())->isInstanceOf('mageekguy\atoum\mock\generator')
+                ->object($this->testedInstance->getMockGenerator())->isInstanceOf(atoum\mock\generator::class)
                 ->object($this->testedInstance->setMockGenerator($generator = new \mock\mageekguy\atoum\mock\generator))->isTestedInstance
                 ->object($this->testedInstance->getMockGenerator())->isIdenticalTo($generator)
         ;
@@ -27,7 +27,7 @@ class mock extends atoum\test
             ->given($this->newTestedInstance)
             ->then
                 ->object($this->testedInstance->setAdapter())->isTestedInstance
-                ->object($this->testedInstance->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+                ->object($this->testedInstance->getAdapter())->isInstanceOf(atoum\adapter::class)
                 ->object($this->testedInstance->setAdapter($adapter = new \mock\mageekguy\atoum\adapter))->isTestedInstance
                 ->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
         ;
@@ -45,7 +45,7 @@ class mock extends atoum\test
                 ->exception(function () {
                     $this->testedInstance->register();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to register mock autoloader')
                 ->adapter($adapter)
                     ->call('spl_autoload_register')->withArguments([$this->testedInstance, 'requireClass'])->once
@@ -69,7 +69,7 @@ class mock extends atoum\test
                 ->exception(function () {
                     $this->testedInstance->unregister();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Unable to unregister mock autoloader')
                 ->adapter($adapter)
                     ->call('spl_autoload_unregister')->withArguments([$this->testedInstance, 'requireClass'])->once

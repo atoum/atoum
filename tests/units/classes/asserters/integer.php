@@ -12,7 +12,7 @@ class integer extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\asserters\variable');
+        $this->testedClass->extends(atoum\asserters\variable::class);
     }
 
     public function test__construct()
@@ -48,7 +48,7 @@ class integer extends atoum\test
             ->exception(function () use ($asserter, & $value) {
                 $asserter->setWith($value = uniqid());
             })
-                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->isInstanceOf(atoum\asserter\exception::class)
                 ->hasMessage($notAnInteger)
             ->mock($locale)->call('_')->withArguments('%s is not an integer', $asserter)->once
             ->string($asserter->getValue())->isEqualTo($value)
@@ -66,7 +66,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if($asserter->setWith($value = rand(1, PHP_INT_MAX)))
@@ -86,7 +86,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter, $value) {
                     $asserter->isEqualTo(- $value);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notEqual . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(- $value)->once
@@ -97,7 +97,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter, $value, & $failMessage) {
                     $asserter->isEqualTo(- $value, $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage . PHP_EOL . $diffValue)
                 ->mock($diff)
                     ->call('setExpected')->withArguments(- $value)->twice
@@ -113,7 +113,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isGreaterThan(rand(-PHP_INT_MAX, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if($asserter->setWith(PHP_INT_MAX))
@@ -133,7 +133,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isGreaterThan(PHP_INT_MAX);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notGreaterThan)
                 ->mock($locale)->call('_')->withArguments('%s is not greater than %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(PHP_INT_MAX)->once
@@ -141,7 +141,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isGreaterThan(- PHP_INT_MAX, $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -154,7 +154,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isGreaterThanOrEqualTo(rand(-PHP_INT_MAX, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if($asserter->setWith(PHP_INT_MAX))
@@ -175,7 +175,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isGreaterThanOrEqualTo(PHP_INT_MAX);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notGreaterThanOrEqualTo)
                 ->mock($locale)->call('_')->withArguments('%s is not greater than or equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(PHP_INT_MAX)->once
@@ -183,7 +183,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isGreaterThanOrEqualTo(PHP_INT_MAX, $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -196,7 +196,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isLessThan(rand(-PHP_INT_MAX, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if($asserter->setWith(0))
@@ -216,7 +216,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isLessThan(- PHP_INT_MAX);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notLessThan)
                 ->mock($locale)->call('_')->withArguments('%s is not less than %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(- PHP_INT_MAX)->once
@@ -224,7 +224,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isLessThan(PHP_INT_MAX, $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -237,7 +237,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isLessThanOrEqualTo(rand(-PHP_INT_MAX, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Value is undefined')
 
             ->if($asserter->setWith(0))
@@ -258,7 +258,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isLessThanOrEqualTo(- PHP_INT_MAX);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notLessThanOrEqualTo)
                 ->mock($locale)->call('_')->withArguments('%s is not less than or equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(- PHP_INT_MAX)->once
@@ -266,7 +266,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isLessThanOrEqualTo(- PHP_INT_MAX, $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -293,7 +293,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isZero();
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notZero . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, 0)->once
                 ->mock($diff)
@@ -303,7 +303,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isZero;
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notZero . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, 0)->twice
                 ->mock($diff)
@@ -313,7 +313,7 @@ class integer extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isZero($failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage . PHP_EOL . $diffValue)
                 ->mock($diff)
                     ->call('setExpected')->withArguments(0)->thrice

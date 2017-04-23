@@ -15,13 +15,13 @@ class prompt extends atoum\test
             ->if($this->newTestedInstance)
             ->then
                 ->string($this->testedInstance->getValue())->isEmpty()
-                ->object($this->testedInstance->getColorizer())->isInstanceOf('mageekguy\atoum\cli\colorizer')
+                ->object($this->testedInstance->getColorizer())->isInstanceOf(atoum\cli\colorizer::class)
                 ->variable($this->testedInstance->getColorizer()->getForeground())->isNull()
                 ->variable($this->testedInstance->getColorizer()->getBackground())->isNull()
             ->if($this->newTestedInstance($value = uniqid()))
             ->then
                 ->string($this->testedInstance->getValue())->isEqualTo($value)
-                ->object($this->testedInstance->getColorizer())->isInstanceOf('mageekguy\atoum\cli\colorizer')
+                ->object($this->testedInstance->getColorizer())->isInstanceOf(atoum\cli\colorizer::class)
                 ->variable($this->testedInstance->getColorizer()->getForeground())->isNull()
                 ->variable($this->testedInstance->getColorizer()->getBackground())->isNull()
             ->if($this->newTestedInstance($value = uniqid(), $colorizer = new cli\colorizer()))

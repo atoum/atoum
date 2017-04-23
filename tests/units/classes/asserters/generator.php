@@ -13,7 +13,7 @@ class generator extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\asserters\iterator');
+        $this->testedClass->extends(atoum\asserters\iterator::class);
     }
 
     public function test__construct()
@@ -57,21 +57,21 @@ class generator extends atoum\test
             ->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
 
             ->when($yieldAsserter = $asserter->yields)
-                ->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
+                ->object($yieldAsserter)->isInstanceOf(atoum\asserters\variable::class)
             ->then($proxiedAsserter = $yieldAsserter->variable)
-                ->object($proxiedAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator\asserterProxy')
+                ->object($proxiedAsserter)->isInstanceOf(atoum\asserters\generator\asserterProxy::class)
                 ->integer($proxiedAsserter->getValue())->isEqualTo(1)
 
             ->when($yieldAsserter = $asserter->yields)
-                ->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
+                ->object($yieldAsserter)->isInstanceOf(atoum\asserters\variable::class)
             ->then($proxiedAsserter = $yieldAsserter->variable)
-                ->object($proxiedAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator\asserterProxy')
+                ->object($proxiedAsserter)->isInstanceOf(atoum\asserters\generator\asserterProxy::class)
                 ->integer($proxiedAsserter->getValue())->isEqualTo(2)
 
             ->exception(function () use ($asserter) {
                 $asserter->returns;
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                ->isInstanceOf(atoum\exceptions\logic::class)
                 ->hasMessage('The returns asserter could only be used with PHP>=7.0')
         ;
     }
@@ -106,21 +106,21 @@ PHP
                 ->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
 
                 ->when($yieldAsserter = $asserter->yields)
-                    ->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator')
+                    ->object($yieldAsserter)->isInstanceOf(atoum\asserters\generator::class)
                 ->then($proxyfiedAsserter = $yieldAsserter->variable)
-                    ->object($proxyfiedAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator\asserterProxy')
+                    ->object($proxyfiedAsserter)->isInstanceOf(atoum\asserters\generator\asserterProxy::class)
                     ->integer($proxyfiedAsserter->getValue())->isEqualTo(1)
 
                 ->when($yieldAsserter = $asserter->yields)
-                    ->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator')
+                    ->object($yieldAsserter)->isInstanceOf(atoum\asserters\generator::class)
                 ->then($proxyfiedAsserter = $yieldAsserter->variable)
-                    ->object($proxyfiedAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator\asserterProxy')
+                    ->object($proxyfiedAsserter)->isInstanceOf(atoum\asserters\generator\asserterProxy::class)
                     ->integer($proxyfiedAsserter->getValue())->isEqualTo(2)
 
                 ->when($returnedAsserter = $asserter->returns)
-                    ->object($returnedAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator')
+                    ->object($returnedAsserter)->isInstanceOf(atoum\asserters\generator::class)
                 ->then($proxyfiedAsserter = $returnedAsserter->variable)
-                    ->object($proxyfiedAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator\asserterProxy')
+                    ->object($proxyfiedAsserter)->isInstanceOf(atoum\asserters\generator\asserterProxy::class)
                     ->integer($proxyfiedAsserter->getValue())->isEqualTo(42)
 
             ->assert('Use return before all yields')
@@ -132,7 +132,7 @@ PHP
                     ->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
 
                 ->when($yieldAsserter = $asserter->yields)
-                    ->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator')
+                    ->object($yieldAsserter)->isInstanceOf(atoum\asserters\generator::class)
                 ->then($proxyfiedAsserter = $yieldAsserter->variable)
                     ->integer($proxyfiedAsserter->getValue())->isEqualTo(1)
 
@@ -140,7 +140,7 @@ PHP
                 ->exception(function () use ($asserter) {
                     $asserter->returns;
                 })
-                    ->isInstanceOf('\Exception')
+                    ->isInstanceOf(\exception::class)
                     ->hasMessage("Cannot get return value of a generator that hasn't returned")
         ;
     }
@@ -162,15 +162,15 @@ PHP
                 ->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
 
             ->when($yieldAsserter = $asserter->yields)
-                ->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
+                ->object($yieldAsserter)->isInstanceOf(atoum\asserters\variable::class)
             ->then($proxyfiedAsserter = $yieldAsserter->variable)
-                ->object($proxyfiedAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator\asserterProxy')
+                ->object($proxyfiedAsserter)->isInstanceOf(atoum\asserters\generator\asserterProxy::class)
                 ->integer($proxyfiedAsserter->getValue())->isEqualTo(1)
 
             ->when($yieldAsserter = $asserter->yields)
-                ->object($yieldAsserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
+                ->object($yieldAsserter)->isInstanceOf(atoum\asserters\variable::class)
             ->then($proxyfiedAsserter = $yieldAsserter->variable)
-                ->object($proxyfiedAsserter)->isInstanceOf('\mageekguy\atoum\asserters\generator\asserterProxy')
+                ->object($proxyfiedAsserter)->isInstanceOf(atoum\asserters\generator\asserterProxy::class)
                 ->integer($proxyfiedAsserter->getValue())->isEqualTo(2)
         ;
     }
@@ -200,28 +200,28 @@ PHP
                 ->exception(function () use ($asserter) {
                     $asserter->setWith(true);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage("boolean(true) is not an object")
 
             ->then
                 ->exception(function () use ($asserter, $notAGenerator) {
                     $asserter->setWith($notAGenerator());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage("null is not an object")
 
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->setWith(new \stdClass());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage("object(stdClass) is not an iterator")
 
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->setWith(new \ArrayIterator());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage("object(ArrayIterator) is not a generator")
         ;
     }

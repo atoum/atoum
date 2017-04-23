@@ -12,8 +12,8 @@ class runtime extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('runtimeException')
-                ->implements('mageekguy\atoum\exception')
+                ->extends(\runtimeException::class)
+                ->implements(atoum\exception::class)
         ;
     }
 }

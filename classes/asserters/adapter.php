@@ -24,14 +24,14 @@ class adapter extends call
         return $this->setFunction($function);
     }
 
-    public function withArguments()
+    public function withArguments(...$arguments)
     {
-        return $this->setArguments(func_get_args());
+        return $this->setArguments($arguments);
     }
 
-    public function withIdenticalArguments()
+    public function withIdenticalArguments(...$arguments)
     {
-        return $this->setIdenticalArguments(func_get_args());
+        return $this->setIdenticalArguments($arguments);
     }
 
     public function withAtLeastArguments(array $arguments)

@@ -11,7 +11,7 @@ class file extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\mock\stream');
+        $this->testedClass->extends(atoum\mock\stream::class);
     }
 
     public function testGet()
@@ -19,7 +19,7 @@ class file extends atoum\test
         $this
             ->if($file = testedClass::get())
             ->then
-                ->object($file)->isInstanceOf('mageekguy\atoum\mock\stream\controller')
+                ->object($file)->isInstanceOf(atoum\mock\stream\controller::class)
                 ->castToString($file)->isNotEmpty()
                 ->string(file_get_contents($file))->isEmpty()
                 ->variable($fileResource = fopen($file, 'r'))->isNotEqualTo(false)
@@ -30,7 +30,7 @@ class file extends atoum\test
                 ->boolean(unlink($file))->isTrue()
             ->if($file = testedClass::get($path = uniqid()))
             ->then
-                ->object($file)->isInstanceOf('mageekguy\atoum\mock\stream\controller')
+                ->object($file)->isInstanceOf(atoum\mock\stream\controller::class)
                 ->castToString($file)->isEqualTo(testedClass::defaultProtocol . '://' . $path)
                 ->string(file_get_contents($file))->isEmpty()
                 ->variable($fileResource = fopen($file, 'r'))->isNotEqualTo(false)

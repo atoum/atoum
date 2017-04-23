@@ -11,7 +11,7 @@ class eol extends atoum
 {
     public function testClass()
     {
-        $this->testedClass->implements('mageekguy\atoum\writer\decorator');
+        $this->testedClass->implements(atoum\writer\decorator::class);
     }
 
     public function testDecorate()

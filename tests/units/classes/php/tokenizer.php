@@ -13,7 +13,7 @@ class tokenizer extends atoum\test
     {
         $this
             ->testedClass
-                ->implements('IteratorAggregate')
+                ->implements(\iteratorAggregate::class)
         ;
     }
 
@@ -22,7 +22,7 @@ class tokenizer extends atoum\test
         $this
             ->if($this->newTestedInstance)
             ->then
-                ->object($iterator = $this->testedInstance->getIterator())->isInstanceOf('mageekguy\atoum\php\tokenizer\iterator')
+                ->object($iterator = $this->testedInstance->getIterator())->isInstanceOf(atoum\php\tokenizer\iterator::class)
                 ->sizeOf($iterator)->isZero()
         ;
     }
@@ -53,228 +53,228 @@ class tokenizer extends atoum\test
             ->assert('Tokenizing open and close PHP tags')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php ?><?php ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php ?>foo<?php ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
             ->assert('Tokenizing namespace')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php namespace foo; ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getNamespace(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace foo')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php namespace foo ; ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getNamespace(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace foo ')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php namespace foo?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getNamespace(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace foo')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php namespace foo ?>'))->isTestedInstance
                 ->castToString($this->testedInstance->getIterator())->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getNamespace(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace foo ')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php namespace foo; namespace bar; ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getNamespace(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace foo')
                 ->object($this->testedInstance->getIterator()->getNamespace(1))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace bar')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php namespace foo?><?php namespace bar?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getNamespace(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace foo')
                 ->object($this->testedInstance->getIterator()->getNamespace(1))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace bar')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php namespace foo ?><?php namespace bar ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getNamespace(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace foo ')
                 ->object($this->testedInstance->getIterator()->getNamespace(1))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace bar ')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php namespace foo {} ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getNamespace(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace foo {}')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php namespace foo {} namespace bar {} ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getNamespace(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace foo {}')
                 ->object($this->testedInstance->getIterator()->getNamespace(1))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpNamespace::class)
                     ->toString
                         ->isEqualTo('namespace bar {}')
             ->assert('Tokenizing constant definition in script')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php const foo = \'foo\'; ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getConstant(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpConstant')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpConstant::class)
                     ->toString
                         ->isEqualTo('const foo = \'foo\'')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php const foo = \'foo\'?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getConstant(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpConstant')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpConstant::class)
                     ->toString
                         ->isEqualTo('const foo = \'foo\'')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php const foo = \'foo\''))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getConstant(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpConstant')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpConstant::class)
                     ->toString
                         ->isEqualTo('const foo = \'foo\'')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php const foo = \'foo\', bar = \'bar\'; ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getConstant(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpConstant')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpConstant::class)
                     ->toString
                         ->isEqualTo('const foo = \'foo\', bar = \'bar\'')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php const foo = \'foo\'?><?php const bar = \'bar\'; ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getConstant(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpConstant')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpConstant::class)
                     ->toString
                         ->isEqualTo('const foo = \'foo\'')
                 ->object($this->testedInstance->getIterator()->getConstant(1))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpConstant')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpConstant::class)
                     ->toString
                         ->isEqualTo('const bar = \'bar\'')
             ->assert('Tokenizing namespace importation in script')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php use foo\bar; ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getImportation(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpImportation::class)
                     ->toString
                         ->isEqualTo('use foo\bar')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php use foo\bar?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getImportation(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpImportation::class)
                     ->toString->
                         isEqualTo('use foo\bar')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php use foo\bar'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getImportation(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpImportation::class)
                     ->toString
                         ->isEqualTo('use foo\bar')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php use foo\bar; use bar\foo; ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getImportation(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpImportation::class)
                     ->toString
                         ->isEqualTo('use foo\bar')
                 ->object($this->testedInstance->getIterator()->getImportation(1))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpImportation::class)
                     ->toString
                         ->isEqualTo('use bar\foo')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php use foo\bar, bar\foo; ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getImportation(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpImportation::class)
                     ->toString
                         ->isEqualTo('use foo\bar, bar\foo')
             ->assert('Tokenizing namespace importation with aliasing in script')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php use foo\bar as bar; ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->object($this->testedInstance->getIterator()->getImportation(0))
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpImportation::class)
                     ->toString
                         ->isEqualTo('use foo\bar as bar')
             ->assert('Tokenizing function definition in script')
                 ->object($this->testedInstance->resetIterator()->tokenize($php = '<?php function foo() {} ?>'))->isTestedInstance
                 ->object($this->testedInstance->getIterator())
-                    ->isInstanceOf('mageekguy\atoum\php\tokenizer\iterators\phpScript')
+                    ->isInstanceOf(atoum\php\tokenizer\iterators\phpScript::class)
                     ->toString
                         ->isEqualTo($php)
                 ->castToString($this->testedInstance->getIterator()->getFunction(0))

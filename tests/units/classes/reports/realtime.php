@@ -4,14 +4,13 @@ namespace mageekguy\atoum\tests\units\reports;
 
 require __DIR__ . '/../../runner.php';
 
-use mageekguy\atoum
-;
+use mageekguy\atoum;
 
 class realtime extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report');
+        $this->testedClass->extends(atoum\report::class);
     }
 
     public function testIsOverridableBy()

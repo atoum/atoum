@@ -11,7 +11,7 @@ class score extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->isSubClassOf('mageekguy\atoum\score');
+        $this->testedClass->isSubClassOf(atoum\score::class);
     }
 
     public function test__construct()

@@ -13,7 +13,7 @@ class mail extends atoum\test
     {
         $this
             ->class($this->getTestedClassName())
-                ->extends('mageekguy\atoum\mailer')
+                ->extends(atoum\mailer::class)
             ->string(mailers\mail::eol)->isEqualTo("\r\n")
         ;
     }
@@ -122,35 +122,35 @@ class mail extends atoum\test
                 ->exception(function () use ($mail) {
                     $mail->send(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('To is undefined')
             ->if($mail->addTo($to = uniqid()))
             ->then
                 ->exception(function () use ($mail) {
                     $mail->send(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Subject is undefined')
             ->if($mail->setSubject($subject = uniqid()))
             ->then
                 ->exception(function () use ($mail) {
                     $mail->send(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('From is undefined')
             ->if($mail->setFrom($from = uniqid()))
             ->then
                 ->exception(function () use ($mail) {
                     $mail->send(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Reply to is undefined')
             ->if($mail->setReplyTo($replyTo = uniqid()))
             ->then
                 ->exception(function () use ($mail) {
                     $mail->send(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('X-mailer is undefined')
             ->if($mail->setXMailer($mailer = uniqid()))
             ->then

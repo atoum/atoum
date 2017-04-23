@@ -11,7 +11,7 @@ class treemap extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\runner\coverage\cli');
+        $this->testedClass->extends(atoum\report\fields\runner\coverage\cli::class);
     }
 
     public function test__construct()
@@ -56,7 +56,7 @@ class treemap extends atoum\test
                     $treemap->setReflectionClassFactory(function () {
                     });
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Reflection class factory must take one argument')
         ;
     }

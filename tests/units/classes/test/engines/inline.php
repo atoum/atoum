@@ -11,7 +11,7 @@ class inline extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\test\engine');
+        $this->testedClass->extends(atoum\test\engine::class);
     }
 
     public function testIsAsynchronous()
@@ -55,13 +55,13 @@ class inline extends atoum\test
         $this
             ->if($engine = new engines\inline())
             ->then
-                ->object($engine->getScore())->isInstanceof('mageekguy\atoum\score')
+                ->object($engine->getScore())->isInstanceof(atoum\score::class)
             ->if($test = new \mock\mageekguy\atoum\test())
             ->and($test->getMockController()->getCurrentMethod = $method = uniqid())
             ->and($test->getMockController()->runTestMethod = $test)
             ->and($engine->run($test))
             ->then
-                ->object($engine->getScore())->isInstanceOf('mageekguy\atoum\test\score')
+                ->object($engine->getScore())->isInstanceOf(atoum\test\score::class)
         ;
     }
 }

@@ -10,7 +10,7 @@ class mysqlDateTime extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->isSubclassOf('mageekguy\atoum\asserters\dateTime');
+        $this->testedClass->isSubclassOf(atoum\asserters\dateTime::class);
     }
 
     public function testSetWith()
@@ -29,7 +29,7 @@ class mysqlDateTime extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notMysqlDateTime)
                 ->mock($locale)->call('_')->withArguments('%s is not in format Y-m-d H:i:s', $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($value)->once

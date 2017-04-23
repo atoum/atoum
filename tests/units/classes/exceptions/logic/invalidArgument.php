@@ -12,9 +12,9 @@ class invalidArgument extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('logicException')
-                ->extends('invalidArgumentException')
-                ->implements('mageekguy\atoum\exception')
+                ->extends(\logicException::class)
+                ->extends(\invalidArgumentException::class)
+                ->implements(atoum\exception::class)
         ;
     }
 }

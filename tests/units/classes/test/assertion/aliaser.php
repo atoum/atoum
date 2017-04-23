@@ -11,7 +11,7 @@ class aliaser extends atoum
 {
     public function testClass()
     {
-        $this->testedClass->implements('arrayAccess');
+        $this->testedClass->implements(\arrayAccess::class);
     }
 
     public function test__construct()

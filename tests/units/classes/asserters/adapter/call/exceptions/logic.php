@@ -11,6 +11,6 @@ class logic extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\exceptions\logic');
+        $this->testedClass->extends(atoum\exceptions\logic::class);
     }
 }

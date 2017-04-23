@@ -23,7 +23,7 @@ class score extends atoum\test
                 ->array($score->getMemoryUsages())->isEmpty()
                 ->array($score->getUncompletedMethods())->isEmpty()
                 ->array($score->getSkippedMethods())->isEmpty()
-                ->object($score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
+                ->object($score->getCoverage())->isInstanceOf(atoum\score\coverage::class)
             ->and($score = new atoum\score($coverage = new atoum\score\coverage()))
             ->then
                 ->integer($score->getPassNumber())->isZero()
@@ -907,7 +907,7 @@ class score extends atoum\test
         $this
             ->if($score = new atoum\score())
             ->then
-                ->object($coverage = $score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
+                ->object($coverage = $score->getCoverage())->isInstanceOf(atoum\score\coverage::class)
         ;
     }
 
@@ -1179,7 +1179,7 @@ class score extends atoum\test
             ->exception(function () use ($score, & $key) {
                 $score->deleteError($key = rand(- PHP_INT_MAX, PHP_INT_MAX));
             })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                 ->hasMessage('Error key \'' . $key . '\' does not exist')
             ->if($score->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type = rand(1, PHP_INT_MAX), $message = uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
             ->then

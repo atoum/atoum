@@ -38,7 +38,7 @@ class superglobals extends atoum\test
                 ->exception(function () use ($superglobals, & $name) {
                     $superglobals->{$name = uniqid()} = uniqid();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('PHP superglobal \'$' . $name . '\' does not exist')
             ->if($superglobals->GLOBALS = ($variable = uniqid()))
             ->then

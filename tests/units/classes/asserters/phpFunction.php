@@ -11,7 +11,7 @@ class phpFunction extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\asserters\adapter\call');
+        $this->testedClass->extends(atoum\asserters\adapter\call::class);
     }
 
     public function testSetWithTest()
@@ -58,13 +58,13 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->wasCalled();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Function is undefined')
 
                 ->exception(function () use ($asserter) {
                     $asserter->wasCalled;
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Function is undefined')
 
             ->if($this->testedInstance->setWith(uniqid()))
@@ -91,7 +91,7 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->wasCalledWithArguments();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Function is undefined')
 
             ->if(
@@ -107,7 +107,7 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->once();
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
 
             ->if(
                 $this->testedInstance->setWithTest($this),
@@ -133,7 +133,7 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->wasCalledWithIdenticalArguments();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Function is undefined')
 
             ->if(
@@ -149,7 +149,7 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->once();
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
 
             ->given(
                 $test = new \mock\atoum\test(),
@@ -164,7 +164,7 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->once();
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
 
             ->if(
                 eval('\\' . $this->getTestedClassNamespace() . '\foo(1, 2);'),
@@ -185,7 +185,7 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->wasCalledWithAnyArguments();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Function is undefined')
 
             ->if(
@@ -207,7 +207,7 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->wasCalledWithoutAnyArgument();
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Function is undefined')
 
             ->if(

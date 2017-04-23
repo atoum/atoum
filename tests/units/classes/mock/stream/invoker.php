@@ -2,6 +2,7 @@
 
 namespace mageekguy\atoum\tests\units\mock\stream;
 
+use mageekguy\atoum;
 use mageekguy\atoum\mock\stream;
 use mageekguy\atoum\test;
 
@@ -11,7 +12,7 @@ class invoker extends test
 {
     public function testClass()
     {
-        $this->testedClass->isSubclassOf('mageekguy\atoum\test\adapter\invoker');
+        $this->testedClass->isSubclassOf(atoum\test\adapter\invoker::class);
     }
 
     public function test__construct()

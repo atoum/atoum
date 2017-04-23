@@ -15,7 +15,7 @@ class phing extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\runner\duration\cli') ;
+        $this->testedClass->extends(atoum\report\fields\runner\duration\cli::class) ;
     }
 
     public function test__construct()

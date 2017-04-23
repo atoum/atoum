@@ -12,7 +12,7 @@ class set extends atoum\test
     public function testClass()
     {
         $this
-            ->testedClass->extends('mageekguy\atoum\test\data\provider\aggregator');
+            ->testedClass->extends(atoum\test\data\provider\aggregator::class);
     }
 
     public function test__construct(provider $provider)

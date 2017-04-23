@@ -18,7 +18,7 @@ class html extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\runner\coverage\cli');
+        $this->testedClass->extends(atoum\report\fields\runner\coverage\cli::class);
     }
 
     public function test__construct()
@@ -37,7 +37,7 @@ class html extends atoum\test
                 ->object($field->getPhp())->isEqualTo(new atoum\php())
                 ->object($field->getAdapter())->isEqualTo(new atoum\adapter())
                 ->object($field->getLocale())->isEqualTo(new locale())
-                ->object($field->getTemplateParser())->isInstanceOf('mageekguy\atoum\template\parser')
+                ->object($field->getTemplateParser())->isInstanceOf(atoum\template\parser::class)
                 ->variable($field->getCoverage())->isNull()
                 ->array($field->getSrcDirectories())->isEmpty()
                 ->array($field->getEvents())->isEqualTo([atoum\runner::runStop])
@@ -386,8 +386,8 @@ class html extends atoum\test
         $this
             ->if($field = new testedClass(uniqid(), __DIR__))
             ->then
-                ->object($recursiveIteratorIterator = $field->getDestinationDirectoryIterator())->isInstanceOf('recursiveIteratorIterator')
-                ->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('recursiveDirectoryIterator')
+                ->object($recursiveIteratorIterator = $field->getDestinationDirectoryIterator())->isInstanceOf(\recursiveIteratorIterator::class)
+                ->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf(\recursiveDirectoryIterator::class)
                 ->string($recursiveDirectoryIterator->current()->getPathInfo()->getPathname())->isEqualTo(__DIR__)
         ;
     }
@@ -522,7 +522,7 @@ class html extends atoum\test
                     $field->setReflectionClassInjector(function () {
                     });
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Reflection class injector must take one argument')
         ;
     }
@@ -532,7 +532,7 @@ class html extends atoum\test
         $this
             ->if($field = new testedClass(uniqid(), uniqid(), uniqid()))
             ->then
-                ->object($field->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
+                ->object($field->getReflectionClass(__CLASS__))->isInstanceOf(\reflectionClass::class)
                 ->string($field->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
             ->if($field->setReflectionClassInjector(function ($class) {
             }))
@@ -540,7 +540,7 @@ class html extends atoum\test
                 ->exception(function () use ($field) {
                     $field->getReflectionClass(uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+                    ->isInstanceOf(atoum\exceptions\runtime\unexpectedValue::class)
                     ->hasMessage('Reflection class injector must return a \reflectionClass instance')
         ;
     }

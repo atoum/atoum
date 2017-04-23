@@ -12,8 +12,8 @@ class logic extends atoum\test
     {
         $this
             ->testedClass
-                ->extends('logicException')
-                ->implements('mageekguy\atoum\exception')
+                ->extends(\logicException::class)
+                ->implements(atoum\exception::class)
         ;
     }
 }

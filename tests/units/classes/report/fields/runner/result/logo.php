@@ -11,7 +11,7 @@ class logo extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\runner\result\cli');
+        $this->testedClass->extends(atoum\report\fields\runner\result\cli::class);
     }
 
     public function test__toString()

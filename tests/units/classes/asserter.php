@@ -13,7 +13,7 @@ class asserter extends atoum
     {
         $this->testedClass
             ->isAbstract
-            ->implements('mageekguy\atoum\asserter\definition')
+            ->implements(atoum\asserter\definition::class)
         ;
     }
 

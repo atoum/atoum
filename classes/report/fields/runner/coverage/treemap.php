@@ -54,7 +54,7 @@ class treemap extends report\fields\runner\coverage\cli
                     'children' => []
                 ];
 
-                foreach (array_keys($this->coverage->getClasses()) as $className) {
+                foreach ($this->coverage->getClasses() as $className => $_) {
                     $node = & $nodes;
 
                     $class = new \reflectionClass($className);

@@ -12,7 +12,7 @@ class source extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->hasInterface('outerIterator');
+        $this->testedClass->hasInterface(\outerIterator::class);
     }
 
     public function test__construct()
@@ -27,12 +27,12 @@ class source extends atoum\test
             ->then
                 ->string($iterator->getSourceDirectory())->isEqualTo($sourceDirectory)
                 ->variable($iterator->getPharDirectory())->isNull()
-                ->object($iterator->getInnerIterator())->isInstanceOf('recursiveIteratorIterator')
+                ->object($iterator->getInnerIterator())->isInstanceOf(\recursiveIteratorIterator::class)
             ->if($iterator = new iterators\recursives\atoum\source($sourceDirectory, $pharDirectory = uniqid()))
             ->then
                 ->string($iterator->getSourceDirectory())->isEqualTo($sourceDirectory)
                 ->string($iterator->getPharDirectory())->isEqualTo($pharDirectory)
-                ->object($iterator->getInnerIterator())->isInstanceOf('recursiveIteratorIterator')
+                ->object($iterator->getInnerIterator())->isInstanceOf(\recursiveIteratorIterator::class)
         ;
     }
 

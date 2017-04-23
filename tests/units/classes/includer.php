@@ -67,7 +67,7 @@ class includer extends atoum\test
                 ->exception(function () use ($includer, $unknownFile) {
                     $includer->includePath($unknownFile);
                 })
-                    ->isInstanceOf('mageekguy\atoum\includer\exception')
+                    ->isInstanceOf(atoum\includer\exception::class)
                     ->hasMessage('Unable to include \'' . $unknownFile . '\'')
                 ->array($includer->getErrors())->isNotEmpty()
                 ->adapter($adapter)

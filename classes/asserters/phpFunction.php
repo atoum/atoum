@@ -32,14 +32,14 @@ class phpFunction extends adapter\call
         return $this->unsetArguments();
     }
 
-    public function wasCalledWithArguments()
+    public function wasCalledWithArguments(...$arguments)
     {
-        return $this->setArguments(func_get_args());
+        return $this->setArguments($arguments);
     }
 
-    public function wasCalledWithIdenticalArguments()
+    public function wasCalledWithIdenticalArguments(...$arguments)
     {
-        return $this->setIdenticalArguments(func_get_args());
+        return $this->setIdenticalArguments($arguments);
     }
 
     public function wasCalledWithAnyArguments()

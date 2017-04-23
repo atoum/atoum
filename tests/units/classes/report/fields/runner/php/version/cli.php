@@ -14,7 +14,7 @@ class cli extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\runner\php\version');
+        $this->testedClass->extends(atoum\report\fields\runner\php\version::class);
     }
 
     public function test__construct()

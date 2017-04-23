@@ -12,8 +12,8 @@ class exception extends atoum
     public function testClass()
     {
         $this->testedClass
-            ->extends('exception')
-            ->implements('mageekguy\atoum\exception')
+            ->extends(\exception::class)
+            ->implements(atoum\exception::class)
         ;
     }
 }

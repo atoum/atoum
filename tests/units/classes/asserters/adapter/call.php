@@ -13,7 +13,7 @@ class call extends atoum
     {
         $this->testedClass
             ->isAbstract
-            ->extends('mageekguy\atoum\asserter')
+            ->extends(atoum\asserter::class)
         ;
     }
 
@@ -35,7 +35,7 @@ class call extends atoum
                 ->exception(function () use ($asserter) {
                     $asserter->{rand(0, PHP_INT_MAX)};
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Adapter is undefined')
 
             ->given($adapter = new \mock\atoum\test\adapter())
@@ -44,7 +44,7 @@ class call extends atoum
                 ->exception(function () use ($asserter) {
                     $asserter->{rand(0, PHP_INT_MAX)};
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Call is undefined')
 
             ->if(
@@ -61,7 +61,7 @@ class call extends atoum
                 ->exception(function () use ($asserter, & $callNumber) {
                     $asserter->{$callNumber = rand(1, PHP_INT_MAX)};
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, $callNumber)->once
 
@@ -75,7 +75,7 @@ class call extends atoum
                 ->exception(function () use ($asserter) {
                     $asserter->{0};
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualToAsString)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->once
 
@@ -90,7 +90,7 @@ class call extends atoum
                 ->exception(function () use ($asserter, $count) {
                     $asserter->{$count + (1 / 3)};
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Argument 1 of exactly must be an integer')
         ;
     }
@@ -103,7 +103,7 @@ class call extends atoum
                 ->exception(function () use ($asserter) {
                     $asserter->exactly(2);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserters\adapter\call\exceptions\logic')
+                    ->isInstanceOf(atoum\asserters\adapter\call\exceptions\logic::class)
                     ->hasMessage('Adapter is undefined')
 
             ->if($asserter->setWith($adapter = new \mock\atoum\test\adapter()))
@@ -111,7 +111,7 @@ class call extends atoum
                 ->exception(function () use ($asserter) {
                     $asserter->exactly(2);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserters\adapter\call\exceptions\logic')
+                    ->isInstanceOf(atoum\asserters\adapter\call\exceptions\logic::class)
                     ->hasMessage('Call is undefined')
 
             ->if(
@@ -128,14 +128,14 @@ class call extends atoum
                 ->exception(function () use ($asserter, & $callNumber) {
                     $asserter->exactly($callNumber = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, $callNumber)->once
 
                 ->exception(function () use ($asserter, & $callNumber, & $failMessage) {
                     $asserter->exactly($callNumber = rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
                 ->object($this->testedInstance->exactly(0))->isTestedInstance
@@ -150,14 +150,14 @@ class call extends atoum
                 ->exception(function () use ($asserter) {
                     $asserter->exactly(0);
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualToAsString)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->exactly(0, $failMessage = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
              ->if(
@@ -171,7 +171,7 @@ class call extends atoum
                 ->exception(function () use ($asserter, $count) {
                     $asserter->{$count + (1 / 3)};
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                    ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
                     ->hasMessage('Argument 1 of exactly must be an integer')
         ;
     }

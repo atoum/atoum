@@ -13,7 +13,7 @@ class tap extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\report\fields\event');
+        $this->testedClass->extends(atoum\report\fields\event::class);
     }
 
     public function test__construct()

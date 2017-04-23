@@ -30,7 +30,7 @@ class generator extends atoum\test
                 ->object($generator->getAdapter())->isIdenticalTo($adapter)
                 ->object($generator->setAdapter())->isIdenticalTo($generator)
                 ->object($generator->getAdapter())
-                    ->isInstanceOf('mageekguy\atoum\adapter')
+                    ->isInstanceOf(atoum\adapter::class)
                     ->isNotIdenticalTo($adapter)
                     ->isEqualTo(new atoum\adapter())
         ;
@@ -46,7 +46,7 @@ class generator extends atoum\test
                 ->object($generator->getReflectionClassFactory())->isIdenticalTo($factory)
                 ->object($generator->setReflectionClassFactory())->isIdenticalTo($generator)
                 ->object($defaultReflectionClassFactory = $generator->getReflectionClassFactory())
-                    ->isInstanceOf('closure')
+                    ->isInstanceOf(\closure::class)
                     ->isNotIdenticalTo($factory)
                 ->object($defaultReflectionClassFactory($this))->isEqualTo(new \reflectionClass($this))
         ;
@@ -2580,17 +2580,17 @@ class generator extends atoum\test
                 ->exception(function () use ($generator) {
                     $generator->generate('');
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Class name \'\' is invalid')
                 ->exception(function () use ($generator) {
                     $generator->generate('\\');
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Class name \'\\\' is invalid')
                 ->exception(function () use ($generator, & $class) {
                     $generator->generate($class = ('\\' . uniqid() . '\\'));
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Class name \'' . $class . '\' is invalid')
             ->if($adapter = new atoum\test\adapter())
             ->and($adapter->class_exists = false)
@@ -2601,27 +2601,27 @@ class generator extends atoum\test
                 ->object($generator->generate($class))->isIdenticalTo($generator)
                 ->class('\mock\\' . $class)
                     ->hasNoParent()
-                    ->hasInterface('mageekguy\atoum\mock\aggregator')
+                    ->hasInterface(atoum\mock\aggregator::class)
             ->if($class = '\\' . uniqid('unknownClass'))
             ->then
                 ->object($generator->generate($class))->isIdenticalTo($generator)
                 ->class('\mock' . $class)
                     ->hasNoParent()
-                    ->hasInterface('mageekguy\atoum\mock\aggregator')
+                    ->hasInterface(atoum\mock\aggregator::class)
             ->if($adapter->class_exists = true)
             ->and($class = uniqid())
             ->then
                 ->exception(function () use ($generator, $class) {
                     $generator->generate($class);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Class \'\mock\\' . $class . '\' already exists')
             ->if($class = '\\' . uniqid())
             ->then
                 ->exception(function () use ($generator, $class) {
                     $generator->generate($class);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Class \'\mock' . $class . '\' already exists')
             ->if($class = uniqid())
             ->and($adapter->class_exists = function ($arg) use ($class) {
@@ -2640,7 +2640,7 @@ class generator extends atoum\test
                 ->exception(function () use ($generator, $class) {
                     $generator->generate($class);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Class \'\\' . $class . '\' is final, unable to mock it')
             ->if($class = '\\' . uniqid())
             ->and($adapter->class_exists = function ($arg) use ($class) {
@@ -2650,7 +2650,7 @@ class generator extends atoum\test
                 ->exception(function () use ($generator, $class) {
                     $generator->generate($class);
                 })
-                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Class \'' . $class . '\' is final, unable to mock it')
             ->if($reflectionClassController->isFinal = false)
             ->and($generator = new testedClass())
@@ -2658,7 +2658,7 @@ class generator extends atoum\test
                 ->object($generator->generate(__CLASS__))->isIdenticalTo($generator)
                 ->class('\mock\\' . __CLASS__)
                     ->hasParent(__CLASS__)
-                    ->hasInterface('mageekguy\atoum\mock\aggregator')
+                    ->hasInterface(atoum\mock\aggregator::class)
             ->if($generator = new testedClass())
             ->and($generator->shunt('__construct'))
             ->then

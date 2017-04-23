@@ -12,7 +12,7 @@ class phpResource extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\asserters\variable');
+        $this->testedClass->extends(atoum\asserters\variable::class);
     }
 
     public function test__construct(asserter\generator $generator, variable\analyzer $analyzer, atoum\locale $locale)
@@ -48,7 +48,7 @@ class phpResource extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notAResource)
                 ->mock($locale)
                     ->call('_')
@@ -80,7 +80,7 @@ class phpResource extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isOfType('foo');
                 })
-                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notAResource)
                 ->mock($locale)->call('_')->withArguments('%s is not of type %s', $asserter, 0)->once
         ;
@@ -143,6 +143,6 @@ class phpResource extends atoum\test
                 $this->function->get_resource_type = 'fooBar'
             )
             ->then
-                ->object($asserter->type->matches('/^foobar$/i'))->isInstanceOf('mageekguy\atoum\asserters\phpString');
+                ->object($asserter->type->matches('/^foobar$/i'))->isInstanceOf(atoum\asserters\phpString::class);
     }
 }

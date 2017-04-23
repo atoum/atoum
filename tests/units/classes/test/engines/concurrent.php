@@ -11,7 +11,7 @@ class concurrent extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\test\engine');
+        $this->testedClass->extends(atoum\test\engine::class);
     }
 
     public function test__construct()
@@ -19,8 +19,8 @@ class concurrent extends atoum\test
         $this
             ->if($engine = new testedClass())
             ->then
-                ->object($defaultScoreFactory = $engine->getScoreFactory())->isInstanceOf('closure')
-                ->object($defaultScoreFactory())->isInstanceOf('mageekguy\atoum\score')
+                ->object($defaultScoreFactory = $engine->getScoreFactory())->isInstanceOf(\closure::class)
+                ->object($defaultScoreFactory())->isInstanceOf(atoum\score::class)
                 ->object($engine->getPhp())->isEqualTo(new atoum\php())
         ;
     }
@@ -159,7 +159,7 @@ class concurrent extends atoum\test
             ->and($this->calling($php)->getExitCode = $exitCode = uniqid())
             ->and($engine->run($test))
             ->then
-                ->object($score = $engine->getScore())->isInstanceOf('mageekguy\atoum\score')
+                ->object($score = $engine->getScore())->isInstanceOf(atoum\score::class)
                 ->array($score->getUncompletedMethods())->isEqualTo([['file' => $testPath, 'class' => get_class($test), 'method' => $method, 'exitCode' => $exitCode, 'output' => $output]])
             ->if($this->calling($php)->getStdOut = serialize($score))
             ->and($engine->run($test))

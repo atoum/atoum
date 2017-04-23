@@ -16,13 +16,13 @@ class generic extends atoum\test
             ->then
                 ->string($generic->getMetricName())->isEqualTo($metricName)
                 ->string($generic->getMetricLabel())->isEqualTo(ucfirst($metricName))
-                ->object($callback = $generic->getCallback())->isInstanceOf('closure')
+                ->object($callback = $generic->getCallback())->isInstanceOf(\closure::class)
                 ->integer($callback())->isZero()
             ->if($generic = new testedClass($metricName = uniqid(), $metricLabel = uniqid()))
             ->then
                 ->string($generic->getMetricName())->isEqualTo($metricName)
                 ->string($generic->getMetricLabel())->isEqualTo(ucfirst($metricLabel))
-                ->object($callback = $generic->getCallback())->isInstanceOf('closure')
+                ->object($callback = $generic->getCallback())->isInstanceOf(\closure::class)
                 ->integer($callback())->isZero()
             ->if($generic = new testedClass($metricName = uniqid(), $metricLabel = uniqid(), $callback = function () {
             }))

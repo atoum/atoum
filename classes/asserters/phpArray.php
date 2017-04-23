@@ -465,7 +465,7 @@ class phpArray extends variable implements \arrayAccess
         return array_values(
             array_filter(
                 $values,
-                function($value) use ($strict, $equal) {
+                function ($value) use ($strict, $equal) {
                     return in_array($value, $this->value, $strict) === $equal;
                 }
             )

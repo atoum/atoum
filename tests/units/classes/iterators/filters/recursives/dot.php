@@ -12,7 +12,7 @@ class dot extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('\recursiveFilterIterator');
+        $this->testedClass->extends(\recursiveFilterIterator::class);
     }
 
     public function test__construct()
