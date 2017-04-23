@@ -112,8 +112,7 @@ class configurable extends atoum\test
                 ->mock($configurable)
                     ->foreach(testedClass::getSubDirectoryPath(atoum\directory), function ($mock, $path) {
                         $mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->atLeastOnce();
-                    }
-                    )
+                    })
             ->if($configurable = new testedClass(($directory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid()) . DIRECTORY_SEPARATOR . uniqid()))
             ->and($this->calling($configurable)->useConfigFile = function () {
             })
@@ -124,8 +123,7 @@ class configurable extends atoum\test
                 ->mock($configurable)
                     ->foreach(testedClass::getSubDirectoryPath($directory), function ($mock, $path) {
                         $mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->atLeastOnce();
-                    }
-                )
+                    })
             ->if($adapter->is_dir = false)
             ->and($adapter->getcwd = $workingDirectory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid())
             ->then
@@ -133,8 +131,7 @@ class configurable extends atoum\test
                 ->mock($configurable)
                     ->foreach(testedClass::getSubDirectoryPath($workingDirectory), function ($mock, $path) {
                         $mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->atLeastOnce();
-                    }
-                )
+                    })
             ->if($adapter->is_dir = true)
             ->and($adapter->getcwd = $otherWorkingDirectory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid())
             ->and($this->calling($configurable)->useConfigFile->throw = new atoum\includer\exception())
@@ -143,8 +140,7 @@ class configurable extends atoum\test
                 ->mock($configurable)
                     ->foreach(testedClass::getSubDirectoryPath($otherWorkingDirectory), function ($mock, $path) {
                         $mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->atLeastOnce();
-                    }
-                )
+                    })
         ;
     }
 

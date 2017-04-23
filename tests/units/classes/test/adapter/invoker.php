@@ -35,8 +35,7 @@ class invoker extends atoum\test
             ->then
                 ->exception(function () use ($invoker) {
                     $invoker->{uniqid()} = uniqid();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 
             ->if($this->testedInstance->return = $return = uniqid())
@@ -47,8 +46,7 @@ class invoker extends atoum\test
             ->then
                 ->exception(function () use ($invoker) {
                     $invoker->invoke();
-                }
-                )
+                })
                     ->isIdenticalTo($exception)
         ;
     }
@@ -118,8 +116,7 @@ class invoker extends atoum\test
                 ->exception(function () use ($invoker) {
                     $invoker->setClosure(function () {
                     }, - rand(1, PHP_INT_MAX));
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Call number must be greater than or equal to zero')
 
@@ -152,8 +149,7 @@ class invoker extends atoum\test
             ->then
                 ->exception(function () use ($invoker) {
                     $invoker->getClosure(- rand(1, PHP_INT_MAX));
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Call number must be greater than or equal to zero')
                 ->variable($this->testedInstance->getClosure(rand(0, PHP_INT_MAX)))->isNull()
@@ -189,8 +185,7 @@ class invoker extends atoum\test
                 ->exception(function () use ($invoker) {
                     $invoker->closureIsSetForCall(- rand(1, PHP_INT_MAX), function () {
                     });
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Call number must be greater than or equal to zero')
                 ->boolean($this->testedInstance->closureIsSetForCall(rand(0, PHP_INT_MAX)))->isFalse
@@ -224,16 +219,14 @@ class invoker extends atoum\test
                 ->exception(function () use ($invoker) {
                     $invoker->unsetClosure(- rand(1, PHP_INT_MAX), function () {
                     });
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Call number must be greater than or equal to zero')
 
                 ->exception(function () use ($invoker, & $call) {
                     $invoker->unsetClosure($call = rand(0, PHP_INT_MAX), function () {
                     });
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('There is no closure defined for call ' . $call)
 
@@ -253,8 +246,7 @@ class invoker extends atoum\test
                 ->exception(function () use ($invoker) {
                     $invoker->offsetSet(- rand(1, PHP_INT_MAX), function () {
                     });
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Call number must be greater than or equal to zero')
 
@@ -290,8 +282,7 @@ class invoker extends atoum\test
             ->then
                 ->exception(function () use ($invoker) {
                     $invoker->offsetGet(- rand(1, PHP_INT_MAX));
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Call number must be greater than or equal to zero')
                 ->variable($this->testedInstance->getClosure(rand(0, PHP_INT_MAX)))->isNull()
@@ -315,8 +306,7 @@ class invoker extends atoum\test
                 ->exception(function () use ($invoker) {
                     $invoker->offsetExists(- rand(1, PHP_INT_MAX), function () {
                     });
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Call number must be greater than or equal to zero')
                 ->boolean($this->testedInstance->offsetExists(rand(0, PHP_INT_MAX)))->isFalse
@@ -355,16 +345,14 @@ class invoker extends atoum\test
                 ->exception(function () use ($invoker) {
                     $invoker->offsetUnset(- rand(1, PHP_INT_MAX), function () {
                     });
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Call number must be greater than or equal to zero')
 
                 ->exception(function () use ($invoker, & $call) {
                     $invoker->offsetUnset($call = rand(0, PHP_INT_MAX), function () {
                     });
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('There is no closure defined for call ' . $call)
 
@@ -385,8 +373,7 @@ class invoker extends atoum\test
             ->then
                 ->exception(function () use ($invoker) {
                     $invoker->invoke();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('There is no closure defined for call 0')
 

@@ -76,16 +76,14 @@ class variable extends atoum\test
             ->then
                 ->exception(function () use ($diff) {
                     $diff->make();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Expected is undefined')
             ->if($diff->setExpected($reference = uniqid()))
             ->then
                 ->exception(function () use ($diff) {
                     $diff->make();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Actual is undefined')
             ->if($diff->setActual($reference))

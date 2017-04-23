@@ -802,24 +802,23 @@ class path extends atoum\test
         $this
             ->given($this->function->realpath = function ($path) {
                 switch ($path) {
-                        case '/an/invalid/path':
-                        case '/an/invalid':
-                        case '/an':
-                        case '/':
-                            return false;
+                    case '/an/invalid/path':
+                    case '/an/invalid':
+                    case '/an':
+                    case '/':
+                        return false;
 
-                        case '/a/b/c/d/e':
-                        case '/a/b/c/d':
-                            return false;
+                    case '/a/b/c/d/e':
+                    case '/a/b/c/d':
+                        return false;
 
-                        case '/a/b/c':
-                            return '/x/y/z';
+                    case '/a/b/c':
+                        return '/x/y/z';
 
-                        default:
-                            return $path;
-                    }
-            }
-            )
+                    default:
+                        return $path;
+                }
+            })
 
             ->if($this->newTestedInstance('/a', '/'))
             ->then
@@ -860,16 +859,15 @@ class path extends atoum\test
         $this
             ->given($this->function->file_exists = function ($path) {
                 switch ($path) {
-                        case '/a/b/c/d/e':
-                        case '/a/b/c/d':
-                        case '/a/b/c':
-                            return false;
+                    case '/a/b/c/d/e':
+                    case '/a/b/c/d':
+                    case '/a/b/c':
+                        return false;
 
-                        default:
-                            return true;
-                    }
-            }
-            )
+                    default:
+                        return true;
+                }
+            })
 
             ->if($this->newTestedInstance('/', '/'))
             ->then

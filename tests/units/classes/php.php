@@ -109,14 +109,13 @@ class php extends atoum\test
                 ->string($php->getBinaryPath())->isEqualTo($pearBinaryPath)
             ->if($adapter->getenv = function ($variable) use (& $phpBinPath) {
                 switch ($variable) {
-                        case 'PHPBIN':
-                            return ($phpBinPath = uniqid());
+                    case 'PHPBIN':
+                        return ($phpBinPath = uniqid());
 
-                        default:
-                            return false;
-                    }
-            }
-            )
+                    default:
+                        return false;
+                }
+            })
             ->then
                 ->object($php->setBinaryPath())->isIdenticalTo($php)
                 ->string($php->getBinaryPath())->isEqualTo($phpBinPath)

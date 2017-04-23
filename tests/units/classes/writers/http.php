@@ -40,8 +40,7 @@ class http extends atoum\test
             ->then
                 ->exception(function () use ($writer) {
                     $writer->write(uniqid());
-                }
-                )
+                })
                     ->isInstanceOf('\\mageekguy\\atoum\\exceptions\\runtime')
                     ->hasMessage('No URL set for HTTP writer')
             ->if($writer->setUrl($url = uniqid()))

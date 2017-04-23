@@ -453,20 +453,17 @@ namespace mageekguy\atoum\tests\units
 
                     ->exception(function () use ($test) {
                         $test->setTestNamespace('');
-                    }
-                        )
+                    })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Test namespace must not be empty')
                     ->exception(function () use ($test) {
                         $test->setTestNamespace('0');
-                    }
-                        )
+                    })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Test namespace must be a valid regex or identifier')
                     ->exception(function () use ($test) {
                         $test->setTestNamespace(uniqid('_') . '\\\\' . uniqid('_'));
-                    }
-                        )
+                    })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Test namespace must be a valid regex or identifier')
             ;
@@ -499,20 +496,17 @@ namespace mageekguy\atoum\tests\units
                     ->string($test->getTestMethodPrefix())->isEqualTo((string) $testMethodPrefix)
                     ->exception(function () use ($test) {
                         $test->setTestMethodPrefix('');
-                    }
-                        )
+                    })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Test method prefix must not be empty')
                     ->exception(function () use ($test) {
                         $test->setTestMethodPrefix('0');
-                    }
-                        )
+                    })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Test method prefix must a valid regex or identifier')
                     ->exception(function () use ($test) {
                         $test->setTestMethodPrefix('/:(/');
-                    }
-                        )
+                    })
                         ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                         ->hasMessage('Test method prefix must a valid regex or identifier')
             ;

@@ -45,10 +45,9 @@ class clover extends atoum\test
             ->then
                 ->exception(function () use ($adapter) {
                     new testedClass($adapter);
-                }
-                        )
-                ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-                ->hasMessage('libxml PHP extension is mandatory for clover report')
+                })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->hasMessage('libxml PHP extension is mandatory for clover report')
         ;
     }
 

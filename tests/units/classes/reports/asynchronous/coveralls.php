@@ -52,10 +52,9 @@ class coveralls extends atoum\test
             ->then
                 ->exception(function () use ($adapter) {
                     new testedClass(uniqid(), uniqid(), $adapter);
-                }
-                        )
-                ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-                ->hasMessage('JSON PHP extension is mandatory for coveralls report')
+                })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+                    ->hasMessage('JSON PHP extension is mandatory for coveralls report')
         ;
     }
 

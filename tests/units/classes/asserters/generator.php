@@ -137,11 +137,9 @@ PHP
                     ->integer($proxyfiedAsserter->getValue())->isEqualTo(1)
 
 
-                ->exception(
-                    function () use ($asserter) {
-                        $asserter->returns;
-                    }
-                )
+                ->exception(function () use ($asserter) {
+                    $asserter->returns;
+                })
                     ->isInstanceOf('\Exception')
                     ->hasMessage("Cannot get return value of a generator that hasn't returned")
         ;

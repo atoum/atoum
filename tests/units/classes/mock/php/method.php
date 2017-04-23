@@ -28,10 +28,9 @@ class method extends atoum\test
             ->then
                 ->exception(function () use ($method) {
                     $method->returnReference();
-                }
-                    )
-                        ->isInstanceOf('mageekguy\atoum\exceptions\logic')
-                        ->hasMessage('Constructor can not return a reference')
+                })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->hasMessage('Constructor can not return a reference')
         ;
     }
 

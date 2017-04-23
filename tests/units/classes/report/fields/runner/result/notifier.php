@@ -76,45 +76,43 @@ class notifier extends atoum\test
             ->and($locale = new \mock\mageekguy\atoum\locale())
             ->and($this->calling($locale)->_ = function ($string) use (& $noTestRunningString, & $successString, & $failureString) {
                 switch ($string) {
-                        case '%s %s %s %s %s':
-                            return $successString = uniqid();
+                    case '%s %s %s %s %s':
+                        return $successString = uniqid();
 
-                        case '%s %s %s %s %s %s %s %s':
-                            return $failureString = uniqid();
+                    case '%s %s %s %s %s %s %s %s':
+                        return $failureString = uniqid();
 
-                        default:
-                            return uniqid();
-                    }
-            }
-            )
+                    default:
+                        return uniqid();
+                }
+            })
             ->and($this->calling($locale)->__ = function ($singularString, $pluralString, $number) use (& $testString, & $testMethodString, & $testVoidMethodString, & $testSkippedMethodString, & $assertionString, & $errorString, & $exceptionString) {
                 switch ($singularString) {
-                        case '%s test':
-                            return $testString = uniqid();
+                    case '%s test':
+                        return $testString = uniqid();
 
-                        case '%s method':
-                            return $testMethodString = uniqid();
+                    case '%s method':
+                        return $testMethodString = uniqid();
 
-                        case '%s void method':
-                            return $testVoidMethodString = uniqid();
+                    case '%s void method':
+                        return $testVoidMethodString = uniqid();
 
-                        case '%s skipped method':
-                            return $testSkippedMethodString = uniqid();
+                    case '%s skipped method':
+                        return $testSkippedMethodString = uniqid();
 
-                        case '%s assertion':
-                            return $assertionString = uniqid();
+                    case '%s assertion':
+                        return $assertionString = uniqid();
 
-                        case '%s error':
-                            return $errorString = uniqid();
+                    case '%s error':
+                        return $errorString = uniqid();
 
-                        case '%s exception':
-                            return $exceptionString = uniqid();
+                    case '%s exception':
+                        return $exceptionString = uniqid();
 
-                        default:
-                            return uniqid();
-                    }
-            }
-            )
+                    default:
+                        return uniqid();
+                }
+            })
             ->assert('Success with one test, one method and one assertion, no fail, no error, no exception')
             ->and($this->calling($runner)->getTestNumber = 1)
             ->and($this->calling($runner)->getTestMethodNumber = 1)

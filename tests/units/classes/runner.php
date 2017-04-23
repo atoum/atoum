@@ -549,8 +549,7 @@ class runner extends atoum\test
             ->then
                 ->exception(function () use ($runner, $extension) {
                     $runner->removeExtension($extension);
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
                     ->hasMessage('Extension ' . get_class($extension) . ' is not loaded')
         ;
@@ -655,14 +654,13 @@ class runner extends atoum\test
             ->and($adapter->defined = true)
             ->and($adapter->constant = function ($constantName) use (& $atoumVersion, & $atoumDirectory) {
                 switch ($constantName) {
-                        case atoum\runner::atoumVersionConstant:
-                            return $atoumVersion = uniqid();
+                    case atoum\runner::atoumVersionConstant:
+                        return $atoumVersion = uniqid();
 
-                        case atoum\runner::atoumDirectoryConstant:
-                            return $atoumDirectory = uniqid();
-                    }
-            }
-            )
+                    case atoum\runner::atoumDirectoryConstant:
+                        return $atoumDirectory = uniqid();
+                }
+            })
             ->and($runner = new testedClass())
             ->and($runner->setPhp($php))
             ->and($runner->setAdapter($adapter))
@@ -688,8 +686,7 @@ class runner extends atoum\test
             ->then
                 ->exception(function () use ($runner) {
                     $runner->setPathAndVersionInScore();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\runtime')
                     ->hasMessage('Unable to get PHP version from \'' . $php . '\'')
         ;

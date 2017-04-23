@@ -78,14 +78,12 @@ class extension extends atoum\test
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->isLoaded();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Name of PHP extension is undefined')
                 ->exception(function () use ($asserter) {
                     $asserter->isLoaded;
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Name of PHP extension is undefined')
 
@@ -103,14 +101,12 @@ class extension extends atoum\test
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->isLoaded();
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage('PHP extension \'' . $extensionName . '\' is not loaded')
                 ->exception(function () use ($asserter) {
                     $asserter->isLoaded;
-                }
-                )
+                })
                     ->isInstanceOf('mageekguy\atoum\asserter\exception')
                     ->hasMessage('PHP extension \'' . $extensionName . '\' is not loaded')
 
