@@ -136,13 +136,13 @@ abstract class asserter implements asserter\definition
         return $this->analyzer->getTypeOf($mixed);
     }
 
-    protected function _($string)
+    protected function _(...$arguments)
     {
-        return call_user_func_array([$this->locale, '_'], func_get_args());
+        return call_user_func_array([$this->locale, '_'], $arguments);
     }
 
-    protected function __($singular, $plural, $quantity)
+    protected function __(...$arguments)
     {
-        return call_user_func_array([$this->locale, '__'], func_get_args());
+        return call_user_func_array([$this->locale, '__'], $arguments);
     }
 }

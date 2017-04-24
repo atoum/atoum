@@ -317,7 +317,7 @@ class autoloader
 
     protected function handleNamespaceOfClass($class)
     {
-        foreach ($this->directories as $namespace => $directories) {
+        foreach (array_keys($this->directories) as $namespace) {
             if (strpos($class, $namespace) === 0) {
                 return true;
             }

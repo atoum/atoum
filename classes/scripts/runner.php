@@ -181,9 +181,9 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function addDefaultArguments($argument)
+    public function addDefaultArguments(...$arguments)
     {
-        $this->defaultArguments = array_merge($this->defaultArguments, func_get_args());
+        $this->defaultArguments = array_merge($this->defaultArguments, $arguments);
 
         return $this;
     }

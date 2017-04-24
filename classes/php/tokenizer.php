@@ -33,7 +33,7 @@ class tokenizer implements \iteratorAggregate
     {
         $this->currentIterator = $this->iterator;
 
-        foreach ($this->tokens = new \arrayIterator(token_get_all($string)) as $key => $token) {
+        foreach ($this->tokens = new \arrayIterator(token_get_all($string)) as $token) {
             switch ($token[0]) {
                 case T_CONST:
                     $token = $this->appendConstant();
@@ -225,39 +225,6 @@ class tokenizer implements \iteratorAggregate
             $this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 
             $key = $this->tokens->key();
-        }
-    }
-
-    private function appendArray()
-    {
-        $this->appendCommentAndWhitespace();
-
-        $this->tokens->next();
-
-        if ($this->tokens->valid() === true) {
-            $token = $this->tokens->current();
-
-            if ($token[0] === '(') {
-                $this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
-
-                $stack = 1;
-
-                while ($stack > 0 && $this->tokens->valid() === true) {
-                    $this->tokens->next();
-
-                    if ($this->tokens->valid() === true) {
-                        $token = $this->tokens->current();
-
-                        if ($token[0] === '(') {
-                            $stack++;
-                        } elseif ($token[0] === ')') {
-                            $stack--;
-                        }
-
-                        $this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
-                    }
-                }
-            }
         }
     }
 

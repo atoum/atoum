@@ -12,7 +12,7 @@ class configurator
         $this->script = $script;
 
         foreach ($this->script->getHelp() as $help) {
-            list($arguments, $values) = $help;
+            list($arguments) = $help;
 
             foreach ($arguments as $argument) {
                 $this->methods[strtolower(str_replace('-', '', $argument))] = $argument;

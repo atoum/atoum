@@ -9,9 +9,9 @@ class generator extends asserter\generator
 {
     protected $test = null;
 
-    public function __construct(atoum\test $test, asserter\resolver $resolver = null, assertion\aliaser $aliaser = null)
+    public function __construct(atoum\test $test, asserter\resolver $resolver = null)
     {
-        parent::__construct($test->getLocale(), $resolver, $aliaser);
+        parent::__construct($test->getLocale(), $resolver);
 
         $this->test = $test;
     }

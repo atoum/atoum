@@ -410,17 +410,9 @@ class phpArray extends variable implements \arrayAccess
 
     protected function intersect(array $values, $failMessage, $strict)
     {
-        $this->valueIsSet();
+        $unknownValues = $this->valueIsSet()->getDifference($values, $strict);
 
-        $unknownValues = [];
-
-        foreach ($values as $value) {
-            if (in_array($value, $this->value, $strict) === false) {
-                $unknownValues[] = $value;
-            }
-        }
-
-        if (count($unknownValues) <= 0) {
+        if (count($unknownValues) === 0) {
             $this->pass();
         } else {
             if ($failMessage === null) {
@@ -439,17 +431,9 @@ class phpArray extends variable implements \arrayAccess
 
     protected function notIntersect(array $values, $failMessage, $strict)
     {
-        $this->valueIsSet();
+        $knownValues = $this->valueIsSet()->getIntersection($values, $strict);
 
-        $knownValues = [];
-
-        foreach ($values as $value) {
-            if (in_array($value, $this->value, $strict) === true) {
-                $knownValues[] = $value;
-            }
-        }
-
-        if (count($knownValues) <= 0) {
+        if (count($knownValues) === 0) {
             $this->pass();
         } else {
             if ($failMessage === null) {
@@ -464,6 +448,28 @@ class phpArray extends variable implements \arrayAccess
         }
 
         return $this;
+    }
+
+    protected function getIntersection(array $values, $strict)
+    {
+        return $this->getValues($values, true, $strict);
+    }
+
+    protected function getDifference(array $values, $strict)
+    {
+        return $this->getValues($values, false, $strict);
+    }
+
+    protected function getValues(array $values, $equal, $strict)
+    {
+        return array_values(
+            array_filter(
+                $values,
+                function($value) use ($strict, $equal) {
+                    return in_array($value, $this->value, $strict) === $equal;
+                }
+            )
+        );
     }
 
     protected function valueIsSet($message = 'Array is undefined')

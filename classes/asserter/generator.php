@@ -5,14 +5,13 @@ namespace mageekguy\atoum\asserter;
 use mageekguy\atoum;
 use mageekguy\atoum\asserter;
 use mageekguy\atoum\exceptions;
-use mageekguy\atoum\test\assertion;
 
 class generator
 {
     protected $locale = null;
     protected $resolver = null;
 
-    public function __construct(atoum\locale $locale = null, asserter\resolver $resolver = null, assertion\aliaser $aliaser = null)
+    public function __construct(atoum\locale $locale = null, asserter\resolver $resolver = null)
     {
         $this
             ->setLocale($locale)
