@@ -182,7 +182,7 @@ class generator
         }
 
         if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false) {
-            $code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass, $this->eachInstanceIsUnique);
+            $code = self::generateUnknownClassCode($mockNamespace, $mockClass, $this->eachInstanceIsUnique);
         } else {
             $reflectionClass = call_user_func($this->reflectionClassFactory, $class);
 
@@ -884,7 +884,7 @@ class generator
         ;
     }
 
-    protected static function generateUnknownClassCode($class, $mockNamespace, $mockClass, $uniqueId = false, $useStrictTypes = false)
+    protected static function generateUnknownClassCode($mockNamespace, $mockClass, $uniqueId = false, $useStrictTypes = false)
     {
         return ($useStrictTypes ? 'declare(strict_types=1);' . PHP_EOL  : '') .
             'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .

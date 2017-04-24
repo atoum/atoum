@@ -207,7 +207,7 @@ class parser implements \iteratorAggregate
         return $this;
     }
 
-    public function triggerHandlers($argument, array $values, atoum\script $script, & $argumentUsed = null)
+    public function triggerHandlers($argument, array $values, atoum\script $script)
     {
         if (isset($this->handlers[$argument]) === true) {
             $this->invokeHandlers($script, $argument, $values);

@@ -79,24 +79,7 @@ class error extends asserter
             $this->score->deleteError($key);
             $this->pass();
         } else {
-            switch (true) {
-                case $this->type === null && $this->message === null:
-                    $failReason = $this->_('error does not exist');
-                    break;
-
-                case $this->type === null && $this->message !== null:
-                    $failReason = $this->_('error with message \'%s\' does not exist', $this->message);
-                    break;
-
-                case $this->type !== null && $this->message === null:
-                    $failReason = $this->_('error of type %s does not exist', self::getAsString($this->type));
-                    break;
-
-                default:
-                    $failReason = $this->_('error of type %s with message \'%s\' does not exist', self::getAsString($this->type), $this->message);
-            }
-
-            $this->fail($failReason);
+            $this->fail($this->getFailMessage(true));
         }
 
         return $this;
@@ -104,31 +87,12 @@ class error extends asserter
 
     public function notExists()
     {
-        $score = $this->getScore();
-
-        $key = $score->errorExists($this->message, $this->type, $this->messageIsPattern);
+        $key = $this->getScore()->errorExists($this->message, $this->type, $this->messageIsPattern);
 
         if ($key === null) {
             $this->pass();
         } else {
-            switch (true) {
-                case $this->type === null && $this->message === null:
-                    $failReason = $this->_('error exists');
-                    break;
-
-                case $this->type === null && $this->message !== null:
-                    $failReason = $this->_('error with message \'%s\' exists', $this->message);
-                    break;
-
-                case $this->type !== null && $this->message === null:
-                    $failReason = $this->_('error of type %s exists', self::getAsString($this->type));
-                    break;
-
-                default:
-                    $failReason = $this->_('error of type %s with message \'%s\' exists', self::getAsString($this->type), $this->message);
-            }
-
-            $this->fail($failReason);
+            $this->fail($this->getFailMessage());
         }
 
         return $this;
@@ -230,6 +194,25 @@ class error extends asserter
 
             default:
                 return 'UNKNOWN';
+        }
+    }
+
+    private function getFailMessage($negative = false)
+    {
+        $verb = $negative ? 'does not exist' : 'exists';
+
+        switch (true) {
+            case $this->type === null && $this->message === null:
+                return $this->_('error %s', $verb);
+
+            case $this->type === null && $this->message !== null:
+                return $this->_('error with message \'%s\' %s', $this->message, $verb);
+
+            case $this->type !== null && $this->message === null:
+                return $this->_('error of type %s %s', self::getAsString($this->type), $verb);
+
+            default:
+                return $this->_('error of type %s with message \'%s\' %s', self::getAsString($this->type), $this->message, $verb);
         }
     }
 }
