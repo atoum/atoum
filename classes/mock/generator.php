@@ -721,6 +721,7 @@ class generator
                     $parameterCode .= ' = ' . var_export($parameter->getDefaultValue(), true);
                     break;
 
+	            case $parameter->allowsNull():
                 case $parameter->isOptional() && $parameter->isVariadic() == false:
                 case $mustBeNull:
                     $parameterCode .= ' = null';
