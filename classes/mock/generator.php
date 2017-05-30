@@ -695,8 +695,8 @@ class generator
                (!$parameter->isDefaultValueAvailable() || ($parameter->isDefaultValueAvailable() && null !== $parameter->getDefaultValue()));
     }
 
-	protected static function isDefaultParameterNull(ReflectionParameter $parameter)
-	{
+    protected static function isDefaultParameterNull(ReflectionParameter $parameter)
+    {
         return $parameter->allowsNull() &&
                $parameter->isDefaultValueAvailable() &&
                null === $parameter->getDefaultValue();
