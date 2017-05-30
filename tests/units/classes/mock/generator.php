@@ -1808,6 +1808,7 @@ class generator extends atoum\test
             ->and($reflectionParameterController->isDefaultValueAvailable = false)
             ->and($reflectionParameterController->isOptional = false)
             ->and($reflectionParameterController->isVariadic = false)
+            ->and($reflectionParameterController->allowsNull = false)
             ->and($reflectionParameter = new \mock\reflectionParameter(null, null))
             ->and($reflectionMethodController = new mock\controller())
             ->and($reflectionMethodController->__construct = function () {
@@ -2769,7 +2770,7 @@ class generator extends atoum\test
             ->and($this->calling($b)->isDefaultValueAvailable = false)
             ->and($this->calling($b)->isOptional = false)
             ->and($this->calling($b)->isVariadic = false)
-            ->and($this->calling($a)->allowsNull = false)
+            ->and($this->calling($b)->allowsNull = false)
             ->and($c = new \mock\reflectionParameter())
             ->and($this->calling($c)->getName = 'c')
             ->and($this->calling($c)->isArray = false)
@@ -2963,6 +2964,7 @@ class generator extends atoum\test
             ->and($parameterController1->isDefaultValueAvailable = false)
             ->and($parameterController1->isOptional = false)
             ->and($parameterController1->isVariadic = false)
+            ->and($parameterController1->allowsNull = false)
             ->and($parameter1 = new \mock\reflectionParameter(null, null))
             ->and($parameterController2 = new mock\controller())
             ->and($parameterController2->__construct = function () {
@@ -2975,6 +2977,7 @@ class generator extends atoum\test
             ->and($parameterController2->isDefaultValueAvailable = false)
             ->and($parameterController2->isOptional = false)
             ->and($parameterController2->isVariadic = false)
+            ->and($parameterController2->allowsNull = false)
             ->and($parameter2 = new \mock\reflectionParameter(null, null))
             ->and($publicMethodController = new mock\controller())
             ->and($publicMethodController->__construct = function () {
@@ -3316,6 +3319,7 @@ class generator extends atoum\test
             ->and($reflectionParameterController->isOptional = false)
             ->and($reflectionParameterController->isVariadic = true)
             ->and($reflectionParameterController->getClass = null)
+            ->and($reflectionParameterController->allowsNull = false)
             ->and($reflectionParameter = new \mock\reflectionParameter(null, null))
             ->and($reflectionMethodController = new mock\controller())
             ->and($reflectionMethodController->__construct = function () {
@@ -3403,6 +3407,7 @@ class generator extends atoum\test
             ->and($reflectionParameterController->isOptional = false)
             ->and($reflectionParameterController->isVariadic = true)
             ->and($reflectionParameterController->getClass = null)
+            ->and($reflectionParameterController->allowsNull = false)
             ->and($reflectionParameter = new \mock\reflectionParameter(null, null))
             ->and($reflectionMethodController = new mock\controller())
             ->and($reflectionMethodController->__construct = function () {
@@ -3585,7 +3590,10 @@ class generator extends atoum\test
         ;
     }
 
-	/** @php < 7.1 */
+	/**
+     * @php < 7.1
+     * @php >= 7.0
+     */
 	public function testGetMockedClassCodeForMethodWithTypeHintNullable()
 	{
 
