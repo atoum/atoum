@@ -646,7 +646,7 @@ class generator
         }
 
         $returnType = $this->getReflectionType($method);
-        $isNullable = $this->isNullableReturnType($returnType);
+        $isNullable = $this->isNullable($returnType);
 
         switch (true) {
             case (string) $returnType === 'self':
@@ -668,7 +668,7 @@ class generator
         return $returnTypeCode;
     }
 
-    protected function isNullableReturnType(\reflectionType $type)
+    protected function isNullable(\reflectionType $type)
     {
         return version_compare(PHP_VERSION, '7.0') >= 0 && $type->allowsNull() === true;
     }
