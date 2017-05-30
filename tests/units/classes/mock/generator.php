@@ -2780,7 +2780,7 @@ class generator extends atoum\test
             ->and($this->calling($c)->isDefaultValueAvailable = false)
             ->and($this->calling($c)->isOptional = false)
             ->and($this->calling($c)->isVariadic = false)
-            ->and($this->calling($b)->allowsNull = true)
+            ->and($this->calling($c)->allowsNull = true)
             ->and->mockGenerator->orphanize('__construct')
             ->and($constructor = new \mock\reflectionMethod())
             ->and($this->calling($constructor)->getName = '__construct')
