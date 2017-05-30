@@ -688,14 +688,14 @@ class generator
         return $this->hasReturnType($method) ? (string) $method->getReturnType() === 'void' : false;
     }
 
-    protected static function isNullableParameter(ReflectionParameter $parameter)
+    protected static function isNullableParameter(\ReflectionParameter $parameter)
     {
         return version_compare(PHP_VERSION, '7.1') >= 0 &&
                $parameter->allowsNull() &&
                (!$parameter->isDefaultValueAvailable() || ($parameter->isDefaultValueAvailable() && null !== $parameter->getDefaultValue()));
     }
 
-    protected static function isDefaultParameterNull(ReflectionParameter $parameter)
+    protected static function isDefaultParameterNull(\ReflectionParameter $parameter)
     {
         return $parameter->allowsNull() &&
                $parameter->isDefaultValueAvailable() &&
