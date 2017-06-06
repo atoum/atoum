@@ -95,6 +95,8 @@ class AtoumTask extends task
             }
         }
 
+        sort($files);
+
         return $files;
     }
 
