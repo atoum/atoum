@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#720](https://github.com/atoum/atoum/pull/720) Add sorting to file loading in phing task to unify behaviour  ([@gbouchez])
+
 # 2.9.1 - 2017-07-19
 
 ## Bugfix
