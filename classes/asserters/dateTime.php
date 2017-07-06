@@ -4,7 +4,7 @@ namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum\exceptions;
 
-class dateTime extends object
+class dateTime extends phpObject
 {
     public function __get($property)
     {

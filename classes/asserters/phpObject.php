@@ -4,7 +4,7 @@ namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum\exceptions;
 
-class object extends variable
+class phpObject extends variable
 {
     public function __get($property)
     {

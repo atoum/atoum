@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-class iterator extends object
+class iterator extends phpObject
 {
     public function __get($asserter)
     {

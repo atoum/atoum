@@ -350,7 +350,7 @@ class calls extends atoum\test
                     ->hasSize(1)
                     ->array($calls->getEqualTo($call2)->toArray())
                         ->isEqualTo([2 => $call2])
-            ->if($calls[] = $call3 = new adapter\call($call1->getFunction(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call($call1->getFunction(), [$object = new \mock\phpObject()]))
             ->then
                 ->object($calls->getEqualTo(new adapter\call(uniqid())))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
@@ -370,7 +370,7 @@ class calls extends atoum\test
                     ->hasSize(1)
                     ->array($calls->getEqualTo($call3)->toArray())
                         ->isEqualTo([3 => $call3])
-            ->if($calls[] = $call4 = new adapter\call($call1->getFunction(), [$object = new \mock\object(), $arg = uniqid()]))
+            ->if($calls[] = $call4 = new adapter\call($call1->getFunction(), [$object = new \mock\phpObject(), $arg = uniqid()]))
             ->then
                 ->object($calls->getEqualTo(new adapter\call(uniqid())))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
@@ -449,7 +449,7 @@ class calls extends atoum\test
                     ->hasSize(1)
                     ->array($calls->getIdenticalTo($call2)->toArray())
                         ->isEqualTo([2 => $call2])
-            ->if($calls[] = $call3 = new adapter\call($call1->getFunction(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call($call1->getFunction(), [$object = new \mock\phpObject()]))
             ->then
                 ->object($calls->getIdenticalTo(new adapter\call(uniqid())))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
@@ -472,7 +472,7 @@ class calls extends atoum\test
                 ->object($calls->getIdenticalTo(new adapter\call($call1->getFunction(), [clone $object])))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
                     ->hasSize(0)
-            ->if($calls[] = $call4 = new adapter\call($call1->getFunction(), [$object = new \mock\object(), $arg = uniqid()]))
+            ->if($calls[] = $call4 = new adapter\call($call1->getFunction(), [$object = new \mock\phpObject(), $arg = uniqid()]))
             ->then
                 ->object($calls->getIdenticalTo(new adapter\call(uniqid())))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
@@ -547,7 +547,7 @@ class calls extends atoum\test
                 ->object($calls->getPreviousEqualTo($call2, 2))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
                     ->hasSize(0)
-            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\phpObject()]))
             ->if($calls[] = $call4 = new adapter\call($call3->getFunction(), [clone $object]))
             ->and($calls[] = $call5 = new adapter\call(uniqid(), []))
             ->then
@@ -632,7 +632,7 @@ class calls extends atoum\test
                 ->object($calls->getPreviousIdenticalTo($call2, 2))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
                     ->hasSize(0)
-            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\phpObject()]))
             ->if($calls[] = $call4 = new adapter\call($call3->getFunction(), [clone $object]))
             ->and($calls[] = $call5 = new adapter\call(uniqid(), []))
             ->then
@@ -707,7 +707,7 @@ class calls extends atoum\test
                 ->boolean($previousCalls = $calls->hasPreviousEqualTo($call1, 2))->isTrue()
                 ->boolean($calls->hasPreviousEqualTo($call2, 1))->isFalse()
                 ->boolean($calls->hasPreviousEqualTo($call2, 2))->isFalse()
-            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\phpObject()]))
             ->if($calls[] = $call4 = new adapter\call($call3->getFunction(), [clone $object]))
             ->and($calls[] = $call5 = new adapter\call(uniqid(), []))
             ->then
@@ -742,7 +742,7 @@ class calls extends atoum\test
                 ->boolean($previousCalls = $calls->hasPreviousIdenticalTo($call1, 2))->isTrue()
                 ->boolean($calls->hasPreviousIdenticalTo($call2, 1))->isFalse()
                 ->boolean($calls->hasPreviousIdenticalTo($call2, 2))->isFalse()
-            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\phpObject()]))
             ->if($calls[] = $call4 = new adapter\call($call3->getFunction(), [clone $object]))
             ->and($calls[] = $call5 = new adapter\call(uniqid(), []))
             ->then
@@ -811,7 +811,7 @@ class calls extends atoum\test
                 ->object($calls->getAfterEqualTo($call2, 2))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
                     ->hasSize(0)
-            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\phpObject()]))
             ->if($calls[] = $call4 = new adapter\call($call3->getFunction(), [clone $object]))
             ->and($calls[] = $call5 = new adapter\call(uniqid(), []))
             ->then
@@ -891,7 +891,7 @@ class calls extends atoum\test
                 ->object($calls->getAfterIdenticalTo($call2, 2))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
                     ->hasSize(0)
-            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\phpObject()]))
             ->if($calls[] = $call4 = new adapter\call($call3->getFunction(), [clone $object]))
             ->and($calls[] = $call5 = new adapter\call(uniqid(), []))
             ->then
@@ -961,7 +961,7 @@ class calls extends atoum\test
                 ->boolean($calls->hasAfterEqualTo($call1, 2))->isFalse()
                 ->boolean($afterCalls = $calls->hasAfterEqualTo($call2, 1))->isTrue()
                 ->boolean($calls->hasAfterEqualTo($call2, 2))->isFalse()
-            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\phpObject()]))
             ->if($calls[] = $call4 = new adapter\call($call3->getFunction(), [clone $object]))
             ->and($calls[] = $call5 = new adapter\call(uniqid(), []))
             ->then
@@ -995,7 +995,7 @@ class calls extends atoum\test
                 ->boolean($calls->hasAfterIdenticalTo($call1, 2))->isFalse()
                 ->boolean($afterCalls = $calls->hasAfterIdenticalTo($call2, 1))->isTrue()
                 ->boolean($calls->hasAfterIdenticalTo($call2, 2))->isFalse()
-            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call(uniqid(), [$object = new \mock\phpObject()]))
             ->if($calls[] = $call4 = new adapter\call($call3->getFunction(), [clone $object]))
             ->and($calls[] = $call5 = new adapter\call(uniqid(), []))
             ->then
@@ -1055,7 +1055,7 @@ class calls extends atoum\test
                     ->hasSize(1)
                     ->array($calls->get($call2)->toArray())
                         ->isEqualTo([2 => $call2])
-            ->if($calls[] = $call3 = new adapter\call($call1->getFunction(), [$object = new \mock\object()]))
+            ->if($calls[] = $call3 = new adapter\call($call1->getFunction(), [$object = new \mock\phpObject()]))
             ->then
                 ->object($calls->get(new adapter\call(uniqid())))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
@@ -1075,7 +1075,7 @@ class calls extends atoum\test
                     ->hasSize(1)
                     ->array($calls->get($call3)->toArray())
                         ->isEqualTo([3 => $call3])
-            ->if($calls[] = $call4 = new adapter\call($call1->getFunction(), [$object = new \mock\object(), $arg = uniqid()]))
+            ->if($calls[] = $call4 = new adapter\call($call1->getFunction(), [$object = new \mock\phpObject(), $arg = uniqid()]))
             ->then
                 ->object($calls->get(new adapter\call(uniqid())))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
@@ -1141,7 +1141,7 @@ class calls extends atoum\test
                     ->hasSize(1)
                     ->array($calls->getIdenticalTo($call6)->toArray())
                         ->isEqualTo([6 => $call6])
-            ->if($calls[] = $call7 = new adapter\call($call5->getFunction(), [$object = new \mock\object()]))
+            ->if($calls[] = $call7 = new adapter\call($call5->getFunction(), [$object = new \mock\phpObject()]))
             ->then
                 ->object($calls->getIdenticalTo(new adapter\call(uniqid())))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
@@ -1164,7 +1164,7 @@ class calls extends atoum\test
                 ->object($calls->getIdenticalTo(new adapter\call($call5->getFunction(), [clone $object])))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')
                     ->hasSize(0)
-            ->if($calls[] = $call8 = new adapter\call($call5->getFunction(), [$object = new \mock\object(), $arg = uniqid()]))
+            ->if($calls[] = $call8 = new adapter\call($call5->getFunction(), [$object = new \mock\phpObject(), $arg = uniqid()]))
             ->then
                 ->object($calls->getIdenticalTo(new adapter\call(uniqid())))
                     ->isInstanceOf('mageekguy\atoum\test\adapter\calls')

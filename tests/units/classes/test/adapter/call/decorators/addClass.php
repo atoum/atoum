@@ -22,7 +22,7 @@ class addClass extends atoum\test
             ->then
                 ->string($decorator->getClass())->isEqualTo($class)
                 ->object($decorator->getArgumentsDecorator())->isEqualTo(new call\arguments\decorator())
-            ->if($decorator = new testedClass($object = new \mock\object()))
+            ->if($decorator = new testedClass($object = new \mock\phpObject()))
             ->then
                 ->string($decorator->getClass())->isEqualTo(get_class($object))
                 ->object($decorator->getArgumentsDecorator())->isEqualTo(new call\arguments\decorator())

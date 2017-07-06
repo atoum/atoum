@@ -276,7 +276,7 @@ class controller extends atoum\test
             ->if($mockController = new testedClass())
             ->then
                 ->variable($mockController->getMockClass())->isNull()
-            ->if($mockController->control($mock = new \mock\object()))
+            ->if($mockController->control($mock = new \mock\phpObject()))
             ->then
                 ->string($mockController->getMockClass())->isEqualTo(get_class($mock))
         ;
@@ -288,7 +288,7 @@ class controller extends atoum\test
             ->if($mockController = new testedClass())
             ->then
                 ->array($mockController->getMethods())->isEmpty()
-            ->if($mockController->control($mock = new \mock\object()))
+            ->if($mockController->control($mock = new \mock\phpObject()))
             ->then
                 ->string($mockController->getMockClass())->isEqualTo(get_class($mock))
                 ->array($mockController->getMethods())->isEqualTo($mock->getMockedMethods())
@@ -565,11 +565,11 @@ class controller extends atoum\test
     {
         $this
             ->if($mockController = new testedClass())
-            ->and($mockController->control($mock = new \mock\object()))
+            ->and($mockController->control($mock = new \mock\phpObject()))
             ->then
                 ->object(testedClass::getForMock($mock))->isIdenticalTo($mockController)
             ->if($otherMockController = new testedClass())
-            ->and($otherMockController->control($otherMock = new \mock\object()))
+            ->and($otherMockController->control($otherMock = new \mock\phpObject()))
             ->then
                 ->object(testedClass::getForMock($mock))->isIdenticalTo($mockController)
                 ->object(testedClass::getForMock($otherMock))->isIdenticalTo($otherMockController)
