@@ -13,7 +13,7 @@ class dummy
     }
 }
 
-class object extends atoum\test
+class phpObject extends atoum\test
 {
     public function testClass()
     {

@@ -4,7 +4,7 @@ namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum\exceptions;
 
-class exception extends object
+class exception extends phpObject
 {
     protected static $lastValue = null;
 

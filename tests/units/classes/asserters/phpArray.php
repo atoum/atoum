@@ -62,7 +62,7 @@ class phpArray extends atoum\test
                             0 => [
                                 1 => ['foo', 'bar']
                             ],
-                            1 => [1, new \mock\object()]
+                            1 => [1, new \mock\phpObject()]
                         ],
                         1 => 'foobar'
                     ]
@@ -72,7 +72,7 @@ class phpArray extends atoum\test
                 ->object($this->testedInstance->phpArray[0][0][1]->isEqualTo(['foo', 'bar']))->isTestedInstance
                 ->object($this->testedInstance->phpString[1]->isEqualTo('foobar'))->isTestedInstance
 
-            ->given($this->newTestedInstance->setWith([$array1 = ['foo', 'bar'], $array2 = [1, new \mock\object()]]))
+            ->given($this->newTestedInstance->setWith([$array1 = ['foo', 'bar'], $array2 = [1, new \mock\phpObject()]]))
             ->then
                 ->object($this->testedInstance->phpArray[0]->phpString[0]->isEqualTo('foo'))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
                 ->object($this->testedInstance->phpArray[1]->isEqualTo($array2))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
@@ -170,7 +170,7 @@ class phpArray extends atoum\test
             ->if($asserter->object)
             ->then
                 ->variable($innerAsserter = $asserter->getInnerAsserter())->isNotNull()
-                ->object($objectAsserter = $asserter->setWith($object = new \mock\object()))->isIdenticalTo($innerAsserter)
+                ->object($objectAsserter = $asserter->setWith($object = new \mock\phpObject()))->isIdenticalTo($innerAsserter)
                 ->object($objectAsserter->getValue())->isIdenticalTo($object)
                 ->variable($asserter->getValue())->isNull()
                 ->boolean($asserter->wasSet())->isFalse()
@@ -198,7 +198,7 @@ class phpArray extends atoum\test
             ->if(
                 $this->calling($locale)->_ = $notAnArray = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid(),
-                $asserter->setWith([1, 2, $object = new \mock\object(), clone $object])
+                $asserter->setWith([1, 2, $object = new \mock\phpObject(), clone $object])
             )
             ->then
                 ->exception(function () use ($asserter, & $value) {
@@ -208,7 +208,7 @@ class phpArray extends atoum\test
                     ->hasMessage($notAnArray)
                 ->mock($locale)->call('_')->withArguments('Value %s at key %s is not an array', $type, 2)->once
 
-            ->if($asserter->setWith([1, 2, $object = new \mock\object(), clone $object]))
+            ->if($asserter->setWith([1, 2, $object = new \mock\phpObject(), clone $object]))
             ->then
                 ->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
                 ->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
@@ -1318,12 +1318,12 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->isIdenticalTo(new \mock\object());
+                    $asserter->isIdenticalTo(new \mock\phpObject());
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')
 
-            ->if($asserter->setWith([$object = new \mock\object(), 2]))
+            ->if($asserter->setWith([$object = new \mock\phpObject(), 2]))
             ->then
                 ->object($asserter->isIdenticalTo([$object, 2]))->isIdenticalTo($asserter)
 
@@ -1383,7 +1383,7 @@ class phpArray extends atoum\test
             )
             ->then
                 ->exception(function () use ($asserter) {
-                    $asserter->isNotIdenticalTo(new \mock\object());
+                    $asserter->isNotIdenticalTo(new \mock\phpObject());
                 })
                     ->isInstanceOf('mageekguy\atoum\exceptions\logic')
                     ->hasMessage('Array is undefined')

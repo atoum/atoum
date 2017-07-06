@@ -8,7 +8,7 @@ use mageekguy\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
-class object extends atoum\test
+class phpObject extends atoum\test
 {
     public function testClass()
     {

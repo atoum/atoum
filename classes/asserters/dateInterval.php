@@ -4,7 +4,7 @@ namespace mageekguy\atoum\asserters;
 
 use mageekguy\atoum\exceptions;
 
-class dateInterval extends object
+class dateInterval extends phpObject
 {
     public function __toString()
     {

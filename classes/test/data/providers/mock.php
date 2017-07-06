@@ -6,7 +6,7 @@ use mageekguy\atoum\exceptions\runtime;
 use mageekguy\atoum\mock\generator;
 use mageekguy\atoum\test\data\provider;
 
-class mock extends object
+class mock extends phpObject
 {
     private $mockGenerator;
 

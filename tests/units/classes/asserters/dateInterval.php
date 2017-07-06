@@ -12,7 +12,7 @@ class dateInterval extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends('mageekguy\atoum\asserters\object');
+        $this->testedClass->extends('mageekguy\atoum\asserters\phpObject');
     }
 
     public function test__construct()

@@ -1103,7 +1103,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->and($mockController = new \mock\mageekguy\atoum\mock\controller())
-                ->and($mockController->control($mock = new \mock\object()))
+                ->and($mockController->control($mock = new \mock\phpObject()))
                 ->and($this->resetMock($mockController))
                 ->then
                     ->object($test->resetMock($mock))->isIdenticalTo($mock->getMockController())

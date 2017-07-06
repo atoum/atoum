@@ -6,7 +6,7 @@ use mageekguy\atoum\exceptions\logic;
 use mageekguy\atoum\exceptions\runtime;
 use mageekguy\atoum\test\data\provider;
 
-class object implements provider
+class phpObject implements provider
 {
     protected $class;
 
