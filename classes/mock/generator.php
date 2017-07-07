@@ -688,6 +688,20 @@ class generator
         return $this->hasReturnType($method) ? (string) $method->getReturnType() === 'void' : false;
     }
 
+    protected static function isNullableParameter(\ReflectionParameter $parameter)
+    {
+        return version_compare(PHP_VERSION, '7.1') >= 0 &&
+               $parameter->allowsNull() &&
+               (!$parameter->isDefaultValueAvailable() || ($parameter->isDefaultValueAvailable() && null !== $parameter->getDefaultValue()));
+    }
+
+    protected static function isDefaultParameterNull(\ReflectionParameter $parameter)
+    {
+        return $parameter->allowsNull() &&
+               $parameter->isDefaultValueAvailable() &&
+               null === $parameter->getDefaultValue();
+    }
+
     protected function getParameters(\reflectionMethod $method)
     {
         $parameters = [];
@@ -721,6 +735,7 @@ class generator
                     $parameterCode .= ' = ' . var_export($parameter->getDefaultValue(), true);
                     break;
 
+                case self::isDefaultParameterNull($parameter):
                 case $parameter->isOptional() && $parameter->isVariadic() == false:
                 case $mustBeNull:
                     $parameterCode .= ' = null';
@@ -751,18 +766,19 @@ class generator
 
     protected static function getParameterType(\reflectionParameter $parameter)
     {
+        $prefix = self::isNullableParameter($parameter) ? '?' : '';
         switch (true) {
             case $parameter->isArray():
-                return 'array ';
+                return $prefix . 'array ';
 
             case method_exists($parameter, 'isCallable') && $parameter->isCallable():
-                return 'callable ';
+                return $prefix . 'callable ';
 
             case ($class = $parameter->getClass()):
-                return '\\' . $class->getName() . ' ';
+                return $prefix . '\\' . $class->getName() . ' ';
 
             case method_exists($parameter, 'hasType') && $parameter->hasType():
-                return $parameter->getType() . ' ';
+                return $prefix . $parameter->getType() . ' ';
 
             default:
                 return '';
