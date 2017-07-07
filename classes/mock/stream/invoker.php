@@ -18,7 +18,7 @@ class invoker extends adapter\invoker
         return $this->methodName;
     }
 
-    public function offsetSet($call, $mixed)
+    public function offsetSet($call = null, $mixed = null)
     {
         if ($this->methodName == 'dir_readdir' && $mixed instanceof \mageekguy\atoum\mock\stream\controller) {
             $mixed = $mixed->getBasename();

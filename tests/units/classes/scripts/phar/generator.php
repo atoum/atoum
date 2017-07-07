@@ -321,7 +321,7 @@ class generator extends atoum\test
             ->then
                 ->object($generator->run())->isIdenticalTo($generator)
                 ->mock($phar)
-                    ->call('__construct')->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null)->once()
+                    ->call('__construct')->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null)->once()
                     ->call('setMetadata')
                         ->withArguments([
                                 'version' => atoum\version,
@@ -382,7 +382,7 @@ class generator extends atoum\test
                 ->string($generator->getDestinationDirectory())->isEqualTo($directory)
                 ->mock($phar)
                     ->call('__construct')
-                        ->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null)
+                        ->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null)
                         ->once()
                     ->call('setMetadata')
                         ->withArguments(

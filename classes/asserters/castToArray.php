@@ -29,7 +29,7 @@ class castToArray extends phpArray
         return $this->adapter;
     }
 
-    public function setWith($value)
+    public function setWith($value, $checkType = false)
     {
         parent::setWith($value, false);
 
