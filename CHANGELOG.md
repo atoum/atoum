@@ -1,10 +1,10 @@
 # `dev-master`
 
+* [#723](https://github.com/atoum/atoum/pull/724) `object` is a reserved keyword as of PHP 7.2 ([@trasher])
 * [#713](https://github.com/atoum/atoum/pull/713) Results are folded on Travis CI ([@jubianchi])
 * [#709](https://github.com/atoum/atoum/pull/709) Exception asserter now has `isInstanceOf` without parenthesis ([@guiled])
 * [#705](https://github.com/atoum/atoum/pull/705) Stream asserter now has isRead and isWritten assertion (without brackets) ([@guiled])
 * [#701](https://github.com/atoum/atoum/pull/701) Mock generator supports `strict_types` ([@jubianchi])
-* [#723](https://github.com/atoum/atoum/pull/724) `object` is a reserved keyword as of PHP 7.2 ([@trasher])
 
 ## Bugfix
 
@@ -251,3 +251,4 @@
 [@mvrhov]: https://github.com/mvrhov
 [@krtek4]: https://github.com/krtek4
 [@guiled]: https://github.com/guiled
+[@trasher]: https://github.com/trasher

@@ -46,9 +46,9 @@ class generator extends iterator
         }
     }
 
-    public function setWith($value)
+    public function setWith($value, $checkType = true)
     {
-        parent::setWith($value);
+        parent::setWith($value, $checkType);
 
         if ($value instanceof \Generator) {
             $this->pass();

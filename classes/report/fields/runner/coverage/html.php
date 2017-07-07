@@ -44,7 +44,7 @@ class html extends report\fields\runner\coverage\cli
     {
         $string = '';
 
-        if (count($this->coverage) > 0) {
+        if ($this->coverage !== null && count($this->coverage) > 0) {
             try {
                 $this->cleanDestinationDirectory();
 
