@@ -1,6 +1,7 @@
 # `dev-master`
 
 * [#726](https://github.com/atoum/atoum/pull/726) Remove an autoloader cache warning ([@hywan])
+* [#719](https://github.com/atoum/atoum/pull/719) Add nullable type support in the mock engine ([@grummfy])
 * [#723](https://github.com/atoum/atoum/pull/724) `object` is a reserved keyword as of PHP 7.2 ([@trasher])
 * [#713](https://github.com/atoum/atoum/pull/713) Results are folded on Travis CI ([@jubianchi])
 * [#709](https://github.com/atoum/atoum/pull/709) Exception asserter now has `isInstanceOf` without parenthesis ([@guiled])
