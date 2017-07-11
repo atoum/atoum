@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 3.1.0 - 2017-07-11
+
 * [#726](https://github.com/atoum/atoum/pull/726) Remove an autoloader cache warning ([@hywan])
 * [#719](https://github.com/atoum/atoum/pull/719) Add nullable type support in the mock engine ([@grummfy])
 * [#723](https://github.com/atoum/atoum/pull/724) `object` is a reserved keyword as of PHP 7.2 ([@trasher])
