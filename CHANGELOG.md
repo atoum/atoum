@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#727](https://github.com/atoum/atoum/pull/727) Add alias on `phpObject` to restore compatibility ([@grummfy])
+
 # 3.1.0 - 2017-07-11
 
 * [#726](https://github.com/atoum/atoum/pull/726) Remove an autoloader cache warning ([@hywan])
