@@ -557,6 +557,7 @@ abstract class test implements observable, \countable
         );
 
         $this->assertionManager
+            ->use('phpObject')->as('object')
             ->use('phpArray')->as('array')
             ->use('phpArray')->as('in')
             ->use('phpClass')->as('class')
