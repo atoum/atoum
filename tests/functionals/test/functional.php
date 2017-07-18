@@ -13,6 +13,6 @@ class functional extends atoum\test
 
     public function getTestedClassName()
     {
-        return \stdClass::class;
+        return 'stdClass';
     }
 }
