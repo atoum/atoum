@@ -1,5 +1,7 @@
 # `dev-master`
 
+## Bugfix
+
 * [#727](https://github.com/atoum/atoum/pull/727) Add alias on `phpObject` to restore compatibility ([@grummfy])
 
 # 3.1.0 - 2017-07-11
