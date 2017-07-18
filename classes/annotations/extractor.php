@@ -18,7 +18,13 @@ class extractor
 
 			foreach (preg_split("/\r?\n/", $comments) as $comment)
 			{
-				$cleanComment = ltrim($comment, "*@ \t\r\n\0\x0B");
+				$cleanComment = ltrim($comment, "* \t\r\n\0\x0B");
+
+				if (preg_match('/^@/', $cleanComment) === 0) {
+				    continue;
+				}
+
+				$cleanComment = ltrim($cleanComment, "@");
 
 				if ($cleanComment != $comment)
 				{
