@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 2.9.1 - 2017-07-19
+
 ## Bugfix
 
 * [#691](https://github.com/atoum/atoum/pull/691) Fix how annotations are extracted. Only those actually starting with `@` are handled ([@jubianchi])
