@@ -101,7 +101,7 @@ class atoumTask extends task
 			}
 		}
 
-        sort($files);
+		sort($files);
 
 		return $files;
 	}
