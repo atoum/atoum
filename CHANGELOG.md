@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#731](https://github.com/atoum/atoum/pull/731) Remove dependency on `ext-session` ([@jubianchi], [@hywan])
+
 # 3.1.1 - 2017-07-19
 
 ## Bugfix
