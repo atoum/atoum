@@ -19,33 +19,39 @@ class superglobals
             return $this->superglobals[$superglobal];
         } else {
             switch ($superglobal) {
-            case 'GLOBALS':
-                return $GLOBALS;
+                case 'GLOBALS':
+                    return $GLOBALS;
 
-            case '_SERVER':
-                return $_SERVER;
+                case '_SERVER':
+                    return $_SERVER;
 
-            case '_GET':
-                return $_GET;
+                case '_GET':
+                    return $_GET;
 
-            case '_POST':
-                return $_POST;
+                case '_POST':
+                    return $_POST;
 
-            case '_FILES':
-                return $_FILES;
+                case '_FILES':
+                    return $_FILES;
 
-            case '_COOKIE':
-                return $_COOKIE;
+                case '_COOKIE':
+                    return $_COOKIE;
 
-            case '_SESSION':
-                return $_SESSION;
+                case '_SESSION':
+                    if (isset($_SESSION)) {
+                        return $_SESSION;
+                    }
 
-            case '_REQUEST':
-                return $_REQUEST;
+                    $this->superglobals[$superglobal] = [];
 
-            case '_ENV':
-                return $_ENV;
-        }
+                    return $this->superglobals[$superglobal];
+
+                case '_REQUEST':
+                    return $_REQUEST;
+
+                case '_ENV':
+                    return $_ENV;
+            }
         }
     }
 
