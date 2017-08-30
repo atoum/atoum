@@ -6,6 +6,14 @@ namespace
         class throwable
         {
         }
+    } else {
+        interface throwableExtended extends throwable
+        {
+        }
+
+        class exceptionExtended extends exception implements throwableExtended
+        {
+        }
     }
 }
 
@@ -150,6 +158,21 @@ namespace mageekguy\atoum\tests\units\asserters
                     })
                         ->isInstanceOf(atoum\asserter\exception::class)
                         ->hasMessage($failMessage)
+            ;
+        }
+
+        /** @php >= 7.0.0 */
+        public function testIsInstanceOfPhpGte7()
+        {
+            $this
+                ->given($this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                )
+                ->if($this->testedInstance->setWith(new \exception()))
+                ->then
+                    ->object($this->testedInstance->isInstanceOf(\throwable::class))
+                ->if($this->testedInstance->setWith(new \exceptionExtended()))
+                    ->object($this->testedInstance->isInstanceOf(\throwableExtended::class))
             ;
         }
 
