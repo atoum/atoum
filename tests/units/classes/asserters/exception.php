@@ -2,9 +2,18 @@
 
 namespace
 {
-	if (version_compare(PHP_VERSION, '7.0.0') < 0)
-	{
-		class throwable {}
+	if (version_compare(PHP_VERSION, '7.0.0') < 0) {
+		class throwable
+		{
+		}
+	} else {
+		interface throwableExtended extends throwable
+		{
+		}
+
+		class exceptionExtended extends exception implements throwableExtended
+		{
+		}
 	}
 }
 

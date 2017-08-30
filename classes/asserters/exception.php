@@ -80,7 +80,7 @@ class exception extends object
 		}
 		catch (\logicException $exception)
 		{
-			if (self::classExists($value) === false || (strtolower(ltrim($value, '\\')) !== 'exception' && is_subclass_of($value, version_compare(PHP_VERSION, '7.0.0') >= 0 ? 'throwable' : 'exception') === false))
+			if (self::classExists($value) === false || self::isThrowableClass($value) === false)
 			{
 				throw new exceptions\logic\invalidArgument('Argument of ' . __METHOD__ . '() must be a \exception instance or an exception class name');
 			}
@@ -175,5 +175,12 @@ class exception extends object
 	private static function isThrowable($value)
 	{
 		return $value instanceof \exception || (version_compare(PHP_VERSION, '7.0.0') >= 0 && $value instanceof \throwable);
+	}
+
+	private static function isThrowableClass($value)
+	{
+		return strtolower(ltrim($value, '\\')) === 'exception' ||
+			(version_compare(PHP_VERSION, '7.0.0') >= 0 && strtolower(ltrim($value, '\\')) === 'throwable') ||
+			is_subclass_of($value, version_compare(PHP_VERSION, '7.0.0') >= 0 ? 'throwable' : 'exception');
 	}
 }
