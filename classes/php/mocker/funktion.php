@@ -4,8 +4,8 @@ namespace mageekguy\atoum\php\mocker;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\php\mocker
+	mageekguy\atoum\php\mocker,
+	mageekguy\atoum\test\exceptions
 ;
 
 class funktion extends mocker
@@ -56,14 +56,17 @@ class funktion extends mocker
 
 		if ($this->functionExists($fqdn) === false)
 		{
-			if (function_exists($fqdn) === true)
-			{
-				throw new exceptions\logic\invalidArgument('Function \'' . $fqdn . '\' already exists');
-			}
-
 			$lastAntislash = strrpos($fqdn, '\\');
 			$namespace = substr($fqdn, 0, $lastAntislash);
-			$function = substr($fqdn, $lastAntislash + 1);
+			$function = substr($fqdn, $lastAntislash > 0 ? $lastAntislash + 1 : 0);
+
+			if (function_exists($fqdn) === true)
+			{
+				$message = $namespace === '' ? 'This may be because you are trying to mock a function from a class in the root namespace.' : 'This may be because a function with the same name already exists in the namespace \'' . $namespace . '\'.';
+
+				throw new exceptions\runtime('The function you are trying to mock already exists: \'' . $function . '\'. ' . $message);
+			}
+
 			$reflectedFunction = $this->buildReflectedFunction($function);
 			static::defineMockedFunction($namespace, get_class($this), $function, $reflectedFunction);
 		}
