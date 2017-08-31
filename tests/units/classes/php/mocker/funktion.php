@@ -127,16 +127,20 @@ class funktion extends atoum\test
                 ->exception(function () use ($mocker) {
                     $mocker->generate(__NAMESPACE__ . '\doesSomething');
                 })
-                    ->isInstanceof(atoum\exceptions\logic\invalidArgument::class)
-                    ->hasMessage('Function \'' . __NAMESPACE__ . '\doesSomething\' already exists')
-
+                    ->isInstanceof(atoum\test\exceptions\runtime::class)
+                    ->hasMessage('The function you are trying to mock already exists: \'doesSomething\'. This may be because a function with the same name already exists in the namespace \''.__NAMESPACE__.'\'.')
+                ->exception(function () use ($mocker) {
+                    $mocker->generate('version_compare');
+                })
+                    ->isInstanceof(atoum\test\exceptions\runtime::class)
+                    ->hasMessage('The function you are trying to mock already exists: \'version_compare\'. This may be because you are trying to mock a function from a class in the root namespace.')
             ->if($this->testedInstance->{$functionName} = $returnValue = uniqid())
             ->then
                 ->string(version_compare(uniqid(), uniqid()))->isEqualTo($returnValue)
                 ->object($this->testedInstance->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($this->testedInstance)
                 ->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
                 ->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
-                ->object($this->testedInstance->generate($unknownFunctionName = __NAMESPACE__ . '\\foo'))->isIdenticalTo($this->testedInstance)
+                ->object($this->testedInstance->generate($unknownFunctionName = __NAMESPACE__ . '\foo'))->isIdenticalTo($this->testedInstance)
                 ->variable(foo())->isNull()
 
             ->if($this->testedInstance->{$unknownFunctionName} = $fooReturnValue = uniqid())
