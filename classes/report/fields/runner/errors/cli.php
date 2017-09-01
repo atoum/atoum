@@ -128,9 +128,7 @@ class cli extends report\fields\runner\errors
                         PHP_EOL
                     ;
 
-                    foreach (explode(PHP_EOL, $error['message']) as $line) {
-                        $string .= $line . PHP_EOL;
-                    }
+                    $string .= $error['message'] . PHP_EOL;
                 }
             }
         }
