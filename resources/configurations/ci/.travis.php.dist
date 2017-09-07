@@ -52,6 +52,7 @@ else
 
 	$runner->addReport($coverallsReport);
 
+    $script->php('php -dxdebug.cli_color=0 -dxdebug.overload_var_dump=0');
 }
 
 $script->testIt();
