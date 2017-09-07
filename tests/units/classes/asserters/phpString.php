@@ -702,6 +702,21 @@ class phpString extends atoum\test
         ;
     }
 
+    public function testDoesNotMatch()
+    {
+        $this
+            ->if($asserter = $this->newTestedInstance)
+            ->and($asserter->setWith(uniqid('foo', true)))
+            ->and($failMessage = uniqid())
+            ->then
+                ->exception(function () use ($asserter, $failMessage) {
+                    $asserter->doesNotMatch('/foo/', $failMessage);
+                })
+                ->isInstanceOf(atoum\asserter\exception::class)
+                ->hasMessage($failMessage)
+        ;
+    }
+
     public function testToArray()
     {
         $this

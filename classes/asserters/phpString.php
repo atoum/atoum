@@ -79,6 +79,17 @@ class phpString extends variable
         return $this;
     }
 
+    public function doesNotMatch($pattern, $failMessage = null)
+    {
+        if (preg_match($pattern, $this->valueIsSet()->value) === 0) {
+            $this->pass();
+        } else {
+            $this->fail($failMessage ?: $this->_('%s matches %s', $this, $pattern));
+        }
+
+        return $this;
+    }
+
     public function isEqualTo($value, $failMessage = null)
     {
         return parent::isEqualTo($value, $failMessage ?: $this->_('strings are not equal'));
