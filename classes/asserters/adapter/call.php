@@ -225,6 +225,42 @@ abstract class call extends atoum\asserter
         return $this;
     }
 
+    public function onceAndCheckFirstCallArguments(callable $test, $failMessage = null)
+    {
+        return $this->exactlyAndCheckFirstCallArguments($test, 1, $failMessage);
+    }
+
+    public function twiceAndCheckFirstCallArguments(callable $test, $failMessage = null)
+    {
+        return $this->exactlyAndCheckFirstCallArguments($test,2, $failMessage);
+    }
+
+    public function thriceAndCheckFirstCallArguments(callable $test, $failMessage = null)
+    {
+        return $this->exactlyAndCheckFirstCallArguments($test,3, $failMessage);
+    }
+
+    public function exactlyAndCheckFirstCallArguments(callable $test, $number, $failMessage = null)
+    {
+        $this->exactly($number, $failMessage);
+
+        /** @var \mageekguy\atoum\test\adapter\calls $calls */
+        $calls = $this->callIsSet()->adapter->getCalls($this->call, $this->identicalCall);
+
+        $callsArray = $calls->toArray();
+
+        /** @var \mageekguy\atoum\test\adapter\call $call */
+        $call = $callsArray[1];
+
+        if (!isset($callsArray[1])) {
+            $this->fail("Call not found");
+        }
+
+        $test(array_values($call->getArguments()));
+
+        return $this;
+    }
+
     public function never($failMessage = null)
     {
         return $this->exactly(0, $failMessage);
