@@ -8,6 +8,7 @@
 * [#733](https://github.com/atoum/atoum/pull/733) Uncompleted methods make atoum exit with an error code ([@jubianchi])
 * [#734](https://github.com/atoum/atoum/pull/734) The `exception::isInstanceOf` asserter correctly works with interfaces ([@jubianchi])
 * [#731](https://github.com/atoum/atoum/pull/731) Remove dependency on `ext-session` ([@jubianchi], [@hywan])
+* [#740](https://github.com/atoum/atoum/pull/740) String asserter now has `doesNotMatch` assertion ([@fvilpoix])
 
 # 3.1.1 - 2017-07-19
 
@@ -271,3 +272,4 @@
 [@krtek4]: https://github.com/krtek4
 [@guiled]: https://github.com/guiled
 [@trasher]: https://github.com/trasher
+[@fvilpoix]: https://github.com/fvilpoix
