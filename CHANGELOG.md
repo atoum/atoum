@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 3.2.0 - 2017-09-07
+
 * [#739](https://github.com/atoum/atoum/pull/739) Avoid many memory allocations in error report field ([@hywan])
 * [#736](https://github.com/atoum/atoum/pull/736) Display clear errors when mocking function fails ([@jubianchi])
 * [#737](https://github.com/atoum/atoum/pull/737) Command line switches override configuration file directives ([@jubianchi])
