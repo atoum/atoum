@@ -702,7 +702,7 @@ class phpString extends atoum\test
         ;
     }
 
-    public function testDoesNotMatch()
+    public function testNotMatches()
     {
         $this
             ->if($asserter = $this->newTestedInstance)
@@ -710,7 +710,7 @@ class phpString extends atoum\test
             ->and($failMessage = uniqid())
             ->then
                 ->exception(function () use ($asserter, $failMessage) {
-                    $asserter->doesNotMatch('/foo/', $failMessage);
+                    $asserter->notMatches('/foo/', $failMessage);
                 })
                 ->isInstanceOf(atoum\asserter\exception::class)
                 ->hasMessage($failMessage)

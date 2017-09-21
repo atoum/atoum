@@ -79,7 +79,7 @@ class phpString extends variable
         return $this;
     }
 
-    public function doesNotMatch($pattern, $failMessage = null)
+    public function notMatches($pattern, $failMessage = null)
     {
         if (preg_match($pattern, $this->valueIsSet()->value) === 0) {
             $this->pass();
