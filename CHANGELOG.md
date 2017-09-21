@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#740](https://github.com/atoum/atoum/pull/740) String asserter now has `notMatches` assertion ([@fvilpoix])
+
 # 3.2.0 - 2017-09-07
 
 * [#739](https://github.com/atoum/atoum/pull/739) Avoid many memory allocations in error report field ([@hywan])
@@ -8,7 +10,6 @@
 * [#733](https://github.com/atoum/atoum/pull/733) Uncompleted methods make atoum exit with an error code ([@jubianchi])
 * [#734](https://github.com/atoum/atoum/pull/734) The `exception::isInstanceOf` asserter correctly works with interfaces ([@jubianchi])
 * [#731](https://github.com/atoum/atoum/pull/731) Remove dependency on `ext-session` ([@jubianchi], [@hywan])
-* [#740](https://github.com/atoum/atoum/pull/740) String asserter now has `doesNotMatch` assertion ([@fvilpoix])
 
 # 3.1.1 - 2017-07-19
 
