@@ -2,6 +2,7 @@
 
 namespace mageekguy\atoum\test\adapter;
 
+use mageekguy\atoum\asserter\exception;
 use mageekguy\atoum\exceptions;
 use mageekguy\atoum\test\adapter;
 
@@ -10,6 +11,7 @@ class call
     protected $function = null;
     protected $arguments = null;
     protected $decorator = null;
+    protected $verify = null;
 
     public function __construct($function = null, array $arguments = null, adapter\call\decorator $decorator = null)
     {
@@ -73,6 +75,25 @@ class call
         return $this;
     }
 
+    public function getVerify()
+    {
+        return $this->verify;
+    }
+
+    public function setVerify(callable $verify)
+    {
+        $this->verify = $verify;
+
+        return $this;
+    }
+
+    public function unsetVerify()
+    {
+        $this->verify = null;
+
+        return $this;
+    }
+
     public function setDecorator(adapter\call\decorator $decorator = null)
     {
         $this->decorator = $decorator ?: new adapter\call\decorator();
@@ -90,6 +111,24 @@ class call
         switch (true) {
             case $this->function === null || strtolower($this->function) != strtolower($call->function):
                 return false;
+
+            case $this->verify !== null:
+                try {
+                    $result = call_user_func($this->verify, $call->arguments);
+                    $result = $result === null ? true : $result;
+
+                    $this->verify = function () use ($result) {
+                        return $result;
+                    };
+
+                    return $result;
+                } catch (exception $e) {
+                    $this->verify = function () {
+                        return false;
+                    };
+
+                    return false;
+                }
 
             case $this->arguments === null:
                 return true;

@@ -312,6 +312,7 @@ abstract class call extends atoum\asserter
             ->call
                 ->setFunction($function)
                 ->unsetArguments()
+                ->unsetverify()
         ;
 
         $this->beforeCalls = [];
@@ -328,6 +329,7 @@ abstract class call extends atoum\asserter
             ->setTrace()
             ->call
                 ->setArguments($arguments)
+                ->unsetverify()
         ;
 
         $this->identicalCall = false;
@@ -343,6 +345,37 @@ abstract class call extends atoum\asserter
             ->setTrace()
             ->call
                 ->unsetArguments()
+        ;
+
+        $this->identicalCall = false;
+
+        return $this;
+    }
+
+    protected function setVerify(callable $verify)
+    {
+        $this
+            ->adapterIsSet()
+            ->callIsSet()
+            ->setTrace()
+            ->call
+                ->setVerify($verify)
+                ->unsetArguments()
+        ;
+
+        $this->identicalCall = false;
+
+        return $this;
+    }
+
+    protected function unsetVerify()
+    {
+        $this
+            ->adapterIsSet()
+            ->callIsSet()
+            ->setTrace()
+            ->call
+                ->unsetVerify()
         ;
 
         $this->identicalCall = false;

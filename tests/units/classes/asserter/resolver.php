@@ -4,8 +4,7 @@ namespace mageekguy\atoum\tests\units\asserter;
 
 require __DIR__ . '/../../runner.php';
 
-use atoum
-;
+use atoum;
 
 class resolver extends atoum
 {
