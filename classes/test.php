@@ -487,9 +487,7 @@ abstract class test implements observable, \countable
             ->setHandler('if', $returnTest)
             ->setHandler('and', $returnTest)
             ->setHandler('then', $returnTest)
-            ->setHandler('given', function () use ($returnTest) {
-                return $returnTest();
-            })
+            ->setHandler('given', $returnTest)
             ->setMethodHandler('define', $returnTest)
             ->setMethodHandler('let', $returnTest)
         ;

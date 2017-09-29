@@ -54,6 +54,11 @@ class adapter extends call
         return $this->withAtLeastArguments([]);
     }
 
+    public function verify(callable $verify)
+    {
+        return $this->setVerify($verify);
+    }
+
     protected function adapterIsSet()
     {
         try {
