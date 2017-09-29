@@ -12,6 +12,10 @@
 * [#734](https://github.com/atoum/atoum/pull/734) The `exception::isInstanceOf` asserter correctly works with interfaces ([@jubianchi])
 * [#731](https://github.com/atoum/atoum/pull/731) Remove dependency on `ext-session` ([@jubianchi], [@hywan])
 
+## Bugfix
+
+* [#746](https://github.com/atoum/atoum/pull/746) CLI commands are correctly escaped ([@agallou], [@jubianchi])
+
 # 3.1.1 - 2017-07-19
 
 ## Bugfix

@@ -34,7 +34,7 @@ class command
             $command .= ' ' . $option;
 
             if ($value !== null) {
-                $command .= ' ' . $value;
+                $command .= ' ' . escapeshellarg($value);
             }
         }
 
@@ -55,7 +55,7 @@ class command
         if (self::osIsWindows() === true) {
             $command = '"' . $this->binaryPath . '"' . $command;
         } else {
-            $command = escapeshellcmd($this->binaryPath . $command);
+            $command = escapeshellcmd($this->binaryPath) . $command;
         }
 
         return $command;
