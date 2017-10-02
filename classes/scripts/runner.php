@@ -1120,6 +1120,22 @@ class runner extends atoum\script\configurable
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more information'), $argument, $script->getName()));
                         }
 
+                        $lightReport = new atoum\reports\realtime\cli\dot();
+                        $lightReport->addWriter($script->getOutputWriter());
+
+                        $script->setReport($lightReport);
+                    },
+                    ['-udr', '--use-dot-report'],
+                    null,
+                    $this->locale->_('Use "dot" CLI report'),
+                    PHP_INT_MAX
+                )
+            ->addArgumentHandler(
+                    function ($script, $argument, $values) {
+                        if (count($values) != 0) {
+                            throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more information'), $argument, $script->getName()));
+                        }
+
                         $tapReport = new atoum\reports\realtime\tap();
                         $tapReport->addWriter($script->getOutputWriter());
 
