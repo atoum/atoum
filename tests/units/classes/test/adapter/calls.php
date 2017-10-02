@@ -47,10 +47,11 @@ class calls extends atoum\test
                     ->object[$otherCall->getFunction()][2]->isIdenticalTo($otherCall)
             ->if($calls[] = $anotherCall = new adapter\call(uniqid()))
             ->then
-                ->array($calls())->isEqualTo([
-                            $call->getFunction() => [1 => $call, 2 => $otherCall],
-                            $anotherCall->getFunction() => [3 => $anotherCall]
-                        ]
+                ->array($calls())->isEqualTo(
+                    [
+                        $call->getFunction() => [1 => $call, 2 => $otherCall],
+                        $anotherCall->getFunction() => [3 => $anotherCall]
+                    ]
                 )
                     ->object[$call->getFunction()][1]->isIdenticalTo($call)
                     ->object[$call->getFunction()][2]->isIdenticalTo($otherCall)
@@ -1209,7 +1210,8 @@ class calls extends atoum\test
                 ->array($calls->getTimeline())->isEqualTo([1 => $call1])
             ->if($calls[] = $call2 = new adapter\call(uniqid()))
             ->then
-                ->array($calls->getTimeline())->isEqualTo([
+                ->array($calls->getTimeline())->isEqualTo(
+                    [
                         1 => $call1,
                         2 => $call2
                     ]
@@ -1217,14 +1219,16 @@ class calls extends atoum\test
             ->if($otherCalls = new testedClass())
             ->and($otherCalls[] = $call3 = new adapter\call(uniqid()))
             ->then
-                ->array($calls->getTimeline())->isEqualTo([
+                ->array($calls->getTimeline())->isEqualTo(
+                    [
                         1 => $call1,
                         2 => $call2
                     ]
                 )
             ->if($calls[] = $call4 = new adapter\call(uniqid()))
             ->then
-                ->array($calls->getTimeline())->isEqualTo([
+                ->array($calls->getTimeline())->isEqualTo(
+                    [
                         1 => $call1,
                         2 => $call2,
                         4 => $call4

@@ -26,7 +26,8 @@ class closure extends atoum\test
     public function testAccept()
     {
         $this
-            ->if($array = [
+            ->if(
+                $array = [
                     0,
                     1,
                     2,
@@ -43,7 +44,8 @@ class closure extends atoum\test
                     9
                 ]
             )
-            ->and($iterator = new \recursiveIteratorIterator(
+            ->and(
+                $iterator = new \recursiveIteratorIterator(
                     new testedClass(
                         new \recursiveArrayIterator($array),
                         function ($current, $key, \recursiveArrayIterator $innerIterator) {

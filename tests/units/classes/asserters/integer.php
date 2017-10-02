@@ -39,9 +39,10 @@ class integer extends atoum\test
     public function testSetWith()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                ->setLocale($locale = new \mock\atoum\locale()),
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\locale()),
             $this->calling($locale)->_ = $notAnInteger = uniqid()
         )
         ->then
@@ -74,7 +75,8 @@ class integer extends atoum\test
                 ->object($asserter->isEqualTo($value))->isIdenticalTo($asserter)
                 ->object($asserter->{'=='}($value))->isIdenticalTo($asserter)
 
-            ->if($this->testedInstance
+            ->if(
+                $this->testedInstance
                     ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
                     ->setLocale($locale = new \mock\atoum\locale())
                     ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
@@ -121,7 +123,8 @@ class integer extends atoum\test
                 ->object($asserter->isGreaterThan(0))->isIdenticalTo($asserter)
                 ->object($asserter->{'>'}(0))->isIdenticalTo($asserter)
 
-            ->if($asserter
+            ->if(
+                $asserter
                     ->setWith(- PHP_INT_MAX)
                     ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
                     ->setLocale($locale = new \mock\atoum\locale())
@@ -163,7 +166,8 @@ class integer extends atoum\test
                 ->object($asserter->isGreaterThanOrEqualTo(PHP_INT_MAX))->isIdenticalTo($asserter)
                 ->object($asserter->{'>='}(PHP_INT_MAX))->isIdenticalTo($asserter)
 
-            ->if($asserter
+            ->if(
+                $asserter
                     ->setWith(- PHP_INT_MAX)
                     ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
                     ->setLocale($locale = new \mock\atoum\locale())
@@ -204,7 +208,8 @@ class integer extends atoum\test
                 ->object($asserter->isLessThan(PHP_INT_MAX))->isIdenticalTo($asserter)
                 ->object($asserter->{'<'}(PHP_INT_MAX))->isIdenticalTo($asserter)
 
-            ->if($asserter
+            ->if(
+                $asserter
                     ->setWith(PHP_INT_MAX)
                     ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
                     ->setLocale($locale = new \mock\atoum\locale())
@@ -246,7 +251,8 @@ class integer extends atoum\test
                 ->object($asserter->isLessThanOrEqualTo(0))->isIdenticalTo($asserter)
                 ->object($asserter->{'<='}(0))->isIdenticalTo($asserter)
 
-            ->if($asserter
+            ->if(
+                $asserter
                     ->setWith(PHP_INT_MAX)
                     ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
                     ->setLocale($locale = new \mock\atoum\locale())

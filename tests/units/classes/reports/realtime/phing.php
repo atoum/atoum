@@ -21,95 +21,105 @@ class phing extends atoum\test
     {
         $this
             ->define($phpPathField = new fields\runner\php\path\cli())
-                ->and($phpPathField
-                    ->setPrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('1;36'))
+                ->and(
+                    $phpPathField
+                        ->setPrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('1;36'))
                 )
             ->define($phpVersionField = new fields\runner\php\version\cli())
-                ->and($phpVersionField
-                    ->setTitlePrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('1;36'))
-                    ->setVersionPrompt(new prompt(' ', new colorizer('1;36')))
+                ->and(
+                    $phpVersionField
+                        ->setTitlePrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('1;36'))
+                        ->setVersionPrompt(new prompt(' ', new colorizer('1;36')))
                 )
             ->define($runnerTestsDurationField = new fields\runner\duration\cli())
-                ->and($runnerTestsDurationField
-                    ->setPrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('1;36'))
+                ->and(
+                    $runnerTestsDurationField
+                        ->setPrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('1;36'))
                 )
             ->define($runnerTestsMemoryField = new fields\runner\tests\memory\phing())
-                ->and($runnerTestsMemoryField
-                    ->setPrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('1;36'))
+                ->and(
+                    $runnerTestsMemoryField
+                        ->setPrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('1;36'))
                 )
             ->define($runnerTestsCoverageField = new fields\runner\tests\coverage\phing())
-                ->and($runnerTestsCoverageField
-                    ->setTitlePrompt(new prompt(PHP_EOL))
-                    ->setClassPrompt(new prompt(' ', new colorizer('1;36')))
-                    ->setMethodPrompt(new prompt('  ', new colorizer('1;36')))
-                    ->setTitleColorizer(new colorizer('1;36'))
+                ->and(
+                    $runnerTestsCoverageField
+                        ->setTitlePrompt(new prompt(PHP_EOL))
+                        ->setClassPrompt(new prompt(' ', new colorizer('1;36')))
+                        ->setMethodPrompt(new prompt('  ', new colorizer('1;36')))
+                        ->setTitleColorizer(new colorizer('1;36'))
                 )
             ->define($runnerResultField = new fields\runner\result\cli())
-                ->and($runnerResultField
-                    ->setPrompt(new prompt(PHP_EOL))
-                    ->setSuccessColorizer(new colorizer('0;37', '42'))
-                    ->setFailureColorizer(new colorizer('0;37', '41'))
+                ->and(
+                    $runnerResultField
+                        ->setPrompt(new prompt(PHP_EOL))
+                        ->setSuccessColorizer(new colorizer('0;37', '42'))
+                        ->setFailureColorizer(new colorizer('0;37', '41'))
                 )
             ->define($runnerFailuresField = new fields\runner\failures\cli())
-                ->and($runnerFailuresField
-                    ->setTitlePrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('0;31'))
-                    ->setMethodPrompt(new prompt(' ', new colorizer('0;31')))
+                ->and(
+                    $runnerFailuresField
+                        ->setTitlePrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('0;31'))
+                        ->setMethodPrompt(new prompt(' ', new colorizer('0;31')))
                 )
             ->define($runnerOutputsField = new fields\runner\outputs\cli())
-                ->and($runnerOutputsField
-                    ->setTitlePrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('1;36'))
-                    ->setMethodPrompt(new prompt(' ', new colorizer('1;36')))
+                ->and(
+                    $runnerOutputsField
+                        ->setTitlePrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('1;36'))
+                        ->setMethodPrompt(new prompt(' ', new colorizer('1;36')))
                 )
             ->define($runnerErrorsField = new fields\runner\errors\cli())
-                ->and($runnerErrorsField
-                    ->setTitlePrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('0;33'))
-                    ->setMethodPrompt(new prompt(' ', new colorizer('0;33')))
+                ->and(
+                    $runnerErrorsField
+                        ->setTitlePrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('0;33'))
+                        ->setMethodPrompt(new prompt(' ', new colorizer('0;33')))
                 )
             ->define($runnerExceptionsField = new fields\runner\exceptions\cli())
-                ->and($runnerExceptionsField
-                    ->setTitlePrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('0;35'))
-                    ->setMethodPrompt(new prompt(' ', new colorizer('0;35')))
+                ->and(
+                    $runnerExceptionsField
+                        ->setTitlePrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('0;35'))
+                        ->setMethodPrompt(new prompt(' ', new colorizer('0;35')))
                 )
             ->define($runnerUncompletedField = new fields\runner\tests\uncompleted\cli())
-                ->and($runnerUncompletedField
-                    ->setTitlePrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('0;37'))
-                    ->setMethodPrompt(new prompt(' ', new colorizer('0;37')))
-                    ->setOutputPrompt(new prompt('  ', new colorizer('0;37')))
+                ->and(
+                    $runnerUncompletedField
+                        ->setTitlePrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('0;37'))
+                        ->setMethodPrompt(new prompt(' ', new colorizer('0;37')))
+                        ->setOutputPrompt(new prompt('  ', new colorizer('0;37')))
                 )
             ->define($runnerVoidField = new fields\runner\tests\blank\cli())
-                ->and($runnerVoidField
-                    ->setTitlePrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('0;34'))
-                    ->setMethodPrompt(new prompt(' ', new colorizer('0;34')))
+                ->and(
+                    $runnerVoidField
+                        ->setTitlePrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('0;34'))
+                        ->setMethodPrompt(new prompt(' ', new colorizer('0;34')))
                 )
             ->define($runnerSkippedField = new fields\runner\tests\skipped\cli())
-                ->and($runnerSkippedField
-                    ->setTitlePrompt(new prompt(PHP_EOL))
-                    ->setTitleColorizer(new colorizer('0;90'))
-                    ->setMethodPrompt(new prompt(' ', new colorizer('0;90')))
+                ->and(
+                    $runnerSkippedField
+                        ->setTitlePrompt(new prompt(PHP_EOL))
+                        ->setTitleColorizer(new colorizer('0;90'))
+                        ->setMethodPrompt(new prompt(' ', new colorizer('0;90')))
                 )
             ->define($testRunField = new fields\test\run\phing())
-                ->and($testRunField
-                    ->setPrompt(new prompt(PHP_EOL))
-                    ->setColorizer(new colorizer('1;36'))
+                ->and(
+                    $testRunField
+                        ->setPrompt(new prompt(PHP_EOL))
+                        ->setColorizer(new colorizer('1;36'))
                 )
             ->define($testDurationField = new fields\test\duration\phing())
-                ->and($testDurationField
-                    ->setPrompt(new prompt(' ', new colorizer('1;36')))
-                )
+                ->and($testDurationField->setPrompt(new prompt(' ', new colorizer('1;36'))))
             ->define($testMemoryField = new fields\test\memory\phing())
-                ->and($testMemoryField
-                    ->setPrompt(new prompt(' ', new colorizer('1;36')))
-                )
+                ->and($testMemoryField->setPrompt(new prompt(' ', new colorizer('1;36'))))
             ->if($report = new testedClass())
             ->then
                 ->boolean($report->progressIsShowed())->isTrue()
@@ -119,7 +129,8 @@ class phing extends atoum\test
                 ->boolean($report->memoryIsShowed())->isTrue()
                 ->variable($report->getCodeCoverageReportPath())->isNull()
                 ->variable($report->getCodeCoverageReportUrl())->isNull()
-                ->array($report->getFields())->isEqualTo([
+                ->array($report->getFields())->isEqualTo(
+                    [
                         $phpPathField,
                         $phpVersionField,
                         $runnerTestsDurationField,
@@ -139,7 +150,6 @@ class phing extends atoum\test
                         $testMemoryField,
                     ]
                 )
-
           ;
     }
 

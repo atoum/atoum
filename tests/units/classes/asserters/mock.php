@@ -81,8 +81,8 @@ class mock extends atoum\test
     {
         $this
             ->given($asserter = $this->newTestedInstance)
-
-            ->if($asserter
+            ->if(
+                $asserter
                     ->setLocale($locale = new \mock\atoum\locale())
                     ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer()),
                 $this->calling($locale)->_ = $notMock = uniqid(),
@@ -112,39 +112,39 @@ class mock extends atoum\test
                     })
                         ->isInstanceOf(atoum\exceptions\logic::class)
                         ->hasMessage('Mock is undefined')
+            ->if(
+                $asserter
+                    ->setWith($mock = new \mock\foo($controller = new \mock\atoum\mock\controller()))
+                    ->setLocale($locale = new \mock\atoum\locale()),
+                $this->calling($locale)->_ = $wasNotCalled = uniqid(),
+                $this->calling($controller)->getCallsNumber = 0,
+                $this->calling($controller)->getMockClass = $mockClass = uniqid()
+            )
+            ->then
+                ->exception(function () use ($asserter) {
+                    $asserter->wasCalled();
+                })
+                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->hasMessage($wasNotCalled)
+                ->mock($locale)->call('_')->withArguments('%s is not called', $mockClass)->once
 
-                ->if($asserter
-                        ->setWith($mock = new \mock\foo($controller = new \mock\atoum\mock\controller()))
-                        ->setLocale($locale = new \mock\atoum\locale()),
-                    $this->calling($locale)->_ = $wasNotCalled = uniqid(),
-                    $this->calling($controller)->getCallsNumber = 0,
-                    $this->calling($controller)->getMockClass = $mockClass = uniqid()
-                )
-                ->then
-                    ->exception(function () use ($asserter) {
-                        $asserter->wasCalled();
-                    })
-                        ->isInstanceOf(atoum\asserter\exception::class)
-                        ->hasMessage($wasNotCalled)
-                    ->mock($locale)->call('_')->withArguments('%s is not called', $mockClass)->once
+                ->exception(function () use ($asserter) {
+                    $asserter->wasCalled;
+                })
+                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->hasMessage($wasNotCalled)
+                ->mock($locale)->call('_')->withArguments('%s is not called', $mockClass)->twice
 
-                    ->exception(function () use ($asserter) {
-                        $asserter->wasCalled;
-                    })
-                        ->isInstanceOf(atoum\asserter\exception::class)
-                        ->hasMessage($wasNotCalled)
-                    ->mock($locale)->call('_')->withArguments('%s is not called', $mockClass)->twice
+                ->exception(function () use ($asserter, & $failMessage) {
+                    $asserter->wasCalled($failMessage = uniqid());
+                })
+                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->hasMessage($failMessage)
 
-                    ->exception(function () use ($asserter, & $failMessage) {
-                        $asserter->wasCalled($failMessage = uniqid());
-                    })
-                        ->isInstanceOf(atoum\asserter\exception::class)
-                        ->hasMessage($failMessage)
-
-                ->if($this->calling($controller)->getCallsNumber = rand(1, PHP_INT_MAX))
-                ->then
-                    ->object($asserter->wasCalled())->isIdenticalTo($asserter)
-                    ->object($asserter->wasCalled)->isIdenticalTo($asserter)
+            ->if($this->calling($controller)->getCallsNumber = rand(1, PHP_INT_MAX))
+            ->then
+                ->object($asserter->wasCalled())->isIdenticalTo($asserter)
+                ->object($asserter->wasCalled)->isIdenticalTo($asserter)
         ;
     }
 
@@ -158,39 +158,39 @@ class mock extends atoum\test
                     })
                         ->isInstanceOf(atoum\exceptions\logic::class)
                         ->hasMessage('Mock is undefined')
+            ->if(
+                $asserter
+                    ->setWith($mock = new \mock\foo($controller = new \mock\atoum\mock\controller()))
+                    ->setLocale($locale = new \mock\atoum\locale()),
+                $this->calling($locale)->_ = $wasCalled = uniqid(),
+                $this->calling($controller)->getCallsNumber = rand(1, PHP_INT_MAX),
+                $this->calling($controller)->getMockClass = $mockClass = uniqid()
+            )
+            ->then
+                ->exception(function () use ($asserter) {
+                    $asserter->wasNotCalled();
+                })
+                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->hasMessage($wasCalled)
+                ->mock($locale)->call('_')->withArguments('%s is called', $mockClass)->once
 
-                ->if($asserter
-                        ->setWith($mock = new \mock\foo($controller = new \mock\atoum\mock\controller()))
-                        ->setLocale($locale = new \mock\atoum\locale()),
-                    $this->calling($locale)->_ = $wasCalled = uniqid(),
-                    $this->calling($controller)->getCallsNumber = rand(1, PHP_INT_MAX),
-                    $this->calling($controller)->getMockClass = $mockClass = uniqid()
-                )
-                ->then
-                    ->exception(function () use ($asserter) {
-                        $asserter->wasNotCalled();
-                    })
-                        ->isInstanceOf(atoum\asserter\exception::class)
-                        ->hasMessage($wasCalled)
-                    ->mock($locale)->call('_')->withArguments('%s is called', $mockClass)->once
+                ->exception(function () use ($asserter) {
+                    $asserter->wasNotCalled;
+                })
+                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->hasMessage($wasCalled)
+                ->mock($locale)->call('_')->withArguments('%s is called', $mockClass)->twice
 
-                    ->exception(function () use ($asserter) {
-                        $asserter->wasNotCalled;
-                    })
-                        ->isInstanceOf(atoum\asserter\exception::class)
-                        ->hasMessage($wasCalled)
-                    ->mock($locale)->call('_')->withArguments('%s is called', $mockClass)->twice
+                ->exception(function () use ($asserter, & $failMessage) {
+                    $asserter->wasNotCalled($failMessage = uniqid());
+                })
+                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->hasMessage($failMessage)
 
-                    ->exception(function () use ($asserter, & $failMessage) {
-                        $asserter->wasNotCalled($failMessage = uniqid());
-                    })
-                        ->isInstanceOf(atoum\asserter\exception::class)
-                        ->hasMessage($failMessage)
-
-                ->if($this->calling($controller)->getCallsNumber = 0)
-                ->then
-                    ->object($asserter->wasNotCalled())->isIdenticalTo($asserter)
-                    ->object($asserter->wasNotCalled)->isIdenticalTo($asserter)
+            ->if($this->calling($controller)->getCallsNumber = 0)
+            ->then
+                ->object($asserter->wasNotCalled())->isIdenticalTo($asserter)
+                ->object($asserter->wasNotCalled)->isIdenticalTo($asserter)
         ;
     }
 
@@ -204,7 +204,6 @@ class mock extends atoum\test
                 })
                     ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Mock is undefined')
-
             ->given(
                 $asserter->setManager($manager = new \mock\atoum\asserters\adapter\call\manager()),
                 $mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()),
@@ -306,7 +305,7 @@ class mock extends atoum\test
                 ->object($asserter->withArguments($arg1 = uniqid()))->isIdenticalTo($asserter)
                 ->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
                 ->integer($asserter->getLastAssertionLine())->isEqualTo(__LINE__ - 2)
-                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, [$arg1],  new decorators\addClass($mockClass)))
+                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, [$arg1], new decorators\addClass($mockClass)))
                 ->array($asserter->getBefore())->isEmpty
                 ->array($asserter->getAfter())->isEmpty
                 ->mock($manager)->call('add')->withArguments($asserter)->once
@@ -314,7 +313,7 @@ class mock extends atoum\test
                 ->object($asserter->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($asserter)
                 ->string($asserter->getLastAssertionFile())->isEqualTo(__FILE__)
                 ->integer($asserter->getLastAssertionLine())->isEqualTo($line = __LINE__ - 2)
-                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, [$arg1, $arg2],  new decorators\addClass($mockClass)))
+                ->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, [$arg1, $arg2], new decorators\addClass($mockClass)))
                 ->array($asserter->getBefore())->isEmpty
                 ->array($asserter->getAfter())->isEmpty
                 ->mock($manager)->call('add')->withArguments($asserter)->once

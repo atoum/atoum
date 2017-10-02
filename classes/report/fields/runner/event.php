@@ -10,7 +10,8 @@ abstract class event extends report\fields\event
 {
     public function __construct()
     {
-        parent::__construct([
+        parent::__construct(
+            [
                 runner::runStart,
                 test::fail,
                 test::error,

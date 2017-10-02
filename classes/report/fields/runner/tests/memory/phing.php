@@ -2,8 +2,6 @@
 
 namespace mageekguy\atoum\report\fields\runner\tests\memory;
 
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
 use mageekguy\atoum\report;
 
 class phing extends report\fields\runner\tests\memory\cli

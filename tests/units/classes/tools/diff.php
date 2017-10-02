@@ -113,25 +113,29 @@ class diff extends atoum
             ->if($this->newTestedInstance)
             ->then
                 ->array($this->testedInstance->make())->isEqualTo([''])
-                ->array($this->testedInstance->setActual($data = rand(0, 9))->make())->isEqualTo([
+                ->array($this->testedInstance->setActual($data = rand(0, 9))->make())->isEqualTo(
+                    [
                         [
                             '-' => [''],
                             '+' => [$data]
                         ]
                     ]
                 )
-                ->array($this->testedInstance->setActual($data = uniqid())->make())->isEqualTo([
+                ->array($this->testedInstance->setActual($data = uniqid())->make())->isEqualTo(
+                    [
                         [
                             '-' => [''],
                             '+' => [$data]
                         ]
                     ]
                 )
-                ->array($this->testedInstance->setExpected($data)->make())->isEqualTo([
+                ->array($this->testedInstance->setExpected($data)->make())->isEqualTo(
+                    [
                         $data
                     ]
                 )
-                ->array($this->testedInstance->setExpected('')->setActual(($firstLine = uniqid()) . PHP_EOL . ($secondLine = uniqid()))->make())->isEqualTo([
+                ->array($this->testedInstance->setExpected('')->setActual(($firstLine = uniqid()) . PHP_EOL . ($secondLine = uniqid()))->make())->isEqualTo(
+                    [
                         [
                             '-' => [''],
                             '+' => [

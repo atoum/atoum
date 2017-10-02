@@ -41,7 +41,8 @@ class runner extends atoum\test
                 ->variable($runner->getScoreFile())->isNull()
                 ->array($runner->getReports())->isEmpty()
                 ->array($runner->getArguments())->isEmpty()
-                ->array($runner->getHelp())->isEqualTo([
+                ->array($runner->getHelp())->isEqualTo(
+                    [
                         [
                             ['-h', '--help'],
                             null,
@@ -223,7 +224,8 @@ class runner extends atoum\test
                 ->object($runner->getRunner())->isInstanceOf(atoum\runner::class)
                 ->variable($runner->getScoreFile())->isNull()
                 ->array($runner->getArguments())->isEmpty()
-                ->array($runner->getHelp())->isEqualTo([
+                ->array($runner->getHelp())->isEqualTo(
+                    [
                         [
                             ['-h', '--help'],
                             null,

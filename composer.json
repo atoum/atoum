@@ -39,7 +39,7 @@
 	},
 	"require-dev":
 	{
-		"friendsofphp/php-cs-fixer": "~1.12"
+		"friendsofphp/php-cs-fixer": "^2"
 	},
 	"replace": {
 		"mageekguy/atoum": "*"

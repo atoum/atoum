@@ -47,29 +47,30 @@ class gvim extends atoum\test
             ->then
                 ->castToString($field)->isEmpty()
                 ->adapter($adapter)->call('system')->never()
-            ->if($score->getMockController()->getFailAssertions = $fails = [
-                        [
-                            'case' => null,
-                            'dataSetKey' => null,
-                            'class' => $class = uniqid(),
-                            'method' => $method = uniqid(),
-                            'file' => $file = uniqid(),
-                            'line' => $line = rand(1, PHP_INT_MAX),
-                            'asserter' => $asserter = uniqid(),
-                            'fail' => $fail = uniqid()
-                        ],
-                        [
-                            'case' => null,
-                            'dataSetKey' => null,
-                            'class' => $otherClass = uniqid(),
-                            'method' => $otherMethod = uniqid(),
-                            'file' => $otherFile = uniqid(),
-                            'line' => $otherLine = rand(1, PHP_INT_MAX),
-                            'asserter' => $otherAsserter = uniqid(),
-                            'fail' => $otherFail = uniqid()
-                        ]
+            ->if(
+                $score->getMockController()->getFailAssertions = $fails = [
+                    [
+                        'case' => null,
+                        'dataSetKey' => null,
+                        'class' => $class = uniqid(),
+                        'method' => $method = uniqid(),
+                        'file' => $file = uniqid(),
+                        'line' => $line = rand(1, PHP_INT_MAX),
+                        'asserter' => $asserter = uniqid(),
+                        'fail' => $fail = uniqid()
+                    ],
+                    [
+                        'case' => null,
+                        'dataSetKey' => null,
+                        'class' => $otherClass = uniqid(),
+                        'method' => $otherMethod = uniqid(),
+                        'file' => $otherFile = uniqid(),
+                        'line' => $otherLine = rand(1, PHP_INT_MAX),
+                        'asserter' => $otherAsserter = uniqid(),
+                        'fail' => $otherFail = uniqid()
                     ]
-                )
+                ]
+            )
             ->and($field->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($field)->isEmpty()

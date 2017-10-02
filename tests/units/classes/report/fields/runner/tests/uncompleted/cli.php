@@ -175,27 +175,28 @@ class cli extends atoum\test
             ->if($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($customField)->isEmpty()
-            ->if($score->getMockController()->getUncompletedMethods = $allUncompletedMethods = [
-                        [
-                            'class' => $class = uniqid(),
-                            'method' => $method = uniqid(),
-                            'exitCode' => $exitCode = rand(1, PHP_INT_MAX),
-                            'output' => $output = uniqid()
-                        ],
-                        [
-                            'class' => $otherClass = uniqid(),
-                            'method' => $otherMethod = uniqid(),
-                            'exitCode' => $otherExitCode = rand(1, PHP_INT_MAX),
-                            'output' => ($otherOutputLine1 = uniqid()) . PHP_EOL . ($otherOutputLine2 = uniqid())
-                        ],
-                        [
-                            'class' => $anotherClass = uniqid(),
-                            'method' => $anotherMethod = uniqid(),
-                            'exitCode' => $anotherExitCode = rand(1, PHP_INT_MAX),
-                            'output' => ''
-                        ]
+            ->if(
+                $score->getMockController()->getUncompletedMethods = $allUncompletedMethods = [
+                    [
+                        'class' => $class = uniqid(),
+                        'method' => $method = uniqid(),
+                        'exitCode' => $exitCode = rand(1, PHP_INT_MAX),
+                        'output' => $output = uniqid()
+                    ],
+                    [
+                        'class' => $otherClass = uniqid(),
+                        'method' => $otherMethod = uniqid(),
+                        'exitCode' => $otherExitCode = rand(1, PHP_INT_MAX),
+                        'output' => ($otherOutputLine1 = uniqid()) . PHP_EOL . ($otherOutputLine2 = uniqid())
+                    ],
+                    [
+                        'class' => $anotherClass = uniqid(),
+                        'method' => $anotherMethod = uniqid(),
+                        'exitCode' => $anotherExitCode = rand(1, PHP_INT_MAX),
+                        'output' => ''
                     ]
-                )
+                ]
+            )
             ->and($defaultField = new tests\uncompleted\cli())
             ->and($customField = new tests\uncompleted\cli())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
@@ -216,15 +217,16 @@ class cli extends atoum\test
                 ->castToString($customField)->isEmpty()
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($defaultField)->isEqualTo(sprintf('There are %d uncompleted methods:', sizeof($allUncompletedMethods)) . PHP_EOL .
-                        sprintf('%s::%s() with exit code %d:', $class, $method, $exitCode) . PHP_EOL .
-                        'output(' . strlen($output) . ') "' . $output . '"' . PHP_EOL .
-                        sprintf('%s::%s() with exit code %d:', $otherClass, $otherMethod, $otherExitCode) . PHP_EOL .
-                        'output(' . (strlen($otherOutputLine1 . PHP_EOL . $otherOutputLine2)) . ') "' . $otherOutputLine1 . PHP_EOL .
-                        $otherOutputLine2 . '"' . PHP_EOL .
-                        sprintf('%s::%s() with exit code %d:', $anotherClass, $anotherMethod, $anotherExitCode) . PHP_EOL .
-                        'output(0) ""' . PHP_EOL
-                    )
+                ->castToString($defaultField)->isEqualTo(
+                    sprintf('There are %d uncompleted methods:', sizeof($allUncompletedMethods)) . PHP_EOL .
+                    sprintf('%s::%s() with exit code %d:', $class, $method, $exitCode) . PHP_EOL .
+                    'output(' . strlen($output) . ') "' . $output . '"' . PHP_EOL .
+                    sprintf('%s::%s() with exit code %d:', $otherClass, $otherMethod, $otherExitCode) . PHP_EOL .
+                    'output(' . (strlen($otherOutputLine1 . PHP_EOL . $otherOutputLine2)) . ') "' . $otherOutputLine1 . PHP_EOL .
+                    $otherOutputLine2 . '"' . PHP_EOL .
+                    sprintf('%s::%s() with exit code %d:', $anotherClass, $anotherMethod, $anotherExitCode) . PHP_EOL .
+                    'output(0) ""' . PHP_EOL
+                )
             ->if($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($customField)->isEqualTo(

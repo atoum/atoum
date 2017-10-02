@@ -136,14 +136,15 @@ class cli extends atoum\test
                 ->castToString($defaultField)->isEqualTo(
                         $defaultField->getPrompt() . sprintf($defaultField->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($defaultField->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL
                     )
-                ->castToString($customField)->isEqualTo($prompt .
-                        sprintf(
-                            '%s: %s.',
-                            $titleColorizer->colorize($locale->__('Total test duration', 'Total tests duration', $testNumber)),
-                            $durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration))
-                        ) .
-                        PHP_EOL
-                    )
+                ->castToString($customField)->isEqualTo(
+                    $prompt .
+                    sprintf(
+                        '%s: %s.',
+                        $titleColorizer->colorize($locale->__('Total test duration', 'Total tests duration', $testNumber)),
+                        $durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration))
+                    ) .
+                    PHP_EOL
+                )
             ->if($runner->getMockController()->getTestNumber = $testNumber = rand(2, PHP_INT_MAX))
             ->and($defaultField = new tests\duration\cli())
             ->and($customField = new tests\duration\cli())
@@ -163,16 +164,22 @@ class cli extends atoum\test
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                        $defaultField->getPrompt() . sprintf($defaultField->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($defaultField->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL
-                    )
-                ->castToString($customField)->isEqualTo($prompt .
-                        sprintf(
-                            '%s: %s.',
-                            $titleColorizer->colorize($locale->__('Total test duration', 'Total tests duration', $testNumber)),
-                            $durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration))
-                        ) .
-                        PHP_EOL
-                    )
+                    $defaultField->getPrompt() .
+                    sprintf(
+                        $defaultField->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber),
+                        sprintf($defaultField->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)
+                    ) .
+                    PHP_EOL
+                )
+                ->castToString($customField)->isEqualTo(
+                    $prompt .
+                    sprintf(
+                        '%s: %s.',
+                        $titleColorizer->colorize($locale->__('Total test duration', 'Total tests duration', $testNumber)),
+                        $durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration))
+                    ) .
+                    PHP_EOL
+                )
         ;
     }
 }

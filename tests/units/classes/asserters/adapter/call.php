@@ -4,8 +4,7 @@ namespace mageekguy\atoum\tests\units\asserters\adapter;
 
 require __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum
-;
+use mageekguy\atoum;
 
 class call extends atoum
 {
@@ -186,11 +185,12 @@ class call extends atoum
                 ->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
                 ->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
 
-                ->object($this->testedInstance->before(
-                            $asserter2 = new \mock\atoum\asserters\adapter\call(),
-                            $asserter3 = new \mock\atoum\asserters\adapter\call()
-                        )
-                    )->isTestedInstance
+                ->object(
+                    $this->testedInstance->before(
+                        $asserter2 = new \mock\atoum\asserters\adapter\call(),
+                        $asserter3 = new \mock\atoum\asserters\adapter\call()
+                    )
+                )->isTestedInstance
                 ->array($this->testedInstance->getBefore())->isEqualTo([$asserter1, $asserter2, $asserter3])
                 ->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
                 ->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
@@ -207,7 +207,8 @@ class call extends atoum
                 ->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
                 ->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
 
-                ->object($this->testedInstance->after(
+                ->object(
+                    $this->testedInstance->after(
                             $asserter2 = new \mock\atoum\asserters\adapter\call(),
                             $asserter3 = new \mock\atoum\asserters\adapter\call()
                         )

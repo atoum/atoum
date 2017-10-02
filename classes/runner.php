@@ -854,11 +854,13 @@ class runner implements observable
         $reflectionClassFactory = $this->reflectionClassFactory;
         $testBaseClass = $testBaseClass ?: __NAMESPACE__ . '\test';
 
-        return array_filter($this->adapter->get_declared_classes(), function ($class) use ($reflectionClassFactory, $testBaseClass) {
-            $class = $reflectionClassFactory($class);
+        return array_filter(
+            $this->adapter->get_declared_classes(),
+            function ($class) use ($reflectionClassFactory, $testBaseClass) {
+                $class = $reflectionClassFactory($class);
 
-            return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
-        }
+                return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
+            }
         );
     }
 

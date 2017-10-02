@@ -57,9 +57,10 @@ namespace mageekguy\atoum\tests\units\asserters
         public function testSetWith()
         {
             $this
-                ->given($this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                ->given(
+                    $this->newTestedInstance
+                        ->setLocale($locale = new \mock\atoum\locale())
+                        ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
                 )
                 ->then
                     ->object($this->testedInstance->setWith($value = new \exception()))->isTestedInstance
@@ -120,9 +121,7 @@ namespace mageekguy\atoum\tests\units\asserters
         public function testIsInstanceOf()
         {
             $this
-                ->given($this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                )
+                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
                 ->then
                     ->exception(function () {
                         $this->testedInstance->hasSize(rand(0, PHP_INT_MAX));
@@ -165,9 +164,7 @@ namespace mageekguy\atoum\tests\units\asserters
         public function testIsInstanceOfPhpGte7()
         {
             $this
-                ->given($this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                )
+                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
                 ->if($this->testedInstance->setWith(new \exception()))
                 ->then
                     ->object($this->testedInstance->isInstanceOf(\throwable::class))
@@ -179,9 +176,7 @@ namespace mageekguy\atoum\tests\units\asserters
         public function testHasCode()
         {
             $this
-                ->given($this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                )
+                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
                 ->then
                     ->exception(function () {
                         $this->testedInstance->hasCode(rand(- PHP_INT_MAX, PHP_INT_MAX));
@@ -213,9 +208,7 @@ namespace mageekguy\atoum\tests\units\asserters
         public function testHasDefaultCode()
         {
             $this
-                ->given($this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                )
+                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
                 ->then
                     ->exception(function () {
                         $this->testedInstance->hasDefaultCode();
@@ -264,9 +257,7 @@ namespace mageekguy\atoum\tests\units\asserters
         public function testHasMessage()
         {
             $this
-                ->given($this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                )
+                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
                 ->then
                     ->exception(function () {
                         $this->testedInstance->hasMessage(uniqid());

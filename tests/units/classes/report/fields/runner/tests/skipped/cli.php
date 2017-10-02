@@ -116,24 +116,25 @@ class cli extends atoum\test
             ->if($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($customField)->isEmpty()
-            ->if($score->getMockController()->getSkippedMethods = $allSkippedMethods = [
-                        [
-                            'class' => $class = uniqid(),
-                            'method' => $method = uniqid(),
-                            'message' => $message = uniqid()
-                        ],
-                        [
-                            'class' => $otherClass = uniqid(),
-                            'method' => $otherMethod = uniqid(),
-                            'message' => $otherMessage = uniqid()
-                        ],
-                        [
-                            'class' => $anotherClass = uniqid(),
-                            'method' => $anotherMethod = uniqid(),
-                            'message' => $anotherMessage = uniqid()
-                        ]
+            ->if(
+                $score->getMockController()->getSkippedMethods = $allSkippedMethods = [
+                    [
+                        'class' => $class = uniqid(),
+                        'method' => $method = uniqid(),
+                        'message' => $message = uniqid()
+                    ],
+                    [
+                        'class' => $otherClass = uniqid(),
+                        'method' => $otherMethod = uniqid(),
+                        'message' => $otherMessage = uniqid()
+                    ],
+                    [
+                        'class' => $anotherClass = uniqid(),
+                        'method' => $anotherMethod = uniqid(),
+                        'message' => $anotherMessage = uniqid()
                     ]
-                )
+                ]
+            )
             ->and($defaultField = new testedClass())
             ->and($customField = new testedClass())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
@@ -153,11 +154,12 @@ class cli extends atoum\test
                 ->castToString($customField)->isEmpty()
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($defaultField)->isEqualTo(sprintf('There are %d skipped methods:', sizeof($allSkippedMethods)) . PHP_EOL .
-                        sprintf('%s::%s(): %s', $class, $method, $message) . PHP_EOL .
-                        sprintf('%s::%s(): %s', $otherClass, $otherMethod, $otherMessage) . PHP_EOL .
-                        sprintf('%s::%s(): %s', $anotherClass, $anotherMethod, $anotherMessage) . PHP_EOL
-                    )
+                ->castToString($defaultField)->isEqualTo(
+                    sprintf('There are %d skipped methods:', sizeof($allSkippedMethods)) . PHP_EOL .
+                    sprintf('%s::%s(): %s', $class, $method, $message) . PHP_EOL .
+                    sprintf('%s::%s(): %s', $otherClass, $otherMethod, $otherMessage) . PHP_EOL .
+                    sprintf('%s::%s(): %s', $anotherClass, $anotherMethod, $anotherMessage) . PHP_EOL
+                )
             ->if($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($customField)->isEqualTo(
