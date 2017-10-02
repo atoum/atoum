@@ -126,13 +126,14 @@ class parser extends atoum\test
                 ->object($parser->getIterator())
                     ->isInstanceOf(\arrayIterator::class)
                     ->isEmpty()
-            ->if($parser
+            ->if(
+                $parser
                     ->addHandler(function ($script, $argument, $value) {
                     }, ['-a'])
                     ->addHandler(function ($script, $argument, $value) {
                     }, ['-b'])
                     ->parse($script, ['-a', 'a1', 'a2', '-b'])
-                )
+            )
             ->then
                 ->object($parser->getIterator())
                     ->isInstanceOf(\arrayIterator::class)

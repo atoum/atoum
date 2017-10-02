@@ -53,33 +53,31 @@ class html extends atoum\test
             ->if($coverage = new \mock\mageekguy\atoum\score\coverage())
             ->and($coverageController = $coverage->getMockController())
             ->and($coverageController->count = rand(1, PHP_INT_MAX))
-            ->and($coverageController->getClasses = [
-                        $className = uniqid() => $classFile = uniqid()
+            ->and(
+                $coverageController->getClasses = [
+                    $className = uniqid() => $classFile = uniqid()
+                ]
+            )
+            ->and(
+                $coverageController->getMethods = [
+                    $className => [
+                        $method1Name = uniqid() => [
+                            5 => 1,
+                            6 => 1,
+                            7 => -1,
+                            8 => 1,
+                            9 => -2
+                        ],
+                        $method3Name = uniqid() => [
+                            10 => -2
+                        ],
+                        $method4Name = uniqid() => [
+                            11 => 1,
+                            12 => -2
+                        ]
                     ]
-                )
-            ->and($coverageController->getMethods = [
-                        $className =>
-                            [
-                                $method1Name = uniqid() =>
-                                    [
-                                        5 => 1,
-                                        6 => 1,
-                                        7 => -1,
-                                        8 => 1,
-                                        9 => -2
-                                    ],
-                                $method3Name = uniqid() =>
-                                    [
-                                        10 => -2
-                                    ],
-                                $method4Name = uniqid() =>
-                                    [
-                                        11 => 1,
-                                        12 => -2
-                                    ]
-                            ]
-                    ]
-                )
+                ]
+            )
             ->and($coverageController->getValue = $coverageValue = rand(1, 10) / 10)
             ->and($coverageController->getValueForClass = $classCoverageValue = rand(1, 10) / 10)
             ->and($coverageController->getValueForMethod = $methodCoverageValue = rand(1, 10) / 10)
@@ -88,7 +86,8 @@ class html extends atoum\test
             ->if($classCoverageTemplate = new \mock\mageekguy\atoum\template\tag('classCoverage'))
             ->and($classCoverageTemplate->addChild($classCoverageAvailableTemplate = new \mock\mageekguy\atoum\template\tag('classCoverageAvailable')))
             ->and($indexTemplate = new \mock\mageekguy\atoum\template())
-            ->and($indexTemplate
+            ->and(
+                $indexTemplate
                     ->addChild($coverageAvailableTemplate = new \mock\mageekguy\atoum\template\tag('coverageAvailable'))
                     ->addChild($classCoverageTemplate)
                 )
@@ -116,7 +115,8 @@ class html extends atoum\test
             ->and($sourceFileTemplateController = $sourceFileTemplate->getMockController())
             ->and($sourceFileTemplateController->__set = function () {
             })
-            ->and($sourceFileTemplate
+            ->and(
+                $sourceFileTemplate
                     ->addChild($lineTemplate)
                     ->addChild($coveredLineTemplate)
                     ->addChild($notCoveredLineTemplate)
@@ -130,7 +130,8 @@ class html extends atoum\test
             ->and($classTemplateController = $classTemplate->getMockController())
             ->and($classTemplateController->__set = function () {
             })
-            ->and($classTemplate
+            ->and(
+                $classTemplate
                     ->addChild($methodsTemplate)
                     ->addChild($sourceFileTemplate)
                 )
@@ -179,7 +180,8 @@ class html extends atoum\test
             ->and($reflectedClassController->getMethods = [$reflectedMethod1, $reflectedMethod2, $reflectedMethod3, $reflectedMethod4])
             ->and($templateParser = new \mock\mageekguy\atoum\template\parser())
             ->and($field = new \mock\mageekguy\atoum\report\fields\runner\coverage\html($projectName = uniqid(), $destinationDirectory = uniqid()))
-            ->and($field
+            ->and(
+                $field
                     ->setTemplateParser($templateParser)
                     ->setTemplatesDirectory($templatesDirectory = uniqid())
                     ->setAdapter($adapter = new test\adapter())
@@ -230,7 +232,7 @@ class html extends atoum\test
             ->and($field->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->object($field->getCoverage())->isIdenticalTo($coverage)
-                ->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Details of code coverage are available at ' . $rootUrl . '.' . PHP_EOL)
+                ->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'), round($coverageValue * 100, 2)) . PHP_EOL . 'Details of code coverage are available at ' . $rootUrl . '.' . PHP_EOL)
                 ->mock($coverage)->call('count')->once()
                 ->mock($field)
                     ->call('cleanDestinationDirectory')->once()
@@ -303,7 +305,7 @@ class html extends atoum\test
                     ->call('fclose')->withArguments($classResource)->once()
             ->if($indexTemplateController->build->throw = new \exception($errorMessage = uniqid()))
             ->then
-                ->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Unable to generate code coverage at ' . $rootUrl . ': ' . $errorMessage . '.' . PHP_EOL)
+                ->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'), round($coverageValue * 100, 2)) . PHP_EOL . 'Unable to generate code coverage at ' . $rootUrl . ': ' . $errorMessage . '.' . PHP_EOL)
         ;
     }
 
@@ -410,7 +412,8 @@ class html extends atoum\test
             ->if($field->addSrcDirectory($otherDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..', $otherClosure = function () {
             }))
             ->then
-                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo([
+                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(
+                    [
                             new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory))),
                             new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($otherDirectory)))
                     ]
@@ -420,7 +423,8 @@ class html extends atoum\test
             ->if($field->addSrcDirectory($otherDirectory, $anOtherClosure = function () {
             }))
             ->then
-                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo([
+                ->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(
+                    [
                             new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory))),
                             new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($otherDirectory)))
                     ]

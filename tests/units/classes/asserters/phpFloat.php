@@ -39,9 +39,10 @@ class phpFloat extends atoum\test
     public function testSetWith()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
 
             ->if(
@@ -66,10 +67,11 @@ class phpFloat extends atoum\test
     public function testIsZero()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -135,10 +137,11 @@ class phpFloat extends atoum\test
     public function testIsNearlyEqualTo()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {

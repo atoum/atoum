@@ -143,7 +143,8 @@ class html extends report\fields\runner\coverage\cli
                             if ($methodCoverageValue === null) {
                                 $methodCoverageUnavailableTemplates->build(['methodName' => $methodName]);
                             } else {
-                                $methodCoverageAvailableTemplates->build([
+                                $methodCoverageAvailableTemplates->build(
+                                    [
                                         'methodName' => $methodName,
                                         'methodCoverageValue' => round($methodCoverageValue * 100, 2)
                                     ]

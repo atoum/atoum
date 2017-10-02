@@ -703,7 +703,8 @@ class controller extends atoum\test
     {
         $this
             ->if($controller = new testedClass(uniqid()))
-            ->and($stats = [
+            ->and(
+                $stats = [
                     'dev' => 0,
                     'ino' => 0,
                     'mode' => 33188,
@@ -800,7 +801,8 @@ class controller extends atoum\test
     {
         $this
             ->if($controller = new testedClass(uniqid()))
-            ->and($stats = [
+            ->and(
+                $stats = [
                     'dev' => 0,
                     'ino' => 0,
                     'mode' => 33188,

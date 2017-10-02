@@ -40,9 +40,10 @@ class adapter extends atoum\test
     public function testSetWith()
     {
         $this
-            ->given($this->newTestedInstance($generator = new asserter\generator())
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $this->newTestedInstance($generator = new asserter\generator())
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
 
             ->if(

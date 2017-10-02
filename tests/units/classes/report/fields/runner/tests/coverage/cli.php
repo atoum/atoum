@@ -199,26 +199,27 @@ class cli extends atoum\test
             ->and($scoreCoverage->setReflectionClassFactory(function () use ($class) {
                 return $class;
             }))
-            ->and($scoreCoverage->addXdebugDataForTest($this, $xdebugData = [
-                          ($classFile = uniqid()) =>
-                             [
-                                5 => 1,
-                                6 => 2,
-                                7 => 3,
-                                8 => 2,
-                                9 => 1
-                            ],
-                          uniqid() =>
-                             [
-                                5 => 2,
-                                6 => 3,
-                                7 => 4,
-                                8 => 3,
-                                9 => 2
-                            ]
+            ->and(
+                $scoreCoverage->addXdebugDataForTest(
+                    $this,
+                    $xdebugData = [
+                        ($classFile = uniqid()) => [
+                            5 => 1,
+                            6 => 2,
+                            7 => 3,
+                            8 => 2,
+                            9 => 1
+                        ],
+                        uniqid() => [
+                            5 => 2,
+                            6 => 3,
+                            7 => 4,
+                            8 => 3,
+                            9 => 2
                         ]
-                    )
+                    ]
                 )
+            )
             ->and($defaultField = new tests\coverage\cli())
             ->and($customField = new tests\coverage\cli())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))

@@ -57,7 +57,9 @@ class phpArray extends atoum\test
                 ->object($this->testedInstance->error)->isInstanceOf($generator->error)
                 ->variable($this->testedInstance->getInnerAsserter())->isNull()
 
-            ->if($this->testedInstance->setWith([
+            ->if(
+                $this->testedInstance->setWith(
+                [
                         0 => [
                             0 => [
                                 1 => ['foo', 'bar']
@@ -143,9 +145,10 @@ class phpArray extends atoum\test
     public function testSetWith()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
 
             ->if(
@@ -184,9 +187,10 @@ class phpArray extends atoum\test
     public function testOffsetGet()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -215,9 +219,10 @@ class phpArray extends atoum\test
                 ->object($asserter->object[3]->isCloneOf($object))->isIdenticalTo($asserter)
                 ->object($asserter->object[2])->isIdenticalTo($asserter)
 
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale)
-                ->setAnalyzer($analyzer)
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale)
+                    ->setAnalyzer($analyzer)
             )
 
             ->if($asserter->setWith($array = [$integer = rand(1, PHP_INT_MAX), 2, $innerArray = [3, 4, 5, $object]]))
@@ -304,9 +309,10 @@ class phpArray extends atoum\test
     public function testHasSize()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -372,9 +378,10 @@ class phpArray extends atoum\test
     public function testIsEmpty()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -417,9 +424,10 @@ class phpArray extends atoum\test
     public function testIsNotEmpty()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -463,9 +471,10 @@ class phpArray extends atoum\test
     public function testAtKey()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -506,9 +515,10 @@ class phpArray extends atoum\test
     public function testContains()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -566,9 +576,10 @@ class phpArray extends atoum\test
     public function testStrictlyContains()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -622,9 +633,10 @@ class phpArray extends atoum\test
     public function testNotContains()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -690,9 +702,10 @@ class phpArray extends atoum\test
     public function testStrictlyNotContains()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -744,9 +757,10 @@ class phpArray extends atoum\test
     public function testContainsValues()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -785,9 +799,10 @@ class phpArray extends atoum\test
     public function testStrictlyContainsValues()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -827,9 +842,10 @@ class phpArray extends atoum\test
     public function testNotContainsValues()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -870,9 +886,10 @@ class phpArray extends atoum\test
     public function testStrictlyNotContainsValues()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -913,9 +930,10 @@ class phpArray extends atoum\test
     public function testHasKey()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -959,9 +977,10 @@ class phpArray extends atoum\test
     public function testNotHasKey()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -1002,9 +1021,10 @@ class phpArray extends atoum\test
     public function testNotHasKeys()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -1045,9 +1065,10 @@ class phpArray extends atoum\test
     public function testHasKeys()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -1162,11 +1183,12 @@ class phpArray extends atoum\test
     public function testIsEqualTo()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                ->setGenerator($generator = new \mock\atoum\asserter\generator())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -1233,10 +1255,11 @@ class phpArray extends atoum\test
     public function testIsNotEqualTo()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                ->setGenerator($generator = new \mock\atoum\asserter\generator())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -1310,11 +1333,12 @@ class phpArray extends atoum\test
     public function testIsIdenticalTo()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                ->setGenerator($generator = new \mock\atoum\asserter\generator())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -1376,10 +1400,11 @@ class phpArray extends atoum\test
     public function testIsNotIdenticalTo()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                ->setGenerator($generator = new \mock\atoum\asserter\generator())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {

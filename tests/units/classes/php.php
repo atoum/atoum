@@ -45,13 +45,13 @@ class php extends atoum\test
                 ->castToString($php)->isEqualTo(escapeshellcmd($php->getBinaryPath()) . ' ' . escapeshellcmd($option1))
             ->if($php->addOption($option2 = uniqid(), $option2Value = uniqid() . ' ' . uniqid()))
             ->then
-                ->castToString($php)->isEqualTo($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' \'' . $option2Value.'\'')
+                ->castToString($php)->isEqualTo($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' \'' . $option2Value . '\'')
             ->if($php->addArgument($argument1 = uniqid()))
             ->then
-                ->castToString($php)->isEqualTo($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' \'' . $option2Value.'\' -- ' . $argument1)
+                ->castToString($php)->isEqualTo($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' \'' . $option2Value . '\' -- ' . $argument1)
             ->if($php->addArgument($argument2 = uniqid(), $argument2Value = uniqid()))
             ->then
-                ->castToString($php)->isEqualTo($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' \'' . $option2Value.'\' -- ' . $argument1 . ' ' . $argument2 . ' \'' . $argument2Value . '\'')
+                ->castToString($php)->isEqualTo($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' \'' . $option2Value . '\' -- ' . $argument1 . ' ' . $argument2 . ' \'' . $argument2Value . '\'')
         ;
     }
 
@@ -69,13 +69,13 @@ class php extends atoum\test
                 ->castToString($php)->isEqualTo('"' . $php->getBinaryPath() . '" ' . escapeshellcmd($option1))
             ->if($php->addOption($option2 = uniqid(), $option2Value = uniqid() . ' ' . uniqid()))
             ->then
-                ->castToString($php)->isEqualTo('"' . $php->getBinaryPath() . '" ' . $option1 . ' ' . $option2 . ' "' . $option2Value .'"')
+                ->castToString($php)->isEqualTo('"' . $php->getBinaryPath() . '" ' . $option1 . ' ' . $option2 . ' "' . $option2Value . '"')
             ->if($php->addArgument($argument1 = uniqid()))
             ->then
-                ->castToString($php)->isEqualTo('"' . $php->getBinaryPath() . '" ' . $option1 . ' ' . $option2 . ' "' . $option2Value.'" -- ' . $argument1)
+                ->castToString($php)->isEqualTo('"' . $php->getBinaryPath() . '" ' . $option1 . ' ' . $option2 . ' "' . $option2Value . '" -- ' . $argument1)
             ->if($php->addArgument($argument2 = uniqid(), $argument2Value = uniqid()))
             ->then
-                ->castToString($php)->isEqualTo('"' . $php->getBinaryPath() . '" ' . $option1 . ' ' . $option2 . ' "' . $option2Value.'" -- ' . $argument1 . ' ' . $argument2 . ' "' . $argument2Value . '"')
+                ->castToString($php)->isEqualTo('"' . $php->getBinaryPath() . '" ' . $option1 . ' ' . $option2 . ' "' . $option2Value . '" -- ' . $argument1 . ' ' . $argument2 . ' "' . $argument2Value . '"')
         ;
     }
 

@@ -31,7 +31,8 @@ class configurable extends atoum\test
                 ->object($configurable->getAdapter())->isEqualTo(new atoum\adapter())
                 ->object($configurable->getIncluder())->isInstanceOf(atoum\includer::class)
                 ->array($configurable->getConfigFiles())->isEmpty()
-                ->array($configurable->getHelp())->isEqualTo([
+                ->array($configurable->getHelp())->isEqualTo(
+                    [
                         [
                             ['-h', '--help'],
                             null,
@@ -50,7 +51,8 @@ class configurable extends atoum\test
                 ->object($configurable->getAdapter())->isIdenticalTo($adapter)
                 ->object($configurable->getIncluder())->isInstanceOf(atoum\includer::class)
                 ->array($configurable->getConfigFiles())->isEmpty()
-                ->array($configurable->getHelp())->isEqualTo([
+                ->array($configurable->getHelp())->isEqualTo(
+                    [
                         [
                             ['-h', '--help'],
                             null,

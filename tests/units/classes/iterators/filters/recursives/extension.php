@@ -6,7 +6,6 @@ require __DIR__ . '/../../../../runner.php';
 
 use mageekguy\atoum;
 use mageekguy\atoum\iterators\filters\recursives;
-use mageekguy\atoum\mock;
 
 class extension extends atoum\test
 {

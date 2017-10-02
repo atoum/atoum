@@ -1,31 +1,29 @@
 <?php
 
-use Symfony\CS;
+use PhpCsFixer as CS;
+
+$finder = CS\Finder::create()
+    ->files()
+        ->name(__FILE__)
+        ->name('*.php')
+        ->name('*.php.dist')
+        ->in(__DIR__)
+;
 
 return
     CS\Config::create()
-        ->level(CS\FixerInterface::PSR2_LEVEL)
-        ->fixers([
-            'blankline_after_open_tag',
-            'concat_with_spaces',
-            'join_function',
-            'native_function_casing',
-            'no_blank_lines_after_class_opening',
-            'ordered_use',
-            'phpdoc_no_access',
-            'remove_leading_slash_use',
-            'remove_leading_slash_uses',
-            'self_accessor',
-            'short_array_syntax',
-            'spaces_cast',
-            'unused_use',
-            'whitespacy_lines'
+        ->setRules([
+            '@PSR2'                              => true,
+            'array_syntax'                       => ['syntax' => 'short'],
+            'blank_line_after_opening_tag'       => true,
+            'concat_space'                       => ['spacing' => 'one'],
+            'native_function_casing'             => true,
+            'no_blank_lines_after_class_opening' => true,
+            'no_unused_imports'                  => true,
+            'no_unused_imports'                  => true,
+            'no_whitespace_in_blank_line'        => true,
+            'ordered_imports'                    => true,
+            'phpdoc_no_access'                   => true,
         ])
-        ->finder(
-            CS\Finder::create()
-                ->files()
-                    ->name(__FILE__)
-                    ->name('*.php')
-                    ->name('*.php.dist')
-                    ->in(__DIR__)
-        );
+        ->setFinder($finder)
+;

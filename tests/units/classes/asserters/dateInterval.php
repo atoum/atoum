@@ -39,9 +39,10 @@ class dateInterval extends atoum\test
     public function testSetWith()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->object($asserter->setWith($value = new \DateInterval('P0D')))->isIdenticalTo($asserter)

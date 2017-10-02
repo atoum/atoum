@@ -39,9 +39,7 @@ class dateTime extends atoum\test
     public function testSetWith()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->object($asserter->setWith($value = new \DateTime()))->isIdenticalTo($asserter)
                 ->object($asserter->getValue())->isIdenticalTo($value)
@@ -68,9 +66,7 @@ class dateTime extends atoum\test
     public function testHasTimezone()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->hasTimezone(new \DateTimezone('Europe/London'));
@@ -102,9 +98,7 @@ class dateTime extends atoum\test
     public function testHasYear()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->hasYear(rand(0, PHP_INT_MAX));
@@ -137,9 +131,7 @@ class dateTime extends atoum\test
     public function testHasMonth()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->hasMonth(rand(0, PHP_INT_MAX));
@@ -173,9 +165,7 @@ class dateTime extends atoum\test
     public function testHasDay()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->hasDay(rand(0, PHP_INT_MAX));
@@ -209,9 +199,7 @@ class dateTime extends atoum\test
     public function testHasDate()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->hasDate(1976, 10, 6);
@@ -245,9 +233,7 @@ class dateTime extends atoum\test
     public function testHasHours()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->hasHours(rand(0, PHP_INT_MAX));
@@ -281,9 +267,7 @@ class dateTime extends atoum\test
     public function testHasMinutes()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->hasMinutes(rand(0, PHP_INT_MAX));
@@ -317,9 +301,7 @@ class dateTime extends atoum\test
     public function testHasSeconds()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->hasSeconds(rand(0, PHP_INT_MAX));
@@ -353,9 +335,7 @@ class dateTime extends atoum\test
     public function testHasTime()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->hasTime(1, 2, 3);
@@ -389,9 +369,7 @@ class dateTime extends atoum\test
     public function testHasDateAndTime()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
+            ->given($asserter = $this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->hasDateAndTime(1981, 2, 13, 1, 2, 3);
@@ -426,8 +404,7 @@ class dateTime extends atoum\test
     {
         $this
             ->given(
-                $this->newTestedInstance
-                    ->setLocale($locale),
+                $this->newTestedInstance->setLocale($locale),
                 $this->calling($locale)->_ = $notImmutable = uniqid()
             )
             ->if($this->testedInstance->setWith($value = new \dateTime()))
@@ -447,8 +424,7 @@ class dateTime extends atoum\test
     {
         $this
             ->given(
-                $this->newTestedInstance
-                    ->setLocale($locale),
+                $this->newTestedInstance->setLocale($locale),
                 $this->calling($locale)->_ = $notEqual = uniqid(),
                 $now = date(DATE_ISO8601)
             )

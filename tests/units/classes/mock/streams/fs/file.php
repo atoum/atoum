@@ -276,7 +276,8 @@ class file extends atoum\test
             ->then
                 ->boolean(feof($resource))->isTrue()
             ->if($file = testedClass::get())
-            ->and($file->contains(
+            ->and(
+                $file->contains(
                     ($line1 = 'un' . PHP_EOL) .
                     ($line2 = 'deux' . PHP_EOL) .
                     ($line3 = 'trois' . PHP_EOL) .
@@ -343,7 +344,8 @@ class file extends atoum\test
     {
         $this
             ->if($file = testedClass::get())
-            ->and($file->contains(
+            ->and(
+                $file->contains(
                     ($line0 = 'un' . PHP_EOL) .
                     ($line1 = 'deux' . PHP_EOL) .
                     ($line2 = 'trois' . PHP_EOL) .
@@ -372,7 +374,8 @@ class file extends atoum\test
             ->then
                 ->integer(fseek($resource, 4096))->isZero()
             ->if($file = testedClass::get())
-            ->and($file->contains(
+            ->and(
+                $file->contains(
                     ($line0 = 'un' . PHP_EOL) .
                     ($line1 = 'deux' . PHP_EOL) .
                     ($line2 = 'trois' . PHP_EOL) .
@@ -465,7 +468,8 @@ class file extends atoum\test
                 ->string($fileObject->current())->isEmpty()
                 ->boolean($fileObject->eof())->isTrue()
             ->if($file = testedClass::get())
-            ->and($file->contains(
+            ->and(
+                $file->contains(
                     ($line0 = 'un' . PHP_EOL) .
                     ($line1 = 'deux' . PHP_EOL) .
                     ($line2 = 'trois' . PHP_EOL) .

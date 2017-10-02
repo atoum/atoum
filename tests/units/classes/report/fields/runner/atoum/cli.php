@@ -66,9 +66,10 @@ class cli extends \mageekguy\atoum\test
     {
         $this
             ->if($score = new score())
-            ->and($score
-                ->setAtoumPath($atoumPath = uniqid())
-                ->setAtoumVersion($atoumVersion = uniqid())
+            ->and(
+                $score
+                    ->setAtoumPath($atoumPath = uniqid())
+                    ->setAtoumVersion($atoumVersion = uniqid())
             )
             ->and($runner = new runner())
             ->and($runner->setScore($score))
@@ -88,9 +89,10 @@ class cli extends \mageekguy\atoum\test
     {
         $this
             ->if($score = new score())
-            ->and($score
-                ->setAtoumPath($atoumPath = uniqid())
-                ->setAtoumVersion($atoumVersion = uniqid())
+            ->and(
+                $score
+                    ->setAtoumPath($atoumPath = uniqid())
+                    ->setAtoumVersion($atoumVersion = uniqid())
             )
             ->and($runner = new runner())
             ->and($runner->setScore($score))

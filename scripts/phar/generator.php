@@ -8,13 +8,14 @@ $generator = new scripts\phar\generator(__FILE__);
 $generator->setOriginDirectory(__DIR__ . '/../..');
 $generator->setStubFile(__DIR__ . '/resources/stub.php');
 
-set_error_handler(function ($error, $message, $file, $line) use ($generator) {
-    if (error_reporting() !== 0) {
-        $generator->writeError($message);
+set_error_handler(
+    function ($error, $message, $file, $line) use ($generator) {
+        if (error_reporting() !== 0) {
+            $generator->writeError($message);
 
-        exit($error);
+            exit($error);
+        }
     }
-}
 );
 
 try {
