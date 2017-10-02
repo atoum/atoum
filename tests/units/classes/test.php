@@ -28,6 +28,10 @@ namespace mageekguy\atoum
         {
         }
     }
+
+    class osRestricted
+    {
+    }
 }
 
 namespace mageekguy\atoum\mock\mageekguy\atoum
@@ -138,6 +142,31 @@ namespace mageekguy\atoum\tests\units
             $this->setTestedClassName('mageekguy\atoum\withStatic');
 
             parent::__construct();
+        }
+    }
+
+    /**
+     * @ignore on
+     * @os Foo
+     */
+    class osRestricted extends atoum\test
+    {
+        public function testMethod1()
+        {
+        }
+
+        /**
+         * @os bar
+         */
+        public function testMethod2()
+        {
+        }
+
+        /**
+         * @os !foo
+         */
+        public function testMethod3()
+        {
         }
     }
 
@@ -1382,6 +1411,34 @@ namespace mageekguy\atoum\tests\units
                         ->isInstanceOf(\mock\mageekguy\atoum\dummy::class)
                         ->isInstanceOf(atoum\dummy::class)
                     ->object($mock->getMockController())->isIdenticalTo($controller)
+            ;
+        }
+
+        public function testGetClassSupportedOs()
+        {
+            $this
+                ->if($test = new osRestricted())
+                ->then
+                    ->array($test->getClassSupportedOs())
+                        ->string[0]->isEqualTo('foo')
+                ->if($test = new emptyTest())
+                ->then
+                    ->array($test->getClassSupportedOs())->isEmpty
+            ;
+        }
+
+        public function testGetMethodSupportedOs()
+        {
+            $this
+                ->if($test = new osRestricted())
+                ->then
+                    ->array($test->getMethodSupportedOs())
+                        ->array['testMethod1']->isEqualTo(['foo'])
+                        ->array['testMethod2']->isEqualTo(['foo', 'bar'])
+                        ->array['testMethod3']->isEqualTo(['!foo'])
+                    ->array($test->getMethodSupportedOs('testMethod1'))->isEqualTo(['foo'])
+                    ->array($test->getMethodSupportedOs('testMethod2'))->isEqualTo(['foo', 'bar'])
+                    ->array($test->getMethodSupportedOs('testMethod3'))->isEqualTo(['!foo'])
             ;
         }
     }

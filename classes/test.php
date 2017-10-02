@@ -61,6 +61,7 @@ abstract class test implements observable, \countable
     private $tags = [];
     private $phpVersions = [];
     private $mandatoryExtensions = [];
+    private $supportedOs = [];
     private $dataProviders = [];
     private $testMethods = [];
     private $runTestMethods = [];
@@ -595,11 +596,67 @@ abstract class test implements observable, \countable
         return $this->phpVersions;
     }
 
+    public function addClassSupportedOs($os)
+    {
+        $this->supportedOs[] = strtolower($os);
+
+        return $this;
+    }
+
+    public function getClassSupportedOs()
+    {
+        return $this->supportedOs;
+    }
+
     public function addMandatoryClassExtension($extension)
     {
         $this->mandatoryExtensions[] = $extension;
 
         return $this;
+    }
+
+    public function addMethodSupportedOs($testMethodName, $os)
+    {
+        $this->checkMethod($testMethodName)->testMethods[$testMethodName]['os'][] = strtolower($os);
+
+        return $this;
+    }
+
+    public function getMethodSupportedOs($testMethodName = null)
+    {
+        $supportedOs = [];
+
+        $classSupportedOs = $this->getClassSupportedOs();
+        $mergeSupportedOs = function ($classOs, $methodOs) {
+            return array_merge(
+                array_filter(
+                    $classOs,
+                    function ($os) use ($methodOs) {
+                        return array_search(trim($os, '!'), $methodOs, true) === false
+                            && array_search('!' . trim($os, '!'), $methodOs, true) === false;
+                    }
+                ),
+                $methodOs
+            );
+        };
+
+        if ($testMethodName === null) {
+            foreach ($this->testMethods as $testMethodName => $annotations) {
+                if (isset($annotations['os']) === false) {
+                    $supportedOs[$testMethodName] = $classSupportedOs;
+                } else {
+                    $supportedOs[$testMethodName] = $mergeSupportedOs($classSupportedOs, $annotations['os']);
+                }
+            }
+        } else {
+            if (isset($this->checkMethod($testMethodName)->testMethods[$testMethodName]['os']) === false) {
+                $supportedOs = $classSupportedOs;
+            } else {
+                $supportedOs = $mergeSupportedOs($classSupportedOs, $this->testMethods[$testMethodName]['os']);
+            }
+        }
+
+        return $supportedOs;
     }
 
     public function addMethodPhpVersion($testMethodName, $version, $operator = null)
@@ -1193,6 +1250,33 @@ abstract class test implements observable, \countable
             $this->phpConstantMocker->setDefaultNamespace($this->getTestedClassNamespace());
 
             try {
+                $os = $this->getMethodSupportedOs($testMethod);
+                $supportedOs = array_filter(
+                    $os,
+                    function ($os) {
+                        return $os[0] !== '!';
+                    }
+                );
+                $unsupportedOs = array_map(
+                    function ($os) {
+                        return substr($os, 1);
+                    },
+                    array_filter(
+                        $os,
+                        function ($os) {
+                            return $os[0] === '!';
+                        }
+                    )
+                );
+
+                if (count($supportedOs) > 0 && in_array(strtolower(PHP_OS), $supportedOs) === false) {
+                    throw new test\exceptions\skip(PHP_OS . ' OS is not supported');
+                }
+
+                if (count($unsupportedOs) > 0 && in_array(strtolower(PHP_OS), $unsupportedOs) === true) {
+                    throw new test\exceptions\skip(PHP_OS . ' OS is not supported');
+                }
+
                 foreach ($this->getMethodPhpVersions($testMethod) as $phpVersion => $operator) {
                     if (version_compare(phpversion(), $phpVersion, $operator) === false) {
                         throw new test\exceptions\skip('PHP version ' . PHP_VERSION . ' is not ' . $operator . ' to ' . $phpVersion);
@@ -1597,14 +1681,17 @@ abstract class test implements observable, \countable
 
                     $this->addClassPhpVersion($version, $operator);
                 }
-            }
-            )
+            })
             ->setHandler('extensions', function ($value) {
                 foreach (annotations\extractor::toArray($value) as $mandatoryExtension) {
                     $this->addMandatoryClassExtension($mandatoryExtension);
                 }
-            }
-            )
+            })
+            ->setHandler('os', function ($value) {
+                foreach (annotations\extractor::toArray($value) as $supportedOs) {
+                    $this->addClassSupportedOs($supportedOs);
+                }
+            })
         ;
 
         return $this;
@@ -1656,14 +1743,17 @@ abstract class test implements observable, \countable
 
                     $this->addMethodPhpVersion($methodName, $version, $operator);
                 }
-            }
-            )
+            })
             ->setHandler('extensions', function ($value) use (& $methodName) {
                 foreach (annotations\extractor::toArray($value) as $mandatoryExtension) {
                     $this->addMandatoryMethodExtension($methodName, $mandatoryExtension);
                 }
-            }
-            )
+            })
+            ->setHandler('os', function ($value) use (& $methodName) {
+                foreach (annotations\extractor::toArray($value) as $supportedOs) {
+                    $this->addMethodSupportedOs($methodName, $supportedOs);
+                }
+            })
         ;
 
         return $this;
