@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#752](https://github.com/atoum/atoum/pull/752) Add an os annotation to only run tests on specific OS ([@jubianchi])
 * [#585](https://github.com/atoum/atoum/pull/585) Memory usage is based on the peak & real allocations ([@hywan])
 * [#740](https://github.com/atoum/atoum/pull/740) String asserter now has `notMatches` assertion ([@fvilpoix])
 
