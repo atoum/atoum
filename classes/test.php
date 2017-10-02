@@ -1264,7 +1264,7 @@ abstract class test implements observable, \countable
 
                     $assertionNumber = $this->score->getAssertionNumber();
                     $time = microtime(true);
-                    $memory = memory_get_usage(true);
+                    $memory = memory_get_peak_usage();
 
                     if (isset($this->dataProviders[$testMethod]) === false) {
                         $this->{$testMethod}();
@@ -1308,7 +1308,7 @@ abstract class test implements observable, \countable
                     $this->mockControllerLinker->reset();
                     $this->testAdapterStorage->reset();
 
-                    $memoryUsage = memory_get_usage(true) - $memory;
+                    $memoryUsage = memory_get_peak_usage() - $memory;
                     $duration = microtime(true) - $time;
 
                     $this->score
