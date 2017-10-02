@@ -183,6 +183,11 @@ class runner extends atoum\test
                             'Use "light" CLI report'
                         ],
                         [
+                            ['-udr', '--use-dot-report'],
+                            null,
+                            'Use "dot" CLI report'
+                        ],
+                        [
                             ['-utr', '--use-tap-report'],
                             null,
                             'Use TAP report'
@@ -358,6 +363,11 @@ class runner extends atoum\test
                             ['-ulr', '--use-light-report'],
                             null,
                             'Use "light" CLI report'
+                        ],
+                        [
+                            ['-udr', '--use-dot-report'],
+                            null,
+                            'Use "dot" CLI report'
                         ],
                         [
                             ['-utr', '--use-tap-report'],
