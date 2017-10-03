@@ -716,8 +716,7 @@ class runner extends atoum\script\configurable
                         exit(2);
                     }
                 }
-            }
-            );
+            });
 
             $autorunIsRegistered = true;
         }
