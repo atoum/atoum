@@ -447,10 +447,10 @@ class phpString extends atoum\test
         ;
     }
 
-    public function testNotContains()
+    public function testNotContains(variable\analyzer $analyzer)
     {
         $this
-            ->if($asserter = $this->newTestedInstance)
+            ->if($asserter = $this->newTestedInstance(null, $analyzer))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->notContains(uniqid());
@@ -470,7 +470,7 @@ class phpString extends atoum\test
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($contains)
-                ->mock($locale)->call('_')->withArguments('%s contains %s', $asserter, $fragment)->once
+                ->mock($locale)->call('_')->withArguments('%s contains %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notContains('Agent', $failMessage = uniqid());
@@ -483,10 +483,10 @@ class phpString extends atoum\test
         ;
     }
 
-    public function testStartWith()
+    public function testStartWith(variable\analyzer $analyzer)
     {
         $this
-            ->if($asserter = $this->newTestedInstance)
+            ->if($asserter = $this->newTestedInstance(null, $analyzer))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->startWith(uniqid());
@@ -506,7 +506,7 @@ class phpString extends atoum\test
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notStartWith)
-                ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
+                ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->startWith(uniqid(), $failMessage = uniqid());
@@ -519,30 +519,30 @@ class phpString extends atoum\test
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notStartWith)
-                ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
+                ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith($fragment = 'Free' . uniqid());
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notStartWith)
-                ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
+                ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith('field');
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notStartWith)
-                ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, 'field')->once
+                ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $analyzer->getTypeOf('field'))->once
 
                 ->object($asserter->startWith('Free'))->isIdenticalTo($asserter)
         ;
     }
 
-    public function testNotStartWith()
+    public function testNotStartWith(variable\analyzer $analyzer)
     {
         $this
-            ->if($asserter = $this->newTestedInstance)
+            ->if($asserter = $this->newTestedInstance(null, $analyzer))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->notStartWith(uniqid());
@@ -562,7 +562,7 @@ class phpString extends atoum\test
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($startWith)
-                ->mock($locale)->call('_')->withArguments('%s start with %s', $asserter, $fragment)->once
+                ->mock($locale)->call('_')->withArguments('%s start with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notStartWith('FreeAgent ', $failMessage = uniqid());
@@ -575,10 +575,10 @@ class phpString extends atoum\test
         ;
     }
 
-    public function testEndWith()
+    public function testEndWith(variable\analyzer $analyzer)
     {
         $this
-            ->if($asserter = $this->newTestedInstance)
+            ->if($asserter = $this->newTestedInstance(null, $analyzer))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->endWith(uniqid());
@@ -598,7 +598,7 @@ class phpString extends atoum\test
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notEndWith)
-                ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
+                ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->endWith(uniqid(), $failMessage = uniqid());
@@ -611,23 +611,23 @@ class phpString extends atoum\test
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notEndWith)
-                ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, 'FIELd')->once
+                ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $analyzer->getTypeOf('FIELd'))->once
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->endWith($fragment = uniqid() . ' field');
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notEndWith)
-                ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
+                ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->object($asserter->endWith('field'))->isIdenticalTo($asserter)
         ;
     }
 
-    public function testNotEndWith()
+    public function testNotEndWith(variable\analyzer $analyzer)
     {
         $this
-            ->if($asserter = $this->newTestedInstance)
+            ->if($asserter = $this->newTestedInstance(null, $analyzer))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->notEndWith(uniqid());
@@ -647,7 +647,7 @@ class phpString extends atoum\test
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($endWith)
-                ->mock($locale)->call('_')->withArguments('%s end with %s', $asserter, $fragment)->once
+                ->mock($locale)->call('_')->withArguments('%s end with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notEndWith(' the field', $failMessage = uniqid());

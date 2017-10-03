@@ -10,6 +10,7 @@
 
 ## Bugfix
 
+* [#755](https://github.com/atoum/atoum/pull/755) String asserter's failure messages are clear ([@jubianchi])
 * [#773](https://github.com/atoum/atoum/pull/773) Directory is the current working directory ([@hywan])
 * [#770](https://github.com/atoum/atoum/pull/770) Fix path to the runner for the help ([@hywan])
 * [#768](https://github.com/atoum/atoum/pull/768) Fix typos in the CLI help ([@hywan])
