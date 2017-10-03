@@ -621,8 +621,7 @@ class script extends atoum\test
     public function testGetDirectory()
     {
         $this
-            ->given($script = new mock\script($name = uniqid()))
-            ->and($script->setAdapter($adapter = new atoum\test\adapter()))
+            ->given($script = new mock\script($name = uniqid(), $adapter = new atoum\test\adapter()))
             ->and($adapter->getcwd = $currentDirectory = uniqid())
             ->then
                 ->string($script->getDirectory())->isEqualTo($currentDirectory . DIRECTORY_SEPARATOR)
