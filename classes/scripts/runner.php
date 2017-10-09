@@ -688,7 +688,9 @@ class runner extends atoum\script\configurable
             register_shutdown_function(function () use (& $autorunner, $calledClass) {
                 if ($autorunner instanceof $calledClass) {
                     set_error_handler(function ($error, $message, $file, $line) use ($autorunner) {
-                        if (error_reporting() !== 0) {
+                        $errorReporting = error_reporting();
+
+                        if ($errorReporting !== 0 && $errorReporting & $error) {
                             $autorunner->writeError($message . ' in ' . $file . ' at line ' . $line, $error);
 
                             exit(3);
