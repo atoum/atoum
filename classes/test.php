@@ -1545,7 +1545,7 @@ abstract class test implements observable, \countable
         return $doNotCallDefaultErrorHandler;
     }
 
-    private function callSetUp()
+    protected function callSetUp()
     {
         if (method_exists($this, 'setUp')) {
             $this->setUp();
@@ -1554,7 +1554,7 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    private function callTearDown()
+    protected function callTearDown()
     {
         if (method_exists($this, 'tearDown')) {
             $this->tearDown();
@@ -1563,7 +1563,7 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    private function callBeforeTestMethod($testMethod)
+    protected function callBeforeTestMethod($testMethod)
     {
         if (method_exists($this, 'beforeTestMethod')) {
             $this->beforeTestMethod($testMethod);
@@ -1572,7 +1572,7 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    private function callAfterTestMethod($testMethod)
+    protected function callAfterTestMethod($testMethod)
     {
         if (method_exists($this, 'afterTestMethod')) {
             $this->afterTestMethod($testMethod);
