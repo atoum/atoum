@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#769](https://github.com/atoum/atoum/pull/769) CLI: Align options to the left, and increase contrast ([@hywan])
 * [#770](https://github.com/atoum/atoum/pull/770) Fix path to the runner for the help ([@hywan])
 * [#768](https://github.com/atoum/atoum/pull/768) Fix typos in the CLI help ([@hywan])
 * [#767](https://github.com/atoum/atoum/pull/767) Fix typos in the exception messages ([@hywan])
