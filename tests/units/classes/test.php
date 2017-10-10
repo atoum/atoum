@@ -565,7 +565,7 @@ namespace mageekguy\atoum\tests\units
                         $test->getTestedClassName();
                     })
                         ->isInstanceOf(atoum\exceptions\runtime::class)
-                        ->hasMessage('Test class \'' . $testClass . '\' is not in a namespace which match pattern \'' . $test->getTestNamespace() . '\'')
+                        ->hasMessage('Test class \'' . $testClass . '\' is not in a namespace which matches pattern \'' . $test->getTestNamespace() . '\'')
                 ->if($test->getMockController()->getClass = 'tests\units\foo')
                 ->then
                     ->string($test->getTestedClassName())->isEqualTo('foo')
@@ -1256,7 +1256,7 @@ namespace mageekguy\atoum\tests\units
                         atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass');
                     })
                         ->isInstanceOf(atoum\exceptions\runtime::class)
-                        ->hasMessage('Test class \'foo\bar\aaa\bbb\testedClass\' is not in a namespace which match pattern \'' . atoum\test::getNamespace() . '\'')
+                        ->hasMessage('Test class \'foo\bar\aaa\bbb\testedClass\' is not in a namespace which matches pattern \'' . atoum\test::getNamespace() . '\'')
                     ->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass', '#(?:^|\\\)aaas?\\\bbbs?\\\#i'))->isEqualTo('foo\bar\testedClass')
             ;
         }
