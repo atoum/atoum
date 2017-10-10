@@ -75,7 +75,7 @@ class coverage extends atoum\test
                         [
                             ['-mcn', '--max-children-number'],
                             '<integer>',
-                            'Maximum number of sub-processus which will be run simultaneously'
+                            'Maximum number of sub-processes which will be run simultaneously'
                         ],
                         [
                             ['-ncc', '--no-code-coverage'],
@@ -263,7 +263,7 @@ class coverage extends atoum\test
                         [
                             ['-mcn', '--max-children-number'],
                             '<integer>',
-                            'Maximum number of sub-processus which will be run simultaneously'
+                            'Maximum number of sub-processes which will be run simultaneously'
                         ],
                         [
                             ['-ncc', '--no-code-coverage'],

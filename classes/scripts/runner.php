@@ -840,7 +840,7 @@ class runner extends atoum\script\configurable
                     },
                     ['-mcn', '--max-children-number'],
                     '<integer>',
-                    $this->locale->_('Maximum number of sub-processus which will be run simultaneously')
+                    $this->locale->_('Maximum number of sub-processes which will be run simultaneously')
                 )
             ->addArgumentHandler(
                     function ($script, $argument, $empty) {
