@@ -85,8 +85,8 @@ class stub extends atoum\test
                 ->object($this->testedInstance->infos())->isTestedInstance
                 ->mock($writer)
                     ->call('write')
-                        ->withArguments('   ' . $key . ': ' . $value)->once
-                        ->withArguments('   ' . $otherKey . ': ' . $otherValue)->once
+                        ->withArguments('  ' . $key . '  ' . $value)->once
+                        ->withArguments('  ' . $otherKey . '  ' . $otherValue)->once
         ;
     }
 
@@ -112,7 +112,7 @@ class stub extends atoum\test
             ->then
                 ->object($this->testedInstance->signature())->isTestedInstance
                 ->mock($writer)
-                    ->call('write')->withArguments('Signature: ' . $signature)->once
+                    ->call('write')->withArguments('  Signature  ' . $signature)->once
         ;
     }
 
