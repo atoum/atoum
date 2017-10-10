@@ -356,8 +356,8 @@ class generator extends atoum\test
                 ->mock($stdout)
                     ->call('write')->withArguments(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()))->once()
                     ->call('write')->withArguments($generator->getLocale()->_('Available options are:'))->once()
-                    ->call('write')->withArguments('                                -h, --help: ' . $generator->getLocale()->_('Display this help'))->once()
-                    ->call('write')->withArguments('   -d <directory>, --directory <directory>: ' . $generator->getLocale()->_('Destination directory <dir>'))->once()
+                    ->call('write')->withArguments('  -h, --help                               ' . $generator->getLocale()->_('Display this help'))->once()
+                    ->call('write')->withArguments('  -d <directory>, --directory <directory>  ' . $generator->getLocale()->_('Destination directory <dir>'))->once()
             ->if($generator->setPharFactory(function ($name) use (& $phar) {
                 $pharController = new mock\controller();
                 $pharController->__construct = function () {
