@@ -193,7 +193,7 @@ abstract class script
             $labelColorizer = new cli\colorizer('0;32');
             $labelColorizer->setPattern('/(^[^:]+: )/');
 
-            $argumentColorizer = new cli\colorizer('0;32');
+            $argumentColorizer = new cli\colorizer('0;37');
             $argumentColorizer->setPattern('/((?:^| )[-+]+[-a-z]+)/');
 
             $valueColorizer = new cli\colorizer('0;36');
