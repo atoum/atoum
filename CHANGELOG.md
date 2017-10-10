@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#770](https://github.com/atoum/atoum/pull/770) Fix path to the runner for the help ([@hywan])
 * [#768](https://github.com/atoum/atoum/pull/768) Fix typos in the CLI help ([@hywan])
 * [#767](https://github.com/atoum/atoum/pull/767) Fix typos in the exception messages ([@hywan])
 * [#757](https://github.com/atoum/atoum/pull/757) Take the error reporting level into account to exit the runner ([@hywan])
