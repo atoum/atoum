@@ -456,7 +456,7 @@ abstract class script
 
     protected static function writeLabelWithWriter($label, $value, $level, writer $writer)
     {
-        return $writer->write(($level <= 0 ? '' : str_repeat(self::padding, $level)) . (preg_match('/^ +$/', $label) ? $label : rtrim($label)) . ': ' . trim($value));
+        return $writer->write('  ' . $label . '  ' . trim($value));
     }
 
     protected static function writeLabelsWithWriter($labels, $level, writer $writer)
@@ -474,7 +474,7 @@ abstract class script
         foreach ($labels as $label => $value) {
             $value = explode("\n", trim($value));
 
-            static::writeLabelWithWriter(str_pad($label, $maxLength, ' ', STR_PAD_LEFT), $value[0], $level, $writer);
+            static::writeLabelWithWriter(str_pad($label, $maxLength, ' ', STR_PAD_RIGHT), $value[0], $level, $writer);
 
             if (count($value) > 1) {
                 foreach (array_slice($value, 1) as $line) {
