@@ -196,7 +196,7 @@ abstract class script
             $argumentColorizer = new cli\colorizer('0;32');
             $argumentColorizer->setPattern('/((?:^| )[-+]+[-a-z]+)/');
 
-            $valueColorizer = new cli\colorizer('0;34');
+            $valueColorizer = new cli\colorizer('0;36');
             $valueColorizer->setPattern('/(<[^>]+>(?:\.\.\.)?)/');
 
             $writer = new writers\std\out();
