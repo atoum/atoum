@@ -1612,7 +1612,7 @@ abstract class test implements observable, \countable
 
         if ($analyzer->isRegex($testNamespace) === true) {
             if (preg_match($testNamespace, $fullyQualifiedClassName) === 0) {
-                throw new exceptions\runtime('Test class \'' . $fullyQualifiedClassName . '\' is not in a namespace which match pattern \'' . $testNamespace . '\'');
+                throw new exceptions\runtime('Test class \'' . $fullyQualifiedClassName . '\' is not in a namespace which matches pattern \'' . $testNamespace . '\'');
             }
 
             $testedClassName = preg_replace($testNamespace, '\\', $fullyQualifiedClassName);
