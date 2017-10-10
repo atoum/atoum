@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#771](https://github.com/atoum/atoum/pull/771) Normalize and simplify the asserter name when a test case fails ([@hywan])
 * [#754](https://github.com/atoum/atoum/pull/754) Add the dot report ([@jubianchi])
 * [#769](https://github.com/atoum/atoum/pull/769) CLI: Align options to the left, and increase contrast ([@hywan])
 * [#770](https://github.com/atoum/atoum/pull/770) Fix path to the runner for the help ([@hywan])
