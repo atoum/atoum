@@ -117,14 +117,6 @@ class configurable extends atoum\test
             ->and($this->calling($configurable)->useConfigFile = function () {
             })
             ->and($configurable->setAdapter($adapter = new atoum\test\adapter()))
-            ->and($adapter->is_dir = true)
-            ->then
-                ->object($configurable->useDefaultConfigFiles())->isIdenticalTo($configurable)
-                ->mock($configurable)
-                    ->foreach(testedClass::getSubDirectoryPath($directory), function ($mock, $path) {
-                        $mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->atLeastOnce();
-                    })
-            ->if($adapter->is_dir = false)
             ->and($adapter->getcwd = $workingDirectory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid())
             ->then
                 ->object($configurable->useDefaultConfigFiles())->isIdenticalTo($configurable)
@@ -132,7 +124,6 @@ class configurable extends atoum\test
                     ->foreach(testedClass::getSubDirectoryPath($workingDirectory), function ($mock, $path) {
                         $mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->atLeastOnce();
                     })
-            ->if($adapter->is_dir = true)
             ->and($adapter->getcwd = $otherWorkingDirectory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid())
             ->and($this->calling($configurable)->useConfigFile->throw = new atoum\includer\exception())
             ->then

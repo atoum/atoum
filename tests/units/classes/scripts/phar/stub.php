@@ -116,6 +116,9 @@ class stub extends atoum\test
         ;
     }
 
+    /**
+     * @engine inline
+     */
     public function testVersion()
     {
         $this

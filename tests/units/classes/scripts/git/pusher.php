@@ -31,7 +31,7 @@ class pusher extends atoum
             ->if($pusher = new testedClass(__FILE__))
             ->then
                 ->string($pusher->getRemote())->isEqualTo(testedClass::defaultRemote)
-                ->string($pusher->getTagFile())->isEqualTo(__DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultTagFile)
+                ->string($pusher->getTagFile())->isEqualTo(getcwd() . DIRECTORY_SEPARATOR . testedClass::defaultTagFile)
                 ->object($pusher->getTaggerEngine())->isEqualTo(new scripts\tagger\engine())
                 ->string($pusher->getWorkingDirectory())->isEqualTo(getcwd())
                 ->object($pusher->getGit())->isEqualTo(new commands\git())
@@ -58,7 +58,7 @@ class pusher extends atoum
                 ->object($pusher->setTagFile($tagFile = uniqid()))->isIdenticalTo($pusher)
                 ->string($pusher->getTagFile())->isEqualTo($tagFile)
                 ->object($pusher->setTagFile())->isIdenticalTo($pusher)
-                ->string($pusher->getTagFile())->isEqualTo(__DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultTagFile)
+                ->string($pusher->getTagFile())->isEqualTo(getcwd() . DIRECTORY_SEPARATOR . testedClass::defaultTagFile)
         ;
     }
 

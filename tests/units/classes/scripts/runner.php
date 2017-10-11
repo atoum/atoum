@@ -820,8 +820,8 @@ class runner extends atoum\test
                         ->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in ' . $runner->getDirectory())->once()
                 ->adapter($adapter)
                     ->call('copy')
-                        ->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
-                        ->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->once()
+                        ->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', getcwd() . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
+                        ->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', getcwd() . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->once()
             ->if($this->resetAdapter($adapter))
             ->and($this->resetMock($outputWriter))
             ->then
@@ -853,8 +853,8 @@ class runner extends atoum\test
                         ->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in ' . $runner->getDirectory())->once()
                 ->adapter($adapter)
                     ->call('copy')
-                        ->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
-                        ->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->once()
+                        ->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', getcwd() . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->once()
+                        ->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', getcwd() . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->once()
             ->if($this->resetAdapter($adapter))
             ->and($this->resetMock($outputWriter))
             ->and($this->resetMock($prompt))
@@ -872,8 +872,8 @@ class runner extends atoum\test
                         ->withArguments('Default bootstrap file \'' . testedClass::defaultBootstrapFile . '\' was successfully created in ' . $runner->getDirectory())->never()
                 ->adapter($adapter)
                     ->call('copy')
-                        ->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->never()
-                        ->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->never()
+                        ->withArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', getcwd() . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile)->never()
+                        ->withArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', getcwd() . DIRECTORY_SEPARATOR . testedClass::defaultBootstrapFile)->never()
             ->if($this->resetAdapter($adapter))
             ->and($this->resetMock($outputWriter))
             ->and($this->resetMock($prompt))
@@ -900,7 +900,7 @@ class runner extends atoum\test
                     $runner->init();
                 })
                     ->isInstanceOf(atoum\exceptions\runtime::class)
-                    ->hasMessage('Unable to write \'' . atoum\directory . '/resources/configurations/runner/atoum.php.dist\' to \'' . __DIR__ . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile . '\'')
+                    ->hasMessage('Unable to write \'' . atoum\directory . '/resources/configurations/runner/atoum.php.dist\' to \'' . getcwd() . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile . '\'')
         ;
     }
 
