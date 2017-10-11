@@ -46,11 +46,7 @@ abstract class script
 
     public function getDirectory()
     {
-        $directory = $this->adapter->dirname($this->getName());
-
-        if ($this->adapter->is_dir($directory) === false) {
-            $directory = $this->adapter->getcwd();
-        }
+        $directory = $this->adapter->getcwd();
 
         return rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
