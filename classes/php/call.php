@@ -2,9 +2,7 @@
 
 namespace mageekguy\atoum\php;
 
-use
-    mageekguy\atoum\test\adapter\call
-;
+use mageekguy\atoum\test\adapter;
 
 class call
 {
@@ -90,9 +88,9 @@ class call
         return $this->object;
     }
 
-    public function setDecorator(call\decorator $decorator = null)
+    public function setDecorator(adapter\call\decorator $decorator = null)
     {
-        $this->decorator = $decorator ?: new call\decorator();
+        $this->decorator = $decorator ?: new adapter\call\decorator();
 
         return $this;
     }
