@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\tests\uncompleted;
+namespace mageekguy\atoum\report\fields\runner\tests\incompleted;
 
 use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\report;
 
-class cli extends report\fields\runner\tests\uncompleted
+class cli extends report\fields\runner\tests\incompleted
 {
     protected $titlePrompt = null;
     protected $titleColorizer = null;
@@ -34,33 +34,33 @@ class cli extends report\fields\runner\tests\uncompleted
         $string = '';
 
         if ($this->runner !== null) {
-            $uncompletedMethods = $this->runner->getScore()->getUncompletedMethods();
+            $incompletedMethods = $this->runner->getScore()->getincompletedMethods();
 
-            $sizeOfUncompletedMethod = sizeof($uncompletedMethods);
+            $sizeOfincompletedMethod = sizeof($incompletedMethods);
 
-            if ($sizeOfUncompletedMethod > 0) {
+            if ($sizeOfincompletedMethod > 0) {
                 $string .=
                     $this->titlePrompt .
                     sprintf(
                         $this->locale->_('%s:'),
-                        $this->titleColorizer->colorize(sprintf($this->locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', $sizeOfUncompletedMethod), $sizeOfUncompletedMethod))
+                        $this->titleColorizer->colorize(sprintf($this->locale->__('There is %d incompleted method', 'There are %d incompleted methods', $sizeOfincompletedMethod), $sizeOfincompletedMethod))
                     ) .
                     PHP_EOL
                 ;
 
-                foreach ($uncompletedMethods as $uncompletedMethod) {
+                foreach ($incompletedMethods as $incompletedMethod) {
                     $string .=
                         $this->methodPrompt .
                         sprintf(
                             $this->locale->_('%s:'),
-                            $this->methodColorizer->colorize(sprintf('%s::%s() with exit code %d', $uncompletedMethod['class'], $uncompletedMethod['method'], $uncompletedMethod['exitCode']))
+                            $this->methodColorizer->colorize(sprintf('%s::%s() with exit code %d', $incompletedMethod['class'], $incompletedMethod['method'], $incompletedMethod['exitCode']))
                         ) .
                         PHP_EOL
                     ;
 
-                    $lines = explode(PHP_EOL, trim($uncompletedMethod['output']));
+                    $lines = explode(PHP_EOL, trim($incompletedMethod['output']));
 
-                    $string .= $this->outputPrompt . 'output(' . strlen($uncompletedMethod['output']) . ') "' . array_shift($lines);
+                    $string .= $this->outputPrompt . 'output(' . strlen($incompletedMethod['output']) . ') "' . array_shift($lines);
 
                     foreach ($lines as $line) {
                         $string .= PHP_EOL . $this->outputPrompt . $line;

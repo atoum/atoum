@@ -699,7 +699,7 @@ class runner extends atoum\script\configurable
 
                     try {
                         $score = $autorunner->run()->getRunner()->getScore();
-                        $isSuccess = $score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 && $score->getUncompletedMethodNumber() <= 0;
+                        $isSuccess = $score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 && $score->getincompletedMethodNumber() <= 0;
 
                         if ($autorunner->shouldFailIfVoidMethods() && $score->getVoidMethodNumber() > 0) {
                             $isSuccess = false;

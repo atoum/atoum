@@ -94,8 +94,8 @@ class cli extends atoum\test
                     ->setMethodPrompt(new prompt('=> ', new colorizer('0;35')))
                     ->setExceptionPrompt(new prompt('==> ', new colorizer('0;35')))
                 )
-            ->define($runnerUncompletedField = new fields\runner\tests\uncompleted\cli())
-                ->and($runnerUncompletedField
+            ->define($runnerincompletedField = new fields\runner\tests\incompleted\cli())
+                ->and($runnerincompletedField
                     ->setTitlePrompt(new prompt('> '))
                     ->setTitleColorizer(new colorizer('0;37'))
                     ->setMethodPrompt(new prompt('=> ', new colorizer('0;37')))
@@ -144,7 +144,7 @@ class cli extends atoum\test
                         $runnerOutputsField,
                         $runnerErrorsField,
                         $runnerExceptionsField,
-                        $runnerUncompletedField,
+                        $runnerincompletedField,
                         $runnerVoidField,
                         $runnerSkippedField,
                         $testRunField,

@@ -444,10 +444,10 @@ class tap extends atoum\test
             ->if($field->handleEvent(atoum\runner::runStart, $test))
             ->then
                 ->castToString($field)->isEmpty()
-            ->if($field->handleEvent(atoum\test::uncompleted, $test))
+            ->if($field->handleEvent(atoum\test::incompleted, $test))
             ->then
                 ->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . $output . PHP_EOL . '# ' . $file . PHP_EOL)
-            ->if($field->handleEvent(atoum\test::uncompleted, $test))
+            ->if($field->handleEvent(atoum\test::incompleted, $test))
             ->then
                 ->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherOutput . PHP_EOL . '# ' . $file . PHP_EOL)
             ->if($this->calling($score)->getLastErroredMethod = [
@@ -458,10 +458,10 @@ class tap extends atoum\test
                     'message' => ($errorMessageFirstLine = 'line1') . PHP_EOL . ($errorMessageSecondLine = 'line2')
                 ]
             )
-            ->and($field->handleEvent(atoum\test::uncompleted, $test))
+            ->and($field->handleEvent(atoum\test::incompleted, $test))
             ->then
                 ->castToString($field)->isEqualTo('not ok 3 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $errorType . ' : ' . $errorMessageFirstLine . PHP_EOL . '# ' . $errorMessageSecondLine . PHP_EOL . '# ' . $file . PHP_EOL)
-            ->if($field->handleEvent(atoum\test::uncompleted, $test))
+            ->if($field->handleEvent(atoum\test::incompleted, $test))
             ->then
                 ->castToString($field)->isEqualTo('not ok 4 - ' . $class . '::' . $thirdMethod . '()' . PHP_EOL . '# uncomplete method' . PHP_EOL . '# ' . $file . PHP_EOL)
         ;

@@ -120,7 +120,7 @@ class phing extends atoum\test
             ->if($field->handleEvent(atoum\test::success, $test))
             ->then
                 ->castToString($field)->isEqualTo('S')
-            ->if($field->handleEvent(atoum\test::uncompleted, $test))
+            ->if($field->handleEvent(atoum\test::incompleted, $test))
             ->then
                 ->castToString($field)->isEqualTo('U')
             ->if($field->handleEvent(atoum\test::afterTestMethod, $test))

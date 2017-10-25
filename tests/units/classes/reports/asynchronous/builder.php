@@ -36,8 +36,8 @@ class builder extends atoum\test
                     ->setMethodPrompt(new prompt('   '))
                     ->setExceptionPrompt(new prompt('      '))
                 )
-            ->define($uncompletedField = new runner\tests\uncompleted\cli())
-                ->and($uncompletedField
+            ->define($incompletedField = new runner\tests\incompleted\cli())
+                ->and($incompletedField
                     ->setMethodPrompt(new prompt('   '))
                     ->setOutputPrompt(new prompt('      '))
                 )
@@ -63,7 +63,7 @@ class builder extends atoum\test
                         $outputsField,
                         $errorsField,
                         $exceptionsField,
-                        $uncompletedField,
+                        $incompletedField,
                         new runner\tests\duration\cli(),
                         new runner\tests\memory\cli(),
                         $coverageField,

@@ -160,7 +160,7 @@ class concurrent extends atoum\test
             ->and($engine->run($test))
             ->then
                 ->object($score = $engine->getScore())->isInstanceOf(atoum\score::class)
-                ->array($score->getUncompletedMethods())->isEqualTo([['file' => $testPath, 'class' => get_class($test), 'method' => $method, 'exitCode' => $exitCode, 'output' => $output]])
+                ->array($score->getincompletedMethods())->isEqualTo([['file' => $testPath, 'class' => get_class($test), 'method' => $method, 'exitCode' => $exitCode, 'output' => $output]])
             ->if($this->calling($php)->getStdOut = serialize($score))
             ->and($engine->run($test))
             ->then

@@ -179,10 +179,10 @@ class phing extends realtime
         $exceptionPrompt = clone $secondLevelPrompt;
         $exceptionPrompt->setColorizer($exceptionColorizer);
 
-        $uncompletedTestColorizer = new colorizer('0;37');
-        $uncompletedTestMethodPrompt = clone $secondLevelPrompt;
-        $uncompletedTestMethodPrompt->setColorizer($uncompletedTestColorizer);
-        $uncompletedTestOutputPrompt = new prompt('  ', $uncompletedTestColorizer);
+        $incompletedTestColorizer = new colorizer('0;37');
+        $incompletedTestMethodPrompt = clone $secondLevelPrompt;
+        $incompletedTestMethodPrompt->setColorizer($incompletedTestColorizer);
+        $incompletedTestOutputPrompt = new prompt('  ', $incompletedTestColorizer);
 
         $voidTestColorizer = new colorizer('0;34');
         $voidTestMethodPrompt = clone $secondLevelPrompt;
@@ -291,15 +291,15 @@ class phing extends realtime
 
         $this->addField($exceptionsField);
 
-        $runnerUncompletedField = new runner\tests\uncompleted\cli();
-        $runnerUncompletedField
+        $runnerincompletedField = new runner\tests\incompleted\cli();
+        $runnerincompletedField
             ->setTitlePrompt($firstLevelPrompt)
-            ->setTitleColorizer($uncompletedTestColorizer)
-            ->setMethodPrompt($uncompletedTestMethodPrompt)
-            ->setOutputPrompt($uncompletedTestOutputPrompt)
+            ->setTitleColorizer($incompletedTestColorizer)
+            ->setMethodPrompt($incompletedTestMethodPrompt)
+            ->setOutputPrompt($incompletedTestOutputPrompt)
         ;
 
-        $this->addField($runnerUncompletedField);
+        $this->addField($runnerincompletedField);
 
         $runnerVoidField = new runner\tests\blank\cli();
         $runnerVoidField

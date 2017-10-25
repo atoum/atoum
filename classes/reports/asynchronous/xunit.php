@@ -51,7 +51,7 @@ class xunit extends atoum\reports\asynchronous
         $errors = $this->score->getErrors();
         $excepts = $this->score->getExceptions();
         $fails = $this->score->getFailAssertions();
-        $uncomplete = $this->score->getUncompletedMethods();
+        $uncomplete = $this->score->getincompletedMethods();
         $skipped = $this->score->getSkippedMethods();
         $assertions = $this->assertions;
 

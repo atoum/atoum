@@ -15,7 +15,7 @@ abstract class event extends report\fields\event
                 test::fail,
                 test::error,
                 test::void,
-                test::uncompleted,
+                test::incompleted,
                 test::skipped,
                 test::exception,
                 test::success,

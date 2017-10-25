@@ -198,7 +198,7 @@ class AtoumTask extends task
 
         $score = $this->runner->run();
 
-        $failures = ($score->getUncompletedMethodNumber() + $score->getFailNumber() + $score->getErrorNumber() + $score->getExceptionNumber() + $score->getRuntimeExceptionNumber());
+        $failures = ($score->getincompletedMethodNumber() + $score->getFailNumber() + $score->getErrorNumber() + $score->getExceptionNumber() + $score->getRuntimeExceptionNumber());
 
         if ($failures > 0) {
             throw new BuildException("Tests did not pass");

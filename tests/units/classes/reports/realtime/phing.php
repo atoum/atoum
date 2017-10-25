@@ -78,8 +78,8 @@ class phing extends atoum\test
                     ->setTitleColorizer(new colorizer('0;35'))
                     ->setMethodPrompt(new prompt(' ', new colorizer('0;35')))
                 )
-            ->define($runnerUncompletedField = new fields\runner\tests\uncompleted\cli())
-                ->and($runnerUncompletedField
+            ->define($runnerincompletedField = new fields\runner\tests\incompleted\cli())
+                ->and($runnerincompletedField
                     ->setTitlePrompt(new prompt(PHP_EOL))
                     ->setTitleColorizer(new colorizer('0;37'))
                     ->setMethodPrompt(new prompt(' ', new colorizer('0;37')))
@@ -130,7 +130,7 @@ class phing extends atoum\test
                         $runnerOutputsField,
                         $runnerErrorsField,
                         $runnerExceptionsField,
-                        $runnerUncompletedField,
+                        $runnerincompletedField,
                         $runnerVoidField,
                         $runnerSkippedField,
                         $testRunField,
