@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\uncompleted;
+namespace mageekguy\atoum\tests\units\report\fields\runner\tests\incompleted;
 
 use mageekguy\atoum;
 use mageekguy\atoum\cli\colorizer;
@@ -14,13 +14,13 @@ class cli extends atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends(atoum\report\fields\runner\tests\uncompleted::class);
+        $this->testedClass->extends(atoum\report\fields\runner\tests\incompleted::class);
     }
 
     public function test__construct()
     {
         $this
-            ->if($field = new tests\uncompleted\cli())
+            ->if($field = new tests\incompleted\cli())
             ->then
                 ->object($field->getTitlePrompt())->isEqualTo(new prompt())
                 ->object($field->getTitleColorizer())->isEqualTo(new colorizer())
@@ -37,7 +37,7 @@ class cli extends atoum\test
     public function testSetTitlePrompt()
     {
         $this
-            ->if($field = new tests\uncompleted\cli())
+            ->if($field = new tests\incompleted\cli())
             ->then
                 ->object($field->setTitlePrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
                 ->object($field->getTitlePrompt())->isIdenticalTo($prompt)
@@ -51,7 +51,7 @@ class cli extends atoum\test
     public function testSetTitleColorizer()
     {
         $this
-            ->if($field = new tests\uncompleted\cli())
+            ->if($field = new tests\incompleted\cli())
             ->then
                 ->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
                 ->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
@@ -65,7 +65,7 @@ class cli extends atoum\test
     public function testSetMethodPrompt()
     {
         $this
-            ->if($field = new tests\uncompleted\cli())
+            ->if($field = new tests\incompleted\cli())
             ->then
                 ->object($field->setMethodPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
                 ->object($field->getMethodPrompt())->isIdenticalTo($prompt)
@@ -79,7 +79,7 @@ class cli extends atoum\test
     public function testSetMethodColorizer()
     {
         $this
-            ->if($field = new tests\uncompleted\cli())
+            ->if($field = new tests\incompleted\cli())
             ->then
                 ->object($field->setMethodColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
                 ->object($field->getMethodColorizer())->isIdenticalTo($colorizer)
@@ -93,7 +93,7 @@ class cli extends atoum\test
     public function testSetOutputPrompt()
     {
         $this
-            ->if($field = new tests\uncompleted\cli())
+            ->if($field = new tests\incompleted\cli())
             ->then
                 ->object($field->setOutputPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
                 ->object($field->getOutputPrompt())->isIdenticalTo($prompt)
@@ -107,7 +107,7 @@ class cli extends atoum\test
     public function testSetOutputColorizer()
     {
         $this
-            ->if($field = new tests\uncompleted\cli())
+            ->if($field = new tests\incompleted\cli())
             ->then
                 ->object($field->setOutputColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
                 ->object($field->getOutputColorizer())->isIdenticalTo($colorizer)
@@ -121,11 +121,11 @@ class cli extends atoum\test
     public function testSetLocale()
     {
         $this
-            ->if($field = new tests\uncompleted\cli())
+            ->if($field = new tests\incompleted\cli())
             ->then
                 ->object($field->setLocale($locale = new atoum\locale()))->isIdenticalTo($field)
                 ->object($field->getLocale())->isIdenticalTo($locale)
-            ->if($field = new tests\uncompleted\cli(null, null, null, null, null, null, $locale = new atoum\locale()))
+            ->if($field = new tests\incompleted\cli(null, null, null, null, null, null, $locale = new atoum\locale()))
             ->then
                 ->object($field->setLocale($locale = new atoum\locale()))->isIdenticalTo($field)
                 ->object($field->getLocale())->isIdenticalTo($locale)
@@ -135,7 +135,7 @@ class cli extends atoum\test
     public function testHandleEvent()
     {
         $this
-            ->if($field = new tests\uncompleted\cli())
+            ->if($field = new tests\incompleted\cli())
             ->then
                 ->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
                 ->variable($field->getRunner())->isNull()
@@ -148,11 +148,11 @@ class cli extends atoum\test
     {
         $this
             ->if($score = new \mock\mageekguy\atoum\runner\score())
-            ->and($this->calling($score)->getUncompletedMethods = [])
+            ->and($this->calling($score)->getincompletedMethods = [])
             ->and($runner = new atoum\runner())
             ->and($runner->setScore($score))
-            ->and($defaultField = new tests\uncompleted\cli())
-            ->and($customField = new tests\uncompleted\cli())
+            ->and($defaultField = new tests\incompleted\cli())
+            ->and($customField = new tests\incompleted\cli())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
             ->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))
             ->and($customField->setMethodPrompt($methodPrompt = new prompt(uniqid())))
@@ -175,7 +175,7 @@ class cli extends atoum\test
             ->if($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($customField)->isEmpty()
-            ->if($score->getMockController()->getUncompletedMethods = $allUncompletedMethods = [
+            ->if($score->getMockController()->getincompletedMethods = $allincompletedMethods = [
                         [
                             'class' => $class = uniqid(),
                             'method' => $method = uniqid(),
@@ -196,8 +196,8 @@ class cli extends atoum\test
                         ]
                     ]
                 )
-            ->and($defaultField = new tests\uncompleted\cli())
-            ->and($customField = new tests\uncompleted\cli())
+            ->and($defaultField = new tests\incompleted\cli())
+            ->and($customField = new tests\incompleted\cli())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
             ->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))
             ->and($customField->setMethodPrompt($methodPrompt = new prompt(uniqid())))
@@ -216,7 +216,7 @@ class cli extends atoum\test
                 ->castToString($customField)->isEmpty()
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($defaultField)->isEqualTo(sprintf('There are %d uncompleted methods:', sizeof($allUncompletedMethods)) . PHP_EOL .
+                ->castToString($defaultField)->isEqualTo(sprintf('There are %d incompleted methods:', sizeof($allincompletedMethods)) . PHP_EOL .
                         sprintf('%s::%s() with exit code %d:', $class, $method, $exitCode) . PHP_EOL .
                         'output(' . strlen($output) . ') "' . $output . '"' . PHP_EOL .
                         sprintf('%s::%s() with exit code %d:', $otherClass, $otherMethod, $otherExitCode) . PHP_EOL .
@@ -231,7 +231,7 @@ class cli extends atoum\test
                     $titlePrompt .
                     sprintf(
                         $locale->_('%s:'),
-                        $titleColorizer->colorize(sprintf($locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', sizeof($allUncompletedMethods)), sizeof($allUncompletedMethods)))
+                        $titleColorizer->colorize(sprintf($locale->__('There is %d incompleted method', 'There are %d incompleted methods', sizeof($allincompletedMethods)), sizeof($allincompletedMethods)))
                     ) .
                     PHP_EOL .
                     $methodPrompt .

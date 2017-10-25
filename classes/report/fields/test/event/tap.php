@@ -19,7 +19,7 @@ class tap extends report\fields\event
                 test::fail,
                 test::error,
                 test::void,
-                test::uncompleted,
+                test::incompleted,
                 test::skipped,
                 test::exception,
                 test::runtimeException,
@@ -70,7 +70,7 @@ class tap extends report\fields\event
                     $this->testLine .= $this->renderErrors($observable, trim($lastVoidMethod['class']), trim($lastVoidMethod['method']));
                     break;
 
-                case test::uncompleted:
+                case test::incompleted:
                     $lastUncompleteMethod = $observable->getScore()->getLastUncompleteMethod();
                     $lastError = $observable->getScore()->getLastErroredMethod();
 

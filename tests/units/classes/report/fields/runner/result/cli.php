@@ -264,7 +264,7 @@ class cli extends atoum\test
         $scoreController->getFailNumber = 1;
         $scoreController->getErrorNumber = 1;
         $scoreController->getExceptionNumber = 1;
-        $scoreController->getUncompletedMethodNumber = 1;
+        $scoreController->getincompletedMethodNumber = 1;
 
         $this
             ->if($field = new testedClass())
@@ -296,7 +296,7 @@ class cli extends atoum\test
                     ->call('__')->withArguments('%s test', '%s tests', $testNumber)->once()
                     ->call('__')->withArguments('%s/%s method', '%s/%s methods', $testMethodNumber)->once()
                     ->call('__')->withArguments('%s skipped method', '%s skipped methods', 0)->once()
-                    ->call('__')->withArguments('%s uncompleted method', '%s uncompleted methods', 1)->once()
+                    ->call('__')->withArguments('%s incompleted method', '%s incompleted methods', 1)->once()
                     ->call('__')->withArguments('%s failure', '%s failures', 1)->once()
                     ->call('__')->withArguments('%s error', '%s errors', 1)->once()
                     ->call('__')->withArguments('%s exception', '%s exceptions', 1)->once()
@@ -313,7 +313,7 @@ class cli extends atoum\test
         $scoreController->getFailNumber = $failNumber = rand(2, PHP_INT_MAX);
         $scoreController->getErrorNumber = $errorNumber = rand(2, PHP_INT_MAX);
         $scoreController->getExceptionNumber = $exceptionNumber = rand(2, PHP_INT_MAX);
-        $scoreController->getUncompletedMethodNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX);
+        $scoreController->getincompletedMethodNumber = $incompletedTestNumber = rand(2, PHP_INT_MAX);
 
         $this
             ->if($field = new testedClass())

@@ -14,7 +14,7 @@
 * [#739](https://github.com/atoum/atoum/pull/739) Avoid many memory allocations in error report field ([@hywan])
 * [#736](https://github.com/atoum/atoum/pull/736) Display clear errors when mocking function fails ([@jubianchi])
 * [#737](https://github.com/atoum/atoum/pull/737) Command line switches override configuration file directives ([@jubianchi])
-* [#733](https://github.com/atoum/atoum/pull/733) Uncompleted methods make atoum exit with an error code ([@jubianchi])
+* [#733](https://github.com/atoum/atoum/pull/733) incompleted methods make atoum exit with an error code ([@jubianchi])
 * [#734](https://github.com/atoum/atoum/pull/734) The `exception::isInstanceOf` asserter correctly works with interfaces ([@jubianchi])
 * [#731](https://github.com/atoum/atoum/pull/731) Remove dependency on `ext-session` ([@jubianchi], [@hywan])
 

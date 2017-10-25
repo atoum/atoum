@@ -92,7 +92,7 @@ class xunit extends atoum\test
                 ]
             ))
             ->and($testScore->addDuration(uniqid(), $class, $method, $duration = 1))
-            ->and($testScore->addUncompletedMethod(uniqid(), $class, $otherMethod, $exitCode = 1, $output = 'output'))
+            ->and($testScore->addincompletedMethod(uniqid(), $class, $otherMethod, $exitCode = 1, $output = 'output'))
             ->and($testScore->addSkippedMethod(uniqid(), $class, $thirdMethod, $line = rand(1, PHP_INT_MAX), $message = 'message'))
             ->and($report->handleEvent(atoum\test::afterTestMethod, $test))
             ->and($testScore->addPass())

@@ -61,7 +61,7 @@ class logo extends atoum\test
         $scoreController->getFailNumber = 1;
         $scoreController->getErrorNumber = 1;
         $scoreController->getExceptionNumber = 1;
-        $scoreController->getUncompletedMethodNumber = 1;
+        $scoreController->getincompletedMethodNumber = 1;
 
         $this
             ->if($field = new testedClass())

@@ -16,7 +16,7 @@ abstract class test implements observable, \countable
     const fail = 'testAssertionFail';
     const error = 'testError';
     const void = 'testVoid';
-    const uncompleted = 'testUncompleted';
+    const incompleted = 'testincompleted';
     const skipped = 'testSkipped';
     const exception = 'testException';
     const runtimeException = 'testRuntimeException';
@@ -1830,8 +1830,8 @@ abstract class test implements observable, \countable
                                 $signal = self::void;
                                 break;
 
-                            case $score->getUncompletedMethodNumber():
-                                $signal = self::uncompleted;
+                            case $score->getincompletedMethodNumber():
+                                $signal = self::incompleted;
                                 break;
 
                             case $score->getSkippedMethodNumber():

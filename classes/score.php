@@ -13,7 +13,7 @@ class score
     protected $durations = [];
     protected $memoryUsages = [];
     protected $voidMethods = [];
-    protected $uncompletedMethods = [];
+    protected $incompletedMethods = [];
     protected $skippedMethods = [];
     protected $coverage = null;
 
@@ -46,7 +46,7 @@ class score
         $this->outputs = [];
         $this->durations = [];
         $this->memoryUsages = [];
-        $this->uncompletedMethods = [];
+        $this->incompletedMethods = [];
         $this->coverage->reset();
 
         return $this;
@@ -82,19 +82,19 @@ class score
         return count($this->voidMethods);
     }
 
-    public function getUncompletedMethods()
+    public function getincompletedMethods()
     {
-        return $this->uncompletedMethods;
+        return $this->incompletedMethods;
     }
 
-    public function getUncompletedMethodNumber()
+    public function getincompletedMethodNumber()
     {
-        return count($this->uncompletedMethods);
+        return count($this->incompletedMethods);
     }
 
     public function getLastUncompleteMethod()
     {
-        return end($this->uncompletedMethods) ?: null;
+        return end($this->incompletedMethods) ?: null;
     }
 
     public function getSkippedMethods()
@@ -227,7 +227,7 @@ class score
 
     public function getMethodsNotCompleted()
     {
-        return self::getMethods($this->getUncompletedMethods());
+        return self::getMethods($this->getincompletedMethods());
     }
 
     public function addPass()
@@ -363,9 +363,9 @@ class score
         return $this;
     }
 
-    public function addUncompletedMethod($file, $class, $method, $exitCode, $output)
+    public function addincompletedMethod($file, $class, $method, $exitCode, $output)
     {
-        $this->uncompletedMethods[] = [
+        $this->incompletedMethods[] = [
             'file' => $file,
             'class' => $class,
             'method' => $method,
@@ -400,7 +400,7 @@ class score
         $this->durations = array_merge($this->durations, $score->durations);
         $this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
         $this->voidMethods = array_merge($this->voidMethods, $score->voidMethods);
-        $this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->uncompletedMethods);
+        $this->incompletedMethods = array_merge($this->incompletedMethods, $score->incompletedMethods);
         $this->skippedMethods = array_merge($this->skippedMethods, $score->skippedMethods);
         $this->coverage->merge($score->coverage);
 

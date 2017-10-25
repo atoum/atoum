@@ -16,7 +16,7 @@ abstract class result extends report\field
     protected $errorNumber = null;
     protected $exceptionNumber = null;
     protected $voidMethodNumber = null;
-    protected $uncompletedMethodNumber = null;
+    protected $incompletedMethodNumber = null;
     protected $skippedMethodNumber = null;
 
     public function __construct()
@@ -59,9 +59,9 @@ abstract class result extends report\field
         return $this->voidMethodNumber;
     }
 
-    public function getUncompletedMethodNumber()
+    public function getincompletedMethodNumber()
     {
-        return $this->uncompletedMethodNumber;
+        return $this->incompletedMethodNumber;
     }
 
     public function getSkippedMethodNumber()
@@ -83,9 +83,9 @@ abstract class result extends report\field
             $this->errorNumber = $score->getErrorNumber();
             $this->exceptionNumber = $score->getExceptionNumber();
             $this->voidMethodNumber = $score->getVoidMethodNumber();
-            $this->uncompletedMethodNumber = $score->getUncompletedMethodNumber();
+            $this->incompletedMethodNumber = $score->getincompletedMethodNumber();
             $this->skippedMethodNumber = $score->getSkippedMethodNumber();
-            $this->success = ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->uncompletedMethodNumber === 0);
+            $this->success = ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->incompletedMethodNumber === 0);
 
             if ($observable->shouldFailIfVoidMethods() && $this->voidMethodNumber > 0) {
                 $this->success = false;

@@ -164,14 +164,14 @@ namespace tests\units
                         ->call('addReport')->twice()
                 ->if($score = new \mock\mageekguy\atoum\score())
                 ->and($this->calling($runner)->run = $score)
-                ->and($this->calling($score)->getUncompletedMethodNumber = rand(1, PHP_INT_MAX))
+                ->and($this->calling($score)->getincompletedMethodNumber = rand(1, PHP_INT_MAX))
                 ->then
                     ->exception(function () use ($task) {
                         $task->execute();
                     })
                         ->isInstanceOf(\buildException::class)
                         ->hasMessage('Tests did not pass')
-                ->if($this->calling($score)->getUncompletedMethodNumber = 0)
+                ->if($this->calling($score)->getincompletedMethodNumber = 0)
                 ->and($this->calling($score)->getFailNumber = rand(1, PHP_INT_MAX))
                 ->then
                     ->exception(function () use ($task) {

@@ -135,7 +135,7 @@ class cli extends atoum\test
             ->if($field->handleEvent(atoum\test::success, $test))
             ->then
                 ->castToString($field)->isEqualTo((string) $progressBar->refresh('S'))
-            ->if($field->handleEvent(atoum\test::uncompleted, $test))
+            ->if($field->handleEvent(atoum\test::incompleted, $test))
             ->then
                 ->castToString($field)->isEqualTo((string) $progressBar->refresh('U'))
             ->if($field->handleEvent(atoum\test::void, $test))

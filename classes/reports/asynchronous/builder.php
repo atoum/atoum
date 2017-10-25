@@ -54,13 +54,13 @@ class builder extends atoum\reports\asynchronous
 
         $this->addField($exceptionsField);
 
-        $uncompletedField = new runner\tests\uncompleted\cli();
-        $uncompletedField
+        $incompletedField = new runner\tests\incompleted\cli();
+        $incompletedField
             ->setMethodPrompt($secondLevelPrompt)
             ->setOutputPrompt($thirdLevelPrompt)
         ;
 
-        $this->addField($uncompletedField);
+        $this->addField($incompletedField);
 
         $this
             ->addField(new runner\tests\duration\cli())

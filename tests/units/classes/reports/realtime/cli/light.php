@@ -52,8 +52,8 @@ class light extends atoum\test
                     ->setMethodPrompt(new prompt('=> ', new colorizer('0;35')))
                     ->setExceptionPrompt(new prompt('==> ', new colorizer('0;35')))
             )
-            ->define($uncompletedTestField = new fields\runner\tests\uncompleted\cli())
-            ->define($uncompletedTestField
+            ->define($incompletedTestField = new fields\runner\tests\incompleted\cli())
+            ->define($incompletedTestField
                     ->setTitlePrompt(new prompt('> '))
                     ->setTitleColorizer(new colorizer('0;37'))
                     ->setMethodPrompt(new prompt('=> ', new colorizer('0;37')))
@@ -82,7 +82,7 @@ class light extends atoum\test
                         $outputsField,
                         $errorsField,
                         $exceptionsField,
-                        $uncompletedTestField,
+                        $incompletedTestField,
                         $voidTestField,
                         $skippedTestField
                     ]

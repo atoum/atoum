@@ -83,21 +83,21 @@ class light extends realtime
 
         $this->addField($exceptionsField);
 
-        $uncompletedTestColorizer = new colorizer('0;37');
-        $uncompletedTestMethodPrompt = clone $secondLevelPrompt;
-        $uncompletedTestMethodPrompt->setColorizer($uncompletedTestColorizer);
-        $uncompletedTestOutputPrompt = clone $thirdLevelPrompt;
-        $uncompletedTestOutputPrompt->setColorizer($uncompletedTestColorizer);
+        $incompletedTestColorizer = new colorizer('0;37');
+        $incompletedTestMethodPrompt = clone $secondLevelPrompt;
+        $incompletedTestMethodPrompt->setColorizer($incompletedTestColorizer);
+        $incompletedTestOutputPrompt = clone $thirdLevelPrompt;
+        $incompletedTestOutputPrompt->setColorizer($incompletedTestColorizer);
 
-        $uncompletedTestField = new runner\tests\uncompleted\cli();
-        $uncompletedTestField
+        $incompletedTestField = new runner\tests\incompleted\cli();
+        $incompletedTestField
             ->setTitlePrompt($firstLevelPrompt)
-            ->setTitleColorizer($uncompletedTestColorizer)
-            ->setMethodPrompt($uncompletedTestMethodPrompt)
-            ->setOutputPrompt($uncompletedTestOutputPrompt)
+            ->setTitleColorizer($incompletedTestColorizer)
+            ->setMethodPrompt($incompletedTestMethodPrompt)
+            ->setOutputPrompt($incompletedTestOutputPrompt)
         ;
 
-        $this->addField($uncompletedTestField);
+        $this->addField($incompletedTestField);
 
         $voidTestColorizer = new colorizer('0;34');
         $voidTestMethodPrompt = clone $secondLevelPrompt;

@@ -51,7 +51,7 @@ class cli extends report\fields\runner\event
                         $this->progressBar->refresh('X');
                         break;
 
-                    case test::uncompleted:
+                    case test::incompleted:
                         $this->progressBar->refresh('U');
                         break;
 
