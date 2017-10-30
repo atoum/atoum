@@ -99,6 +99,7 @@ class cli extends realtime
 
         $failureColorizer = new colorizer('0;31');
         $failurePrompt = clone $secondLevelPrompt;
+        $failurePrompt->setValue(PHP_EOL . '=> ');
         $failurePrompt->setColorizer($failureColorizer);
 
         $runnerFailuresField = new runner\failures\cli();
@@ -106,6 +107,7 @@ class cli extends realtime
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($failureColorizer)
             ->setMethodPrompt($failurePrompt)
+            ->setMethodColorizer($failureColorizer)
         ;
 
         $this->addField($runnerFailuresField);
@@ -121,6 +123,7 @@ class cli extends realtime
 
         $errorColorizer = new colorizer('0;33');
         $errorMethodPrompt = clone $secondLevelPrompt;
+        $errorMethodPrompt->setValue(PHP_EOL . '=> ');
         $errorMethodPrompt->setColorizer($errorColorizer);
         $errorPrompt = clone $thirdLevelPrompt;
         $errorPrompt->setColorizer($errorColorizer);
@@ -138,6 +141,7 @@ class cli extends realtime
         $exceptionColorizer = new colorizer('0;35');
         $exceptionMethodPrompt = clone $secondLevelPrompt;
         $exceptionMethodPrompt->setColorizer($exceptionColorizer);
+        $exceptionMethodPrompt->setValue(PHP_EOL . '=> ');
         $exceptionPrompt = clone $thirdLevelPrompt;
         $exceptionPrompt->setColorizer($exceptionColorizer);
 
@@ -146,6 +150,7 @@ class cli extends realtime
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($exceptionColorizer)
             ->setMethodPrompt($exceptionMethodPrompt)
+            ->setMethodColorizer(new colorizer('45'))
             ->setExceptionPrompt($exceptionPrompt)
         ;
 
