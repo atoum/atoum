@@ -11,6 +11,10 @@
 * [#585](https://github.com/atoum/atoum/pull/585) Memory usage is based on the peak & real allocations ([@hywan])
 * [#740](https://github.com/atoum/atoum/pull/740) String asserter now has `notMatches` assertion ([@fvilpoix])
 
+## Bugfix
+
+* [#773](https://github.com/atoum/atoum/pull/773) Directory is the current working directory ([@hywan])
+
 # 3.2.0 - 2017-09-07
 
 * [#739](https://github.com/atoum/atoum/pull/739) Avoid many memory allocations in error report field ([@hywan])
