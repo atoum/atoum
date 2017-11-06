@@ -122,7 +122,7 @@ abstract class call extends atoum\asserter
         return $this->adapter;
     }
 
-    public function before(call ...$calls)
+    public function before(self ...$calls)
     {
         $this->setTrace();
 
@@ -138,7 +138,7 @@ abstract class call extends atoum\asserter
         return $this->beforeCalls;
     }
 
-    public function after(call ...$calls)
+    public function after(self ...$calls)
     {
         $this->setTrace();
 
@@ -404,14 +404,14 @@ abstract class call extends atoum\asserter
         return $this;
     }
 
-    private function addBeforeCall(call $call)
+    private function addBeforeCall(self $call)
     {
         $this->beforeCalls[] = $call->disableEvaluationChecking();
 
         return $this;
     }
 
-    private function addAfterCall(call $call)
+    private function addAfterCall(self $call)
     {
         $this->afterCalls[] = $call->disableEvaluationChecking();
 

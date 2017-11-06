@@ -1,6 +1,6 @@
 <?php
 
-use \mageekguy\atoum;
+use mageekguy\atoum;
 
 $builder
     ->setWorkingDirectory('/path/to/working/directory')

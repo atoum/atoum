@@ -103,7 +103,7 @@ class report implements observer
         return $this;
     }
 
-    public function isOverridableBy(report $report)
+    public function isOverridableBy(self $report)
     {
         return $report !== $this;
     }

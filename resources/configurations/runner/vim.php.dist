@@ -4,7 +4,7 @@
 Sample atoum configuration file for using atoum with vim.
 */
 
-use \mageekguy\atoum;
+use mageekguy\atoum;
 
 /*
 Write all on stdout.

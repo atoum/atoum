@@ -34,7 +34,7 @@ class path
         return $this->directorySeparator;
     }
 
-    public function relativizeFrom(path $reference)
+    public function relativizeFrom(self $reference)
     {
         $this->resolve();
 
@@ -106,7 +106,7 @@ class path
         return $this;
     }
 
-    public function isSubPathOf(path $path)
+    public function isSubPathOf(self $path)
     {
         $this->resolve();
 
@@ -115,7 +115,7 @@ class path
         return ($this->components !== $resolvedPath->components && ($resolvedPath->isRoot() === true || strpos($this->components, $resolvedPath->components . '/') === 0));
     }
 
-    public function isNotSubPathOf(path $path)
+    public function isNotSubPathOf(self $path)
     {
         return ($this->isSubPathOf($path) === false);
     }
@@ -184,7 +184,7 @@ class path
         return $realParentDirectoryPath;
     }
 
-    public function getRelativePathFrom(path $reference)
+    public function getRelativePathFrom(self $reference)
     {
         $clone = clone $this;
 

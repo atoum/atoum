@@ -389,7 +389,7 @@ class score
         return $this;
     }
 
-    public function merge(score $score)
+    public function merge(self $score)
     {
         $this->passNumber += $score->getPassNumber();
         $this->failAssertions = array_merge($this->failAssertions, $score->failAssertions);

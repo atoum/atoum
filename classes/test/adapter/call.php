@@ -45,7 +45,7 @@ class call
         return $this;
     }
 
-    public function copy(call $call)
+    public function copy(self $call)
     {
         $this->function = $call->function;
         $this->arguments = $call->arguments;
@@ -85,7 +85,7 @@ class call
         return $this->decorator;
     }
 
-    public function isEqualTo(call $call)
+    public function isEqualTo(self $call)
     {
         switch (true) {
             case $this->function === null || strtolower($this->function) != strtolower($call->function):
@@ -112,7 +112,7 @@ class call
         }
     }
 
-    public function isIdenticalTo(call $call)
+    public function isIdenticalTo(self $call)
     {
         $isIdentical = $this->isEqualTo($call);
 
