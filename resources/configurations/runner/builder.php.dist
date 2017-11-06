@@ -4,7 +4,7 @@
 Sample atoum configuration file to use with builder.
 */
 
-use \mageekguy\atoum;
+use mageekguy\atoum;
 
 $mailer = new atoum\mailers\mail();
 $mailer

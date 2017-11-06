@@ -5,8 +5,8 @@ Sample atoum configuration file to publish code coverage report on coveralls.io.
 Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/runner.php -c path/to/this/file -f path/to/test/file" to use it.
 */
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\reports;
+use mageekguy\atoum;
+use mageekguy\atoum\reports;
 
 /*
 This will ad the default CLI report

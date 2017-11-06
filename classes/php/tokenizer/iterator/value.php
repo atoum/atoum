@@ -8,7 +8,7 @@ abstract class value implements \iterator, \countable
 {
     protected $parent = null;
 
-    public function setParent(value $parent)
+    public function setParent(self $parent)
     {
         if ($this->parent !== null) {
             throw new exceptions\runtime('Parent is already set');
@@ -42,7 +42,7 @@ abstract class value implements \iterator, \countable
     abstract public function __toString();
     abstract public function prev();
     abstract public function end();
-    abstract public function append(value $value);
+    abstract public function append(self $value);
     abstract public function getValue();
     abstract public function seek($key);
 }
