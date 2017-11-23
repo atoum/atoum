@@ -51,6 +51,7 @@ class file extends atoum\test
             ->and($adapter->fopen = $resource = uniqid())
             ->and($adapter->flock = true)
             ->and($adapter->ftruncate = true)
+            ->and($adapter->rewind = true)
             ->and($adapter->fwrite = function ($resource, $data) {
                 return strlen($data);
             })
@@ -83,6 +84,7 @@ class file extends atoum\test
             ->and($adapter->fopen = $resource = uniqid())
             ->and($adapter->flock = true)
             ->and($adapter->ftruncate = true)
+            ->and($adapter->rewind = true)
             ->and($adapter->fflush = function () {
             })
             ->and($adapter->fclose = function () {
@@ -137,6 +139,7 @@ class file extends atoum\test
             ->if($file = new testedClass(null, $adapter))
             ->and($adapter->flock = true)
             ->and($adapter->ftruncate = true)
+            ->and($adapter->rewind = true)
             ->and($adapter->fclose = function () {
             })
             ->and($adapter->fwrite = false)
@@ -203,6 +206,7 @@ class file extends atoum\test
                     ->call('fopen')->withArguments($file->getFilename(), 'c')->once()
                     ->call('flock')->withArguments($resource, LOCK_EX)->once()
             ->if($adapter->ftruncate = true)
+            ->and($adapter->rewind = true)
             ->then
                 ->object($file->clear())->isIdenticalTo($file)
                 ->adapter($adapter)
@@ -210,6 +214,27 @@ class file extends atoum\test
                     ->call('ftruncate')->withArguments($resource, 0)
                         ->after($this->adapter($adapter)->call('flock')->withArguments($resource, LOCK_EX))
                             ->twice()
+                    ->call('rewind')->withArguments($resource)->once()
+        ;
+    }
+
+    public function testRewindWhenClearing()
+    {
+        $this
+            ->if($uri = stream_get_meta_data(tmpfile())['uri'])
+            ->and($file = new testedClass($uri))
+            ->and($file->write('foobar'))
+            ->then
+                ->integer(strlen(file_get_contents($uri)))
+                    ->isEqualTo(6)
+            ->and($file->clear())
+            ->then
+                ->integer(strlen(file_get_contents($uri)))
+                    ->isZero()
+            ->and($file->write('foobar'))
+            ->then
+                ->integer(strlen(file_get_contents($uri)))
+                    ->isEqualTo(6)
         ;
     }
 }
