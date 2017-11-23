@@ -10,6 +10,7 @@
 
 ## Bugfix
 
+* [#781](https://github.com/atoum/atoum/pull/781) The `file` writer rewinds the internal pointer of the resource when clearing ([@hywan])
 * [#756](https://github.com/atoum/atoum/pull/756) Configuration, autoloader and bootstrap files are correctly loaded when using the PHAR ([@jubianchi])
 * [#755](https://github.com/atoum/atoum/pull/755) String asserter's failure messages are clear ([@jubianchi])
 * [#773](https://github.com/atoum/atoum/pull/773) Directory is the current working directory ([@hywan])
