@@ -19,7 +19,11 @@ class output extends phpString
     {
         if ($value instanceof \closure) {
             ob_start();
-            $value($this->getTest());
+            if (version_compare(PHP_VERSION, '7.0.0') >= 0) {
+                $value($this->getTest());
+            } else {
+                $value();
+            }
             $value = ob_get_clean();
         } elseif ($value === null && ob_get_level() > 0) {
             $value = ob_get_clean();
