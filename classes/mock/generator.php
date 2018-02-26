@@ -193,6 +193,7 @@ class generator
             $code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : $this->generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);
         }
 
+        $this->allIsInterface = false;
         $this->shuntedMethods = $this->overloadedMethods = $this->orphanizedMethods = [];
 
         $this->unshuntParentClassCalls();
