@@ -693,8 +693,6 @@ class runner extends atoum\script\configurable
 
                             if ($errorReporting !== 0 && $errorReporting & $error) {
                                 $autorunner->writeError($message . ' in ' . $file . ' at line ' . $line, $error);
-
-                                exit(3);
                             }
                         });
 
