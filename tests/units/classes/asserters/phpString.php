@@ -41,10 +41,7 @@ class phpString extends atoum\test
     public function test__toString()
     {
         $this
-            ->given($this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-            )
-
+            ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
             ->if(
                 $this->testedInstance->setWith($value = uniqid()),
                 $this->calling($locale)->_ = $string = uniqid()
@@ -63,11 +60,11 @@ class phpString extends atoum\test
     public function testSetWith()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
-
             ->if(
                 $this->calling($locale)->_ = $notString = uniqid(),
                 $this->calling($analyzer)->isString = false,

@@ -49,9 +49,10 @@ class generator extends atoum\test
 
         $this
             ->assert('Use all yields then return')
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
             ->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
@@ -98,9 +99,10 @@ PHP
 
         $this
             ->assert('Use all yields then return')
-                ->given($asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                ->given(
+                    $asserter = $this->newTestedInstance
+                        ->setLocale($locale = new \mock\atoum\locale())
+                        ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
                 )
                 ->then
                 ->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
@@ -124,9 +126,10 @@ PHP
                     ->integer($proxyfiedAsserter->getValue())->isEqualTo(42)
 
             ->assert('Use return before all yields')
-                ->given($asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                ->given(
+                    $asserter = $this->newTestedInstance
+                        ->setLocale($locale = new \mock\atoum\locale())
+                        ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
                 )
                 ->then
                     ->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
@@ -154,9 +157,10 @@ PHP
         };
 
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
@@ -189,9 +193,10 @@ PHP
         };
 
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->object($asserter->setWith($generator()))->isIdenticalTo($asserter)

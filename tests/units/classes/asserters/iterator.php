@@ -39,9 +39,10 @@ class iterator extends atoum\test
     public function testSetWith()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
 
             ->if(
@@ -72,9 +73,10 @@ class iterator extends atoum\test
     public function testHasSize()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -113,9 +115,10 @@ class iterator extends atoum\test
     public function testIsEmpty()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -158,9 +161,10 @@ class iterator extends atoum\test
     public function testIsNotEmpty()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -227,11 +231,12 @@ class iterator extends atoum\test
     public function testIsEqualTo()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                ->setGenerator($generator = new \mock\atoum\asserter\generator())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -269,10 +274,11 @@ class iterator extends atoum\test
     public function testIsNotEqualTo()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                ->setGenerator($generator = new \mock\atoum\asserter\generator())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -315,11 +321,12 @@ class iterator extends atoum\test
     public function testIsIdenticalTo()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                ->setGenerator($generator = new \mock\atoum\asserter\generator())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -351,10 +358,11 @@ class iterator extends atoum\test
     public function testIsNotIdenticalTo()
     {
         $this
-            ->given($asserter = $this->newTestedInstance
-                ->setLocale($locale = new \mock\atoum\locale())
-                ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                ->setGenerator($generator = new \mock\atoum\asserter\generator())
+            ->given(
+                $asserter = $this->newTestedInstance
+                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {

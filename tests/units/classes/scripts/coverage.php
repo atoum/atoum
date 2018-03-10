@@ -31,7 +31,8 @@ class coverage extends atoum\test
                 ->variable($this->testedInstance->getScoreFile())->isNull()
                 ->array($this->testedInstance->getReports())->isEmpty()
                 ->array($this->testedInstance->getArguments())->isEmpty()
-                ->array($this->testedInstance->getHelp())->isEqualTo([
+                ->array($this->testedInstance->getHelp())->isEqualTo(
+                    [
                         [
                             ['-h', '--help'],
                             null,
@@ -224,7 +225,8 @@ class coverage extends atoum\test
                 ->object($this->testedInstance->getRunner())->isInstanceOf(atoum\runner::class)
                 ->variable($this->testedInstance->getScoreFile())->isNull()
                 ->array($this->testedInstance->getArguments())->isEmpty()
-                ->array($this->testedInstance->getHelp())->isEqualTo([
+                ->array($this->testedInstance->getHelp())->isEqualTo(
+                    [
                         [
                             ['-h', '--help'],
                             null,

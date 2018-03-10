@@ -128,7 +128,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
     {
         $innerCalls = $this->getCalls($call);
 
-        if ($call->getArguments() !== null) {
+        if ($call->getArguments() !== null || $call->getVerify() !== null) {
             $innerCalls = array_filter($innerCalls, function ($innerCall) use ($call) {
                 return $call->isEqualTo($innerCall);
             });

@@ -410,23 +410,25 @@ abstract class test implements observable, \countable
                 $this->getMockGenerator()->generate($this->getTestedClassName(), $mockNamespace, $mockClass);
                 return $this;
             })
-            ->setHandler('newMockInstance', function ($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = null) {
-                $mockNamespace = trim($mockNamespace ?: $this->getMockGenerator()->getDefaultNamespace(), '\\');
-                $mockClass = trim($mockClass ?: $class, '\\');
-                $className = $mockNamespace . '\\' . $mockClass;
+            ->setHandler(
+                'newMockInstance',
+                function ($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = null) {
+                    $mockNamespace = trim($mockNamespace ?: $this->getMockGenerator()->getDefaultNamespace(), '\\');
+                    $mockClass = trim($mockClass ?: $class, '\\');
+                    $className = $mockNamespace . '\\' . $mockClass;
 
-                if (class_exists($className) === false) {
-                    $this->mockClass($class, $mockNamespace, $mockClass);
+                    if (class_exists($className) === false) {
+                        $this->mockClass($class, $mockNamespace, $mockClass);
+                    }
+
+                    if ($constructorArguments !== null) {
+                        $reflectionClass = new \reflectionClass($className);
+
+                        return $reflectionClass->newInstanceArgs($constructorArguments);
+                    }
+
+                    return new $className();
                 }
-
-                if ($constructorArguments !== null) {
-                    $reflectionClass = new \reflectionClass($className);
-
-                    return $reflectionClass->newInstanceArgs($constructorArguments);
-                }
-
-                return new $className();
-            }
             )
             ->setHandler('dump', function (...$arguments) {
                 if ($this->debugModeIsEnabled() === true) {
@@ -487,9 +489,7 @@ abstract class test implements observable, \countable
             ->setHandler('if', $returnTest)
             ->setHandler('and', $returnTest)
             ->setHandler('then', $returnTest)
-            ->setHandler('given', function () use ($returnTest) {
-                return $returnTest();
-            })
+            ->setHandler('given', $returnTest)
             ->setMethodHandler('define', $returnTest)
             ->setMethodHandler('let', $returnTest)
         ;
@@ -542,19 +542,20 @@ abstract class test implements observable, \countable
 
         $asserterGenerator = $this->asserterGenerator;
 
-        $this->assertionManager->setDefaultHandler(function ($keyword, $arguments) use ($asserterGenerator, $assertionAliaser, & $lastAsserter) {
-            static $lastAsserter = null;
+        $this->assertionManager->setDefaultHandler(
+            function ($keyword, $arguments) use ($asserterGenerator, $assertionAliaser, & $lastAsserter) {
+                static $lastAsserter = null;
 
-            if ($lastAsserter !== null) {
-                $realKeyword = $assertionAliaser->resolveAlias($keyword, get_class($lastAsserter));
+                if ($lastAsserter !== null) {
+                    $realKeyword = $assertionAliaser->resolveAlias($keyword, get_class($lastAsserter));
 
-                if ($realKeyword !== $keyword) {
-                    return call_user_func_array([$lastAsserter, $realKeyword], $arguments);
+                    if ($realKeyword !== $keyword) {
+                        return call_user_func_array([$lastAsserter, $realKeyword], $arguments);
+                    }
                 }
-            }
 
-            return ($lastAsserter = $asserterGenerator->getAsserterInstance($keyword, $arguments));
-        }
+                return ($lastAsserter = $asserterGenerator->getAsserterInstance($keyword, $arguments));
+            }
         );
 
         $this->assertionManager
@@ -1314,26 +1315,34 @@ abstract class test implements observable, \countable
                     }
 
                     $this->factoryBuilder->build($testedClass, $instance)
-                        ->addToAssertionManager($this->assertionManager, 'newTestedInstance', function () use ($testedClass) {
-                            throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
-                        }
+                        ->addToAssertionManager(
+                            $this->assertionManager,
+                            'newTestedInstance',
+                            function () use ($testedClass) {
+                                throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
+                            }
                         )
                     ;
 
                     $this->factoryBuilder->build($testedClass)
-                        ->addToAssertionManager($this->assertionManager, 'newInstance', function () use ($testedClass) {
-                            throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
-                        }
+                        ->addToAssertionManager(
+                            $this->assertionManager,
+                            'newInstance',
+                            function () use ($testedClass) {
+                                throw new exceptions\runtime('Tested class ' . $testedClass->getName() . ' has no constructor or its constructor has at least one mandatory argument');
+                            }
                         )
                     ;
 
-                    $this->assertionManager->setPropertyHandler('testedInstance', function () use (& $instance) {
-                        if ($instance === null) {
-                            throw new exceptions\runtime('Use $this->newTestedInstance before using $this->testedInstance');
-                        }
+                    $this->assertionManager->setPropertyHandler(
+                        'testedInstance',
+                        function () use (& $instance) {
+                            if ($instance === null) {
+                                throw new exceptions\runtime('Use $this->newTestedInstance before using $this->testedInstance');
+                            }
 
-                        return $instance;
-                    }
+                            return $instance;
+                        }
                     );
 
                     if ($this->codeCoverageIsEnabled() === true) {
@@ -1657,18 +1666,20 @@ abstract class test implements observable, \countable
             ->setHandler('hasNotVoidMethods', function ($value) {
                 $this->classHasNotVoidMethods();
             })
-            ->setHandler('php', function ($value) {
-                $value = annotations\extractor::toArray($value);
+            ->setHandler(
+                'php',
+                function ($value) {
+                    $value = annotations\extractor::toArray($value);
 
-                if (isset($value[0]) === true) {
-                    $operator = null;
+                    if (isset($value[0]) === true) {
+                        $operator = null;
 
-                    if (isset($value[1]) === false) {
-                        $version = $value[0];
-                    } else {
-                        $version = $value[1];
+                        if (isset($value[1]) === false) {
+                            $version = $value[0];
+                        } else {
+                            $version = $value[1];
 
-                        switch ($value[0]) {
+                            switch ($value[0]) {
                                 case '<':
                                 case '<=':
                                 case '=':
@@ -1677,16 +1688,20 @@ abstract class test implements observable, \countable
                                 case '>':
                                     $operator = $value[0];
                             }
-                    }
+                        }
 
-                    $this->addClassPhpVersion($version, $operator);
+                        $this->addClassPhpVersion($version, $operator);
+                    }
                 }
-            })
-            ->setHandler('extensions', function ($value) {
-                foreach (annotations\extractor::toArray($value) as $mandatoryExtension) {
-                    $this->addMandatoryClassExtension($mandatoryExtension);
+            )
+            ->setHandler(
+                'extensions',
+                function ($value) {
+                    foreach (annotations\extractor::toArray($value) as $mandatoryExtension) {
+                        $this->addMandatoryClassExtension($mandatoryExtension);
+                    }
                 }
-            })
+            )
             ->setHandler('os', function ($value) {
                 foreach (annotations\extractor::toArray($value) as $supportedOs) {
                     $this->addClassSupportedOs($supportedOs);
@@ -1719,18 +1734,20 @@ abstract class test implements observable, \countable
             ->setHandler('isNotVoid', function ($value) use (& $methodName) {
                 $this->setMethodNotVoid($methodName);
             })
-            ->setHandler('php', function ($value) use (& $methodName) {
-                $value = annotations\extractor::toArray($value);
+            ->setHandler(
+                'php',
+                function ($value) use (& $methodName) {
+                    $value = annotations\extractor::toArray($value);
 
-                if (isset($value[0]) === true) {
-                    $operator = null;
+                    if (isset($value[0]) === true) {
+                        $operator = null;
 
-                    if (isset($value[1]) === false) {
-                        $version = $value[0];
-                    } else {
-                        $version = $value[1];
+                        if (isset($value[1]) === false) {
+                            $version = $value[0];
+                        } else {
+                            $version = $value[1];
 
-                        switch ($value[0]) {
+                            switch ($value[0]) {
                                 case '<':
                                 case '<=':
                                 case '=':
@@ -1739,16 +1756,20 @@ abstract class test implements observable, \countable
                                 case '>':
                                     $operator = $value[0];
                             }
-                    }
+                        }
 
-                    $this->addMethodPhpVersion($methodName, $version, $operator);
+                        $this->addMethodPhpVersion($methodName, $version, $operator);
+                    }
                 }
-            })
-            ->setHandler('extensions', function ($value) use (& $methodName) {
-                foreach (annotations\extractor::toArray($value) as $mandatoryExtension) {
-                    $this->addMandatoryMethodExtension($methodName, $mandatoryExtension);
+            )
+            ->setHandler(
+                'extensions',
+                function ($value) use (& $methodName) {
+                    foreach (annotations\extractor::toArray($value) as $mandatoryExtension) {
+                        $this->addMandatoryMethodExtension($methodName, $mandatoryExtension);
+                    }
                 }
-            })
+            )
             ->setHandler('os', function ($value) use (& $methodName) {
                 foreach (annotations\extractor::toArray($value) as $supportedOs) {
                     $this->addMethodSupportedOs($methodName, $supportedOs);

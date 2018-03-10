@@ -148,23 +148,24 @@ class cli extends atoum\test
             ->if($field->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($field)->isEmpty()
-            ->if($score->getMockController()->getExceptions = $exceptions = [
-                        [
-                            'class' => $class = uniqid(),
-                            'method' => $method = uniqid(),
-                            'file' => $file = uniqid(),
-                            'line' => $line = uniqid(),
-                            'value' => $value = uniqid()
-                        ],
-                        [
-                            'class' => $otherClass = uniqid(),
-                            'method' => $otherMethod = uniqid(),
-                            'file' => $otherFile = uniqid(),
-                            'line' => $otherLine = uniqid(),
-                            'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
-                        ],
-                    ]
-                )
+            ->if(
+                $score->getMockController()->getExceptions = $exceptions = [
+                    [
+                        'class' => $class = uniqid(),
+                        'method' => $method = uniqid(),
+                        'file' => $file = uniqid(),
+                        'line' => $line = uniqid(),
+                        'value' => $value = uniqid()
+                    ],
+                    [
+                        'class' => $otherClass = uniqid(),
+                        'method' => $otherMethod = uniqid(),
+                        'file' => $otherFile = uniqid(),
+                        'line' => $otherLine = uniqid(),
+                        'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
+                    ],
+                ]
+            )
             ->and($field = new runner\exceptions\cli())
             ->then
                 ->castToString($field)->isEmpty()
@@ -173,7 +174,8 @@ class cli extends atoum\test
                 ->castToString($field)->isEmpty()
             ->if($field->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($field)->isEqualTo(sprintf('There are %d exceptions:', sizeof($exceptions)) . PHP_EOL .
+                ->castToString($field)->isEqualTo(
+                    sprintf('There are %d exceptions:', sizeof($exceptions)) . PHP_EOL .
                     $class . '::' . $method . '():' . PHP_EOL .
                     sprintf('An exception has been thrown in file %s on line %d:', $file, $line) . PHP_EOL .
                     $value . PHP_EOL .

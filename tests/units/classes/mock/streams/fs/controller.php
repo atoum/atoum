@@ -21,7 +21,8 @@ class controller extends atoum\test
             ->then
                 ->integer($controller->getPermissions())->isZero()
                 ->object($controller->getAdapter())->isEqualTo(new atoum\adapter())
-                ->array($controller->getStat())->isEqualTo([
+                ->array($controller->getStat())->isEqualTo(
+                    [
                         'dev' => 0,
                         'ino' => 0,
                         'mode' => 0,

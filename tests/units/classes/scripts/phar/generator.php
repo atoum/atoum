@@ -323,7 +323,8 @@ class generator extends atoum\test
                 ->mock($phar)
                     ->call('__construct')->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null)->once()
                     ->call('setMetadata')
-                        ->withArguments([
+                        ->withArguments(
+                            [
                                 'version' => atoum\version,
                                 'author' => atoum\author,
                                 'support' => atoum\mail,

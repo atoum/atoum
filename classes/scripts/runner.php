@@ -685,38 +685,40 @@ class runner extends atoum\script\configurable
             $autorunner = & static::$autorunner;
             $calledClass = get_called_class();
 
-            register_shutdown_function(function () use (& $autorunner, $calledClass) {
-                if ($autorunner instanceof $calledClass) {
-                    set_error_handler(function ($error, $message, $file, $line) use ($autorunner) {
-                        $errorReporting = error_reporting();
+            register_shutdown_function(
+                function () use (& $autorunner, $calledClass) {
+                    if ($autorunner instanceof $calledClass) {
+                        set_error_handler(function ($error, $message, $file, $line) use ($autorunner) {
+                            $errorReporting = error_reporting();
 
-                        if ($errorReporting !== 0 && $errorReporting & $error) {
-                            $autorunner->writeError($message . ' in ' . $file . ' at line ' . $line, $error);
+                            if ($errorReporting !== 0 && $errorReporting & $error) {
+                                $autorunner->writeError($message . ' in ' . $file . ' at line ' . $line, $error);
 
-                            exit(3);
+                                exit(3);
+                            }
+                        });
+
+                        try {
+                            $score = $autorunner->run()->getRunner()->getScore();
+                            $isSuccess = $score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 && $score->getUncompletedMethodNumber() <= 0;
+
+                            if ($autorunner->shouldFailIfVoidMethods() && $score->getVoidMethodNumber() > 0) {
+                                $isSuccess = false;
+                            }
+
+                            if ($autorunner->shouldFailIfSkippedMethods() && $score->getSkippedMethodNumber() > 0) {
+                                $isSuccess = false;
+                            }
+
+                            exit($isSuccess ? 0 : 1);
+                        } catch (\exception $exception) {
+                            $autorunner->writeError($exception->getMessage());
+
+                            exit(2);
                         }
-                    });
-
-                    try {
-                        $score = $autorunner->run()->getRunner()->getScore();
-                        $isSuccess = $score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 && $score->getUncompletedMethodNumber() <= 0;
-
-                        if ($autorunner->shouldFailIfVoidMethods() && $score->getVoidMethodNumber() > 0) {
-                            $isSuccess = false;
-                        }
-
-                        if ($autorunner->shouldFailIfSkippedMethods() && $score->getSkippedMethodNumber() > 0) {
-                            $isSuccess = false;
-                        }
-
-                        exit($isSuccess ? 0 : 1);
-                    } catch (\exception $exception) {
-                        $autorunner->writeError($exception->getMessage());
-
-                        exit(2);
                     }
                 }
-            });
+            );
 
             $autorunIsRegistered = true;
         }
@@ -1187,15 +1189,16 @@ class runner extends atoum\script\configurable
                 )
         ;
 
-        $this->setDefaultArgumentHandler(function ($script, $argument) {
-            try {
-                $script->getRunner()->addTest($argument);
-            } catch (\exception $exception) {
-                return false;
-            }
+        $this->setDefaultArgumentHandler(
+            function ($script, $argument) {
+                try {
+                    $script->getRunner()->addTest($argument);
+                } catch (\exception $exception) {
+                    return false;
+                }
 
-            return true;
-        }
+                return true;
+            }
         );
 
         return $this;

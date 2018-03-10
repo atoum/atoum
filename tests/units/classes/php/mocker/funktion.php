@@ -128,7 +128,7 @@ class funktion extends atoum\test
                     $mocker->generate(__NAMESPACE__ . '\doesSomething');
                 })
                     ->isInstanceof(atoum\test\exceptions\runtime::class)
-                    ->hasMessage('The function you are trying to mock already exists: \'doesSomething\'. This may be because a function with the same name already exists in the namespace \''.__NAMESPACE__.'\'.')
+                    ->hasMessage('The function you are trying to mock already exists: \'doesSomething\'. This may be because a function with the same name already exists in the namespace \'' . __NAMESPACE__ . '\'.')
                 ->exception(function () use ($mocker) {
                     $mocker->generate('version_compare');
                 })

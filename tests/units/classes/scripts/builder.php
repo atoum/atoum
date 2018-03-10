@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\tests\units\scripts;
 
 use mageekguy\atoum;
-use mageekguy\atoum\mock;
 use mageekguy\atoum\scripts;
 use mageekguy\atoum\scripts\builder as testedClass;
 

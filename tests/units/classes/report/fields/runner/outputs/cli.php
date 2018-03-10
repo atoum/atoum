@@ -160,19 +160,20 @@ class cli extends atoum\test
             ->then
                 ->castToString($defaultField)->isEmpty()
                 ->castToString($customField)->isEmpty()
-            ->if($score->getMockController()->getOutputs = $fields = [
-                        [
-                            'class' => $class = uniqid(),
-                            'method' => $method = uniqid(),
-                            'value' => $value = uniqid()
-                        ],
-                        [
-                            'class' => $otherClass = uniqid(),
-                            'method' => $otherMethod = uniqid(),
-                            'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
-                        ]
+            ->if(
+                $score->getMockController()->getOutputs = $fields = [
+                    [
+                        'class' => $class = uniqid(),
+                        'method' => $method = uniqid(),
+                        'value' => $value = uniqid()
+                    ],
+                    [
+                        'class' => $otherClass = uniqid(),
+                        'method' => $otherMethod = uniqid(),
+                        'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
                     ]
-                )
+                ]
+            )
             ->and($defaultField = new outputs\cli())
             ->and($customField = new outputs\cli())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
@@ -193,7 +194,8 @@ class cli extends atoum\test
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($defaultField)->isEqualTo(sprintf('There are %d outputs:', sizeof($fields)) . PHP_EOL .
+                ->castToString($defaultField)->isEqualTo(
+                    sprintf('There are %d outputs:', sizeof($fields)) . PHP_EOL .
                         'In ' . $class . '::' . $method . '():' . PHP_EOL .
                         $value . PHP_EOL .
                         'In ' . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
@@ -201,42 +203,43 @@ class cli extends atoum\test
                         $secondOtherValue . PHP_EOL
                     )
                 ->castToString($customField)->isEqualTo(
-                        $titlePrompt .
-                        sprintf(
-                            $locale->_('%s:'),
-                            $titleColorizer->colorize(sprintf($locale->__('There is %d output', 'There are %d outputs', sizeof($fields)), sizeof($fields)))
-                        ) .
-                        PHP_EOL .
-                        $methodPrompt .
-                        sprintf(
-                            $locale->_('%s:'),
-                            $methodColorizer->colorize('In ' . $class . '::' . $method . '()')
-                        ) .
-                        PHP_EOL .
-                        $outputPrompt .
-                        $outputColorizer->colorize($value) . PHP_EOL .
-                        $methodPrompt .
-                        sprintf(
-                            $locale->_('%s:'),
-                            $methodColorizer->colorize('In ' . $otherClass . '::' . $otherMethod . '()')
-                        ) .
-                        PHP_EOL .
-                        $outputPrompt . $outputColorizer->colorize($firstOtherValue) . PHP_EOL .
-                        $outputPrompt . $outputColorizer->colorize($secondOtherValue) . PHP_EOL
-                    )
-            ->if($score->getMockController()->getOutputs = $fields = [
-                        [
-                            'class' => $class = uniqid(),
-                            'method' => $method = uniqid(),
-                            'value' => $value = uniqid()
-                        ],
-                        [
-                            'class' => $otherClass = uniqid(),
-                            'method' => $otherMethod = uniqid(),
-                            'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
-                        ]
-                    ]
+                    $titlePrompt .
+                    sprintf(
+                        $locale->_('%s:'),
+                        $titleColorizer->colorize(sprintf($locale->__('There is %d output', 'There are %d outputs', sizeof($fields)), sizeof($fields)))
+                    ) .
+                    PHP_EOL .
+                    $methodPrompt .
+                    sprintf(
+                        $locale->_('%s:'),
+                        $methodColorizer->colorize('In ' . $class . '::' . $method . '()')
+                    ) .
+                    PHP_EOL .
+                    $outputPrompt .
+                    $outputColorizer->colorize($value) . PHP_EOL .
+                    $methodPrompt .
+                    sprintf(
+                        $locale->_('%s:'),
+                        $methodColorizer->colorize('In ' . $otherClass . '::' . $otherMethod . '()')
+                    ) .
+                    PHP_EOL .
+                    $outputPrompt . $outputColorizer->colorize($firstOtherValue) . PHP_EOL .
+                    $outputPrompt . $outputColorizer->colorize($secondOtherValue) . PHP_EOL
                 )
+            ->if(
+                $score->getMockController()->getOutputs = $fields = [
+                    [
+                        'class' => $class = uniqid(),
+                        'method' => $method = uniqid(),
+                        'value' => $value = uniqid()
+                    ],
+                    [
+                        'class' => $otherClass = uniqid(),
+                        'method' => $otherMethod = uniqid(),
+                        'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
+                    ]
+                ]
+            )
             ->and($defaultField = new outputs\cli())
             ->and($customField = new outputs\cli())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
@@ -256,38 +259,39 @@ class cli extends atoum\test
                 ->castToString($customField)->isEmpty()
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
-                ->castToString($defaultField)->isEqualTo(sprintf('There are %d outputs:', sizeof($fields)) . PHP_EOL .
+                ->castToString($defaultField)->isEqualTo(
+                    sprintf('There are %d outputs:', sizeof($fields)) . PHP_EOL .
                         'In ' . $class . '::' . $method . '():' . PHP_EOL .
                         $value . PHP_EOL .
                         'In ' . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
                         $firstOtherValue . PHP_EOL .
                         $secondOtherValue . PHP_EOL
-                    )
+                )
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $titlePrompt .
-                        sprintf(
-                            $locale->_('%s:'),
-                            $titleColorizer->colorize(sprintf($locale->__('There is %d output', 'There are %d outputs', sizeof($fields)), sizeof($fields)))
-                        ) .
-                        PHP_EOL .
-                        $methodPrompt .
-                        sprintf(
-                            $locale->_('%s:'),
-                            $methodColorizer->colorize('In ' . $class . '::' . $method . '()')
-                        ) .
-                        PHP_EOL .
-                        $outputPrompt .
-                        $outputColorizer->colorize($value) . PHP_EOL .
-                        $methodPrompt .
-                        sprintf(
-                            $locale->_('%s:'),
-                            $methodColorizer->colorize('In ' . $otherClass . '::' . $otherMethod . '()')
-                        ) .
-                        PHP_EOL .
-                        $outputPrompt . $outputColorizer->colorize($firstOtherValue) . PHP_EOL .
-                        $outputPrompt . $outputColorizer->colorize($secondOtherValue) . PHP_EOL
-                    )
+                    $titlePrompt .
+                    sprintf(
+                        $locale->_('%s:'),
+                        $titleColorizer->colorize(sprintf($locale->__('There is %d output', 'There are %d outputs', sizeof($fields)), sizeof($fields)))
+                    ) .
+                    PHP_EOL .
+                    $methodPrompt .
+                    sprintf(
+                        $locale->_('%s:'),
+                        $methodColorizer->colorize('In ' . $class . '::' . $method . '()')
+                    ) .
+                    PHP_EOL .
+                    $outputPrompt .
+                    $outputColorizer->colorize($value) . PHP_EOL .
+                    $methodPrompt .
+                    sprintf(
+                        $locale->_('%s:'),
+                        $methodColorizer->colorize('In ' . $otherClass . '::' . $otherMethod . '()')
+                    ) .
+                    PHP_EOL .
+                    $outputPrompt . $outputColorizer->colorize($firstOtherValue) . PHP_EOL .
+                    $outputPrompt . $outputColorizer->colorize($secondOtherValue) . PHP_EOL
+                )
         ;
     }
 }

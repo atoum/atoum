@@ -75,8 +75,10 @@ class parser implements \iteratorAggregate
 
         $values = $this->values;
 
-        uksort($values, function ($arg1, $arg2) use ($priorities) {
-            switch (true) {
+        uksort(
+            $values,
+            function ($arg1, $arg2) use ($priorities) {
+                switch (true) {
                     case isset($priorities[$arg1]) === false && isset($priorities[$arg2]) === false:
                         return 0;
                     case isset($priorities[$arg1]) === false && isset($priorities[$arg2]) === true:
@@ -87,7 +89,7 @@ class parser implements \iteratorAggregate
                     default:
                         return ($priorities[$arg1] > $priorities[$arg2] ? -1 : ($priorities[$arg1] == $priorities[$arg2] ? 0 : 1));
                 }
-        }
+            }
         );
 
         foreach ($values as $argument => $value) {

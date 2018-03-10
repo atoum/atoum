@@ -471,15 +471,17 @@ class score
 
     private static function sort(array $array)
     {
-        usort($array, function ($a, $b) {
-            if ($a['file'] !== $b['file']) {
-                return strcmp($a['file'], $b['file']);
-            } elseif ($a['line'] === $b['line']) {
-                return 0;
-            } else {
-                return ($a['line'] < $b['line'] ? -1 : 1);
+        usort(
+            $array,
+            function ($a, $b) {
+                if ($a['file'] !== $b['file']) {
+                    return strcmp($a['file'], $b['file']);
+                } elseif ($a['line'] === $b['line']) {
+                    return 0;
+                } else {
+                    return ($a['line'] < $b['line'] ? -1 : 1);
+                }
             }
-        }
         );
 
         return $array;

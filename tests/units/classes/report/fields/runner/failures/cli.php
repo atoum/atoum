@@ -127,29 +127,30 @@ class cli extends atoum\test
             ->then
                 ->castToString($defaultField)->isEmpty()
                 ->castToString($customField)->isEmpty()
-            ->if($score->getMockController()->getFailAssertions = $fails = [
-                        [
-                            'case' => null,
-                            'dataSetKey' => null,
-                            'class' => $class = uniqid(),
-                            'method' => $method = uniqid(),
-                            'file' => $file = uniqid(),
-                            'line' => $line = uniqid(),
-                            'asserter' => $asserter = uniqid(),
-                            'fail' => $fail = uniqid()
-                        ],
-                        [
-                            'case' => null,
-                            'dataSetKey' => null,
-                            'class' => $otherClass = uniqid(),
-                            'method' => $otherMethod = uniqid(),
-                            'file' => $otherFile = uniqid(),
-                            'line' => $otherLine = uniqid(),
-                            'asserter' => $otherAsserter = uniqid(),
-                            'fail' => $otherFail = uniqid()
-                        ]
+            ->if(
+                $score->getMockController()->getFailAssertions = $fails = [
+                    [
+                        'case' => null,
+                        'dataSetKey' => null,
+                        'class' => $class = uniqid(),
+                        'method' => $method = uniqid(),
+                        'file' => $file = uniqid(),
+                        'line' => $line = uniqid(),
+                        'asserter' => $asserter = uniqid(),
+                        'fail' => $fail = uniqid()
+                    ],
+                    [
+                        'case' => null,
+                        'dataSetKey' => null,
+                        'class' => $otherClass = uniqid(),
+                        'method' => $otherMethod = uniqid(),
+                        'file' => $otherFile = uniqid(),
+                        'line' => $otherLine = uniqid(),
+                        'asserter' => $otherAsserter = uniqid(),
+                        'fail' => $otherFail = uniqid()
                     ]
-                )
+                ]
+            )
             ->and($defaultField = new runner\failures\cli())
             ->and($customField = new runner\failures\cli())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
@@ -163,7 +164,8 @@ class cli extends atoum\test
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+                ->castToString($defaultField)->isEqualTo(
+                    sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
                     $class . '::' . $method . '():' . PHP_EOL .
                     sprintf('In file %s on line %d, %s failed: %s', $file, $line, $asserter, $fail) . PHP_EOL .
                     $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
@@ -193,29 +195,30 @@ class cli extends atoum\test
                     sprintf($locale->_('In file %s on line %d, %s failed: %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) .
                     PHP_EOL
                 )
-            ->if($score->getMockController()->getFailAssertions = $fails = [
-                        [
-                            'case' => $case =  uniqid(),
-                            'dataSetKey' => null,
-                            'class' => $class = uniqid(),
-                            'method' => $method = uniqid(),
-                            'file' => $file = uniqid(),
-                            'line' => $line = uniqid(),
-                            'asserter' => $asserter = uniqid(),
-                            'fail' => $fail = uniqid()
-                        ],
-                        [
-                            'case' => $otherCase =  uniqid(),
-                            'dataSetKey' => null,
-                            'class' => $otherClass = uniqid(),
-                            'method' => $otherMethod = uniqid(),
-                            'file' => $otherFile = uniqid(),
-                            'line' => $otherLine = uniqid(),
-                            'asserter' => $otherAsserter = uniqid(),
-                            'fail' => $otherFail = uniqid()
-                        ]
+            ->if(
+                $score->getMockController()->getFailAssertions = $fails = [
+                    [
+                        'case' => $case =  uniqid(),
+                        'dataSetKey' => null,
+                        'class' => $class = uniqid(),
+                        'method' => $method = uniqid(),
+                        'file' => $file = uniqid(),
+                        'line' => $line = uniqid(),
+                        'asserter' => $asserter = uniqid(),
+                        'fail' => $fail = uniqid()
+                    ],
+                    [
+                        'case' => $otherCase =  uniqid(),
+                        'dataSetKey' => null,
+                        'class' => $otherClass = uniqid(),
+                        'method' => $otherMethod = uniqid(),
+                        'file' => $otherFile = uniqid(),
+                        'line' => $otherLine = uniqid(),
+                        'asserter' => $otherAsserter = uniqid(),
+                        'fail' => $otherFail = uniqid()
                     ]
-                )
+                ]
+            )
             ->and($defaultField = new runner\failures\cli())
             ->and($customField = new runner\failures\cli())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
@@ -229,7 +232,8 @@ class cli extends atoum\test
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+                ->castToString($defaultField)->isEqualTo(
+                    sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
                     $class . '::' . $method . '():' . PHP_EOL .
                     sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $file, $line, $case, $asserter, $fail) . PHP_EOL .
                     $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
@@ -259,31 +263,32 @@ class cli extends atoum\test
                     sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $otherFile, $otherLine, $otherCase, $otherAsserter, $otherFail) .
                     PHP_EOL
                 )
-            ->if($score->getMockController()->getFailAssertions = $fails = [
-                        [
-                            'case' => $case =  uniqid(),
-                            'dataSetKey' => $dataSetKey = rand(1, PHP_INT_MAX),
-                            'dataSetProvider' => $dataSetProvider = uniqid(),
-                            'class' => $class = uniqid(),
-                            'method' => $method = uniqid(),
-                            'file' => $file = uniqid(),
-                            'line' => $line = uniqid(),
-                            'asserter' => $asserter = uniqid(),
-                            'fail' => $fail = uniqid()
-                        ],
-                        [
-                            'case' => $otherCase =  uniqid(),
-                            'dataSetKey' => $otherDataSetKey = rand(1, PHP_INT_MAX),
-                            'dataSetProvider' => $otherDataSetProvider = uniqid(),
-                            'class' => $otherClass = uniqid(),
-                            'method' => $otherMethod = uniqid(),
-                            'file' => $otherFile = uniqid(),
-                            'line' => $otherLine = uniqid(),
-                            'asserter' => $otherAsserter = uniqid(),
-                            'fail' => $otherFail = uniqid()
-                        ]
+            ->if(
+                $score->getMockController()->getFailAssertions = $fails = [
+                    [
+                        'case' => $case =  uniqid(),
+                        'dataSetKey' => $dataSetKey = rand(1, PHP_INT_MAX),
+                        'dataSetProvider' => $dataSetProvider = uniqid(),
+                        'class' => $class = uniqid(),
+                        'method' => $method = uniqid(),
+                        'file' => $file = uniqid(),
+                        'line' => $line = uniqid(),
+                        'asserter' => $asserter = uniqid(),
+                        'fail' => $fail = uniqid()
+                    ],
+                    [
+                        'case' => $otherCase =  uniqid(),
+                        'dataSetKey' => $otherDataSetKey = rand(1, PHP_INT_MAX),
+                        'dataSetProvider' => $otherDataSetProvider = uniqid(),
+                        'class' => $otherClass = uniqid(),
+                        'method' => $otherMethod = uniqid(),
+                        'file' => $otherFile = uniqid(),
+                        'line' => $otherLine = uniqid(),
+                        'asserter' => $otherAsserter = uniqid(),
+                        'fail' => $otherFail = uniqid()
                     ]
-                )
+                ]
+            )
             ->and($defaultField = new runner\failures\cli())
             ->and($customField = new runner\failures\cli())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
@@ -297,7 +302,8 @@ class cli extends atoum\test
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+                ->castToString($defaultField)->isEqualTo(
+                    sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
                     $class . '::' . $method . '():' . PHP_EOL .
                     sprintf('In file %s on line %d in case \'%s\', %s failed for data set [%s] of data provider %s: %s', $file, $line, $case, $asserter, $dataSetKey, $dataSetProvider, $fail) . PHP_EOL .
                     $otherClass . '::' . $otherMethod . '():' . PHP_EOL .

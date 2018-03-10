@@ -116,6 +116,8 @@ class html extends report\fields\runner\coverage\cli
 
                     if (substr_count($className, '\\') >= 1) {
                         $classTemplate->relativeRootUrl = rtrim(str_repeat('../', substr_count($className, '\\')), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+                    } else {
+                        $classTemplate->relativeRootUrl = './';
                     }
 
                     $classCoverageValue = $this->coverage->getValueForClass($className);
@@ -141,7 +143,8 @@ class html extends report\fields\runner\coverage\cli
                             if ($methodCoverageValue === null) {
                                 $methodCoverageUnavailableTemplates->build(['methodName' => $methodName]);
                             } else {
-                                $methodCoverageAvailableTemplates->build([
+                                $methodCoverageAvailableTemplates->build(
+                                    [
                                         'methodName' => $methodName,
                                         'methodCoverageValue' => round($methodCoverageValue * 100, 2)
                                     ]

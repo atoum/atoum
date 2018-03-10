@@ -37,9 +37,10 @@ class decorator extends atoum
                     '+' . $otherSecondString
                 )
 
-            ->if($diff
-                ->setExpected($reference = 'check this dokument.')
-                ->setActual($data = 'check this document.')
+            ->if(
+                $diff
+                    ->setExpected($reference = 'check this dokument.')
+                    ->setActual($data = 'check this document.')
             )
             ->then
                 ->string($this->testedInstance->decorate($diff))->isEqualTo(
@@ -50,9 +51,10 @@ class decorator extends atoum
                     '+' . $data
                 )
 
-            ->if($diff
-                ->setExpected($reference = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
-                ->setActual($data = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 5 . PHP_EOL))
+            ->if(
+                $diff
+                    ->setExpected($reference = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
+                    ->setActual($data = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 5 . PHP_EOL))
             )
             ->then
                 ->string($this->testedInstance->decorate($diff))->isEqualTo(
@@ -63,9 +65,10 @@ class decorator extends atoum
                     '+6'
                 )
 
-            ->if($diff
-                ->setExpected($reference = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
-                ->setActual($data = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 7 . PHP_EOL . 5 . PHP_EOL))
+            ->if(
+                $diff
+                    ->setExpected($reference = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
+                    ->setActual($data = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 7 . PHP_EOL . 5 . PHP_EOL))
             )
             ->then
                 ->string($this->testedInstance->decorate($diff))->isEqualTo(

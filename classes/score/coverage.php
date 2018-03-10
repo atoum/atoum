@@ -54,7 +54,8 @@ class coverage implements \countable, \serializable
 
     public function serialize()
     {
-        return serialize([
+        return serialize(
+            [
                 $this->classes,
                 $this->methods,
                 $this->paths,

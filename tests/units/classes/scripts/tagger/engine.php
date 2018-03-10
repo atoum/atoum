@@ -175,7 +175,8 @@ class engine extends atoum\test
                     ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Unable to tag, src iterator injector does not return an iterator')
             ->if(
-                $srcIterator = new \arrayIterator([
+                $srcIterator = new \arrayIterator(
+                    [
                         $file1 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename1 = uniqid()),
                         $file2 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename2 = uniqid()),
                         $file3 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename3 = uniqid()),

@@ -564,7 +564,8 @@ class script extends atoum\test
             ->then
                 ->object($script->writeLabels([$label = uniqid() => $message = uniqid()]))->isIdenticalTo($script)
                 ->mock($helpWriter)->call('write')->withIdenticalArguments('  ' . $label . '  ' . $message)->once()
-                ->object($script->writeLabels(
+                ->object(
+                    $script->writeLabels(
                         [
                             $label1 = uniqid() => $message1 = uniqid(),
                             $label2 = uniqid() => $message2 = uniqid(),
@@ -577,7 +578,8 @@ class script extends atoum\test
                     ->call('write')->withIdenticalArguments('  ' . $label1 . '  ' . $message1)->once()
                     ->call('write')->withIdenticalArguments('  ' . $label2 . '  ' . $message2)->once()
                     ->call('write')->withIdenticalArguments('  ' . $label3 . '  ' . $message3)->once()
-                ->object($script->writeLabels(
+                ->object(
+                    $script->writeLabels(
                         [
                             $label1 = uniqid() => $message1 = uniqid(),
                             $label2 = '  ' . uniqid() => $message2 = uniqid(),
@@ -590,11 +592,14 @@ class script extends atoum\test
                     ->call('write')->withIdenticalArguments('  ' . $label1 . '    ' . $message1)->once()
                     ->call('write')->withIdenticalArguments('  ' . $label2 . '  ' . $message2)->once()
                     ->call('write')->withIdenticalArguments('  ' . $label3 . '    ' . $message3)->once()
-                ->object($script->writeLabels([
+                ->object(
+                    $script->writeLabels(
+                        [
                             $label1 = uniqid() => $message1 = uniqid(),
                             $label2 = 'xx' . uniqid() => $message2 = uniqid(),
                             $label3 = uniqid() => $message3 = uniqid()
-                        ], 3
+                        ],
+                        3
                     )
                 )
                     ->isIdenticalTo($script)
@@ -602,11 +607,14 @@ class script extends atoum\test
                     ->call('write')->withIdenticalArguments('  ' . $label1 . '    ' . $message1)->once()
                     ->call('write')->withIdenticalArguments('  ' . $label2 . '  ' . $message2)->once()
                     ->call('write')->withIdenticalArguments('  ' . $label3 . '    ' . $message3)->once()
-                ->object($script->writeLabels([
+                ->object(
+                    $script->writeLabels(
+                        [
                             $label1 = uniqid() => $message1 = uniqid(),
                             $label2 = 'xx' . uniqid() => ($message21 = uniqid()) . PHP_EOL . ($message22 = uniqid()),
                             $label3 = uniqid() => $message3 = uniqid()
-                        ], 3
+                        ],
+                        3
                     )
                 )
                     ->isIdenticalTo($script)

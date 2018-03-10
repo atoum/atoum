@@ -212,38 +212,46 @@ class extractor extends atoum\test
                     ->string($dataProvider)->isEqualTo('aDataProvider')
                     ->string($namespace)->isEqualTo('bar')
                     ->string($maxChildrenNumber)->isEqualTo($number)
-                ->object($extractor->extract(
+                ->object(
+                    $extractor->extract(
                         '/*' . PHP_EOL .
                         "\t" . '@ignore on' . PHP_EOL .
                         "\t" . '@tags aTag anOtherTag' . PHP_EOL .
-                        '*/')
+                        '*/'
                     )
+                )
                         ->isIdenticalTo($extractor)
                     ->string($ignore)->isEqualTo('on')
                     ->string($tags)->isEqualTo('aTag anOtherTag')
                     ->string($dataProvider)->isEqualTo('aDataProvider')
                     ->string($namespace)->isEqualTo('bar')
                     ->string($maxChildrenNumber)->isEqualTo($number)
-                ->object($extractor->extract(
+                ->object(
+                    $extractor->extract(
                         '/*' . "\r\n" .
                         "\t" . '@ignore off' . "\r\n" .
-                        '*/')
+                        '*/'
                     )
+                )
                         ->isIdenticalTo($extractor)
                     ->string($ignore)->isEqualTo('off')
-                ->object($extractor->extract(
+                ->object(
+                    $extractor->extract(
                         '/*' . "\n" .
                         "\t" . '@ignore on' . "\n" .
-                        '*/')
+                        '*/'
                     )
+                )
                         ->isIdenticalTo($extractor)
                     ->string($ignore)->isEqualTo('on')
-                ->object($extractor->extract(
+                ->object(
+                    $extractor->extract(
                          '/**
-						  * @tags ManySetGetPredis
-						  * @dataProvider manySetGetDataProvider
-						  */')
+                          * @tags ManySetGetPredis
+                          * @dataProvider manySetGetDataProvider
+                          */'
                     )
+                )
                         ->isIdenticalTo($extractor)
                     ->string($tags)->isEqualTo('ManySetGetPredis')
                     ->string($dataProvider)->isEqualTo('manySetGetDataProvider')
