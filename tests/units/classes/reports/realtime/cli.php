@@ -77,12 +77,13 @@ class cli extends atoum\test
                         ->setSuccessColorizer(new colorizer('1;30', '42'))
                         ->setFailureColorizer(new colorizer('1;37', '41'))
                 )
-            ->define($runnerFailuresField = new fields\runner\failures\cli())
-                ->and(
-                    $runnerFailuresField
-                        ->setTitlePrompt(new prompt('> '))
-                        ->setTitleColorizer(new colorizer('0;31'))
-                        ->setMethodPrompt(new prompt('=> ', new colorizer('0;31')))
+            ->define($runnerFailuresField = new fields\runner\failures\cli(),
+                     $failureColorizer = new colorizer('0;31'))
+                ->and($runnerFailuresField
+                    ->setTitlePrompt(new prompt('> '))
+                    ->setTitleColorizer($failureColorizer)
+                    ->setMethodPrompt(new prompt(PHP_EOL . '=> ', new colorizer('0;31')))
+                    ->setMethodColorizer($failureColorizer)
                 )
             ->define($runnerOutputsField = new fields\runner\outputs\cli())
                 ->and(
@@ -170,3 +171,4 @@ class cli extends atoum\test
         ;
     }
 }
+
