@@ -51,6 +51,17 @@ abstract class script
         return rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
 
+    public function getRelativeDirectory()
+    {
+        $directory = $this->adapter->dirname($this->getName());
+
+        if ($this->adapter->is_dir($directory) === false) {
+            $directory = $this->adapter->getcwd();
+        }
+
+        return rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+    }
+
     public function setAdapter(adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();

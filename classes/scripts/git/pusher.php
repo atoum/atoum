@@ -58,7 +58,7 @@ class pusher extends script\configurable
         if ($tagFile !== null) {
             $tagFile = (string) $tagFile;
         } else {
-            $tagFile = $this->getDirectory() . self::defaultTagFile;
+            $tagFile = $this->getRelativeDirectory() . self::defaultTagFile;
         }
 
         $this->tagFile = $tagFile;

@@ -638,4 +638,26 @@ class script extends atoum\test
                 ->string($script->getDirectory())->isEqualTo($currentDirectory . DIRECTORY_SEPARATOR)
         ;
     }
+
+    public function testGetRelativeDirectory()
+    {
+        $this
+            ->given($script = new mock\script($name = uniqid()))
+            ->and($script->setAdapter($adapter = new atoum\test\adapter()))
+            ->and($adapter->is_dir = true)
+            ->and($adapter->dirname = $directory = uniqid())
+            ->then
+                ->string($script->getRelativeDirectory())->isEqualTo($directory . DIRECTORY_SEPARATOR)
+            ->if($adapter->dirname = $directory . DIRECTORY_SEPARATOR)
+            ->then
+                ->string($script->getRelativeDirectory())->isEqualTo($directory . DIRECTORY_SEPARATOR)
+            ->if($adapter->is_dir = false)
+            ->and($adapter->getcwd = $directory = uniqid())
+            ->then
+                ->string($script->getRelativeDirectory())->isEqualTo($directory . DIRECTORY_SEPARATOR)
+            ->and($adapter->getcwd = $directory . DIRECTORY_SEPARATOR)
+            ->then
+                ->string($script->getRelativeDirectory())->isEqualTo($directory . DIRECTORY_SEPARATOR)
+        ;
+     }
 }
