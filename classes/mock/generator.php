@@ -388,12 +388,13 @@ class generator
 
                     if ($this->hasReturnType($method) === true && $this->isVoid($method) === false) {
                         $returnType = $this->getReflectionType($method);
+                        $returnTypeName = $this->getReflectionTypeName($returnType);
 
                         switch (true) {
-                            case (string) $returnType === 'self':
-                            case (string) $returnType === 'parent':
-                            case (string) $returnType === $class->getName():
-                            case interface_exists((string) $returnType) && $class->implementsInterface((string) $returnType):
+                            case $returnTypeName === 'self':
+                            case $returnTypeName === 'parent':
+                            case $returnTypeName === $class->getName():
+                            case interface_exists($returnTypeName) && $class->implementsInterface($returnTypeName):
                                 $mockedMethods .= "\t\t\t\t" . 'return $this;' . PHP_EOL;
                                 break;
 
@@ -437,12 +438,13 @@ class generator
                     } else {
                         if ($this->hasReturnType($method) === true && $this->isVoid($method) === false) {
                             $returnType = $this->getReflectionType($method);
+                            $returnTypeName = $this->getReflectionTypeName($returnType);
 
                             switch (true) {
-                                case (string) $returnType === 'self':
-                                case (string) $returnType === 'parent':
-                                case (string) $returnType === $class->getName():
-                                case interface_exists((string) $returnType) && $class->implementsInterface((string) $returnType):
+                                case $returnTypeName === 'self':
+                                case $returnTypeName === 'parent':
+                                case $returnTypeName === $class->getName():
+                                case interface_exists($returnTypeName) && $class->implementsInterface($returnTypeName):
                                     $mockedMethods .= "\t\t\t" . 'return $this;' . PHP_EOL;
                                     break;
 
@@ -545,12 +547,13 @@ class generator
 
                     if ($this->hasReturnType($method) === true && $this->isVoid($method) === false) {
                         $returnType = $this->getReflectionType($method);
+                        $returnTypeName = $this->getReflectionTypeName($returnType);
 
                         switch (true) {
-                            case (string) $returnType === 'self':
-                            case (string) $returnType === 'parent':
-                            case (string) $returnType === $class->getName():
-                            case interface_exists((string) $returnType) && $class->implementsInterface((string) $returnType):
+                            case $returnTypeName === 'self':
+                            case $returnTypeName === 'parent':
+                            case $returnTypeName === $class->getName():
+                            case interface_exists($returnTypeName) && $class->implementsInterface($returnTypeName):
                                 $methodCode .= "\t\t\t\t" . 'return $this;' . PHP_EOL;
                                 break;
 
@@ -647,22 +650,23 @@ class generator
 
         $returnType = $this->getReflectionType($method);
         $isNullable = $this->isNullable($returnType);
+        $returnTypeName = $this->getReflectionTypeName($returnType);
 
         switch (true) {
-            case (string) $returnType === 'self':
+            case $returnTypeName === 'self':
                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $method->getDeclaringClass()->getName();
                 break;
 
-            case (string) $returnType === 'parent':
+            case $returnTypeName === 'parent':
                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $method->getDeclaringClass()->getParentClass()->getName();
                 break;
 
             case $returnType->isBuiltin():
-                $returnTypeCode = ': ' . ($isNullable ? '?' : '') . $returnType;
+                $returnTypeCode = ': ' . ($isNullable ? '?' : '') . $returnTypeName;
                 break;
 
             default:
-                $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $returnType;
+                $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $returnTypeName;
         }
 
         return $returnTypeCode;
@@ -683,9 +687,14 @@ class generator
         return $this->hasReturnType($method) ? $method->getReturnType() : null;
     }
 
+    protected function getReflectionTypeName(\reflectionType $type)
+    {
+        return $type instanceof \reflectionNamedType ? $type->getName() : (string) $type;
+    }
+
     protected function isVoid(\reflectionMethod $method)
     {
-        return $this->hasReturnType($method) ? (string) $method->getReturnType() === 'void' : false;
+        return $this->hasReturnType($method) ? $this->getReflectionTypeName($method->getReturnType()) === 'void' : false;
     }
 
     protected static function isNullableParameter(\ReflectionParameter $parameter)
@@ -778,7 +787,8 @@ class generator
                 return $prefix . '\\' . $class->getName() . ' ';
 
             case method_exists($parameter, 'hasType') && $parameter->hasType():
-                return $prefix . $parameter->getType() . ' ';
+                $type = $parameter->getType();
+                return $prefix . ($type instanceof \reflectionNamedType ? $type->getName() : (string) $type) . ' ';
 
             default:
                 return '';
