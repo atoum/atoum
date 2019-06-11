@@ -42,7 +42,7 @@ install:
   - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
   - cd c:\projects\atoum
-  - php c:\php\composer.phar require atoum/telemetry-extension:^1.0.0
+#  - php c:\php\composer.phar require --ignore-platform-reqs atoum/telemetry-extension:^1.0.0
   - copy resources\configurations\ci\.appveyor.php.dist .atoum.php
 
 test_script:
