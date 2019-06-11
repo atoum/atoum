@@ -5,9 +5,10 @@ clone_folder: C:\projects\atoum
 
 environment:
   matrix:
-    - PHP_DOWNLOAD_FILE: php-5.6.21-nts-Win32-VC11-x86.zip
-    - PHP_DOWNLOAD_FILE: php-7.1.9-nts-Win32-VC14-x86.zip
-    - PHP_DOWNLOAD_FILE: php-7.2.2-nts-Win32-VC15-x86.zip
+    - PHP_DOWNLOAD_FILE: https://windows.php.net/downloads/releases/archives/php-5.6.40-nts-Win32-VC11-x86.zip
+    - PHP_DOWNLOAD_FILE: https://windows.php.net/downloads/releases/latest/php-7.1-nts-Win32-VC14-x86-latest.zip
+    - PHP_DOWNLOAD_FILE: https://windows.php.net/downloads/releases/latest/php-7.2-nts-Win32-VC15-x86-latest.zip
+    - PHP_DOWNLOAD_FILE: https://windows.php.net/downloads/releases/latest/php-7.3-nts-Win32-VC15-x86-latest.zip
 
 notifications:
   - provider: Webhook
@@ -29,8 +30,8 @@ init:
 install:
   - IF EXIST c:\php (SET PHP=0) ELSE (mkdir c:\php)
   - cd c:\php
-  - IF %PHP%==1 curl --location --output %PHP_DOWNLOAD_FILE% http://windows.php.net/downloads/releases/archives/%PHP_DOWNLOAD_FILE%
-  - IF %PHP%==1 7z x %PHP_DOWNLOAD_FILE% -y > 7z.log
+  - IF %PHP%==1 curl --location --output php.zip %PHP_DOWNLOAD_FILE%
+  - IF %PHP%==1 7z x php.zip -y > 7z.log
   - IF %PHP%==1 echo @php %%~dp0composer.phar %%* > composer.bat
   - curl --location --output composer.phar https://getcomposer.org/composer.phar
   - copy php.ini-production php.ini /Y
