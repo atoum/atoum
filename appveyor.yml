@@ -29,10 +29,10 @@ init:
 install:
   - IF EXIST c:\php (SET PHP=0) ELSE (mkdir c:\php)
   - cd c:\php
-  - IF %PHP%==1 appveyor DownloadFile http://windows.php.net/downloads/releases/archives/%PHP_DOWNLOAD_FILE%
+  - IF %PHP%==1 curl --location --output %PHP_DOWNLOAD_FILE% http://windows.php.net/downloads/releases/archives/%PHP_DOWNLOAD_FILE%
   - IF %PHP%==1 7z x %PHP_DOWNLOAD_FILE% -y > 7z.log
   - IF %PHP%==1 echo @php %%~dp0composer.phar %%* > composer.bat
-  - appveyor DownloadFile https://getcomposer.org/composer.phar
+  - curl --location --output composer.phar https://getcomposer.org/composer.phar
   - copy php.ini-production php.ini /Y
   - echo date.timezone="UTC" >> php.ini
   - echo extension_dir=ext >> php.ini
@@ -40,7 +40,6 @@ install:
   - echo extension=php_curl.dll >> php.ini
   - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
-  - appveyor DownloadFile https://getcomposer.org/composer.phar
   - cd c:\projects\atoum
   - php c:\php\composer.phar require atoum/telemetry-extension:^1.0.0
   - copy resources\configurations\ci\.appveyor.php.dist .atoum.php
