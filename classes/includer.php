@@ -55,7 +55,7 @@ class includer
         $this->adapter->restore_error_handler();
 
         if (count($this->errors) > 0) {
-            $realpath = parse_url($this->path, PHP_URL_SCHEME) !== null ? $this->path : realpath($this->path) ?: $this->path;
+            $realpath = (parse_url($this->path, PHP_URL_SCHEME) !== null ? $this->path : (realpath($this->path) ?: $this->path));
 
             if (in_array($realpath, $this->adapter->get_included_files(), true) === false) {
                 throw new includer\exception('Unable to include \'' . $this->path . '\'');
