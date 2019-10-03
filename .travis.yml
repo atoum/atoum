@@ -13,6 +13,7 @@ cache:
 matrix:
   allow_failures:
     - php: nightly
+    - php: 7.4snapshot
 notifications:
   irc: "irc.freenode.org##atoum"
   webhooks:
