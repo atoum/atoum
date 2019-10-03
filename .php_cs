@@ -20,7 +20,6 @@ return
             'native_function_casing'             => true,
             'no_blank_lines_after_class_opening' => true,
             'no_unused_imports'                  => true,
-            'no_unused_imports'                  => true,
             'no_whitespace_in_blank_line'        => true,
             'ordered_imports'                    => true,
             'phpdoc_no_access'                   => true,

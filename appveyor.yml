@@ -6,7 +6,8 @@ clone_folder: C:\projects\atoum
 environment:
   matrix:
     - PHP_DOWNLOAD_FILE: php-5.6.21-nts-Win32-VC11-x86.zip
-    - PHP_DOWNLOAD_FILE: php-7.0.6-nts-Win32-VC14-x86.zip
+    - PHP_DOWNLOAD_FILE: php-7.1.9-nts-Win32-VC14-x86.zip
+    - PHP_DOWNLOAD_FILE: php-7.2.2-nts-Win32-VC15-x86.zip
 
 notifications:
   - provider: Webhook
@@ -41,7 +42,7 @@ install:
   - echo extension=php_fileinfo.dll >> php.ini
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   - cd c:\projects\atoum
-  - php c:\php\composer.phar require atoum/reports-extension:^2.0.1
+  - php c:\php\composer.phar require atoum/telemetry-extension:^1.0.0
   - copy resources\configurations\ci\.appveyor.php.dist .atoum.php
 
 test_script:

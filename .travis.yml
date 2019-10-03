@@ -4,17 +4,14 @@ php:
   - 7.0
   - 7.1
   - 7.2
+  - 7.3
   - nightly
-  - hhvm
-  - hhvm-nightly
 cache:
   directories:
     - vendor
 matrix:
   allow_failures:
     - php: nightly
-    - php: hhvm
-    - php: hhvm-nightly
 notifications:
   irc: "irc.freenode.org##atoum"
   webhooks:
@@ -28,7 +25,8 @@ env:
         - secure: "vJ1TnFhU9muqLwkiBd13lFqdPJIrwKJ5OJjR3/jQROWQsRO4NPd/I7OfdDKk\noJGYbgjGMw7bmBYI0xjhYfZAnrClwIBvn1Qx5x5UDGxTHC8ZP6xs49AGa37I\n7BJlWC7+nRwPmmLhoLsbut/O7Kkn8IkdJIeChHbdn8RHQIJTJ4Y="
 sudo: false
 before_script:
-  - composer require --ignore-platform-reqs 'atoum/reports-extension:^2.0.1'
+  - composer remove 'atoum/reports-extension'
+  - composer require --ignore-platform-reqs 'atoum/telemetry-extension:^1.0.0'
   - cp resources/configurations/ci/.travis.php.dist .atoum.php
 script:
   - bin/atoum

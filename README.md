@@ -381,18 +381,8 @@ atoum has been created by [Frédéric Hardy]. It is now led by a strong communit
 in the [committer list](https://github.com/atoum/atoum/graphs/contributors) or in the
 [Contributors team](https://github.com/orgs/atoum/teams/contributors).
 
-We also would like to thank people who participated in the project in any way:
-
-* Mathieu Robin ([@MathRobin]),
-* Geoffrey Bachelet ([@ubermuda]),
-* Nathanaël Louison,
-* Simon Jodet ([@simonjodet]).
-
 ## License
 
 atoum is released under the BSD-3-Clause License. See the bundled [LICENSE](LICENSE) file for details.
 
 [Frédéric Hardy]: https://github.com/mageekguy
-[@MathRobin]: https://github.com/MathRobin
-[@ubermuda]: https://github.com/ubermuda
-[@simonjodet]: https://github.com/simonjodet
