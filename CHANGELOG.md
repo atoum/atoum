@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#777](https://github.com/atoum/atoum/pull/777) cli output changed for displaying errors and exceptions clearly ([@macintoshplus])
+
 # 3.3.0 - 2018-03-15
 
 * [#771](https://github.com/atoum/atoum/pull/771) Normalize and simplify the asserter name when a test case fails ([@hywan])
