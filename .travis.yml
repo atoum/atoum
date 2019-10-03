@@ -25,8 +25,6 @@ env:
         - secure: "vJ1TnFhU9muqLwkiBd13lFqdPJIrwKJ5OJjR3/jQROWQsRO4NPd/I7OfdDKk\noJGYbgjGMw7bmBYI0xjhYfZAnrClwIBvn1Qx5x5UDGxTHC8ZP6xs49AGa37I\n7BJlWC7+nRwPmmLhoLsbut/O7Kkn8IkdJIeChHbdn8RHQIJTJ4Y="
 sudo: false
 before_script:
-  - composer remove 'atoum/reports-extension'
-  - composer require --ignore-platform-reqs 'atoum/telemetry-extension:^1.0.0'
   - cp resources/configurations/ci/.travis.php.dist .atoum.php
 script:
   - bin/atoum

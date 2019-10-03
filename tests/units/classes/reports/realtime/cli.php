@@ -77,12 +77,13 @@ class cli extends atoum\test
                         ->setSuccessColorizer(new colorizer('1;30', '42'))
                         ->setFailureColorizer(new colorizer('1;37', '41'))
                 )
-            ->define($runnerFailuresField = new fields\runner\failures\cli())
-                ->and(
-                    $runnerFailuresField
-                        ->setTitlePrompt(new prompt('> '))
-                        ->setTitleColorizer(new colorizer('0;31'))
-                        ->setMethodPrompt(new prompt('=> ', new colorizer('0;31')))
+            ->define($runnerFailuresField = new fields\runner\failures\cli(),
+                     $failureColorizer = new colorizer('0;31'))
+                ->and($runnerFailuresField
+                    ->setTitlePrompt(new prompt('> '))
+                    ->setTitleColorizer($failureColorizer)
+                    ->setMethodPrompt(new prompt(PHP_EOL . '=> ', new colorizer('0;31')))
+                    ->setMethodColorizer($failureColorizer)
                 )
             ->define($runnerOutputsField = new fields\runner\outputs\cli())
                 ->and(
@@ -92,20 +93,19 @@ class cli extends atoum\test
                         ->setMethodPrompt(new prompt('=> ', new colorizer('1;36')))
                 )
             ->define($runnerErrorsField = new fields\runner\errors\cli())
-                ->and(
-                    $runnerErrorsField
-                        ->setTitlePrompt(new prompt('> '))
-                        ->setTitleColorizer(new colorizer('0;33'))
-                        ->setMethodPrompt(new prompt('=> ', new colorizer('0;33')))
-                        ->setErrorPrompt(new prompt('==> ', new colorizer('0;33')))
+                ->and($runnerErrorsField
+                    ->setTitlePrompt(new prompt('> '))
+                    ->setTitleColorizer(new colorizer('0;33'))
+                    ->setMethodPrompt(new prompt(PHP_EOL . '=> ', new colorizer('0;33')))
+                    ->setErrorPrompt(new prompt('==> ', new colorizer('0;33')))
                 )
             ->define($runnerExceptionsField = new fields\runner\exceptions\cli())
-                ->and(
-                    $runnerExceptionsField
-                        ->setTitlePrompt(new prompt('> '))
-                        ->setTitleColorizer(new colorizer('0;35'))
-                        ->setMethodPrompt(new prompt('=> ', new colorizer('0;35')))
-                        ->setExceptionPrompt(new prompt('==> ', new colorizer('0;35')))
+                ->and($runnerExceptionsField
+                    ->setTitlePrompt(new prompt('> '))
+                    ->setTitleColorizer(new colorizer('0;35'))
+                    ->setMethodPrompt(new prompt(PHP_EOL . '=> ', new colorizer('0;35')))
+                    ->setMethodColorizer(new colorizer('45'))
+                    ->setExceptionPrompt(new prompt('==> ', new colorizer('0;35')))
                 )
             ->define($runnerUncompletedField = new fields\runner\tests\uncompleted\cli())
                 ->and(
@@ -143,30 +143,27 @@ class cli extends atoum\test
             ->then
                 ->object($report->getLocale())->isEqualTo(new atoum\locale())
                 ->object($report->getAdapter())->isEqualTo(new atoum\adapter())
-                ->array($report->getFields())->isEqualTo(
-                    [
-                        $atoumPathField,
-                        $atoumVersionField,
-                        $phpPathField,
-                        $phpVersionField,
-                        $runnerTestsDurationField,
-                        $runnerTestsMemoryField,
-                        $runnerTestsCoverageField,
-                        $runnerDurationField,
-                        $runnerResultField,
-                        $runnerFailuresField,
-                        $runnerOutputsField,
-                        $runnerErrorsField,
-                        $runnerExceptionsField,
-                        $runnerUncompletedField,
-                        $runnerVoidField,
-                        $runnerSkippedField,
-                        $testRunField,
-                        new fields\test\event\cli(),
-                        $testDurationField,
-                        $testMemoryField
-                    ]
-                )
+                ->array($fields = $report->getFields())
+                    ->object[0]->isEqualTo($atoumPathField)
+                    ->object[1]->isEqualTo($atoumVersionField)
+                    ->object[2]->isEqualTo($phpPathField)
+                    ->object[3]->isEqualTo($phpVersionField)
+                    ->object[4]->isEqualTo($runnerTestsDurationField)
+                    ->object[5]->isEqualTo($runnerTestsMemoryField)
+                    ->object[6]->isEqualTo($runnerTestsCoverageField)
+                    ->object[7]->isEqualTo($runnerDurationField)
+                    ->object[8]->isEqualTo($runnerResultField)
+                    ->object[9]->isEqualTo($runnerFailuresField)
+                    ->object[10]->isEqualTo($runnerOutputsField)
+                    ->object[11]->isEqualTo($runnerErrorsField)
+                    ->object[12]->isEqualTo($runnerExceptionsField)
+                    ->object[13]->isEqualTo($runnerUncompletedField)
+                    ->object[14]->isEqualTo($runnerVoidField)
+                    ->object[15]->isEqualTo($runnerSkippedField)
+                    ->object[16]->isEqualTo($testRunField)
+                    ->object[17]->isEqualTo(new fields\test\event\cli())
+                    ->object[18]->isEqualTo($testDurationField)
+                    ->object[19]->isEqualTo($testMemoryField)
         ;
     }
 }
