@@ -207,7 +207,7 @@ class autoloader
         }
 
         if (static::exists($realClass) === true) {
-            $alias = ($realClass !== $class ? $class : $this->getClassAlias($realClass) ?: $this->getNamespaceAlias($realClass));
+            $alias = ($realClass !== $class ? $class : ($this->getClassAlias($realClass) ?: $this->getNamespaceAlias($realClass)));
 
             if ($alias !== null) {
                 class_alias($realClass, $alias);
