@@ -1,6 +1,13 @@
 # `dev-master`
 
+# 3.4.1 - 2020-01-22
+
+* [#840](https://github.com/atoum/atoum/pull/840) Remove unnecessary imports ([@Hywan])
+* [#835](https://github.com/atoum/atoum/pull/835) Fix deprecated, unparenthesized (PHP 7.4) ([@trasher])
+* [#830](https://github.com/atoum/atoum/pull/830) Add 7.4 to Travis ([@remicollet])
+* [#833](https://github.com/atoum/atoum/pull/833) Patch CLI output ([@Grummfy])
 * [#829](https://github.com/atoum/atoum/pull/829) fix appvoyer build ([@cedric-anne])
+* [#827](https://github.com/atoum/atoum/pull/827) Fix “`ReflectionType::__toString()` is deprecated” ([@cedric-anne])
 * [#777](https://github.com/atoum/atoum/pull/777) cli output changed for displaying errors and exceptions clearly ([@macintoshplus])
 
 # 3.3.0 - 2018-03-15
