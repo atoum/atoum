@@ -4,7 +4,6 @@ namespace mageekguy\atoum\reports\asynchronous;
 
 use mageekguy\atoum;
 use mageekguy\atoum\exceptions;
-use mageekguy\atoum\report;
 use mageekguy\atoum\score;
 
 class coveralls extends atoum\reports\asynchronous

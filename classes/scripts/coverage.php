@@ -6,7 +6,6 @@ require_once __DIR__ . '/../../constants.php';
 
 use mageekguy\atoum;
 use mageekguy\atoum\exceptions;
-use mageekguy\atoum\php;
 
 class coverage extends runner
 {

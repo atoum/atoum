@@ -2,7 +2,6 @@
 
 namespace mageekguy\atoum\report\fields\runner\atoum\path;
 
-use mageekguy\atoum;
 use mageekguy\atoum\cli\colorizer;
 use mageekguy\atoum\cli\prompt;
 use mageekguy\atoum\report;
