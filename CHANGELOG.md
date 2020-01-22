@@ -1,5 +1,7 @@
 # `dev-master`
 
+# 3.4.1 - 2020-01-22
+
 * [#829](https://github.com/atoum/atoum/pull/829) fix appvoyer build ([@cedric-anne])
 * [#777](https://github.com/atoum/atoum/pull/777) cli output changed for displaying errors and exceptions clearly ([@macintoshplus])
 
