@@ -746,7 +746,7 @@ class generator
 
                 case self::isDefaultParameterNull($parameter):
                 case $parameter->isOptional() && $parameter->isVariadic() == false:
-                case $mustBeNull:
+                case $mustBeNull && $parameter->isVariadic() == false:
                     $parameterCode .= ' = null';
             }
 
