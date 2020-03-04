@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#841](https://github.com/atoum/atoum/pull/841) Fix variadic support when you use all is interface in your mock ([@Grummfy])
+
 # 3.4.1 - 2020-01-22
 
 * [#840](https://github.com/atoum/atoum/pull/840) Remove unnecessary imports ([@Hywan])
