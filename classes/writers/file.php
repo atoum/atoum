@@ -33,6 +33,8 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
             throw new exceptions\runtime('Unable to truncate file \'' . $this->filename . '\'');
         }
 
+        $this->adapter->rewind($this->resource);
+
         return $this;
     }
 
