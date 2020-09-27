@@ -10,11 +10,6 @@ use mageekguy\atoum\iterators\recursives\directory\factory as testedClass;
 
 class factory extends atoum\test
 {
-    public function testClass()
-    {
-        $this->testedClass->implements(\iteratorAggregate::class);
-    }
-
     public function test__construct()
     {
         $this

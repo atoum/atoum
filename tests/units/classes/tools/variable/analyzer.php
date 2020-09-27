@@ -37,7 +37,7 @@ class analyzer extends atoum\test
                     $this->function->get_class = $class = uniqid()
                 )
                 ->then
-                    ->string($this->testedInstance->getTypeOf(uniqid()))->isEqualTo('object(' . $class . ')')
+                    ->string($this->testedInstance->getTypeOf((object)uniqid()))->isEqualTo('object(' . $class . ')')
 
                 ->if(
                     $this->function->gettype = 'resource',
@@ -55,7 +55,7 @@ class analyzer extends atoum\test
                     $this->function->count = $size = rand(1, PHP_INT_MAX)
                 )
                 ->then
-                    ->string($this->testedInstance->getTypeOf(uniqid()))->isEqualTo('array(' . $size . ')')
+                    ->string($this->testedInstance->getTypeOf([uniqid()]))->isEqualTo('array(' . $size . ')')
         ;
     }
 

@@ -8,7 +8,7 @@ $coverage = new scripts\coverage(__FILE__);
 
 set_error_handler(
     function ($error, $message, $file, $line) use ($coverage) {
-        if (error_reporting() !== 0) {
+        if (error_reporting() & $error) {
             $coverage->writeError($message);
 
             exit($error);

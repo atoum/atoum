@@ -8,7 +8,7 @@ $pusher = new git\pusher(__FILE__);
 
 set_error_handler(
     function ($error, $message, $file, $line) use ($pusher) {
-        if (error_reporting() !== 0) {
+        if (error_reporting() & $error) {
             $pusher->writeError($message);
 
             exit($error);

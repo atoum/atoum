@@ -775,23 +775,52 @@ class generator
 
     protected static function getParameterType(\reflectionParameter $parameter)
     {
-        $prefix = self::isNullableParameter($parameter) ? '?' : '';
-        switch (true) {
-            case $parameter->isArray():
-                return $prefix . 'array ';
-
-            case method_exists($parameter, 'isCallable') && $parameter->isCallable():
-                return $prefix . 'callable ';
-
-            case ($class = $parameter->getClass()):
-                return $prefix . '\\' . $class->getName() . ' ';
-
-            case method_exists($parameter, 'hasType') && $parameter->hasType():
-                $type = $parameter->getType();
-                return $prefix . ($type instanceof \reflectionNamedType ? $type->getName() : (string) $type) . ' ';
-
-            default:
+        if (version_compare(PHP_VERSION, '7.1.0', '>=')) {
+            // PHP 7.1+
+            if (!$parameter->hasType()) {
                 return '';
+            }
+
+            $parameterType = $parameter->getType();
+            $parameterTypes = $parameterType instanceof \ReflectionUnionType
+                ? $parameterType->getTypes()
+                : [$parameterType];
+
+            $names = [];
+            $hasMixed = false;
+            foreach ($parameterTypes as $type) {
+                $name = $type instanceof \reflectionNamedType ? $type->getName() : (string) $type;
+                if ($name === 'self') {
+                    $name = $parameter->getDeclaringClass()->getName();
+                }
+                $names[] = ($type instanceof \reflectionType && !$type->isBuiltin() ? '\\' : '') . $name;
+
+                $hasMixed = $hasMixed || $name === 'mixed';
+            }
+
+            $prefix = !empty($names) && self::isNullableParameter($parameter) && !$hasMixed ? '?' : '';
+
+            return $prefix . implode('|', $names) . ' ';
+        } else {
+            // PHP 5.6 and 7.0
+            $prefix = self::isNullableParameter($parameter) ? '?' : '';
+
+            switch (true) {
+                case $parameter->isArray():
+                    return $prefix . 'array ';
+
+                case method_exists($parameter, 'isCallable') && $parameter->isCallable():
+                    return $prefix . 'callable ';
+
+                case ($class = $parameter->getClass()):
+                    return $prefix . '\\' . $class->getName() . ' ';
+
+                case method_exists($parameter, 'hasType') && $parameter->hasType():
+                    return $prefix . (string) $parameter->getType() . ' ';
+
+                default:
+                    return '';
+            }
         }
     }
 

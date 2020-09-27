@@ -1515,11 +1515,24 @@ abstract class test implements observable, \countable
                 foreach ($reflectedMethod->getParameters() as $parameter) {
                     $parameterProvider = new test\data\providers\mock($this->mockGenerator);
 
-                    if (($parameterClass = $parameter->getClass()) === null) {
+                    $parameterClassName = null;
+                    if (version_compare(PHP_VERSION, '7.1.0', '>=')) {
+                        // PHP 7.1+
+                        $parameterClassName = $parameter->hasType() && !$parameter->getType()->isBuiltin()
+                            ? $parameter->getType()->getName()
+                            : null;
+                    } else {
+                        // PHP 5.6 and 7.0
+                        $parameterClassName = $parameter->getClass()
+                            ? $parameter->getClass()->getName()
+                            : null ;
+                    }
+
+                    if ($parameterClassName === null) {
                         throw new exceptions\logic\invalidArgument('Could not generate a data provider for ' . $this->class . '::' . $testMethodName . '() because it has at least one argument which is not type-hinted with a class or interface name');
                     }
 
-                    $parametersProvider->addProvider($parameterProvider->setClass($parameterClass->getName()));
+                    $parametersProvider->addProvider($parameterProvider->setClass($parameterClassName));
                 }
 
                 $dataProvider = new test\data\set($parametersProvider);
@@ -1544,7 +1557,7 @@ abstract class test implements observable, \countable
         $doNotCallDefaultErrorHandler = true;
         $errorReporting = $this->adapter->error_reporting();
 
-        if ($errorReporting !== 0 && $errorReporting & $errno) {
+        if ($errorReporting & $errno) {
             list($file, $line) = $this->getBacktrace();
 
             $this->score->addError($file ?: ($errfile ?: $this->path), $this->class, $this->currentMethod, $line ?: $errline, $errno, trim($errstr), $errfile, $errline);

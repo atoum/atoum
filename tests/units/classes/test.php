@@ -113,7 +113,7 @@ namespace mageekguy\atoum\tests\units
         {
         }
 
-        public function testMethod2(\splFileInfo $a)
+        public function testMethod2(\SplFileInfo $a)
         {
         }
 
@@ -1091,7 +1091,7 @@ namespace mageekguy\atoum\tests\units
                         ->hasMessage('Could not instanciate a mock from ' . $test->getMockGenerator()->getDefaultNamespace() . '\\SplFileInfo because SplFileInfo::__construct() has at least one mandatory argument')
                 ->if($test->getMockGenerator()->setDefaultNamespace('testMocks'))
                 ->then
-                    ->array($providers['testMethod2']())->isEqualTo([[new \testMocks\splFileInfo()]])
+                    ->array($providers['testMethod2']())->isEqualTo([[new \testMocks\SplFileInfo()]])
                 ->if($test = new dataProviderTest())
                 ->then
                     ->exception(function () use ($test, & $dataProvider) {

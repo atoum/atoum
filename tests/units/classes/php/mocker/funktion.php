@@ -120,10 +120,10 @@ class funktion extends atoum\test
             ->then
                 ->object($this->testedInstance->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($this->testedInstance)
                 ->boolean(function_exists($functionName))->isTrue()
-                ->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
-                ->integer(\version_compare('5.4.0', '5.3.0'))->isEqualTo(1)
-                ->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
-                ->integer(\version_compare('5.3.0', '5.4.0'))->isEqualTo(-1)
+                ->boolean(version_compare('5.4.0', '5.3.0', '<'))->isFalse()
+                ->boolean(\version_compare('5.4.0', '5.3.0', '<'))->isFalse()
+                ->boolean(version_compare('5.3.0', '5.4.0', '<'))->isTrue()
+                ->boolean(\version_compare('5.3.0', '5.4.0', '<'))->isTrue()
                 ->exception(function () use ($mocker) {
                     $mocker->generate(__NAMESPACE__ . '\doesSomething');
                 })
@@ -138,8 +138,8 @@ class funktion extends atoum\test
             ->then
                 ->string(version_compare(uniqid(), uniqid()))->isEqualTo($returnValue)
                 ->object($this->testedInstance->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($this->testedInstance)
-                ->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
-                ->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
+                ->boolean(version_compare('5.4.0', '5.3.0', '<'))->isFalse()
+                ->boolean(version_compare('5.3.0', '5.4.0', '<'))->isTrue()
                 ->object($this->testedInstance->generate($unknownFunctionName = __NAMESPACE__ . '\foo'))->isIdenticalTo($this->testedInstance)
                 ->variable(foo())->isNull()
 
@@ -152,8 +152,8 @@ class funktion extends atoum\test
                 unset($mocker->{$functionName});
             })
             ->then
-                ->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
-                ->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
+                ->boolean(version_compare('5.4.0', '5.3.0', '<'))->isFalse()
+                ->boolean(version_compare('5.3.0', '5.4.0', '<'))->isTrue()
 
             ->when(function () use ($mocker, $unknownFunctionName) {
                 unset($mocker->{$unknownFunctionName});

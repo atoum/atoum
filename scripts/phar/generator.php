@@ -10,7 +10,7 @@ $generator->setStubFile(__DIR__ . '/resources/stub.php');
 
 set_error_handler(
     function ($error, $message, $file, $line) use ($generator) {
-        if (error_reporting() !== 0) {
+        if (error_reporting() & $error) {
             $generator->writeError($message);
 
             exit($error);

@@ -10,9 +10,6 @@ php:
 cache:
   directories:
     - vendor
-matrix:
-  allow_failures:
-    - php: nightly
 notifications:
   irc: "irc.freenode.org##atoum"
   webhooks:

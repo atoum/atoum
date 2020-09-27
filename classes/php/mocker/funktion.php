@@ -161,18 +161,44 @@ class funktion extends mocker
 
     protected static function getParameterType(\reflectionParameter $parameter)
     {
-        switch (true) {
-            case $parameter->isArray():
-                return 'array ';
-
-            case $parameter->isCallable():
-                return 'callable ';
-
-            case $class = $parameter->getClass():
-                return '\\' . $class->getName() . ' ';
-
-            default:
+        if (version_compare(PHP_VERSION, '7.1.0', '>=')) {
+            // PHP 7.1+
+            if (!$parameter->hasType()) {
                 return '';
+            }
+
+            $parameterType = $parameter->getType();
+            $parameterTypes = $parameterType instanceof \ReflectionUnionType
+                ? $parameterType->getTypes()
+                : [$parameterType];
+
+            $names = [];
+            foreach ($parameterTypes as $type) {
+                $name = $type instanceof \reflectionNamedType ? $type->getName() : (string) $type;
+                if ($name === 'self') {
+                    $name = $parameter->getDeclaringClass()->getName();
+                }
+                $names[] = ($type instanceof \reflectionType && !$type->isBuiltin() ? '\\' : '') . $name;
+            }
+            return implode('|', $names) . ' ';
+        } else {
+            // PHP 5.6 and 7.0
+            switch (true) {
+                case $parameter->isArray():
+                    return 'array ';
+
+                case method_exists($parameter, 'isCallable') && $parameter->isCallable():
+                    return 'callable ';
+
+                case ($class = $parameter->getClass()):
+                    return '\\' . $class->getName() . ' ';
+
+                case method_exists($parameter, 'hasType') && $parameter->hasType():
+                    return (string) $parameter->getType() . ' ';
+
+                default:
+                    return '';
+            }
         }
     }
 
