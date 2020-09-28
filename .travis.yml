@@ -5,7 +5,7 @@ php:
   - 7.1
   - 7.2
   - 7.3
-  - 7.4snapshot
+  - 7.4
   - nightly
 cache:
   directories:
@@ -13,7 +13,6 @@ cache:
 matrix:
   allow_failures:
     - php: nightly
-    - php: 7.4snapshot
 notifications:
   irc: "irc.freenode.org##atoum"
   webhooks:

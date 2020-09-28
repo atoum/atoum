@@ -77,7 +77,7 @@ class tap extends report\fields\event
 
                     $this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastUncompleteMethod['class']) . '::' . trim($lastUncompleteMethod['method']) . '()' . PHP_EOL;
 
-                    if ($lastError['class'] === $lastUncompleteMethod['class'] && $lastError['method'] === $lastUncompleteMethod['method']) {
+                    if ($lastError && $lastError['class'] === $lastUncompleteMethod['class'] && $lastError['method'] === $lastUncompleteMethod['method']) {
                         $this->testLine .= '# ' . $lastError['type'] . ' : ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastError['message'])) . PHP_EOL;
                     } else {
                         $this->testLine .= '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastUncompleteMethod['output']) ?: 'uncomplete method') . PHP_EOL;

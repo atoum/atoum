@@ -52,6 +52,10 @@ class tokenizer implements \iteratorAggregate
                     break;
             }
 
+            if ($token === null) {
+                continue;
+            }
+
             $this->currentIterator->append(new token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
         }
 

@@ -32,8 +32,50 @@ class tap extends atoum\test
             ->if($adapter = new atoum\test\adapter())
             ->and($adapter->class_exists = true)
             ->and($runner = new \mock\mageekguy\atoum\runner())
+            ->and($scoreController = new mock\controller())
+            ->and(
+                $scoreController->getLastErroredMethod = [
+                    'case' => uniqid(),
+                    'dataSetKey' => uniqid(),
+                    'dataSetProvider' => uniqid(),
+                    'class' => uniqid(),
+                    'method' => uniqid(),
+                    'file' => uniqid(),
+                    'line' => rand(1, PHP_INT_MAX),
+                    'type' => rand(1, E_ALL),
+                    'message' => uniqid(),
+                    'errorFile' => uniqid(),
+                    'errorLine' => rand(1, PHP_INT_MAX)
+                ]
+            )
+            ->and(
+                $scoreController->getLastException = [
+                    'case' => null,
+                    'dataSetKey' => null,
+                    'dataSetProvider' => null,
+                    'class' => uniqid(),
+                    'method' => uniqid(),
+                    'file' => uniqid(),
+                    'line' => rand(1, PHP_INT_MAX),
+                    'value' => uniqid()
+                ]
+            )
+            ->and(
+                $scoreController->getLastFailAssertion = [
+                    'case' => null,
+                    'dataSetKey' => null,
+                    'class' => uniqid(),
+                    'method' => uniqid(),
+                    'file' => uniqid(),
+                    'line' => uniqid(),
+                    'asserter' => uniqid(),
+                    'fail' => uniqid()
+                ]
+            )
+            ->and($score = new \mock\mageekguy\atoum\test\score())
             ->and($testController = new mock\controller())
             ->and($testController->getTestedClassName = uniqid())
+            ->and($testController->getScore = $score)
             ->and($test = new \mock\mageekguy\atoum\test($adapter))
             ->and($field = new testedClass())
             ->then
