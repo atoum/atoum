@@ -253,7 +253,7 @@ class controller extends atoum\test
             ->then
                 ->boolean($streamController->invoke('fopen'))->isTrue()
                 ->string($streamController->invoke('fread'))->isEqualTo($contents)
-                ->boolean($streamController->invoke('fread'))->isFalse()
+                ->string($streamController->invoke('fread'))->isEqualTo('')
                 ->boolean($streamController->invoke('fclose'))->isTrue()
             ->if($streamController->resetCalls()->file_put_contents = true)
             ->then

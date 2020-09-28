@@ -116,6 +116,7 @@ class file extends atoum\test
                 trigger_error(uniqid());
                 return false;
             })
+            ->and($adapter->fclose = true)
             ->and($file = new testedClass(null, $adapter))
             ->and($adapter->resetCalls())
             ->then
@@ -137,8 +138,6 @@ class file extends atoum\test
             ->if($file = new testedClass(null, $adapter))
             ->and($adapter->flock = true)
             ->and($adapter->ftruncate = true)
-            ->and($adapter->fclose = function () {
-            })
             ->and($adapter->fwrite = false)
             ->and($adapter->fflush = function () {
             })
@@ -179,6 +178,7 @@ class file extends atoum\test
         $this
             ->if($adapter = new atoum\test\adapter())
             ->if($adapter->fopen = false)
+            ->and($adapter->fclose = true)
             ->and($file = new testedClass(null, $adapter))
             ->and($adapter->resetCalls())
             ->then
@@ -190,8 +190,6 @@ class file extends atoum\test
             ->if($adapter->fopen = $resource = uniqid())
             ->and($adapter->flock = true)
             ->and($adapter->ftruncate = false)
-            ->and($adapter->fclose = function () {
-            })
             ->and($adapter->resetCalls())
             ->then
                 ->exception(function () use ($file) {
