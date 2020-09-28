@@ -1515,18 +1515,9 @@ abstract class test implements observable, \countable
                 foreach ($reflectedMethod->getParameters() as $parameter) {
                     $parameterProvider = new test\data\providers\mock($this->mockGenerator);
 
-                    $parameterClassName = null;
-                    if (version_compare(PHP_VERSION, '7.1.0', '>=')) {
-                        // PHP 7.1+
-                        $parameterClassName = $parameter->hasType() && !$parameter->getType()->isBuiltin()
-                            ? $parameter->getType()->getName()
-                            : null;
-                    } else {
-                        // PHP 5.6 and 7.0
-                        $parameterClassName = $parameter->getClass()
-                            ? $parameter->getClass()->getName()
-                            : null ;
-                    }
+                    $parameterClassName = $parameter->hasType() && !$parameter->getType()->isBuiltin()
+                        ? $parameter->getType()->getName()
+                        : null;
 
                     if ($parameterClassName === null) {
                         throw new exceptions\logic\invalidArgument('Could not generate a data provider for ' . $this->class . '::' . $testMethodName . '() because it has at least one argument which is not type-hinted with a class or interface name');

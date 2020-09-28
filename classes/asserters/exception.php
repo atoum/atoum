@@ -30,16 +30,9 @@ class exception extends phpObject
         if ($exception instanceof \closure) {
             $exception = null;
 
-            if (version_compare(PHP_VERSION, '7.0.0') >= 0) {
-                try {
-                    $value($this->getTest());
-                } catch (\throwable $exception) {
-                }
-            } else {
-                try {
-                    $value();
-                } catch (\exception $exception) {
-                }
+            try {
+                $value($this->getTest());
+            } catch (\throwable $exception) {
             }
         }
 
@@ -143,13 +136,11 @@ class exception extends phpObject
 
     private static function isThrowable($value)
     {
-        return $value instanceof \exception || (version_compare(PHP_VERSION, '7.0.0') >= 0 && ($value instanceof \throwable));
+        return $value instanceof \throwable;
     }
 
     private static function isThrowableClass($value)
     {
-        return strtolower(ltrim($value, '\\')) === 'exception' ||
-            (version_compare(PHP_VERSION, '7.0.0') >= 0 && strtolower(ltrim($value, '\\')) === 'throwable') ||
-            is_subclass_of($value, version_compare(PHP_VERSION, '7.0.0') >= 0 ? 'throwable' : 'exception');
+        return strtolower(ltrim($value, '\\')) === 'throwable' || is_subclass_of($value, 'throwable');
     }
 }
