@@ -33,7 +33,7 @@ class cli extends fields\runner\result
             $string .= $this->locale->_('No test running.');
         } elseif ($this->success) {
             $string .= $this->successColorizer->colorize(
-                    sprintf(
+                sprintf(
                         $this->locale->_('Success (%s, %s, %s, %s, %s)!'),
                         sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
                         sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->voidMethodNumber - $this->skippedMethodNumber, $this->testMethodNumber),
@@ -41,11 +41,11 @@ class cli extends fields\runner\result
                         sprintf($this->locale->__('%s skipped method', '%s skipped methods', $this->skippedMethodNumber), $this->skippedMethodNumber),
                         sprintf($this->locale->__('%s assertion', '%s assertions', $this->assertionNumber), $this->assertionNumber)
                     )
-                )
+            )
             ;
         } else {
             $string .= $this->failureColorizer->colorize(
-                    sprintf(
+                sprintf(
                         $this->locale->_('Failure (%s, %s, %s, %s, %s, %s, %s, %s)!'),
                         sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
                         sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->voidMethodNumber - $this->skippedMethodNumber - $this->uncompletedMethodNumber, $this->testMethodNumber),
@@ -56,7 +56,7 @@ class cli extends fields\runner\result
                         sprintf($this->locale->__('%s error', '%s errors', $this->errorNumber), $this->errorNumber),
                         sprintf($this->locale->__('%s exception', '%s exceptions', $this->exceptionNumber), $this->exceptionNumber)
                     )
-                )
+            )
             ;
         }
 

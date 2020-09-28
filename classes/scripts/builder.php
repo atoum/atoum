@@ -475,7 +475,7 @@ class builder extends atoum\script\configurable
                 },
                 ['-rc', '--runner-configuration-files'],
                 '<file>',
-                 $this->locale->_('Use <file> as configuration file for runner')
+                $this->locale->_('Use <file> as configuration file for runner')
             )
             ->addArgumentHandler(
                 function ($script, $argument, $path) {
@@ -512,7 +512,6 @@ class builder extends atoum\script\configurable
                 ['-d', '--destination-directory'],
                 '<directory>',
                 $this->locale->_('Save phar in <directory>')
-
             )
             ->addArgumentHandler(
                 function ($script, $argument, $directory) {

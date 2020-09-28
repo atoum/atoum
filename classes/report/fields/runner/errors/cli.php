@@ -122,9 +122,9 @@ class cli extends report\fields\runner\errors
                     }
 
                     $string .= sprintf(
-                            $this->locale->_('%s:'),
-                            $this->errorColorizer->colorize(($errorMessage))
-                        ) .
+                        $this->locale->_('%s:'),
+                        $this->errorColorizer->colorize(($errorMessage))
+                    ) .
                         PHP_EOL
                     ;
 

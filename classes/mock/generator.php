@@ -614,9 +614,9 @@ class generator
     protected function generateInterfaceCode(\reflectionClass $class, $mockNamespace, $mockClass)
     {
         $addIteratorAggregate = (
-                $class->isInstantiable() === false
+            $class->isInstantiable() === false
             && (
-                    $class->implementsInterface('traversable') === true
+                $class->implementsInterface('traversable') === true
                 && $class->implementsInterface('iterator') === false
                 && $class->implementsInterface('iteratorAggregate') === false
             )
