@@ -1,19 +1,21 @@
+risky: true
+
 preset: psr2
 
 enabled:
-  - blankline_after_open_tag
+  - alpha_ordered_imports
+  - blank_line_after_opening_tag
+  - cast_spaces
   - concat_with_spaces
-  - join_function
   - native_function_casing
+  - no_alias_functions
   - no_blank_lines_after_class_opening
-  - ordered_use
+  - no_leading_import_slash
+  - no_unused_imports
+  - no_whitespace_in_blank_line
   - phpdoc_no_access
-  - remove_leading_slash_use
   - self_accessor
   - short_array_syntax
-  - spaces_cast
-  - unused_use
-  - whitespacy_lines
 
 finder:
   exclude:
