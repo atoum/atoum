@@ -110,30 +110,30 @@ abstract class configurable extends atoum\script
         parent::setArgumentHandlers()
             ->addArgumentHandler(
                 function ($script, $argument, $values) {
-                        if (count($values) !== 0) {
-                            throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-                        }
+                    if (count($values) !== 0) {
+                        throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+                    }
 
-                        $script->help();
-                    },
+                    $script->help();
+                },
                 ['-h', '--help'],
                 null,
                 $this->locale->_('Display this help')
             )
             ->addArgumentHandler(
                 function ($script, $argument, $files) {
-                        if (count($files) <= 0) {
-                            throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-                        }
+                    if (count($files) <= 0) {
+                        throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+                    }
 
-                        foreach ($files as $path) {
-                            try {
-                                $script->useConfigFile($path);
-                            } catch (includer\exception $exception) {
-                                throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file \'%s\' does not exist'), $path));
-                            }
+                    foreach ($files as $path) {
+                        try {
+                            $script->useConfigFile($path);
+                        } catch (includer\exception $exception) {
+                            throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file \'%s\' does not exist'), $path));
                         }
-                    },
+                    }
+                },
                 ['-c', '--configurations'],
                 '<file>...',
                 $this->locale->_('Use all configuration files <file>'),

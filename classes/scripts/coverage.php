@@ -87,24 +87,24 @@ class coverage extends runner
         return parent::setArgumentHandlers()
             ->addArgumentHandler(
                 function ($script, $argument, $values) {
-                        if (count($values) === 0) {
-                            throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-                        }
+                    if (count($values) === 0) {
+                        throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+                    }
 
-                        $script->setReportFormat(current($values));
-                    },
+                    $script->setReportFormat(current($values));
+                },
                 ['-fmt', '--format'],
                 '<xml|clover|html|treemap>',
                 $this->locale->_('Coverage report format')
             )
             ->addArgumentHandler(
                 function ($script, $argument, $values) {
-                        if (count($values) === 0) {
-                            throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-                        }
+                    if (count($values) === 0) {
+                        throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+                    }
 
-                        $script->setReportOutputPath(current($values));
-                    },
+                    $script->setReportOutputPath(current($values));
+                },
                 ['-o', '--output'],
                 '<path/to/file/or/directory>',
                 $this->locale->_('Coverage report output path')
