@@ -25,6 +25,11 @@ class mock extends adapter
         return $this->call($function);
     }
 
+    public function notReceiveAnyMessage($failMessage = null)
+	 {
+	 	 return $this->wasNotCalled($failMessage ?: $this->_('%s receive some messages', $this->adapterIsSet()->adapter->getMockClass()));
+	 }
+
     public function wasCalled($failMessage = null)
     {
         if ($this->adapterIsSet()->adapter->getCallsNumber() > 0) {
