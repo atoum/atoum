@@ -47,4 +47,16 @@ class mocker extends atoum\test
                 ->isEqualTo(new atoum\php\mocker\adapter())
         ;
     }
+
+    public function testSetParameterAnalyzer()
+    {
+        $this
+            ->variable(php\mocker::setParameterAnalyzer($analyzer = new atoum\tools\parameter\analyzer()))->isNull()
+            ->object(php\mocker::getParameterAnalyzer())->isIdenticalTo($analyzer)
+            ->variable(php\mocker::setParameterAnalyzer())->isNull()
+            ->object(php\mocker::getParameterAnalyzer())
+                ->isNotIdenticalTo($analyzer)
+                ->isEqualTo(new atoum\tools\parameter\analyzer())
+        ;
+    }
 }

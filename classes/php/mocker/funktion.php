@@ -132,7 +132,8 @@ class funktion extends mocker
         $parameters = [];
 
         foreach (self::filterParameters($function) as $parameter) {
-            $parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
+            $typeHintString = static::$parameterAnalyzer->getTypeHintString($parameter);
+            $parameterCode = (!empty($typeHintString) ? $typeHintString . ' ' : '') . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
 
             switch (true) {
                 case $parameter->isDefaultValueAvailable():
@@ -157,28 +158,6 @@ class funktion extends mocker
         }
 
         return 'array(' . implode(',', $parameters) . ')';
-    }
-
-    protected static function getParameterType(\reflectionParameter $parameter)
-    {
-        if (!$parameter->hasType()) {
-            return '';
-        }
-
-        $parameterType = $parameter->getType();
-        $parameterTypes = $parameterType instanceof \ReflectionUnionType
-            ? $parameterType->getTypes()
-            : [$parameterType];
-
-        $names = [];
-        foreach ($parameterTypes as $type) {
-            $name = $type instanceof \reflectionNamedType ? $type->getName() : (string) $type;
-            if ($name === 'self') {
-                $name = $parameter->getDeclaringClass()->getName();
-            }
-            $names[] = ($type instanceof \reflectionType && !$type->isBuiltin() ? '\\' : '') . $name;
-        }
-        return implode('|', $names) . ' ';
     }
 
     protected static function defineMockedFunction($namespace, $class, $function, \reflectionFunction $reflectedFunction = null)
