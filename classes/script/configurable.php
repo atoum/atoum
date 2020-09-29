@@ -109,19 +109,19 @@ abstract class configurable extends atoum\script
     {
         parent::setArgumentHandlers()
             ->addArgumentHandler(
-                    function ($script, $argument, $values) {
+                function ($script, $argument, $values) {
                         if (count($values) !== 0) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
 
                         $script->help();
                     },
-                    ['-h', '--help'],
-                    null,
-                    $this->locale->_('Display this help')
-                )
+                ['-h', '--help'],
+                null,
+                $this->locale->_('Display this help')
+            )
             ->addArgumentHandler(
-                    function ($script, $argument, $files) {
+                function ($script, $argument, $files) {
                         if (count($files) <= 0) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
@@ -134,11 +134,11 @@ abstract class configurable extends atoum\script
                             }
                         }
                     },
-                    ['-c', '--configurations'],
-                    '<file>...',
-                    $this->locale->_('Use all configuration files <file>'),
-                    PHP_INT_MAX
-                )
+                ['-c', '--configurations'],
+                '<file>...',
+                $this->locale->_('Use all configuration files <file>'),
+                PHP_INT_MAX
+            )
         ;
 
         return $this;

@@ -86,29 +86,29 @@ class coverage extends runner
     {
         return parent::setArgumentHandlers()
             ->addArgumentHandler(
-                    function ($script, $argument, $values) {
+                function ($script, $argument, $values) {
                         if (count($values) === 0) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
 
                         $script->setReportFormat(current($values));
                     },
-                    ['-fmt', '--format'],
-                    '<xml|clover|html|treemap>',
-                    $this->locale->_('Coverage report format')
-                )
+                ['-fmt', '--format'],
+                '<xml|clover|html|treemap>',
+                $this->locale->_('Coverage report format')
+            )
             ->addArgumentHandler(
-                    function ($script, $argument, $values) {
+                function ($script, $argument, $values) {
                         if (count($values) === 0) {
                             throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
                         }
 
                         $script->setReportOutputPath(current($values));
                     },
-                    ['-o', '--output'],
-                    '<path/to/file/or/directory>',
-                    $this->locale->_('Coverage report output path')
-                )
+                ['-o', '--output'],
+                '<path/to/file/or/directory>',
+                $this->locale->_('Coverage report output path')
+            )
         ;
     }
 }

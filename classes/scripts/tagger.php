@@ -95,7 +95,7 @@ class tagger extends atoum\script
                     },
                     ['-d', '--destination-directory'],
                     '<directory>',
-                     $this->locale->_('Save tagged files in <directory>')
+                    $this->locale->_('Save tagged files in <directory>')
                 )
             ;
         }
