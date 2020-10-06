@@ -34,5 +34,5 @@ $coverallsReport
 
 $runner->addReport($coverallsReport);
 $script->php('php -dxdebug.overload_var_dump=0');
-    
+
 $script->testIt();

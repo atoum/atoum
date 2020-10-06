@@ -1,0 +1,33 @@
+name: Windows
+
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+
+jobs:
+    windows-latest:
+        runs-on: windows-latest
+
+        strategy:
+            matrix:
+                php-versions: [ '7.2', '7.3', '7.4' ]
+            fail-fast: false
+
+        name: PHP ${{ matrix.php-versions }} on windows-latest
+
+        steps:
+            -   name: PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+
+            -   name: Checkout
+                uses: actions/checkout@v2
+
+            -   name: Configure
+                run: copy resources/configurations/ci/.github.php.dist .atoum.php
+
+            -   name: Run
+                run: php bin/atoum
