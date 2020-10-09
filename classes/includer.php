@@ -84,11 +84,11 @@ class includer
         return $firstError;
     }
 
-    public function errorHandler($error, $message, $file, $line, $context)
+    public function errorHandler($error, $message, $file, $line, $context = [])
     {
         $errorReporting = $this->adapter->error_reporting();
 
-        if ($errorReporting !== 0 && ($errorReporting & $error)) {
+        if ($errorReporting & $error) {
             foreach (array_reverse(debug_backtrace()) as $trace) {
                 if (isset($trace['file']) === true && $trace['file'] === $this->path) {
                     $file = $this->path;

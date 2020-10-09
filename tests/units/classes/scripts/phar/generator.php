@@ -277,7 +277,7 @@ class generator extends atoum\test
                 $pharController->offsetSet = function () {
                 };
 
-                return ($phar = new \mock\phar($name));
+                return ($phar = new \mock\phar($name, \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_FILEINFO));
             }))
             ->and($adapter->file_get_contents = function ($file) {
                 return false;
@@ -321,7 +321,7 @@ class generator extends atoum\test
             ->then
                 ->object($generator->run())->isIdenticalTo($generator)
                 ->mock($phar)
-                    ->call('__construct')->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null)->once()
+                    ->call('__construct')->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_FILEINFO, null)->once()
                     ->call('setMetadata')
                         ->withArguments(
                             [
@@ -334,7 +334,7 @@ class generator extends atoum\test
                             ]
                         )
                         ->once()
-                    ->call('setStub')->withArguments($stub, null)->once()
+                    ->call('setStub')->withArguments($stub, version_compare(PHP_VERSION, '8.0.0-dev', '<') ? null : -1)->once()
                     ->call('buildFromIterator')
                         ->withArguments(new iterators\recursives\atoum\source($generator->getOriginDirectory(), '1'), null)
                         ->once()
@@ -376,14 +376,14 @@ class generator extends atoum\test
                 $pharController->offsetSet = function () {
                 };
 
-                return ($phar = new \mock\phar($name));
+                return ($phar = new \mock\phar($name, \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_FILEINFO));
             }))
             ->then
                 ->object($generator->run(['-d', $directory = uniqid()]))->isIdenticalTo($generator)
                 ->string($generator->getDestinationDirectory())->isEqualTo($directory)
                 ->mock($phar)
                     ->call('__construct')
-                        ->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null)
+                        ->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_FILEINFO, null)
                         ->once()
                     ->call('setMetadata')
                         ->withArguments(
@@ -397,7 +397,7 @@ class generator extends atoum\test
                             ]
                         )
                         ->once()
-                    ->call('setStub')->withArguments($stub, null)->once()
+                    ->call('setStub')->withArguments($stub, version_compare(PHP_VERSION, '8.0.0-dev', '<') ? null : -1)->once()
                     ->call('buildFromIterator')
                         ->withArguments(new iterators\recursives\atoum\source($generator->getOriginDirectory(), '1'), null)
                         ->once()

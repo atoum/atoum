@@ -247,7 +247,7 @@ class runner extends atoum\script\configurable
         $runner = $this->runner;
         $errors = [];
 
-        $this->adapter->set_error_handler(function ($error, $message, $file, $line, $context) use (&$errors) {
+        $this->adapter->set_error_handler(function ($error, $message, $file, $line, $context = []) use (&$errors) {
             foreach (array_reverse(debug_backtrace()) as $trace) {
                 if (isset($trace['file']) === true && $trace['file'] === __DIR__) {
                     $file = __DIR__;
@@ -691,7 +691,7 @@ class runner extends atoum\script\configurable
                         set_error_handler(function ($error, $message, $file, $line) use ($autorunner) {
                             $errorReporting = error_reporting();
 
-                            if ($errorReporting !== 0 && $errorReporting & $error) {
+                            if ($errorReporting & $error) {
                                 $autorunner->writeError($message . ' in ' . $file . ' at line ' . $line, $error);
 
                                 exit(3);

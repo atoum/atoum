@@ -210,7 +210,7 @@ class php extends atoum\test
             ->if($php = new testedClass($phpPath = uniqid(), $adapter))
             ->and($code = uniqid())
             ->and($adapter->proc_open = function ($command, $descriptors, & $streams) use (& $phpResource, & $stdin, & $stdout, & $stderr) {
-                $streams = [$stdin = uniqid(), $stdout = uniqid(), $stderr = uniqid];
+                $streams = [$stdin = uniqid(), $stdout = uniqid(), $stderr = uniqid()];
                 return ($phpResource = uniqid());
             })
             ->and($adapter->fwrite = strlen($code))
@@ -267,7 +267,7 @@ class php extends atoum\test
             ->then
                 ->variable($php->getExitCode())->isNull()
             ->if($adapter->proc_open = function ($command, $descriptors, & $streams) use (& $phpResource, & $stdin, & $stdout, & $stderr) {
-                $streams = [$stdin = uniqid(), $stdout = uniqid(), $stderr = uniqid];
+                $streams = [$stdin = uniqid(), $stdout = uniqid(), $stderr = uniqid()];
                 return ($phpResource = uniqid());
             })
             ->and($adapter->fclose = null)

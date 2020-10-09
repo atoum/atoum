@@ -301,7 +301,7 @@ class integer extends atoum\test
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notZero . PHP_EOL . $diffValue)
-                ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, 0)->once
+                ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, 'integer(0)')->once
                 ->mock($diff)
                     ->call('setExpected')->withArguments(0)->once
                     ->call('setActual')->withArguments($value)->once
@@ -311,7 +311,7 @@ class integer extends atoum\test
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notZero . PHP_EOL . $diffValue)
-                ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, 0)->twice
+                ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, 'integer(0)')->twice
                 ->mock($diff)
                     ->call('setExpected')->withArguments(0)->twice
                     ->call('setActual')->withArguments($value)->twice

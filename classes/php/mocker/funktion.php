@@ -132,7 +132,8 @@ class funktion extends mocker
         $parameters = [];
 
         foreach (self::filterParameters($function) as $parameter) {
-            $parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
+            $typeHintString = static::$parameterAnalyzer->getTypeHintString($parameter);
+            $parameterCode = (!empty($typeHintString) ? $typeHintString . ' ' : '') . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
 
             switch (true) {
                 case $parameter->isDefaultValueAvailable():
@@ -157,23 +158,6 @@ class funktion extends mocker
         }
 
         return 'array(' . implode(',', $parameters) . ')';
-    }
-
-    protected static function getParameterType(\reflectionParameter $parameter)
-    {
-        switch (true) {
-            case $parameter->isArray():
-                return 'array ';
-
-            case $parameter->isCallable():
-                return 'callable ';
-
-            case $class = $parameter->getClass():
-                return '\\' . $class->getName() . ' ';
-
-            default:
-                return '';
-        }
     }
 
     protected static function defineMockedFunction($namespace, $class, $function, \reflectionFunction $reflectedFunction = null)

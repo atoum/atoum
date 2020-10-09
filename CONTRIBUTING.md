@@ -105,9 +105,9 @@ $ vendor/bin/php-cs-fixer --dry-run --diff --verbose
 
 ### Compatibility
 
-Your code **must** work on PHP from version 5.6 to the latest stable.
+Your code **must** work on PHP from version 7.2 to the latest stable.
 
-When you need to use a feature that is only available on PHP version greater than 5.6, you **must** either:
+When you need to use a feature that is only available on PHP version greater than 7.2, you **must** either:
 
 * Use version sniffing (`version_compare`),
 * Check if class exists,

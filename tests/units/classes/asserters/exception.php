@@ -2,18 +2,12 @@
 
 namespace
 {
-    if (version_compare(PHP_VERSION, '7.0.0') < 0) {
-        class throwable
-        {
-        }
-    } else {
-        interface throwableExtended extends throwable
-        {
-        }
+    interface throwableExtended extends throwable
+    {
+    }
 
-        class exceptionExtended extends exception implements throwableExtended
-        {
-        }
+    class exceptionExtended extends exception implements throwableExtended
+    {
     }
 }
 
@@ -80,38 +74,7 @@ namespace mageekguy\atoum\tests\units\asserters
                     ->mock($locale)->call('_')->withArguments('%s is not an exception', $type)->once
                     ->mock($analyzer)->call('getTypeOf')->withArguments($value)->once
                     ->string($this->testedInstance->getValue())->isEqualTo($value)
-            ;
-        }
 
-        /** @php < 7.0.0 */
-        public function testSetWithPhpLt7(atoum\locale $locale, atoum\tools\variable\analyzer $analyzer)
-        {
-            $this
-                ->given(
-                    $this->newTestedInstance
-                        ->setLocale($locale)
-                        ->setAnalyzer($analyzer),
-                    $this->calling($locale)->_ = $notAnException = uniqid(),
-                    $this->calling($analyzer)->getTypeOf = $type = uniqid()
-                )
-                ->then
-                    ->exception(function () use (& $line, & $value) {
-                        $line = __LINE__;
-                        $this->testedInstance->setWith($value = new \throwable);
-                    })
-                        ->isInstanceOf(atoum\asserter\exception::class)
-                        ->hasMessage($notAnException)
-                    ->mock($locale)->call('_')->withArguments('%s is not an exception', $type)->once
-                    ->mock($analyzer)->call('getTypeOf')->withArguments($value)->once
-                    ->object($this->testedInstance->getValue())->isEqualTo($value)
-            ;
-        }
-
-        /** @php >= 7.0.0 */
-        public function testSetWithPhpGte7()
-        {
-            $this
-                ->given($this->newTestedInstance)
                 ->then
                     ->object($this->testedInstance->setWith($value = new \error()))->isTestedInstance
                     ->exception($this->testedInstance->getValue())->isIdenticalTo($value)
@@ -157,14 +120,7 @@ namespace mageekguy\atoum\tests\units\asserters
                     })
                         ->isInstanceOf(atoum\asserter\exception::class)
                         ->hasMessage($failMessage)
-            ;
-        }
 
-        /** @php >= 7.0.0 */
-        public function testIsInstanceOfPhpGte7()
-        {
-            $this
-                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
                 ->if($this->testedInstance->setWith(new \exception()))
                 ->then
                     ->object($this->testedInstance->isInstanceOf(\throwable::class))

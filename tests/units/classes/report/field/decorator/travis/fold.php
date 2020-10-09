@@ -16,7 +16,7 @@ class fold extends atoum\test
     public function testDecorate(atoum\report\field $field)
     {
         $this
-            ->given($this->calling($field)->__toString->doesNothing)
+        ->given($this->calling($field)->__toString = '')
             ->if($this->newTestedInstance($field, $slug = uniqid()))
             ->then
                 ->castToString($this->testedInstance)->isEmpty

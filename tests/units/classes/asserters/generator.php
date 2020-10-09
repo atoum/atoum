@@ -37,55 +37,9 @@ class generator extends atoum\test
         ;
     }
 
-    /**
-     * @php < 7.0
-     */
-    public function testReturnsBeforePhp7()
-    {
-        $generator = function () {
-            yield 1;
-            yield 2;
-        };
-
-        $this
-            ->assert('Use all yields then return')
-            ->given(
-                $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-            )
-            ->then
-            ->object($asserter->setWith($generator()))->isIdenticalTo($asserter)
-
-            ->when($yieldAsserter = $asserter->yields)
-                ->object($yieldAsserter)->isInstanceOf(atoum\asserters\variable::class)
-            ->then($proxiedAsserter = $yieldAsserter->variable)
-                ->object($proxiedAsserter)->isInstanceOf(atoum\asserters\generator\asserterProxy::class)
-                ->integer($proxiedAsserter->getValue())->isEqualTo(1)
-
-            ->when($yieldAsserter = $asserter->yields)
-                ->object($yieldAsserter)->isInstanceOf(atoum\asserters\variable::class)
-            ->then($proxiedAsserter = $yieldAsserter->variable)
-                ->object($proxiedAsserter)->isInstanceOf(atoum\asserters\generator\asserterProxy::class)
-                ->integer($proxiedAsserter->getValue())->isEqualTo(2)
-
-            ->exception(function () use ($asserter) {
-                $asserter->returns;
-            })
-                ->isInstanceOf(atoum\exceptions\logic::class)
-                ->hasMessage('The returns asserter could only be used with PHP>=7.0')
-        ;
-    }
-
-
-
-    /**
-     * @php >= 7.0
-     */
     public function testReturns()
     {
-        if (version_compare(PHP_VERSION, '7.0') >= 0) {
-            $generator = eval(<<<'PHP'
+        $generator = eval(<<<'PHP'
 return function() {
     for ($i=0; $i<2; $i++) {
         yield ($i+1);
@@ -94,8 +48,7 @@ return function() {
     return 42;
 };
 PHP
-            );
-        }
+        );
 
         $this
             ->assert('Use all yields then return')

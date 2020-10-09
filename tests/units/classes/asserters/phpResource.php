@@ -82,7 +82,7 @@ class phpResource extends atoum\test
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notAResource)
-                ->mock($locale)->call('_')->withArguments('%s is not of type %s', $asserter, 0)->once
+                ->mock($locale)->call('_')->withArguments('%s is not of type %s', $asserter, 'foo')->once
         ;
     }
 

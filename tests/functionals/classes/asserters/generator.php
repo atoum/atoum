@@ -9,13 +9,9 @@ require_once __DIR__ . '/../../runner.php';
 
 class generator extends atoum\tests\functionals\test\functional
 {
-    /**
-     * @php >= 7.0
-     */
     public function testUsage()
     {
-        if (version_compare(PHP_VERSION, '7.0') >= 0) {
-            $generator = eval(<<<'PHP'
+        $generator = eval(<<<'PHP'
 return function() {
     for ($i=0; $i<3; $i++) {
         yield ($i+1);
@@ -24,8 +20,7 @@ return function() {
     return 42;
 };
 PHP
-            );
-        }
+        );
 
         $this
             ->generator($generator())
@@ -39,13 +34,9 @@ PHP
         ;
     }
 
-    /**
-     * @php >= 7.0
-     */
     public function testUsageComplect()
     {
-        if (version_compare(PHP_VERSION, '7.0') >= 0) {
-            $generator = eval(<<<'PHP'
+        $generator = eval(<<<'PHP'
 return function() {
     yield [
         "1", "2", "3"
@@ -59,8 +50,7 @@ return function() {
     return 42;
 };
 PHP
-            );
-        }
+        );
 
         $this
             ->generator($generator())

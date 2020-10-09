@@ -8,7 +8,7 @@ $tagger = new scripts\tagger(__FILE__);
 
 set_error_handler(
     function ($error, $message, $file, $line) use ($tagger) {
-        if (error_reporting() !== 0) {
+        if (error_reporting() & $error) {
             $tagger->writeError($message);
 
             exit($error);

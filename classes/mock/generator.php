@@ -10,6 +10,7 @@ class generator
     const defaultNamespace = 'mock';
 
     protected $adapter = null;
+    protected $parameterAnalyzer = null;
     protected $reflectionClassFactory = null;
     protected $shuntedMethods = [];
     protected $overloadedMethods = [];
@@ -27,6 +28,7 @@ class generator
     {
         $this
             ->setAdapter()
+            ->setParameterAnalyzer()
             ->setReflectionClassFactory()
         ;
     }
@@ -46,6 +48,18 @@ class generator
     public function getAdapter()
     {
         return $this->adapter;
+    }
+
+    public function setParameterAnalyzer(atoum\tools\parameter\analyzer $analyzer = null)
+    {
+        $this->parameterAnalyzer = $analyzer ?: new atoum\tools\parameter\analyzer();
+
+        return $this;
+    }
+
+    public function getParameterAnalyzer()
+    {
+        return $this->parameterAnalyzer;
     }
 
     public function setReflectionClassFactory(\closure $factory = null)
@@ -674,12 +688,12 @@ class generator
 
     protected function isNullable(\reflectionType $type)
     {
-        return version_compare(PHP_VERSION, '7.0') >= 0 && $type->allowsNull() === true;
+        return $type->allowsNull() === true;
     }
 
     protected function hasReturnType(\reflectionMethod $method)
     {
-        return version_compare(PHP_VERSION, '7.0') >= 0 && $method->hasReturnType() === true;
+        return $method->hasReturnType() === true;
     }
 
     protected function getReflectionType(\reflectionMethod $method)
@@ -695,13 +709,6 @@ class generator
     protected function isVoid(\reflectionMethod $method)
     {
         return $this->hasReturnType($method) ? $this->getReflectionTypeName($method->getReturnType()) === 'void' : false;
-    }
-
-    protected static function isNullableParameter(\ReflectionParameter $parameter)
-    {
-        return version_compare(PHP_VERSION, '7.1') >= 0 &&
-               $parameter->allowsNull() &&
-               (!$parameter->isDefaultValueAvailable() || ($parameter->isDefaultValueAvailable() && null !== $parameter->getDefaultValue()));
     }
 
     protected static function isDefaultParameterNull(\ReflectionParameter $parameter)
@@ -737,7 +744,8 @@ class generator
         $mustBeNull = $this->isOrphanized($method->getName());
 
         foreach ($method->getParameters() as $parameter) {
-            $parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . ($parameter->isVariadic() == false ? '' : '... ') . '$' . $parameter->getName();
+            $typeHintString = $this->parameterAnalyzer->getTypeHintString($parameter);
+            $parameterCode = (!empty($typeHintString) ? $typeHintString . ' ' : '') . ($parameter->isPassedByReference() == false ? '' : '& ') . ($parameter->isVariadic() == false ? '' : '... ') . '$' . $parameter->getName();
 
             switch (true) {
                 case $parameter->isDefaultValueAvailable():
@@ -771,28 +779,6 @@ class generator
         $lastAntiSlash = strrpos($class, '\\');
 
         return ($lastAntiSlash === false ? $class : substr($class, $lastAntiSlash + 1));
-    }
-
-    protected static function getParameterType(\reflectionParameter $parameter)
-    {
-        $prefix = self::isNullableParameter($parameter) ? '?' : '';
-        switch (true) {
-            case $parameter->isArray():
-                return $prefix . 'array ';
-
-            case method_exists($parameter, 'isCallable') && $parameter->isCallable():
-                return $prefix . 'callable ';
-
-            case ($class = $parameter->getClass()):
-                return $prefix . '\\' . $class->getName() . ' ';
-
-            case method_exists($parameter, 'hasType') && $parameter->hasType():
-                $type = $parameter->getType();
-                return $prefix . ($type instanceof \reflectionNamedType ? $type->getName() : (string) $type) . ' ';
-
-            default:
-                return '';
-        }
     }
 
     protected static function hasVariadic(\reflectionMethod $method)

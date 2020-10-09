@@ -8,7 +8,7 @@ $builder = new scripts\builder(__FILE__);
 
 set_error_handler(
     function ($error, $message, $file, $line) use ($builder) {
-        if (error_reporting() !== 0) {
+        if (error_reporting() & $error) {
             $builder->writeError($message);
 
             exit($error);

@@ -10,7 +10,7 @@ $treemap = new scripts\treemap(__FILE__);
 
 set_error_handler(
     function ($error, $message, $file, $line) use ($treemap) {
-        if (error_reporting() !== 0) {
+        if (error_reporting() & $error) {
             $treemap->writeError($message);
 
             exit($error);

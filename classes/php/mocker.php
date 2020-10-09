@@ -10,6 +10,7 @@ abstract class mocker
     protected $reflectedFunctionFactory = null;
 
     protected static $adapter = null;
+    protected static $parameterAnalyzer = null;
 
     public function __construct($defaultNamespace = '')
     {
@@ -51,6 +52,17 @@ abstract class mocker
     {
         return static::$adapter;
     }
+
+    public static function setParameterAnalyzer(atoum\tools\parameter\analyzer $analyzer = null)
+    {
+        static::$parameterAnalyzer = $analyzer ?: new atoum\tools\parameter\analyzer();
+    }
+
+    public static function getParameterAnalyzer()
+    {
+        return static::$parameterAnalyzer;
+    }
 }
 
 mocker::setAdapter();
+mocker::setParameterAnalyzer();

@@ -8,7 +8,7 @@ $compiler = new scripts\compiler(__FILE__);
 
 set_error_handler(
     function ($error, $message, $file, $line) use ($compiler) {
-        if (error_reporting() !== 0) {
+        if (error_reporting() & $error) {
             $compiler->writeError($message);
 
             exit($error);
