@@ -2,6 +2,8 @@
 
 # *atoum* [![Package version](https://img.shields.io/packagist/v/atoum/atoum.svg)](https://packagist.org/packages/atoum/atoum) [![Build Status](https://travis-ci.org/atoum/atoum.svg?branch=master)](https://travis-ci.org/atoum/atoum) [![Build status](https://ci.appveyor.com/api/projects/status/ir4vt58yxkt615i8/branch/master?svg=true)](https://ci.appveyor.com/project/jubianchi/atoum/branch/master)  [![Coverage Status](https://coveralls.io/repos/github/atoum/atoum/badge.svg?branch=master)](https://coveralls.io/github/atoum/atoum?branch=master) [![StyleCI](https://styleci.io/repos/1942295/shield?branch=master)](https://styleci.io/repos/1942295) [![Gitter](https://badges.gitter.im/atoum/atoum.svg)](https://gitter.im/atoum/atoum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+***For PHP 7.x, 8.x use branch 4.x***
+
 ## A simple, modern and intuitive unit testing framework for PHP!
 
 Just like SimpleTest or PHPUnit, *atoum* is a unit testing framework specific to the [PHP](http://www.php.net) language.
