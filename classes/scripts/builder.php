@@ -155,7 +155,7 @@ class builder extends atoum\script\configurable
 
     public function setScoreDirectory($path)
     {
-        $this->scoreDirectory = static::cleanDirectoryPath($path);
+        $this->scoreDirectory = $this->cleanDirectoryPath($path);
 
         return $this;
     }
@@ -167,7 +167,7 @@ class builder extends atoum\script\configurable
 
     public function setErrorsDirectory($path)
     {
-        $this->errorsDirectory = static::cleanDirectoryPath($path);
+        $this->errorsDirectory = $this->cleanDirectoryPath($path);
 
         return $this;
     }
@@ -179,7 +179,7 @@ class builder extends atoum\script\configurable
 
     public function setDestinationDirectory($path)
     {
-        $this->destinationDirectory = static::cleanDirectoryPath($path);
+        $this->destinationDirectory = $this->cleanDirectoryPath($path);
 
         return $this;
     }
@@ -191,7 +191,7 @@ class builder extends atoum\script\configurable
 
     public function setWorkingDirectory($path)
     {
-        $this->workingDirectory = static::cleanDirectoryPath($path);
+        $this->workingDirectory = $this->cleanDirectoryPath($path);
 
         return $this;
     }
