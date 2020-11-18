@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\test\data\provider\object\exceptions;
+namespace atoum\atoum\test\data\provider\object\exceptions;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class privateConstructor extends atoum\exceptions\runtime
 {

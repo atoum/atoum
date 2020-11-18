@@ -1,15 +1,15 @@
 <?php
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\fields\runner\coverage;
-use mageekguy\atoum\reports;
-use mageekguy\atoum\reports\realtime;
+use atoum\atoum;
+use atoum\atoum\report\fields\runner\coverage;
+use atoum\atoum\reports;
+use atoum\atoum\reports\realtime;
 
-if (defined('mageekguy\atoum\phing\task\path') === false) {
-    define('mageekguy\atoum\phing\task\path', 'phing/Task.php');
+if (defined('atoum\atoum\phing\task\path') === false) {
+    define('atoum\atoum\phing\task\path', 'phing/Task.php');
 }
 
-require_once mageekguy\atoum\phing\task\path;
+require_once atoum\atoum\phing\task\path;
 
 class AtoumTask extends task
 {
@@ -110,7 +110,7 @@ class AtoumTask extends task
             require_once $this->atoumPharPath;
         } elseif ($this->atoumAutoloaderPath !== null) {
             require_once $this->atoumAutoloaderPath;
-        } elseif (class_exists('mageekguy\atoum\scripts\runner', false) === false) {
+        } elseif (class_exists('atoum\atoum\scripts\runner', false) === false) {
             throw new exception('Unknown class mageekguy\\atoum\\scripts\\runner, consider setting atoumPharPath parameter');
         }
 
@@ -178,7 +178,7 @@ class AtoumTask extends task
         }
 
         if ($this->telemetryEnabled()) {
-            if (class_exists('mageekguy\atoum\reports\telemetry') === false) {
+            if (class_exists('atoum\atoum\reports\telemetry') === false) {
                 throw new exception('AtoumTask depends on atoum/reports-extension being installed to enable telemetry report');
             }
 

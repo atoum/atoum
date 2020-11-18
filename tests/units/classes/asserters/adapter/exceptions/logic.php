@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\adapter\exceptions;
+namespace atoum\atoum\tests\units\asserters\adapter\exceptions;
 
 require __DIR__ . '/../../../../runner.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class logic extends atoum\test
 {

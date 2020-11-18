@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\exceptions\logic;
+namespace atoum\atoum\exceptions\logic;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class invalidArgument extends \invalidArgumentException implements atoum\exception
 {

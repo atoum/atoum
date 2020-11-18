@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\test;
-use mageekguy\atoum\test\adapter\call\decorators;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\test;
+use atoum\atoum\test\adapter\call\decorators;
+use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -59,7 +59,7 @@ class mock extends atoum\test
     {
         $this
             ->given(
-                $mockController = new \mock\mageekguy\atoum\mock\controller(),
+                $mockController = new \mock\atoum\atoum\mock\controller(),
                 $asserter = $this->newTestedInstance
             )
             ->then
@@ -67,7 +67,7 @@ class mock extends atoum\test
                 ->variable($asserter->getAdapter())->isNull()
 
             ->if(
-                $asserter->setWith($mock = new \mock\mageekguy\atoum\score()),
+                $asserter->setWith($mock = new \mock\atoum\atoum\score()),
                 $mock->setMockController($mockController),
                 $this->resetMock($mockController)
             )
@@ -97,7 +97,7 @@ class mock extends atoum\test
                 ->mock($locale)->call('_')->withArguments('%s is not a mock', $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($mock)->once
 
-                ->object($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\mock()))->isIdenticalTo($asserter)
+                ->object($asserter->setWith($mock = new \mock\atoum\atoum\tests\units\asserters\mock()))->isIdenticalTo($asserter)
                 ->object($asserter->getAdapter())->isIdenticalTo($mock->getMockController())
         ;
     }

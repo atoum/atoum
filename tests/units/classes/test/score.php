@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test;
+namespace atoum\atoum\tests\units\test;
 
-use mageekguy\atoum;
-use mageekguy\atoum\test\score as testedClass;
+use atoum\atoum;
+use atoum\atoum\test\score as testedClass;
 
 require_once __DIR__ . '/../../runner.php';
 

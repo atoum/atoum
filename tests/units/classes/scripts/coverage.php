@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts;
+namespace atoum\atoum\tests\units\scripts;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 require_once __DIR__ . '/../../runner.php';
 

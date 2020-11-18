@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner;
+namespace atoum\atoum\tests\units\report\fields\runner;
 
-use mageekguy\atoum;
-use mock\mageekguy\atoum\report\fields\runner\coverage as testedClass;
+use atoum\atoum;
+use mock\atoum\atoum\report\fields\runner\coverage as testedClass;
 
 require_once __DIR__ . '/../../../../runner.php';
 

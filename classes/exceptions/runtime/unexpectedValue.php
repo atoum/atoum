@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\exceptions\runtime;
+namespace atoum\atoum\exceptions\runtime;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class unexpectedValue extends \unexpectedValueException implements atoum\exception
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -48,7 +48,7 @@ class phpArray extends atoum\test
     public function test__get()
     {
         $this
-            ->given($this->newTestedInstance($generator = new \mock\mageekguy\atoum\asserter\generator()))
+            ->given($this->newTestedInstance($generator = new \mock\atoum\atoum\asserter\generator()))
             ->then
                 ->object($this->testedInstance->object)->isTestedInstance
                 ->object($this->testedInstance->getInnerAsserter())->isEqualTo($generator->object)

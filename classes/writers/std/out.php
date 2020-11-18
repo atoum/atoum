@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\writers\std;
+namespace atoum\atoum\writers\std;
 
-use mageekguy\atoum\writers;
+use atoum\atoum\writers;
 
 class out extends writers\std
 {

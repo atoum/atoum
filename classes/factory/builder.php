@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\factory;
+namespace atoum\atoum\factory;
 
-use mageekguy\atoum\test;
+use atoum\atoum\test;
 
 interface builder
 {

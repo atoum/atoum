@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\scripts;
+namespace atoum\atoum\scripts;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use atoum\atoum;
+use atoum\atoum\exceptions;
 
 class builder extends atoum\script\configurable
 {

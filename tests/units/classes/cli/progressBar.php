@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\cli;
+namespace atoum\atoum\tests\units\cli;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli;
+use atoum\atoum;
+use atoum\atoum\cli;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -51,7 +51,7 @@ class progressBar extends atoum\test
     public function testRefresh()
     {
         $this
-            ->if($cli = new \mock\mageekguy\atoum\cli())
+            ->if($cli = new \mock\atoum\atoum\cli())
             ->and($cli->getMockController()->isTerminal = true)
             ->and($progressBar = new cli\progressBar(0, $cli))
             ->then

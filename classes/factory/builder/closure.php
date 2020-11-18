@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\factory\builder;
+namespace atoum\atoum\factory\builder;
 
-use mageekguy\atoum\factory;
-use mageekguy\atoum\test;
+use atoum\atoum\factory;
+use atoum\atoum\test;
 
 class closure implements factory\builder
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\php\tokenizer;
+namespace atoum\atoum\php\tokenizer;
 
-use mageekguy\atoum\exceptions;
+use atoum\atoum\exceptions;
 
 class token extends iterator\value
 {

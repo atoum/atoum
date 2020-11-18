@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\template;
+namespace atoum\atoum\tests\units\template;
 
-use mageekguy\atoum;
-use mageekguy\atoum\template;
+use atoum\atoum;
+use atoum\atoum\template;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -91,7 +91,7 @@ class iterator extends atoum\test
         $this
             ->if($iterator = new template\iterator())
             ->and($template = new atoum\template())
-            ->and($template->addChild($tag = new \mock\mageekguy\atoum\template\tag(uniqid())))
+            ->and($template->addChild($tag = new \mock\atoum\atoum\template\tag(uniqid())))
             ->and($tag->getMockController()->build = function () {
             })
             ->and($iterator->addTag($tag->getTag(), $template))

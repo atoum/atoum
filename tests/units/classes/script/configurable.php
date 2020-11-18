@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\script;
+namespace atoum\atoum\tests\units\script;
 
-use mageekguy\atoum;
-use mock\mageekguy\atoum\script\configurable as testedClass;
+use atoum\atoum;
+use mock\atoum\atoum\script\configurable as testedClass;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -92,7 +92,7 @@ class configurable extends atoum\test
                 })
                     ->isInstanceOf(atoum\includer\exception::class)
                     ->hasMessage('Unable to find configuration file \'' . $file . '\'')
-            ->if($includer = new \mock\mageekguy\atoum\includer())
+            ->if($includer = new \mock\atoum\atoum\includer())
             ->and($this->calling($includer)->includePath = function () {
             })
             ->and($configurable->setIncluder($includer))

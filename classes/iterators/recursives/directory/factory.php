@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\iterators\recursives\directory;
+namespace atoum\atoum\iterators\recursives\directory;
 
-use mageekguy\atoum\iterators\filters;
+use atoum\atoum\iterators\filters;
 
 class factory
 {

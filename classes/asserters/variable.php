@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\atoum\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\tools;
-use mageekguy\atoum\tools\diffs;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\exceptions;
+use atoum\atoum\tools;
+use atoum\atoum\tools\diffs;
 
 class variable extends asserter
 {

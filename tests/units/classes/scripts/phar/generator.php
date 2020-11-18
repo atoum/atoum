@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\phar;
+namespace atoum\atoum\tests\units\scripts\phar;
 
-use mageekguy\atoum;
-use mageekguy\atoum\iterators;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\mock\stream;
-use mageekguy\atoum\scripts\phar;
+use atoum\atoum;
+use atoum\atoum\iterators;
+use atoum\atoum\mock;
+use atoum\atoum\mock\stream;
+use atoum\atoum\scripts\phar;
 
 require_once __DIR__ . '/../../../runner.php';
 
@@ -344,10 +344,10 @@ class generator extends atoum\test
             ->if($superglobals = new atoum\superglobals())
             ->and($superglobals->_SERVER = ['argv' => [uniqid(), '--help']])
             ->and($generator->setArgumentsParser(new atoum\script\arguments\parser($superglobals)))
-            ->and($stdout = new \mock\mageekguy\atoum\writers\std\out())
+            ->and($stdout = new \mock\atoum\atoum\writers\std\out())
             ->and($stdout->getMockController()->write = function () {
             })
-            ->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
+            ->and($stderr = new \mock\atoum\atoum\writers\std\err())
             ->and($stderr->getMockController()->write = function () {
             })
             ->and($generator->setHelpWriter($stdout))

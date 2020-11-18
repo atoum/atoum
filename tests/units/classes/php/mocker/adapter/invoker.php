@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php\mocker\adapter;
+namespace atoum\atoum\tests\units\php\mocker\adapter;
 
 require_once __DIR__ . '/../../../../runner.php';
 

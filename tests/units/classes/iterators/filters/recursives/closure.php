@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\iterators\filters\recursives;
+namespace atoum\atoum\tests\units\iterators\filters\recursives;
 
 require __DIR__ . '/../../../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\iterators\filters\recursives\closure as testedClass;
+use atoum\atoum;
+use atoum\atoum\iterators\filters\recursives\closure as testedClass;
 
 class closure extends atoum\test
 {

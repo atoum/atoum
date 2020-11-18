@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\memory;
+namespace atoum\atoum\report\fields\test\memory;
 
-use mageekguy\atoum\report;
+use atoum\atoum\report;
 
 class phing extends report\fields\test\memory\cli
 {

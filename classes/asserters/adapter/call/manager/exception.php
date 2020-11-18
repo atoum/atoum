@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\asserters\adapter\call\manager;
+namespace atoum\atoum\asserters\adapter\call\manager;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class exception extends \runtimeException implements atoum\exception
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mailers;
+namespace atoum\atoum\tests\units\mailers;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mailers;
+use atoum\atoum;
+use atoum\atoum\mailers;
 
 require_once __DIR__ . '/../../runner.php';
 

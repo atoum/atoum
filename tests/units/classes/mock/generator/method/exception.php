@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\generator\method;
+namespace atoum\atoum\tests\units\mock\generator\method;
 
 require __DIR__ . '/../../../../runner.php';
 

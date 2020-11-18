@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\test\data\provider;
+namespace atoum\atoum\test\data\provider;
 
-use mageekguy\atoum\test\data\provider;
+use atoum\atoum\test\data\provider;
 
 class aggregator implements provider, \countable
 {

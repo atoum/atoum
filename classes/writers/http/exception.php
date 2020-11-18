@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\writers\http;
+namespace atoum\atoum\writers\http;
 
 class exception extends \runtimeException
 {

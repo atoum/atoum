@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\fs\path;
+namespace atoum\atoum\fs\path;
 
-use mageekguy\atoum;
-use mageekguy\atoum\fs\path;
+use atoum\atoum;
+use atoum\atoum\fs\path;
 
 class factory
 {

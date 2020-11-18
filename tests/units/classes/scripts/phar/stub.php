@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\phar;
+namespace atoum\atoum\tests\units\scripts\phar;
 
-use mageekguy\atoum;
-use mageekguy\atoum\scripts\phar;
-use mock\mageekguy\atoum as mock;
+use atoum\atoum;
+use atoum\atoum\scripts\phar;
+use mock\atoum\atoum as mock;
 
 require_once __DIR__ . '/../../../runner.php';
 
@@ -44,7 +44,7 @@ class stub extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance(uniqid()),
-                $writer = new \mock\mageekguy\atoum\writer
+                $writer = new \mock\atoum\atoum\writer
             )
             ->if($this->testedInstance->setOutputWriter($writer))
             ->then
@@ -64,7 +64,7 @@ class stub extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance(uniqid()),
-                $writer = new \mock\mageekguy\atoum\writer
+                $writer = new \mock\atoum\atoum\writer
             )
             ->and->mockGenerator->shuntParentClassCalls()
             ->and(
@@ -95,7 +95,7 @@ class stub extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance(uniqid()),
-                $writer = new \mock\mageekguy\atoum\writer
+                $writer = new \mock\atoum\atoum\writer
             )
             ->and->mockGenerator->shuntParentClassCalls()
             ->and(
@@ -124,7 +124,7 @@ class stub extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance(uniqid()),
-                $writer = new \mock\mageekguy\atoum\writer
+                $writer = new \mock\atoum\atoum\writer
             )
             ->if($this->testedInstance->setInfoWriter($writer))
             ->then

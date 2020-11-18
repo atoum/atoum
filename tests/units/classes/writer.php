@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\atoum\tests\units;
 
-use mageekguy\atoum;
-use mock\mageekguy\atoum\writer as testedClass;
+use atoum\atoum;
+use mock\atoum\atoum\writer as testedClass;
 
 require_once __DIR__ . '/../runner.php';
 
@@ -47,11 +47,11 @@ class writer extends atoum\test
         $this
             ->if($writer = new testedClass())
             ->then
-                ->object($writer->addDecorator($decorator1 = new \mock\mageekguy\atoum\writer\decorator()))->isIdenticalTo($writer)
+                ->object($writer->addDecorator($decorator1 = new \mock\atoum\atoum\writer\decorator()))->isIdenticalTo($writer)
                 ->array($writer->getDecorators())->isEqualTo([$decorator1])
                 ->object($writer->addDecorator($decorator1))->isIdenticalTo($writer)
                 ->array($writer->getDecorators())->isEqualTo([$decorator1, $decorator1])
-                ->object($writer->addDecorator($decorator2 = new \mock\mageekguy\atoum\writer\decorator()))->isIdenticalTo($writer)
+                ->object($writer->addDecorator($decorator2 = new \mock\atoum\atoum\writer\decorator()))->isIdenticalTo($writer)
                 ->array($writer->getDecorators())->isEqualTo([$decorator1, $decorator1, $decorator2])
         ;
     }
@@ -63,7 +63,7 @@ class writer extends atoum\test
             ->then
                 ->object($writer->removeDecorators())->isIdenticalTo($writer)
                 ->array($writer->getDecorators())->isEmpty()
-            ->if($writer->addDecorator(new \mock\mageekguy\atoum\writer\decorator()))
+            ->if($writer->addDecorator(new \mock\atoum\atoum\writer\decorator()))
             ->then
                 ->object($writer->removeDecorators())->isIdenticalTo($writer)
                 ->array($writer->getDecorators())->isEmpty()
@@ -73,16 +73,16 @@ class writer extends atoum\test
     public function testWrite()
     {
         $this
-            ->if($writer = new \mock\mageekguy\atoum\writer())
+            ->if($writer = new \mock\atoum\atoum\writer())
             ->then
                 ->object($writer->write($message = uniqid()))->isIdenticalTo($writer)
                 ->mock($writer)->call('doWrite')->withArguments($message)->once()
-            ->if($writer->addDecorator($decorator1 = new \mock\mageekguy\atoum\writer\decorator()))
+            ->if($writer->addDecorator($decorator1 = new \mock\atoum\atoum\writer\decorator()))
             ->and($this->calling($decorator1)->decorate = $decoratedMessage1 = uniqid())
             ->then
                 ->object($writer->write($message = uniqid()))->isIdenticalTo($writer)
                 ->mock($writer)->call('doWrite')->withArguments($decoratedMessage1)->once()
-            ->if($writer->addDecorator($decorator2 = new \mock\mageekguy\atoum\writer\decorator()))
+            ->if($writer->addDecorator($decorator2 = new \mock\atoum\atoum\writer\decorator()))
             ->and($this->calling($decorator2)->decorate = $decoratedMessage2 = uniqid())
             ->then
                 ->object($writer->write($message = uniqid()))->isIdenticalTo($writer)

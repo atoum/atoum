@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\writers;
+namespace atoum\atoum\tests\units\writers;
 
-use mageekguy\atoum;
-use mock\mageekguy\atoum\writers\std as testedClass;
+use atoum\atoum;
+use mock\atoum\atoum\writers\std as testedClass;
 
 require __DIR__ . '/../../runner.php';
 
@@ -72,7 +72,7 @@ class std extends atoum\test
     public function testClear()
     {
         $this
-            ->if($std = new testedClass($cli = new \mock\mageekguy\atoum\cli(), $adapter = new atoum\test\adapter()))
+            ->if($std = new testedClass($cli = new \mock\atoum\atoum\cli(), $adapter = new atoum\test\adapter()))
             ->and($adapter->fwrite = function () {
             })
             ->and($this->calling($cli)->isTerminal = true)

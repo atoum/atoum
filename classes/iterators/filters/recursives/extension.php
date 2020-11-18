@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\iterators\filters\recursives;
+namespace atoum\atoum\iterators\filters\recursives;
 
 class extension extends \recursiveFilterIterator
 {

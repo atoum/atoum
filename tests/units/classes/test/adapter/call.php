@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\adapter;
+namespace atoum\atoum\tests\units\test\adapter;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\test\adapter\call as testedClass;
-use mageekguy\atoum\test\adapter\call\decorator;
+use atoum\atoum;
+use atoum\atoum\test\adapter\call as testedClass;
+use atoum\atoum\test\adapter\call\decorator;
 
 class call extends atoum\test
 {

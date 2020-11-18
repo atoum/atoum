@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tools\diffs;
+namespace atoum\atoum\tools\diffs;
 
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\tools;
+use atoum\atoum\exceptions;
+use atoum\atoum\tools;
 
 class variable extends tools\diff
 {

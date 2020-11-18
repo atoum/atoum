@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\git;
+namespace atoum\atoum\tests\units\scripts\git;
 
 require __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\commands;
-use mageekguy\atoum\scripts;
-use mageekguy\atoum\scripts\git\pusher as testedClass;
+use atoum\atoum;
+use atoum\atoum\cli\commands;
+use atoum\atoum\scripts;
+use atoum\atoum\scripts\git\pusher as testedClass;
 
 class pusher extends atoum
 {
@@ -107,11 +107,11 @@ class pusher extends atoum
         $this
             ->given(
                 $pusher = new testedClass(__FILE__),
-                $pusher->setTaggerEngine($taggerEngine = new \mock\mageekguy\atoum\scripts\tagger\engine()),
-                $pusher->setGit($git = new \mock\mageekguy\atoum\cli\commands\git()),
+                $pusher->setTaggerEngine($taggerEngine = new \mock\atoum\atoum\scripts\tagger\engine()),
+                $pusher->setGit($git = new \mock\atoum\atoum\cli\commands\git()),
                 $pusher->setForceMode(true),
-                $pusher->setErrorWriter($errorWriter = new \mock\mageekguy\atoum\writers\std\err()),
-                $pusher->setInfoWriter($infoWriter = new \mock\mageekguy\atoum\writers\std\out()),
+                $pusher->setErrorWriter($errorWriter = new \mock\atoum\atoum\writers\std\err()),
+                $pusher->setInfoWriter($infoWriter = new \mock\atoum\atoum\writers\std\out()),
                 $this->calling($infoWriter)->write = $infoWriter
             )
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\test\data;
+namespace atoum\atoum\test\data;
 
 class set extends provider\aggregator
 {

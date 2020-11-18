@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\atoum\tests\units;
 
-use mageekguy\atoum;
-use mageekguy\atoum\script\prompt;
-use mageekguy\atoum\writer;
-use mageekguy\atoum\writers;
-use mock\mageekguy\atoum as mock;
+use atoum\atoum;
+use atoum\atoum\script\prompt;
+use atoum\atoum\writer;
+use atoum\atoum\writers;
+use mock\atoum\atoum as mock;
 
 require_once __DIR__ . '/../runner.php';
 

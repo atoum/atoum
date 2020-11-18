@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\mock;
+namespace atoum\atoum\tests\units\test\mock;
 
 require __DIR__ . '/../../../runner.php';
 
 use atoum;
-use mageekguy\atoum\test\mock\generator as testedClass;
+use atoum\atoum\test\mock\generator as testedClass;
 
 class generator extends atoum
 {
@@ -27,7 +27,7 @@ class generator extends atoum
     {
         $this
             ->if($generator = new testedClass($this))
-            ->and($generator->setTest($test = new \mock\mageekguy\atoum\test()))
+            ->and($generator->setTest($test = new \mock\atoum\atoum\test()))
             ->and($this->calling($test)->__get = function () {
             })
             ->when($generator->{$property = uniqid()})
@@ -40,7 +40,7 @@ class generator extends atoum
     {
         $this
             ->if($generator = new testedClass($this))
-            ->and($generator->setTest($test = new \mock\mageekguy\atoum\test()))
+            ->and($generator->setTest($test = new \mock\atoum\atoum\test()))
             ->and($this->calling($test)->__call = function () {
             })
             ->when($generator->{$property = uniqid()}())

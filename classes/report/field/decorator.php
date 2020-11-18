@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\report\field;
+namespace atoum\atoum\report\field;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\field;
+use atoum\atoum;
+use atoum\atoum\report\field;
 
 abstract class decorator extends field
 {

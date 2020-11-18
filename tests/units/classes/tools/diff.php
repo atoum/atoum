@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\tools;
+namespace atoum\atoum\tests\units\tools;
 
 use atoum;
 use atoum\tools;

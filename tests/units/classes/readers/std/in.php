@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\readers\std;
+namespace atoum\atoum\tests\units\readers\std;
 
-use mageekguy\atoum;
-use mageekguy\atoum\readers\std\in as testedClass;
+use atoum\atoum;
+use atoum\atoum\readers\std\in as testedClass;
 
 require_once __DIR__ . '/../../../runner.php';
 

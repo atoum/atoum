@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\scripts\phar;
+namespace atoum\atoum\scripts\phar;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\scripts;
+use atoum\atoum;
+use atoum\atoum\exceptions;
+use atoum\atoum\scripts;
 
 class stub extends scripts\runner
 {

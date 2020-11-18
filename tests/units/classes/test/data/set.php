@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\data;
+namespace atoum\atoum\tests\units\test\data;
 
-use mageekguy\atoum;
-use mageekguy\atoum\test\data\provider;
+use atoum\atoum;
+use atoum\atoum\test\data\provider;
 
 require_once __DIR__ . '/../../../runner.php';
 
@@ -32,7 +32,7 @@ class set extends atoum\test
     {
         $this
             ->if(
-                $set = new \mock\mageekguy\atoum\test\data\set($provider),
+                $set = new \mock\atoum\atoum\test\data\set($provider),
                 $this->calling($set)->generate->doesNothing
             )
             ->when($set())
@@ -41,7 +41,7 @@ class set extends atoum\test
                     ->call('generate')->withoutAnyArgument->once
             ->given($size = 10)
             ->if(
-                $set = new \mock\mageekguy\atoum\test\data\set($provider, $size),
+                $set = new \mock\atoum\atoum\test\data\set($provider, $size),
                 $this->calling($set)->generate->doesNothing
             )
             ->when($set())

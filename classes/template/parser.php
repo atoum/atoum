@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\template;
+namespace atoum\atoum\template;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use atoum\atoum;
+use atoum\atoum\exceptions;
 
 class parser
 {

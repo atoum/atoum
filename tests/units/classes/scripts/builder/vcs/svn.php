@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\builder\vcs;
+namespace atoum\atoum\tests\units\scripts\builder\vcs;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\mock\stream;
+use atoum\atoum;
+use atoum\atoum\mock;
+use atoum\atoum\mock\stream;
 
 require_once __DIR__ . '/../../../../runner.php';
 
@@ -193,7 +193,7 @@ class svn extends atoum\test
             ->if(
                 $adapter = new atoum\test\adapter(),
                 $adapter->extension_loaded = true,
-                $svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter)
+                $svn = new \mock\atoum\atoum\scripts\builder\vcs\svn($adapter)
             )
             ->then
                 ->object($svn->setWorkingDirectory($workingDirectory = uniqid()))->isIdenticalTo($svn)
@@ -209,7 +209,7 @@ class svn extends atoum\test
             ->if(
                 $adapter = new atoum\test\adapter(),
                 $adapter->extension_loaded = true,
-                $svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter),
+                $svn = new \mock\atoum\atoum\scripts\builder\vcs\svn($adapter),
                 $svn->getMockController()->cleanWorkingDirectory = $svn
             )
             ->then
@@ -331,7 +331,7 @@ class svn extends atoum\test
             ->and($workingDirectory->readdir[4] = $aFile = stream::getSubStream($workingDirectory))
             ->and($aFile->unlink = true)
             ->and($workingDirectory->readdir[5] = false)
-            ->and($svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller()))
+            ->and($svn = new \mock\atoum\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller()))
             ->and($svn->setWorkingDirectory('atoum://workingDirectory'))
             ->then
                 ->object($svn->cleanWorkingDirectory())->isIdenticalTo($svn)

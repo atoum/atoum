@@ -2,7 +2,7 @@
 
 namespace <tpl:testClassNamespace />;
 
-use mageekguy\atoum;
+use atoum\atoum;
 use <tpl:fullyQualifiedTestClassName /> as testedClass;
 
 <tpl:requireRunner>require_once __DIR__ . '/<tpl:relativeRunnerPath />';</tpl:requireRunner>

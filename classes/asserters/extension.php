@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\atoum\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\exceptions;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\exceptions;
 
 class extension extends asserter
 {

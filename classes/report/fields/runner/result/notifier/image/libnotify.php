@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\result\notifier\image;
+namespace atoum\atoum\report\fields\runner\result\notifier\image;
 
-use mageekguy\atoum\report\fields\runner\result\notifier\image;
+use atoum\atoum\report\fields\runner\result\notifier\image;
 
 class libnotify extends image
 {

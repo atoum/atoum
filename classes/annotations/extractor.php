@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\annotations;
+namespace atoum\atoum\annotations;
 
 class extractor
 {

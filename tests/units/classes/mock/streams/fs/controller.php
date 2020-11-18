@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\streams\fs;
+namespace atoum\atoum\tests\units\mock\streams\fs;
 
-use mageekguy\atoum;
-use mock\mageekguy\atoum\mock\streams\fs\controller as testedClass;
+use atoum\atoum;
+use mock\atoum\atoum\mock\streams\fs\controller as testedClass;
 
 require_once __DIR__ . '/../../../../runner.php';
 

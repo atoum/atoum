@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tools\diff;
+namespace atoum\atoum\tools\diff;
 
-use mageekguy\atoum\tools;
+use atoum\atoum\tools;
 
 class decorator
 {

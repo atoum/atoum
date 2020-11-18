@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\writers;
+namespace atoum\atoum\writers;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\writers;
-use mageekguy\atoum\reports;
+use atoum\atoum;
+use atoum\atoum\report\writers;
+use atoum\atoum\reports;
 
 abstract class std extends atoum\writer implements writers\realtime, writers\asynchronous
 {

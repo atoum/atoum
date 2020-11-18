@@ -1,18 +1,18 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
+namespace atoum\atoum\tests\units\report\fields\runner\atoum;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\report\fields\runner\atoum\cli as testedClass;
-use mageekguy\atoum\runner;
-use mageekguy\atoum\runner\score;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\locale;
+use atoum\atoum\report\fields\runner\atoum\cli as testedClass;
+use atoum\atoum\runner;
+use atoum\atoum\runner\score;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
-class cli extends \mageekguy\atoum\test
+class cli extends \atoum\atoum\test
 {
     public function testClass()
     {
@@ -79,7 +79,7 @@ class cli extends \mageekguy\atoum\test
                 ->variable($field->getPath())->isNull()
                 ->variable($field->getVersion())->isNull()
                 ->boolean($field->handleEvent(runner::runStart, $runner))->isTrue()
-                ->string($field->getAuthor())->isEqualTo(\mageekguy\atoum\author)
+                ->string($field->getAuthor())->isEqualTo(\atoum\atoum\author)
                 ->string($field->getPath())->isEqualTo($atoumPath)
                 ->string($field->getVersion())->isEqualTo($atoumVersion)
         ;
@@ -102,7 +102,7 @@ class cli extends \mageekguy\atoum\test
                 ->castToString($field)->isEmpty()
             ->if($field->handleEvent(runner::runStart, $runner))
             ->then
-                ->castToString($field)->isEqualTo($field->getPrompt() . $field->getColorizer()->colorize(sprintf($field->getLocale()->_('atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath)) . PHP_EOL)
+                ->castToString($field)->isEqualTo($field->getPrompt() . $field->getColorizer()->colorize(sprintf($field->getLocale()->_('atoum version %s by %s (%s)'), $atoumVersion, \atoum\atoum\author, $atoumPath)) . PHP_EOL)
         ;
     }
 }

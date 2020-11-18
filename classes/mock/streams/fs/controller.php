@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\mock\streams\fs;
+namespace atoum\atoum\mock\streams\fs;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock\stream;
+use atoum\atoum;
+use atoum\atoum\mock\stream;
 
 class controller extends stream\controller
 {

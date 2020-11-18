@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test;
+namespace atoum\atoum\tests\units\test;
 
 require_once __DIR__ . '/../../runner.php';
 
-use mageekguy\atoum
+use atoum\atoum
 ;
 
 class engine extends atoum\test

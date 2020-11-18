@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\factory\builder;
+namespace atoum\atoum\tests\units\factory\builder;
 
 require __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class classWithoutConstructor
 {

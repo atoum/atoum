@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\asserters\phpArray;
+namespace atoum\atoum\asserters\phpArray;
 
-use mageekguy\atoum\asserters;
-use mageekguy\atoum\exceptions;
+use atoum\atoum\asserters;
+use atoum\atoum\exceptions;
 
 class child extends asserters\phpArray
 {

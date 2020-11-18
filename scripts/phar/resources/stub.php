@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum\atoum;
 
-use mageekguy\atoum;
-use mageekguy\atoum\scripts\phar;
+use atoum\atoum;
+use atoum\atoum\scripts\phar;
 
 if (extension_loaded('phar') === false) {
     throw new \runtimeException('Phar extension is mandatory to use this PHAR');

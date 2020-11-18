@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\asynchronous;
+namespace atoum\atoum\tests\units\reports\asynchronous;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\reports\asynchronous\coveralls as testedClass;
+use atoum\atoum;
+use atoum\atoum\mock;
+use atoum\atoum\reports\asynchronous\coveralls as testedClass;
 
 require_once __DIR__ . '/../../../runner.php';
 
@@ -116,20 +116,20 @@ class coveralls extends atoum\test
                 }
             })
             ->and($report = new testedClass($sourceDir = uniqid(), $token = '51bb597d202b4', $adapter))
-            ->and($score = new \mock\mageekguy\atoum\score())
-            ->and($coverage = new \mock\mageekguy\atoum\score\coverage())
-            ->and($writer = new \mock\mageekguy\atoum\writers\http())
+            ->and($score = new \mock\atoum\atoum\score())
+            ->and($coverage = new \mock\atoum\atoum\score\coverage())
+            ->and($writer = new \mock\atoum\atoum\writers\http())
             ->and($writer->getMockController()->writeAsynchronousReport = function () use ($writer) {
                 return $writer;
             })
             ->then
                 ->when(function () use ($report, $writer) {
-                    $report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \mageekguy\atoum\runner());
+                    $report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \atoum\atoum\runner());
                 })
                     ->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
             ->if($adapter->date = '2013-05-13 10:00:00 +0000')
             ->and($adapter->file_get_contents = '<?php')
-            ->and($observable = new \mock\mageekguy\atoum\runner())
+            ->and($observable = new \mock\atoum\atoum\runner())
             ->and($observable->getMockController()->getScore = $score)
             ->and($score->getMockController()->getCoverage = $coverage)
             ->and($coverage->getMockController()->getClasses = [])
@@ -247,7 +247,7 @@ class coveralls extends atoum\test
             ->and($adapter->file_get_contents = '')
             ->and($adapter->stream_context_create = $context = uniqid())
             ->and($report = new testedClass(uniqid(), uniqid(), $adapter))
-            ->and($writer = new \mock\mageekguy\atoum\writers\http())
+            ->and($writer = new \mock\atoum\atoum\writers\http())
             ->then
                 ->object($report->addDefaultWriter($writer))->isIdenticalTo($report)
                 ->mock($writer)

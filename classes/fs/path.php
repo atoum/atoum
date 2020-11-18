@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\fs;
+namespace atoum\atoum\fs;
 
-use mageekguy\atoum\fs\path\exception;
+use atoum\atoum\fs\path\exception;
 
 class path
 {

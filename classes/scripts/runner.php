@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\scripts;
+namespace atoum\atoum\scripts;
 
 require_once __DIR__ . '/../../constants.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\php;
-use mageekguy\atoum\writers;
+use atoum\atoum;
+use atoum\atoum\cli;
+use atoum\atoum\exceptions;
+use atoum\atoum\php;
+use atoum\atoum\writers;
 
 class runner extends atoum\script\configurable
 {
@@ -1067,7 +1067,7 @@ class runner extends atoum\script\configurable
                         throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more information'), $argument, $script->getName()));
                     }
 
-                    \mageekguy\atoum\cli::forceTerminal();
+                    \atoum\atoum\cli::forceTerminal();
                 },
                 ['-ft', '--force-terminal'],
                 null,

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserter;
+namespace atoum\atoum\tests\units\asserter;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\test\assertion;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\test\assertion;
 
 require_once __DIR__ . '/../../runner.php';
 

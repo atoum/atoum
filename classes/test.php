@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum\atoum;
 
-use mageekguy\atoum\tools\variable\analyzer;
+use atoum\atoum\tools\variable\analyzer;
 
 abstract class test implements observable, \countable
 {
@@ -26,7 +26,7 @@ abstract class test implements observable, \countable
     const afterTearDown = 'afterTestTearDown';
     const runStop = 'testRunStop';
     const defaultEngine = 'concurrent';
-    const enginesNamespace = '\mageekguy\atoum\test\engines';
+    const enginesNamespace = '\atoum\atoum\test\engines';
 
     private $score = null;
     private $locale = null;
@@ -1197,7 +1197,7 @@ abstract class test implements observable, \countable
 
         foreach ($runTestMethods as $method) {
             if ($this->xdebugConfig != null) {
-                $engineClass = 'mageekguy\atoum\test\engines\concurrent';
+                $engineClass = 'atoum\atoum\test\engines\concurrent';
             } else {
                 $engineName = $engineClass = ($this->getMethodEngine($method) ?: $this->getClassEngine() ?: self::getDefaultEngine());
 

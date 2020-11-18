@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\tools\variable;
+namespace atoum\atoum\tests\units\tools\variable;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum
+use atoum\atoum
 ;
 
 class analyzer extends atoum\test

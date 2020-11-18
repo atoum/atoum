@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\readers\std;
+namespace atoum\atoum\readers\std;
 
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\reader;
+use atoum\atoum\exceptions;
+use atoum\atoum\reader;
 
 class in extends reader
 {

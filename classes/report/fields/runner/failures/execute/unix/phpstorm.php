@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\failures\execute\unix;
+namespace atoum\atoum\report\fields\runner\failures\execute\unix;
 
-use mageekguy\atoum\report\fields\runner\failures;
+use atoum\atoum\report\fields\runner\failures;
 
 class phpstorm extends failures\execute
 {

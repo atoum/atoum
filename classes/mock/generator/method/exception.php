@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\mock\generator\method;
+namespace atoum\atoum\mock\generator\method;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class exception extends \exception implements atoum\exception
 {

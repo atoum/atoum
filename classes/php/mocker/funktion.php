@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\php\mocker;
+namespace atoum\atoum\php\mocker;
 
-use mageekguy\atoum;
-use mageekguy\atoum\php\mocker;
-use mageekguy\atoum\test\exceptions;
+use atoum\atoum;
+use atoum\atoum\php\mocker;
+use atoum\atoum\test\exceptions;
 
 class funktion extends mocker
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\duration;
+namespace atoum\atoum\tests\units\report\fields\runner\tests\duration;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\report\fields\runner\tests;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\locale;
+use atoum\atoum\report\fields\runner\tests;
 
 require_once __DIR__ . '/../../../../../../runner.php';
 
@@ -96,9 +96,9 @@ class cli extends atoum\test
                 ->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
                 ->variable($field->getValue())->isNull()
                 ->variable($field->getTestNumber())->isNull()
-            ->if($score = new \mock\mageekguy\atoum\runner\score())
+            ->if($score = new \mock\atoum\atoum\runner\score())
             ->and($score->getMockController()->getTotalDuration = $totalDuration = (float) rand(1, PHP_INT_MAX))
-            ->and($runner = new \mock\mageekguy\atoum\runner())
+            ->and($runner = new \mock\atoum\atoum\runner())
             ->and($runner->setScore($score))
             ->and($runner->getMockController()->getTestNumber = $testsNumber = rand(1, PHP_INT_MAX))
             ->then
@@ -111,9 +111,9 @@ class cli extends atoum\test
     public function test__toString()
     {
         $this
-            ->if($score = new \mock\mageekguy\atoum\runner\score())
+            ->if($score = new \mock\atoum\atoum\runner\score())
             ->and($score->getMockController()->getTotalDuration = $totalDuration = (rand(1, 100) / 1000))
-            ->and($runner = new \mock\mageekguy\atoum\runner())
+            ->and($runner = new \mock\atoum\atoum\runner())
             ->and($runner->setScore($score))
             ->and($runner->getMockController()->getTestNumber = $testNumber = 1)
             ->and($defaultField = new tests\duration\cli())

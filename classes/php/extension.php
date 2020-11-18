@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\php;
+namespace atoum\atoum\php;
 
 class extension
 {

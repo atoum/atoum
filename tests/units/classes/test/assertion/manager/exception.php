@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\assertion\manager;
+namespace atoum\atoum\tests\units\test\assertion\manager;
 
 require_once __DIR__ . '/../../../../runner.php';
 
-use mageekguy\atoum
+use atoum\atoum
 ;
 
 class exception extends atoum\test

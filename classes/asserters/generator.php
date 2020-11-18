@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\atoum\asserters;
 
-use mageekguy\atoum\asserters\generator\asserterProxy;
-use mageekguy\atoum\exceptions
+use atoum\atoum\asserters\generator\asserterProxy;
+use atoum\atoum\exceptions
 ;
 
 class generator extends iterator

@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts;
+namespace atoum\atoum\tests\units\scripts;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli;
-use mageekguy\atoum\mock\stream;
-use mageekguy\atoum\scripts\runner as testedClass;
-use mageekguy\atoum\writer;
-use mock\mageekguy\atoum as mock;
+use atoum\atoum;
+use atoum\atoum\cli;
+use atoum\atoum\mock\stream;
+use atoum\atoum\scripts\runner as testedClass;
+use atoum\atoum\writer;
+use mock\atoum\atoum as mock;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -417,7 +417,7 @@ class runner extends atoum\test
     {
         $this
             ->if($runner = new testedClass(uniqid()))
-            ->and($runner->setLocale($locale = new \mock\mageekguy\atoum\locale()))
+            ->and($runner->setLocale($locale = new \mock\atoum\atoum\locale()))
             ->then
                 ->exception(function () use ($runner, & $file) {
                     $runner->useConfigFile($file = uniqid());
@@ -441,7 +441,7 @@ class runner extends atoum\test
                 $adapter = new atoum\test\adapter(),
                 $adapter->getenv = false
             )
-            ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid(), $adapter))
+            ->if($runner = new \mock\atoum\atoum\scripts\runner(uniqid(), $adapter))
             ->then
                 ->object($report = $runner->addDefaultReport())->isInstanceOf(atoum\reports\realtime\cli::class)
                 ->array($report->getWriters())->isEqualTo([new atoum\writers\std\out()])
@@ -459,11 +459,11 @@ class runner extends atoum\test
     public function testAddReport()
     {
         $this
-            ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+            ->if($runner = new \mock\atoum\atoum\scripts\runner(uniqid()))
             ->then
-                ->object($runner->addReport($report = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+                ->object($runner->addReport($report = new \mock\atoum\atoum\report()))->isIdenticalTo($runner)
                 ->array($runner->getReports())->isEqualTo([$report])
-                ->object($runner->addReport($otherReport = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+                ->object($runner->addReport($otherReport = new \mock\atoum\atoum\report()))->isIdenticalTo($runner)
                 ->array($runner->getReports())->isEqualTo([$report, $otherReport])
         ;
     }
@@ -471,11 +471,11 @@ class runner extends atoum\test
     public function testSetReport()
     {
         $this
-            ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+            ->if($runner = new \mock\atoum\atoum\scripts\runner(uniqid()))
             ->then
-                ->object($runner->setReport($report = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+                ->object($runner->setReport($report = new \mock\atoum\atoum\report()))->isIdenticalTo($runner)
                 ->array($runner->getReports())->isEqualTo([$report])
-                ->object($runner->setReport($otherReport = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+                ->object($runner->setReport($otherReport = new \mock\atoum\atoum\report()))->isIdenticalTo($runner)
                 ->array($runner->getReports())->isEqualTo([$otherReport])
             ->if($runner->addReport($report))
             ->then
@@ -486,7 +486,7 @@ class runner extends atoum\test
     public function testSetNamespaces()
     {
         $this
-            ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+            ->if($runner = new \mock\atoum\atoum\scripts\runner(uniqid()))
             ->then
                 ->object($runner->testNamespaces([]))->isIdenticalTo($runner)
                 ->array($runner->getTestedNamespaces())->isEmpty()
@@ -498,8 +498,8 @@ class runner extends atoum\test
     public function testSetPhpPath()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->object($script->setPhpPath($phpPath = uniqid()))->isIdenticalTo($script)
                 ->mock($runner)->call('setPhpPath')->withArguments($phpPath)->once()
@@ -509,8 +509,8 @@ class runner extends atoum\test
     public function testSetDefaultReportTitle()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->object($script->setDefaultReportTitle($reportTitle = uniqid()))->isIdenticalTo($script)
                 ->mock($runner)->call('setDefaultReportTitle')->withArguments($reportTitle)->once()
@@ -520,8 +520,8 @@ class runner extends atoum\test
     public function testSetMaxChildrenNumber()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->object($script->setMaxChildrenNumber($childrenNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($script)
                 ->mock($runner)->call('setMaxChildrenNumber')->withArguments($childrenNumber)->once()
@@ -531,8 +531,8 @@ class runner extends atoum\test
     public function testDisableCodeCoverage()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->object($script->disableCodeCoverage($childrenNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($script)
                 ->mock($runner)->call('disableCodeCoverage')->withoutAnyArgument()->once()
@@ -542,9 +542,9 @@ class runner extends atoum\test
     public function testExcludeNamespacesFromCoverage()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-            ->and($this->calling($runner)->getCoverage = $coverage = new \mock\mageekguy\atoum\score\coverage())
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
+            ->and($this->calling($runner)->getCoverage = $coverage = new \mock\atoum\atoum\score\coverage())
             ->then
                 ->object($script->excludeNamespacesFromCoverage(['foo', 'bar']))->isIdenticalTo($script)
                 ->mock($coverage)->call('excludeNamespace')
@@ -556,9 +556,9 @@ class runner extends atoum\test
     public function testExcludeDirectoriesFromCoverage()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-            ->and($this->calling($runner)->getCoverage = $coverage = new \mock\mageekguy\atoum\score\coverage())
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
+            ->and($this->calling($runner)->getCoverage = $coverage = new \mock\atoum\atoum\score\coverage())
             ->then
                 ->object($script->excludeDirectoriesFromCoverage(['foo', 'bar']))->isIdenticalTo($script)
                 ->mock($coverage)->call('excludeDirectory')
@@ -570,9 +570,9 @@ class runner extends atoum\test
     public function testExcludeClassesFromCoverage()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-            ->and($this->calling($runner)->getCoverage = $coverage = new \mock\mageekguy\atoum\score\coverage())
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
+            ->and($this->calling($runner)->getCoverage = $coverage = new \mock\atoum\atoum\score\coverage())
             ->then
                 ->object($script->excludeClassesFromCoverage(['foo', 'bar']))->isIdenticalTo($script)
                 ->mock($coverage)->call('excludeClass')
@@ -584,8 +584,8 @@ class runner extends atoum\test
     public function testAddTest()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->object($script->addTest($testPath = uniqid()))->isIdenticalTo($script)
                 ->mock($runner)->call('addTest')->withArguments($testPath)->once()
@@ -595,8 +595,8 @@ class runner extends atoum\test
     public function testAddTests()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->object($script->addTests([$testPath1 = uniqid(), $testPath2 = uniqid()]))->isIdenticalTo($script)
                 ->mock($runner)
@@ -609,8 +609,8 @@ class runner extends atoum\test
     public function testAddTestsFromDirectory()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->and($this->calling($runner)->addTestsFromDirectory->doesNothing())
             ->then
                 ->object($script->addTestsFromDirectory($directory = uniqid()))->isIdenticalTo($script)
@@ -621,8 +621,8 @@ class runner extends atoum\test
     public function testAddTestsFromDirectories()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->and($this->calling($runner)->addTestsFromDirectory->doesNothing())
             ->then
                 ->object($script->addTestsFromDirectories([$directory1 = uniqid(), $directory2 = uniqid()]))->isIdenticalTo($script)
@@ -636,8 +636,8 @@ class runner extends atoum\test
     public function testAddTestsFromPattern()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->and($this->calling($runner)->addTestsFromPattern->doesNothing())
             ->then
                 ->object($script->addTestsFromPattern($pattern = uniqid()))->isIdenticalTo($script)
@@ -648,8 +648,8 @@ class runner extends atoum\test
     public function testAddTestsFromPatterns()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->and($this->calling($runner)->addTestsFromPattern->doesNothing())
             ->then
                 ->object($script->addTestsFromPatterns([$pattern1 = uniqid(), $pattern2 = uniqid()]))->isIdenticalTo($script)
@@ -663,8 +663,8 @@ class runner extends atoum\test
     public function testAcceptTestFileExtensions()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->and($this->calling($runner)->acceptTestFileExtensions->doesNothing())
             ->then
                 ->object($script->acceptTestFileExtensions($testFileExtensions = [uniqid(), uniqid()]))->isIdenticalTo($script)
@@ -675,8 +675,8 @@ class runner extends atoum\test
     public function testSetBootstrapFile()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->and($this->calling($runner)->setBootstrapFile->doesNothing())
             ->then
                 ->object($script->setBootstrapFile($bootstrapFile = uniqid()))->isIdenticalTo($script)
@@ -687,8 +687,8 @@ class runner extends atoum\test
     public function testSetXdebugConfig()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->and($this->calling($runner)->setXdebugConfig->doesNothing())
             ->then
                 ->object($script->setXdebugConfig($xdebugConfig = uniqid()))->isIdenticalTo($script)
@@ -699,8 +699,8 @@ class runner extends atoum\test
     public function testFailIfVoidMethods()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->object($script->failIfVoidMethods())->isIdenticalTo($script)
                 ->mock($runner)->call('failIfVoidMethods')->once()
@@ -710,8 +710,8 @@ class runner extends atoum\test
     public function testDoNotFailIfVoidMethods()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->object($script->doNotFailIfVoidMethods())->isIdenticalTo($script)
                 ->mock($runner)->call('doNotFailIfVoidMethods')->once()
@@ -721,8 +721,8 @@ class runner extends atoum\test
     public function testShouldFailIfVoidMethods()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->boolean($script->shouldFailIfVoidMethods())->isFalse()
                 ->mock($runner)->call('shouldFailIfVoidMethods')->once()
@@ -738,8 +738,8 @@ class runner extends atoum\test
     public function testFailIfSkippedMethods()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->object($script->failIfSkippedMethods())->isIdenticalTo($script)
                 ->mock($runner)->call('failIfSkippedMethods')->once()
@@ -749,8 +749,8 @@ class runner extends atoum\test
     public function testDoNotFailIfSkippedMethods()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->object($script->doNotFailIfSkippedMethods())->isIdenticalTo($script)
                 ->mock($runner)->call('doNotFailIfSkippedMethods')->once()
@@ -760,8 +760,8 @@ class runner extends atoum\test
     public function testShouldFailIfSkippedMethods()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->then
                 ->boolean($script->shouldFailIfSkippedMethods())->isFalse()
                 ->mock($runner)->call('shouldFailIfSkippedMethods')->once()
@@ -777,8 +777,8 @@ class runner extends atoum\test
     public function testEnableDebugMode()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+            ->if($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($script->setRunner($runner = new \mock\atoum\atoum\runner()))
             ->and($this->calling($runner)->enableDebugMode->doesNothing())
             ->then
                 ->object($script->enableDebugMode())->isIdenticalTo($script)
@@ -789,7 +789,7 @@ class runner extends atoum\test
     public function testAddDefaultArguments()
     {
         $this
-            ->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+            ->if($runner = new \mock\atoum\atoum\scripts\runner(uniqid()))
             ->then
                 ->object($runner->addDefaultArguments($arg1 = uniqid()))->isInstanceOf($runner)
                 ->boolean($runner->hasDefaultArguments())->isTrue()
@@ -805,8 +805,8 @@ class runner extends atoum\test
         $this
             ->given($runner = new testedClass(__FILE__))
             ->and($runner->setAdapter($adapter = new atoum\test\adapter()))
-            ->and($runner->setInfoWriter($outputWriter = new \mock\mageekguy\atoum\writers\std\out()))
-            ->and($runner->setPrompt($prompt = new \mock\mageekguy\atoum\script\prompt()))
+            ->and($runner->setInfoWriter($outputWriter = new \mock\atoum\atoum\writers\std\out()))
+            ->and($runner->setPrompt($prompt = new \mock\atoum\atoum\script\prompt()))
             ->and($adapter->copy = true)
             ->and($adapter->file_exists = false)
             ->and($this->calling($outputWriter)->write = function () {

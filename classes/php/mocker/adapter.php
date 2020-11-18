@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\php\mocker;
+namespace atoum\atoum\php\mocker;
 
-use mageekguy\atoum\php\mocker;
-use mageekguy\atoum\test;
+use atoum\atoum\php\mocker;
+use atoum\atoum\test;
 
 class adapter extends test\adapter
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\test\engines;
+namespace atoum\atoum\test\engines;
 
-use mageekguy\atoum;
-use mageekguy\atoum\test\engines;
+use atoum\atoum;
+use atoum\atoum\test\engines;
 
 class isolate extends engines\concurrent
 {

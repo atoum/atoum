@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\controller;
+namespace atoum\atoum\tests\units\mock\controller;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\mock\controller\iterator as testedClass;
+use atoum\atoum;
+use atoum\atoum\mock;
+use atoum\atoum\mock\controller\iterator as testedClass;
 
 require_once __DIR__ . '/../../../runner.php';
 
@@ -48,7 +48,7 @@ class iterator extends atoum\test
     {
         $this
             ->if($iterator = new testedClass($controller = new mock\controller()))
-            ->and($controller->control($mock = new \mock\mageekguy\atoum\tests\units\mock\controller\foo()))
+            ->and($controller->control($mock = new \mock\atoum\atoum\tests\units\mock\controller\foo()))
             ->and($iterator->return = $return = uniqid())
             ->then
                 ->boolean(isset($controller->__construct))->isFalse()
@@ -135,7 +135,7 @@ class iterator extends atoum\test
             ->if($iterator = new testedClass($controller = new mock\controller()))
             ->then
                 ->array($iterator->getMethods())->isEmpty()
-            ->if($controller->control($mock = new \mock\mageekguy\atoum\tests\units\mock\controller\foo()))
+            ->if($controller->control($mock = new \mock\atoum\atoum\tests\units\mock\controller\foo()))
             ->then
                 ->array($iterator->getMethods())->isEqualTo(['doessomething', 'doessomethingelse'])
             ->if($iterator->addFilter(function ($method) {
@@ -162,7 +162,7 @@ class iterator extends atoum\test
             ->if($iterator = new testedClass($controller = new mock\controller()))
             ->then
                 ->object($iterator->getIterator())->isEqualTo(new \arrayIterator($iterator->getMethods()))
-            ->if($controller->control(new \mock\mageekguy\atoum\tests\units\mock\controller\foo()))
+            ->if($controller->control(new \mock\atoum\atoum\tests\units\mock\controller\foo()))
             ->then
                 ->object($iterator->getIterator())->isEqualTo(new \arrayIterator($iterator->getMethods()))
         ;

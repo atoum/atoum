@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tap;
+namespace atoum\atoum\tests\units\report\fields\runner\tap;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\fields\runner\tap\plan as testedClass;
-use mageekguy\atoum\runner;
+use atoum\atoum;
+use atoum\atoum\report\fields\runner\tap\plan as testedClass;
+use atoum\atoum\runner;
 
 require __DIR__ . '/../../../../../runner.php';
 
@@ -27,7 +27,7 @@ class plan extends atoum\test
     public function test__toString()
     {
         $this
-            ->if($runner = new \mock\mageekguy\atoum\runner())
+            ->if($runner = new \mock\atoum\atoum\runner())
             ->and($this->calling($runner)->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
             ->and($field = new testedClass())
             ->if($field->handleEvent(runner::runStop, $runner))

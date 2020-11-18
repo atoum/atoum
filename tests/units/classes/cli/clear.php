@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\cli;
+namespace atoum\atoum\tests\units\cli;
 
 require_once __DIR__ . '/../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\clear as testedClass;
+use atoum\atoum;
+use atoum\atoum\cli\clear as testedClass;
 
 class clear extends atoum
 {
@@ -41,7 +41,7 @@ class clear extends atoum
     {
         $this
             ->given(
-                $clear = new testedClass($cli = new \mock\mageekguy\atoum\cli())
+                $clear = new testedClass($cli = new \mock\atoum\atoum\cli())
             )
             ->if($this->calling($cli)->isTerminal = false)
             ->then

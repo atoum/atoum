@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\event;
+namespace atoum\atoum\report\fields\test\event;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report;
+use atoum\atoum;
+use atoum\atoum\report;
 
 class phing extends report\fields\test\event\cli
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\scripts\phar;
+namespace atoum\atoum\scripts\phar;
 
 require_once __DIR__ . '/../../../constants.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\iterators;
+use atoum\atoum;
+use atoum\atoum\exceptions;
+use atoum\atoum\iterators;
 
 class generator extends atoum\script
 {

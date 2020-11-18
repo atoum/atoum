@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\template;
+namespace atoum\atoum\template;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class iterator implements \iterator, \countable
 {

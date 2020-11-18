@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\mock;
+namespace atoum\atoum\mock;
 
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\test;
-use mageekguy\atoum\test\adapter\call\decorators;
+use atoum\atoum\exceptions;
+use atoum\atoum\mock;
+use atoum\atoum\test;
+use atoum\atoum\test\adapter\call\decorators;
 
 class controller extends test\adapter
 {

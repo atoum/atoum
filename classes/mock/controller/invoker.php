@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\mock\controller;
+namespace atoum\atoum\mock\controller;
 
-use mageekguy\atoum\mock;
-use mageekguy\atoum\test\adapter;
+use atoum\atoum\mock;
+use atoum\atoum\test\adapter;
 
 class invoker extends adapter\invoker
 {

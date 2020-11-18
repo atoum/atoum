@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\test\engines;
+namespace atoum\atoum\test\engines;
 
-use mageekguy\atoum;
-use mageekguy\atoum\test;
+use atoum\atoum;
+use atoum\atoum\test;
 
 class inline extends test\engine
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\iterators\filters\recursives;
+namespace atoum\atoum\tests\units\iterators\filters\recursives;
 
 require __DIR__ . '/../../../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\iterators\filters\recursives;
-use mageekguy\atoum\mock;
+use atoum\atoum;
+use atoum\atoum\iterators\filters\recursives;
+use atoum\atoum\mock;
 
 class dot extends atoum\test
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\writers;
+namespace atoum\atoum\tests\units\writers;
 
-use mageekguy\atoum;
-use mageekguy\atoum\writers\http as testedClass;
+use atoum\atoum;
+use atoum\atoum\writers\http as testedClass;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -94,8 +94,8 @@ class http extends atoum\test
         $this
             ->if($adapter = new atoum\test\adapter())
             ->and($adapter->file_get_contents = '')
-            ->and($report = new \mock\mageekguy\atoum\reports\asynchronous())
-            ->and($writer = new \mock\mageekguy\atoum\writers\http($adapter))
+            ->and($report = new \mock\atoum\atoum\reports\asynchronous())
+            ->and($writer = new \mock\atoum\atoum\writers\http($adapter))
             ->and($writer->setUrl($url = uniqid()))
             ->then
                 ->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)

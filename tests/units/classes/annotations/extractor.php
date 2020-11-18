@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\annotations;
+namespace atoum\atoum\tests\units\annotations;
 
-use mageekguy\atoum;
-use mageekguy\atoum\annotations;
+use atoum\atoum;
+use atoum\atoum\annotations;
 
 require_once __DIR__ . '/../../runner.php';
 

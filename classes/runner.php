@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum\atoum;
 
-use mageekguy\atoum\extension\aggregator;
+use atoum\atoum\extension\aggregator;
 
 class runner implements observable
 {
-    const atoumVersionConstant = 'mageekguy\atoum\version';
-    const atoumDirectoryConstant = 'mageekguy\atoum\directory';
+    const atoumVersionConstant = 'atoum\atoum\version';
+    const atoumDirectoryConstant = 'atoum\atoum\directory';
 
     const runStart = 'runnerStart';
     const runStop = 'runnerStop';

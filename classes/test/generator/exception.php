@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\test\generator;
+namespace atoum\atoum\test\generator;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class exception extends atoum\exceptions\runtime
 {

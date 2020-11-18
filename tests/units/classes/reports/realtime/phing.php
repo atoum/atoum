@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\realtime;
+namespace atoum\atoum\tests\units\reports\realtime;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report\fields;
-use mageekguy\atoum\reports\realtime\phing as testedClass;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report\fields;
+use atoum\atoum\reports\realtime\phing as testedClass;
 
 require_once __DIR__ . '/../../../runner.php';
 

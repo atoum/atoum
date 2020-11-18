@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\php\tokenizer;
+namespace atoum\atoum\php\tokenizer;
 
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\php\tokenizer\iterator\value;
+use atoum\atoum\exceptions;
+use atoum\atoum\php\tokenizer\iterator\value;
 
 class iterator extends value
 {

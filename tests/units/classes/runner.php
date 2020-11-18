@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\atoum\tests\units;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\runner as testedClass;
-use mageekguy\atoum\test;
+use atoum\atoum;
+use atoum\atoum\mock;
+use atoum\atoum\runner as testedClass;
+use atoum\atoum\test;
 
 require_once __DIR__ . '/../runner.php';
 
@@ -16,8 +16,8 @@ class runner extends atoum\test
         $this
             ->testedClass
                 ->hasInterface(atoum\observable::class)
-            ->string(atoum\runner::atoumVersionConstant)->isEqualTo('mageekguy\atoum\version')
-            ->string(atoum\runner::atoumDirectoryConstant)->isEqualTo('mageekguy\atoum\directory')
+            ->string(atoum\runner::atoumVersionConstant)->isEqualTo('atoum\atoum\version')
+            ->string(atoum\runner::atoumDirectoryConstant)->isEqualTo('atoum\atoum\directory')
             ->string(atoum\runner::runStart)->isEqualTo('runnerStart')
             ->string(atoum\runner::runStop)->isEqualTo('runnerStop')
         ;
@@ -219,7 +219,7 @@ class runner extends atoum\test
             ->if($runner = new testedClass())
             ->then
                 ->array($runner->getObservers())->isEmpty()
-                ->object($runner->addObserver($observer = new \mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
+                ->object($runner->addObserver($observer = new \mock\atoum\atoum\observers\runner()))->isIdenticalTo($runner)
                 ->array($runner->getObservers())->isEqualTo([$observer])
         ;
     }
@@ -230,13 +230,13 @@ class runner extends atoum\test
             ->if($runner = new testedClass())
             ->then
                 ->array($runner->getObservers())->isEmpty()
-                ->object($runner->removeObserver(new \mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
+                ->object($runner->removeObserver(new \mock\atoum\atoum\observers\runner()))->isIdenticalTo($runner)
                 ->array($runner->getObservers())->isEmpty()
-            ->if($runner->addObserver($observer1 = new \mock\mageekguy\atoum\observers\runner()))
-            ->and($runner->addObserver($observer2 = new \mock\mageekguy\atoum\observers\runner()))
+            ->if($runner->addObserver($observer1 = new \mock\atoum\atoum\observers\runner()))
+            ->and($runner->addObserver($observer2 = new \mock\atoum\atoum\observers\runner()))
             ->then
                 ->array($runner->getObservers())->isEqualTo([$observer1, $observer2])
-                ->object($runner->removeObserver(new \mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
+                ->object($runner->removeObserver(new \mock\atoum\atoum\observers\runner()))->isIdenticalTo($runner)
                 ->array($runner->getObservers())->isEqualTo([$observer1, $observer2])
                 ->object($runner->removeObserver($observer1))->isIdenticalTo($runner)
                 ->array($runner->getObservers())->isEqualTo([$observer2])
@@ -251,7 +251,7 @@ class runner extends atoum\test
             ->if($runner = new testedClass())
             ->then
                 ->object($runner->callObservers(atoum\runner::runStart))->isIdenticalTo($runner)
-            ->if($runner->addObserver($observer = new \mock\mageekguy\atoum\observers\runner()))
+            ->if($runner->addObserver($observer = new \mock\atoum\atoum\observers\runner()))
             ->then
                 ->object($runner->callObservers(atoum\runner::runStart))->isIdenticalTo($runner)
                 ->mock($observer)->call('handleEvent')->withArguments(atoum\runner::runStart, $runner)->once()
@@ -274,7 +274,7 @@ class runner extends atoum\test
             ->if($runner->run())
             ->then
                 ->integer($runner->getRunningDuration())->isEqualTo(100)
-            ->if(eval('namespace ' . __NAMESPACE__ . ' { class forTestGetRunningDuration extends \mageekguy\atoum\test { public function testSomething() {} public function run(array $runTestMethods = array(), array $tags = array()) { return $this; } } }'))
+            ->if(eval('namespace ' . __NAMESPACE__ . ' { class forTestGetRunningDuration extends \atoum\atoum\test { public function testSomething() {} public function run(array $runTestMethods = array(), array $tags = array()) { return $this; } } }'))
             ->and($adapter->get_declared_classes = [__NAMESPACE__ . '\forTestGetRunningDuration'])
             ->and($runner->run())
             ->then
@@ -316,7 +316,7 @@ class runner extends atoum\test
     {
         $this
             ->if($runner = new testedClass())
-            ->and($includer = new \mock\mageekguy\atoum\includer())
+            ->and($includer = new \mock\atoum\atoum\includer())
             ->and($includer->getMockController()->includePath = function () {
             })
             ->and($runner->setIncluder($includer))
@@ -331,7 +331,7 @@ class runner extends atoum\test
     {
         $this
             ->if($runner = new testedClass())
-            ->and($includer = new \mock\mageekguy\atoum\includer())
+            ->and($includer = new \mock\atoum\atoum\includer())
             ->and($includer->getMockController()->includePath = function () {
             })
             ->and($runner->setIncluder($includer))
@@ -400,8 +400,8 @@ class runner extends atoum\test
                 ->object($runner->removeReport(new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
                 ->array($runner->getReports())->isEmpty()
                 ->array($runner->getObservers())->isEmpty()
-            ->if($report1 = new \mock\mageekguy\atoum\report())
-            ->and($report2 = new \mock\mageekguy\atoum\report())
+            ->if($report1 = new \mock\atoum\atoum\report())
+            ->and($report2 = new \mock\atoum\atoum\report())
             ->and($runner->addReport($report1)->addReport($report2))
             ->then
                 ->array($runner->getReports())->isEqualTo([$report1, $report2])
@@ -439,8 +439,8 @@ class runner extends atoum\test
                 ->object($runner->removeReports())->isIdenticalTo($runner)
                 ->array($runner->getReports())->isEmpty()
                 ->array($runner->getObservers())->isEmpty()
-            ->if($report1 = new \mock\mageekguy\atoum\report())
-            ->and($report2 = new \mock\mageekguy\atoum\report())
+            ->if($report1 = new \mock\atoum\atoum\report())
+            ->and($report2 = new \mock\atoum\atoum\report())
             ->and($runner->addReport($report1)->addReport($report2))
             ->then
                 ->array($runner->getReports())->isEqualTo([$report1, $report2])
@@ -460,9 +460,9 @@ class runner extends atoum\test
                 ->array($runner->getReports())->isEqualTo([$report1, $report2])
                 ->array($runner->getObservers())->isEqualTo([$report1, $report2])
             ->given(
-                $firstReport = new \mock\mageekguy\atoum\report(),
-                $secondReport = new \mock\mageekguy\atoum\report(),
-                $overrideReport = new \mock\mageekguy\atoum\report(),
+                $firstReport = new \mock\atoum\atoum\report(),
+                $secondReport = new \mock\atoum\atoum\report(),
+                $overrideReport = new \mock\atoum\atoum\report(),
                 $runner->removeReports()
             )
             ->if(
@@ -494,7 +494,7 @@ class runner extends atoum\test
         $this
             ->if($runner = new testedClass())
             ->then
-                ->object($runner->addExtension($extension = new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
+                ->object($runner->addExtension($extension = new \mock\atoum\atoum\extension()))->isIdenticalTo($runner)
                 ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$extension])
                 ->array($runner->getObservers())->contains($extension)
                 ->mock($extension)
@@ -517,16 +517,16 @@ class runner extends atoum\test
                 ->object($runner->getExtensions())->isInstanceOf(atoum\extension\aggregator::class)
                 ->sizeOf($runner->getExtensions())->isZero
                 ->array($runner->getObservers())->isEmpty()
-            ->if($extension = new \mock\mageekguy\atoum\extension())
+            ->if($extension = new \mock\atoum\atoum\extension())
             ->and(
-                $this->mockClass('mageekguy\atoum\extension', 'otherMock', 'extension'),
+                $this->mockClass('atoum\atoum\extension', 'otherMock', 'extension'),
                 $otherExtension = new \otherMock\extension()
             )
             ->and($runner->addExtension($extension)->addExtension($otherExtension))
             ->then
                 ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$extension, $otherExtension])
                 ->array($runner->getObservers())->isEqualTo([$extension, $otherExtension])
-                ->object($runner->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($runner)
+                ->object($runner->removeExtension(new \mock\atoum\atoum\extension()))->isIdenticalTo($runner)
                 ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$otherExtension])
                 ->array($runner->getObservers())->isEqualTo([$otherExtension])
             ->if($runner->addExtension($extension))
@@ -538,14 +538,14 @@ class runner extends atoum\test
             ->if($runner->addExtension($extension))
             ->then
                 ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$otherExtension, $extension])
-                ->object($runner->removeExtension('mock\mageekguy\atoum\extension'))->isIdenticalTo($runner)
+                ->object($runner->removeExtension('mock\atoum\atoum\extension'))->isIdenticalTo($runner)
                 ->array(iterator_to_array($runner->getExtensions()))->isEqualTo([$otherExtension])
                 ->array($runner->getObservers())->isEqualTo([$otherExtension])
                 ->object($runner->removeExtension($otherExtension))->isIdenticalTo($runner)
                 ->object($runner->getExtensions())->isInstanceOf(atoum\extension\aggregator::class)
                 ->sizeOf($runner->getExtensions())->isZero
                 ->array($runner->getObservers())->isEmpty()
-            ->if($extension = new \mock\mageekguy\atoum\extension())
+            ->if($extension = new \mock\atoum\atoum\extension())
             ->then
                 ->exception(function () use ($runner, $extension) {
                     $runner->removeExtension($extension);
@@ -567,9 +567,9 @@ class runner extends atoum\test
                 ->object($runner->getExtensions())->isInstanceOf(atoum\extension\aggregator::class)
                 ->sizeOf($runner->getExtensions())->isZero
                 ->array($runner->getObservers())->isEmpty()
-            ->if($extension = new \mock\mageekguy\atoum\extension())
+            ->if($extension = new \mock\atoum\atoum\extension())
             ->and(
-                $this->mockClass('mageekguy\atoum\extension', 'otherMock', 'extension'),
+                $this->mockClass('atoum\atoum\extension', 'otherMock', 'extension'),
                 $otherExtension = new \otherMock\extension()
             )
             ->and($runner->addExtension($extension)->addExtension($otherExtension))
@@ -620,8 +620,8 @@ class runner extends atoum\test
             ->then
                 ->object($runner->setTestFactory($factory))->isIdenticalTo($runner)
                 ->object($runner->getTestFactory())->isCallable
-            ->given($test = new \mock\mageekguy\atoum\test())
-            ->and($generator = new \mock\mageekguy\atoum\test\mock\generator($test))
+            ->given($test = new \mock\atoum\atoum\test())
+            ->and($generator = new \mock\atoum\atoum\test\mock\generator($test))
             ->and($test->setMockGenerator($generator))
             ->if($runner->disallowUsageOfUndefinedMethodInMock())
             ->and($runner->setTestFactory(function () use ($test) {
@@ -629,13 +629,13 @@ class runner extends atoum\test
             }))
             ->and($factory = $runner->getTestFactory())
             ->then
-                ->object($factory('mock\mageekguy\atoum\test'))->isIdenticalTo($test)
+                ->object($factory('mock\atoum\atoum\test'))->isIdenticalTo($test)
                 ->mock($generator)
                     ->call('disallowUndefinedMethodUsage')->once
             ->if($this->resetMock($generator))
             ->if($runner->allowUsageOfUndefinedMethodInMock())
             ->then
-                ->object($factory('mock\mageekguy\atoum\test'))->isIdenticalTo($test)
+                ->object($factory('mock\atoum\atoum\test'))->isIdenticalTo($test)
                 ->mock($generator)
                     ->call('disallowUndefinedMethodUsage')->never
         ;
@@ -644,7 +644,7 @@ class runner extends atoum\test
     public function testSetPathAndVersionInScore()
     {
         $this
-            ->if($php = new \mock\mageekguy\atoum\php())
+            ->if($php = new \mock\atoum\atoum\php())
             ->and($this->calling($php)->getBinaryPath = $phpPath = uniqid())
             ->and($this->calling($php)->run = $php)
             ->and($this->calling($php)->isRunning = false)
@@ -664,7 +664,7 @@ class runner extends atoum\test
             ->and($runner = new testedClass())
             ->and($runner->setPhp($php))
             ->and($runner->setAdapter($adapter))
-            ->and($runner->setScore($score = new \mock\mageekguy\atoum\runner\score()))
+            ->and($runner->setScore($score = new \mock\atoum\atoum\runner\score()))
             ->then
                 ->object($runner->setPathAndVersionInScore())->isIdenticalTo($runner)
                 ->mock($score)
@@ -673,7 +673,7 @@ class runner extends atoum\test
                     ->call('setPhpPath')->withArguments($phpPath)->once()
                     ->call('setPhpVersion')->withArguments($phpVersion)->once()
             ->if($adapter->defined = false)
-            ->and($runner->setScore($score = new \mock\mageekguy\atoum\runner\score()))
+            ->and($runner->setScore($score = new \mock\atoum\atoum\runner\score()))
             ->then
                 ->object($runner->setPathAndVersionInScore())->isIdenticalTo($runner)
                 ->mock($score)
@@ -682,7 +682,7 @@ class runner extends atoum\test
                     ->call('setPhpPath')->withArguments($phpPath)->once()
                     ->call('setPhpVersion')->withArguments($phpVersion)->once()
             ->if($this->calling($php)->getExitCode = rand(1, PHP_INT_MAX))
-            ->and($runner->setScore($score = new \mock\mageekguy\atoum\runner\score()))
+            ->and($runner->setScore($score = new \mock\atoum\atoum\runner\score()))
             ->then
                 ->exception(function () use ($runner) {
                     $runner->setPathAndVersionInScore();
@@ -762,7 +762,7 @@ class runner extends atoum\test
     {
         $this
             ->if($runner = new testedClass())
-            ->and($runner->setTestDirectoryIterator($directoryIterator = new \mock\mageekguy\atoum\iterators\recursives\directory\factory()))
+            ->and($runner->setTestDirectoryIterator($directoryIterator = new \mock\atoum\atoum\iterators\recursives\directory\factory()))
             ->then
                 ->object($runner->acceptTestFileExtensions($testFileExtensions = [uniqid(), uniqid()]))->isIdenticalTo($runner)
                 ->mock($directoryIterator)->call('acceptExtensions')->withArguments($testFileExtensions)->once()

@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\engines;
+namespace atoum\atoum\tests\units\test\engines;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\test\engines;
+use atoum\atoum;
+use atoum\atoum\test\engines;
 
 class inline extends atoum\test
 {
@@ -28,7 +28,7 @@ class inline extends atoum\test
         $this
             ->if($engine = new engines\inline())
             ->then
-                ->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
+                ->object($engine->run($test = new \mock\atoum\atoum\test()))->isIdenticalTo($engine)
             ->if($test->getMockController()->getCurrentMethod = $method = uniqid())
             ->and($test->getMockController()->runTestMethod = $test)
             ->then
@@ -56,7 +56,7 @@ class inline extends atoum\test
             ->if($engine = new engines\inline())
             ->then
                 ->object($engine->getScore())->isInstanceof(atoum\score::class)
-            ->if($test = new \mock\mageekguy\atoum\test())
+            ->if($test = new \mock\atoum\atoum\test())
             ->and($test->getMockController()->getCurrentMethod = $method = uniqid())
             ->and($test->getMockController()->runTestMethod = $test)
             ->and($engine->run($test))

@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\reports\realtime\cli;
+namespace atoum\atoum\reports\realtime\cli;
 
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report\field\decorators\travis\fold;
-use mageekguy\atoum\report\fields\runner;
-use mageekguy\atoum\report\fields\test;
-use mageekguy\atoum\reports\realtime;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report\field\decorators\travis\fold;
+use atoum\atoum\report\fields\runner;
+use atoum\atoum\report\fields\test;
+use atoum\atoum\reports\realtime;
 
 class travis extends realtime
 {
@@ -192,7 +192,7 @@ class travis extends realtime
 
         $this->addField(new fold($runnerSkippedField, 'skipped'));
 
-        $this->addField(new \mageekguy\atoum\report\fields\test\travis\start());
+        $this->addField(new \atoum\atoum\report\fields\test\travis\start());
 
         $testRunField = new test\run\cli();
         $testRunField
@@ -218,6 +218,6 @@ class travis extends realtime
 
         $this->addField($testMemoryField);
 
-        $this->addField(new \mageekguy\atoum\report\fields\test\travis\stop());
+        $this->addField(new \atoum\atoum\report\fields\test\travis\stop());
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\asserters\generator;
+namespace atoum\atoum\asserters\generator;
 
 use ArrayAccess;
-use mageekguy\atoum;
-use mageekguy\atoum\asserter\definition;
+use atoum\atoum;
+use atoum\atoum\asserter\definition;
 
 class asserterProxy implements definition, ArrayAccess
 {

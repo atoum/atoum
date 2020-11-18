@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\reports\asynchronous;
+namespace atoum\atoum\reports\asynchronous;
 
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report\fields\runner;
-use mageekguy\atoum\report\fields\test;
-use mageekguy\atoum\reports;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report\fields\runner;
+use atoum\atoum\report\fields\test;
+use atoum\atoum\reports;
 
 class vim extends reports\asynchronous
 {

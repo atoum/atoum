@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\reports;
+namespace atoum\atoum\reports;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report;
+use atoum\atoum;
+use atoum\atoum\report;
 
 abstract class asynchronous extends atoum\report
 {

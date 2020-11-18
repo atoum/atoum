@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\result\notifier;
+namespace atoum\atoum\report\fields\runner\result\notifier;
 
-use mageekguy\atoum\report\fields\runner\result\notifier;
+use atoum\atoum\report\fields\runner\result\notifier;
 
 class terminal extends notifier
 {

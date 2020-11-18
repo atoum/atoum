@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\event;
+namespace atoum\atoum\tests\units\report\fields\runner\event;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\fields\runner;
+use atoum\atoum;
+use atoum\atoum\report\fields\runner;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -31,7 +31,7 @@ class cli extends atoum\test
             ->if($testController = new atoum\mock\controller())
             ->and($testController->__construct = function () {
             })
-            ->and($test = new \mock\mageekguy\atoum\test())
+            ->and($test = new \mock\atoum\atoum\test())
             ->and($runner = new atoum\runner())
             ->and($field = new runner\event\cli())
             ->then
@@ -90,7 +90,7 @@ class cli extends atoum\test
             ->and($runnerController->getTestMethodNumber = function () use ($testMethodNumber) {
                 return $testMethodNumber;
             })
-            ->and($runner = new \mock\mageekguy\atoum\runner())
+            ->and($runner = new \mock\atoum\atoum\runner())
             ->and($field = new runner\event\cli())
             ->and($progressBar = new atoum\cli\progressBar($runner->getTestMethodNumber()))
             ->then

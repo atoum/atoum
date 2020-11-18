@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\php\mocker;
+namespace atoum\atoum\php\mocker;
 
-use mageekguy\atoum;
-use mageekguy\atoum\php\mocker;
+use atoum\atoum;
+use atoum\atoum\php\mocker;
 
 class constant extends mocker
 {

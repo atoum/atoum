@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\writer\decorators;
+namespace atoum\atoum\writer\decorators;
 
-use mageekguy\atoum\writer;
+use atoum\atoum\writer;
 
 class prompt implements writer\decorator
 {

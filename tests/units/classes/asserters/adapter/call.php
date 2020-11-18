@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\adapter;
+namespace atoum\atoum\tests\units\asserters\adapter;
 
 require __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class call extends atoum
 {

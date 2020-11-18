@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\event\cli;
+namespace atoum\atoum\report\fields\runner\event\cli;
 
-use mageekguy\atoum\cli\progressBar;
-use mageekguy\atoum\report;
-use mageekguy\atoum\runner;
-use mageekguy\atoum\test;
+use atoum\atoum\cli\progressBar;
+use atoum\atoum\report;
+use atoum\atoum\runner;
+use atoum\atoum\test;
 
 class dot extends report\fields\runner\event
 {

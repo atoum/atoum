@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\asserters\adapter;
+namespace atoum\atoum\asserters\adapter;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\asserters\adapter\call\exceptions;
-use mageekguy\atoum\test;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\asserters\adapter\call\exceptions;
+use atoum\atoum\test;
+use atoum\atoum\tools\variable;
 
 abstract class call extends atoum\asserter
 {
@@ -108,7 +108,7 @@ abstract class call extends atoum\asserter
     {
         $this->adapter = $adapter;
 
-        if ($this->adapter instanceof \mageekguy\atoum\test\adapter) {
+        if ($this->adapter instanceof \atoum\atoum\test\adapter) {
             $this->pass();
         } else {
             $this->fail($this->_('%s is not a test adapter', $this->getTypeOf($this->adapter)));

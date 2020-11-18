@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test;
+namespace atoum\atoum\test;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\test\adapter\invoker;
+use atoum\atoum;
+use atoum\atoum\exceptions;
+use atoum\atoum\test\adapter\invoker;
 
 class adapter extends atoum\adapter
 {

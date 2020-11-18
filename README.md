@@ -114,12 +114,12 @@ $script->addDefaultArguments('--test-it', '-ncc');
 
 $runner->addTestsFromDirectory(__DIR__ . '/tests/units/classes');
 
-$testGenerator = new mageekguy\atoum\test\generator();
+$testGenerator = new atoum\atoum\test\generator();
 $testGenerator
     ->setTestClassesDirectory(__DIR__ . '/tests/units/classes');
-    ->setTestClassNamespace('mageekguy\atoum\tests\units');
+    ->setTestClassNamespace('atoum\atoum\tests\units');
     ->setTestedClassesDirectory(__DIR__ . '/classes');
-    ->setTestedClassNamespace('mageekguy\atoum')
+    ->setTestedClassNamespace('atoum\atoum')
     ->setRunnerPath(__DIR__ . '/scripts/runner.php')
 ;
 
@@ -192,7 +192,7 @@ require_once 'path/to/atoum.phar';
 
 include_once 'path/to/project/classes/helloWorld.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 use vendor\project;
 
 class helloWorld extends atoum\test
@@ -273,7 +273,7 @@ require_once 'path/to/atoum.phar';
 
 include_once 'path/to/project/classes/helloWorld.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 use vendor\project;
 
 class helloWorld extends atoum\test

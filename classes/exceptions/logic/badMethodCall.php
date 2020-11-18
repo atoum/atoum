@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\exceptions\logic;
+namespace atoum\atoum\exceptions\logic;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class badMethodCall extends \badMethodCallException implements atoum\exception
 {

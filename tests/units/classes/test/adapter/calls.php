@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\adapter;
+namespace atoum\atoum\tests\units\test\adapter;
 
 require __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\test\adapter;
-use mageekguy\atoum\test\adapter\calls as testedClass;
-use mock\mageekguy\atoum\test\adapter\calls as mockedTestedClass;
+use atoum\atoum;
+use atoum\atoum\test\adapter;
+use atoum\atoum\test\adapter\calls as testedClass;
+use mock\atoum\atoum\test\adapter\calls as mockedTestedClass;
 
 class calls extends atoum\test
 {

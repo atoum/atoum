@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\script;
+namespace atoum\atoum\tests\units\script;
 
-use mageekguy\atoum;
-use mageekguy\atoum\script\prompt as testedClass;
+use atoum\atoum;
+use atoum\atoum\script\prompt as testedClass;
 
 require_once __DIR__ . '/../../runner.php';
 

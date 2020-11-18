@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports;
+namespace atoum\atoum\tests\units\reports;
 
 require __DIR__ . '/../../runner.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class realtime extends atoum\test
 {
@@ -16,9 +16,9 @@ class realtime extends atoum\test
     public function testIsOverridableBy()
     {
         $this
-            ->if($report = new \mock\mageekguy\atoum\reports\realtime())
-            ->and($otherRealtimeReport = new \mock\mageekguy\atoum\reports\realtime())
-            ->and($otherReport = new \mock\mageekguy\atoum\report())
+            ->if($report = new \mock\atoum\atoum\reports\realtime())
+            ->and($otherRealtimeReport = new \mock\atoum\atoum\reports\realtime())
+            ->and($otherReport = new \mock\atoum\atoum\report())
             ->then
                 ->boolean($report->isOverridableBy($report))->isFalse
                 ->boolean($report->isOverridableBy($otherRealtimeReport))->isFalse
@@ -31,7 +31,7 @@ class realtime extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance,
-                $writer = new \mock\mageekguy\atoum\report\writers\realtime
+                $writer = new \mock\atoum\atoum\report\writers\realtime
             )
             ->then
                 ->object($this->testedInstance->addWriter($writer))->isTestedInstance
@@ -43,8 +43,8 @@ class realtime extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance,
-                $observable = new \mock\mageekguy\atoum\observable,
-                $writer = new \mock\mageekguy\atoum\report\writers\realtime
+                $observable = new \mock\atoum\atoum\observable,
+                $writer = new \mock\atoum\atoum\report\writers\realtime
             )
             ->if(
                 $this->testedInstance->addWriter($writer),
@@ -61,7 +61,7 @@ class realtime extends atoum\test
                 ->mock($writer)
                     ->call('writeRealtimeReport')->withArguments($this->testedInstance, $event)->once
                     ->call('reset')->once
-            ->given($otherWriter = new \mock\mageekguy\atoum\report\writers\realtime)
+            ->given($otherWriter = new \mock\atoum\atoum\report\writers\realtime)
             ->if(
                 $this->testedInstance->addWriter($otherWriter),
                 $event = uniqid()

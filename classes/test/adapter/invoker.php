@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\test\adapter;
+namespace atoum\atoum\test\adapter;
 
-use mageekguy\atoum\exceptions;
+use atoum\atoum\exceptions;
 
 class invoker implements \arrayAccess, \countable
 {

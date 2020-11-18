@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum\atoum;
 
 require_once __DIR__ . '/../classes/autoloader.php';
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\mock\streams\fs\directory;
+namespace atoum\atoum\mock\streams\fs\directory;
 
-use mageekguy\atoum\mock\streams\fs;
+use atoum\atoum\mock\streams\fs;
 
 class controller extends fs\controller
 {

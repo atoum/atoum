@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\test;
+namespace atoum\atoum\test;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class score extends atoum\score
 {

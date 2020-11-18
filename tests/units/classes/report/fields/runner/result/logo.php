@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\result;
+namespace atoum\atoum\tests\units\report\fields\runner\result;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\fields\runner\result\logo as testedClass;
+use atoum\atoum;
+use atoum\atoum\report\fields\runner\result\logo as testedClass;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -16,14 +16,14 @@ class logo extends atoum\test
 
     public function test__toString()
     {
-        $score = new \mock\mageekguy\atoum\score();
+        $score = new \mock\atoum\atoum\score();
         $scoreController = $score->getMockController();
         $scoreController->getAssertionNumber = 1;
         $scoreController->getFailNumber = 0;
         $scoreController->getErrorNumber = 0;
         $scoreController->getExceptionNumber = 0;
 
-        $runner = new \mock\mageekguy\atoum\runner();
+        $runner = new \mock\atoum\atoum\runner();
         $runnerController = $runner->getMockController();
         $runnerController->getScore = $score;
         $runnerController->getTestNumber = 1;

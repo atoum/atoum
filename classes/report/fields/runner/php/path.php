@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\php;
+namespace atoum\atoum\report\fields\runner\php;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report;
-use mageekguy\atoum\runner;
+use atoum\atoum;
+use atoum\atoum\report;
+use atoum\atoum\runner;
 
 abstract class path extends report\field
 {

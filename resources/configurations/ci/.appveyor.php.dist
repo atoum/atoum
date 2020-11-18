@@ -1,10 +1,10 @@
 <?php
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\reports,
-	mageekguy\atoum\reports\telemetry,
-	mageekguy\atoum\writers\std
+	atoum\atoum,
+	atoum\atoum\reports,
+	atoum\atoum\reports\telemetry,
+	atoum\atoum\writers\std
 ;
 
 $script->addDefaultReport();
@@ -14,7 +14,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php') === true)
 	require_once __DIR__ . '/vendor/autoload.php';
 }
 
-if (class_exists('mageekguy\atoum\reports\telemetry') === true)
+if (class_exists('atoum\atoum\reports\telemetry') === true)
 {
 	$telemetry = new telemetry();
 	$telemetry->readProjectNameFromComposerJson(__DIR__ . '/composer.json');

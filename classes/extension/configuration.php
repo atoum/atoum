@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\extension;
+namespace atoum\atoum\extension;
 
 interface configuration
 {

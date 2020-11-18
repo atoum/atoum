@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\mock\php;
+namespace atoum\atoum\mock\php;
 
-use mageekguy\atoum\exceptions;
+use atoum\atoum\exceptions;
 
 class method
 {

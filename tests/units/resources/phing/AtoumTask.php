@@ -18,11 +18,11 @@ namespace
 namespace tests\units
 {
     use AtoumTask as testedClass;
-    use mageekguy\atoum;
+    use atoum\atoum;
 
     require_once __DIR__ . '/../../runner.php';
 
-    define('mageekguy\atoum\phing\task\path', atoum\mock\streams\fs\file::get());
+    define('atoum\atoum\phing\task\path', atoum\mock\streams\fs\file::get());
 
     require_once __DIR__ . '/../../../../resources/phing/AtoumTask.php';
 
@@ -116,7 +116,7 @@ namespace tests\units
         {
             $this
                 ->mockGenerator->shuntParentClassCalls()
-                ->if($runner = new \mock\mageekguy\atoum\runner())
+                ->if($runner = new \mock\atoum\atoum\runner())
                 ->and($this->calling($runner)->run = new atoum\score())
                 ->and($task = new testedClass($runner))
                 ->then
@@ -162,7 +162,7 @@ namespace tests\units
                     ->object($task->execute())->isIdenticalTo($task)
                     ->mock($runner)
                         ->call('addReport')->twice()
-                ->if($score = new \mock\mageekguy\atoum\score())
+                ->if($score = new \mock\atoum\atoum\score())
                 ->and($this->calling($runner)->run = $score)
                 ->and($this->calling($score)->getUncompletedMethodNumber = rand(1, PHP_INT_MAX))
                 ->then
@@ -210,10 +210,10 @@ namespace tests\units
         {
             $this
                 ->mockGenerator->shuntParentClassCalls()
-                ->if($runner = new \mock\mageekguy\atoum\runner())
+                ->if($runner = new \mock\atoum\atoum\runner())
                 ->and($this->calling($runner)->run = new atoum\score())
                 ->and($task = new \mock\AtoumTask($runner))
-                ->and($this->calling($task)->configureDefaultReport = $report = new \mock\mageekguy\atoum\reports\realtime\phing())
+                ->and($this->calling($task)->configureDefaultReport = $report = new \mock\atoum\atoum\reports\realtime\phing())
                 ->and($this->calling($task)->configureCoverageTreemapField = $field = new atoum\report\fields\runner\coverage\treemap(uniqid(), uniqid()))
                 ->and($task->setCodeCoverageTreemapPath(uniqid()))
                 ->then
@@ -232,7 +232,7 @@ namespace tests\units
                 ->if($report = new atoum\reports\realtime\phing())
                 ->then
                     ->object($task->configureDefaultReport($report))->isIdenticalTo($report)
-                ->if($report = new \mock\mageekguy\atoum\reports\realtime\phing())
+                ->if($report = new \mock\atoum\atoum\reports\realtime\phing())
                 ->then
                     ->object($task->configureDefaultReport($report))->isIdenticalTo($report)
                     ->mock($report)
@@ -299,7 +299,7 @@ namespace tests\units
         {
             $this
                 ->if($task = new testedClass())
-                ->and($report = new \mock\mageekguy\atoum\reports\asynchronous())
+                ->and($report = new \mock\atoum\atoum\reports\asynchronous())
                 ->then
                     ->object($task->configureAsynchronousReport($report, uniqid()))->isIdenticalTo($report)
                     ->mock($report)

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\score;
+namespace atoum\atoum\score;
 
-use mageekguy\atoum;
-use mageekguy\atoum\score;
+use atoum\atoum;
+use atoum\atoum\score;
 
 class coverage implements \countable, \serializable
 {

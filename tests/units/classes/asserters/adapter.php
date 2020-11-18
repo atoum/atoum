@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\test;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\test;
+use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -96,7 +96,7 @@ class adapter extends atoum\test
     {
         $this
             ->mockGenerator->orphanize('asserterFail')
-            ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
+            ->if($this->newTestedInstance(new \mock\atoum\atoum\asserter\generator()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->call(uniqid());
@@ -121,7 +121,7 @@ class adapter extends atoum\test
     {
         $this
             ->mockGenerator->orphanize('asserterFail')
-            ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
+            ->if($this->newTestedInstance(new \mock\atoum\atoum\asserter\generator()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->withArguments(uniqid());
@@ -152,7 +152,7 @@ class adapter extends atoum\test
     {
         $this
             ->mockGenerator->orphanize('asserterFail')
-            ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
+            ->if($this->newTestedInstance(new \mock\atoum\atoum\asserter\generator()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->withArguments(uniqid());
@@ -186,7 +186,7 @@ class adapter extends atoum\test
     {
         $this
             ->mockGenerator->orphanize('asserterFail')
-            ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
+            ->if($this->newTestedInstance(new \mock\atoum\atoum\asserter\generator()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->withoutAnyArgument();

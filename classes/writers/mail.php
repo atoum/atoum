@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\writers;
+namespace atoum\atoum\writers;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report;
-use mageekguy\atoum\reports;
+use atoum\atoum;
+use atoum\atoum\report;
+use atoum\atoum\reports;
 
 class mail extends atoum\writer implements report\writers\asynchronous
 {

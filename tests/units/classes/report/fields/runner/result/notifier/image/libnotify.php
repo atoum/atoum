@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\result\notifier\image;
+namespace atoum\atoum\tests\units\report\fields\runner\result\notifier\image;
 
-use mageekguy\atoum;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\report\fields\runner\result\notifier\image\libnotify as testedClass;
-use mageekguy\atoum\test\adapter;
+use atoum\atoum;
+use atoum\atoum\locale;
+use atoum\atoum\report\fields\runner\result\notifier\image\libnotify as testedClass;
+use atoum\atoum\test\adapter;
 
 require_once __DIR__ . '/../../../../../../runner.php';
 
@@ -37,12 +37,12 @@ class libnotify extends atoum\test
     public function testHandleEvent()
     {
         $this
-            ->if($score = new \mock\mageekguy\atoum\runner\score())
+            ->if($score = new \mock\atoum\atoum\runner\score())
             ->and($this->calling($score)->getAssertionNumber = $assertionNumber = rand(1, PHP_INT_MAX))
             ->and($this->calling($score)->getFailNumber = $failNumber = rand(1, PHP_INT_MAX))
             ->and($this->calling($score)->getErrorNumber = $errorNumber = rand(1, PHP_INT_MAX))
             ->and($this->calling($score)->getExceptionNumber = $exceptionNumber = rand(1, PHP_INT_MAX))
-            ->and($runner = new \mock\mageekguy\atoum\runner())
+            ->and($runner = new \mock\atoum\atoum\runner())
             ->and($runner->setScore($score))
             ->and($this->calling($runner)->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
             ->and($this->calling($runner)->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
@@ -74,10 +74,10 @@ class libnotify extends atoum\test
             ->and($adapter->system = function () {
             })
             ->and($adapter->file_exists = true)
-            ->and($score = new \mock\mageekguy\atoum\score())
-            ->and($runner = new \mock\mageekguy\atoum\runner())
+            ->and($score = new \mock\atoum\atoum\score())
+            ->and($runner = new \mock\atoum\atoum\runner())
             ->and($this->calling($runner)->getScore = $score)
-            ->and($locale = new \mock\mageekguy\atoum\locale())
+            ->and($locale = new \mock\atoum\atoum\locale())
             ->and($this->calling($locale)->_ = function ($string) use (& $noTestRunningString, & $successString, & $failureString) {
                 switch ($string) {
                     case '%s %s %s %s %s':

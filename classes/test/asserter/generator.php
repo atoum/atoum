@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\test\asserter;
+namespace atoum\atoum\test\asserter;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
+use atoum\atoum;
+use atoum\atoum\asserter;
 
 class generator extends asserter\generator
 {

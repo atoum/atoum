@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\scripts\runner\loopers;
+namespace atoum\atoum\scripts\runner\loopers;
 
-use mageekguy\atoum;
-use mageekguy\atoum\script;
-use mageekguy\atoum\scripts\runner\looper;
-use mageekguy\atoum\writers;
+use atoum\atoum;
+use atoum\atoum\script;
+use atoum\atoum\scripts\runner\looper;
+use atoum\atoum\writers;
 
 class prompt implements looper
 {

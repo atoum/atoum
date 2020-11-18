@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\assertion;
+namespace atoum\atoum\tests\units\test\assertion;
 
 require __DIR__ . '/../../../runner.php';
 

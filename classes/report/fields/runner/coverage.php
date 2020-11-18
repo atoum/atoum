@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner;
+namespace atoum\atoum\report\fields\runner;
 
-use mageekguy\atoum\adapter;
-use mageekguy\atoum\exceptions\runtime;
-use mageekguy\atoum\iterators;
-use mageekguy\atoum\observable;
-use mageekguy\atoum\php;
-use mageekguy\atoum\report;
-use mageekguy\atoum\runner;
+use atoum\atoum\adapter;
+use atoum\atoum\exceptions\runtime;
+use atoum\atoum\iterators;
+use atoum\atoum\observable;
+use atoum\atoum\php;
+use atoum\atoum\report;
+use atoum\atoum\runner;
 
 abstract class coverage extends report\field
 {
@@ -100,16 +100,16 @@ abstract class coverage extends report\field
                 $phpCode =
                     '<?php ' .
                     'ob_start();' .
-                    'require \'' . \mageekguy\atoum\directory . '/classes/autoloader.php\';'
+                    'require \'' . \atoum\atoum\directory . '/classes/autoloader.php\';'
                 ;
 
                 $autoloaderFile = $observable->getAutoloaderFile();
 
                 if ($autoloaderFile !== null) {
                     $phpCode .=
-                        '$includer = new mageekguy\atoum\includer();' .
+                        '$includer = new atoum\atoum\includer();' .
                         'try { $includer->includePath(\'' . $autoloaderFile . '\'); }' .
-                        'catch (mageekguy\atoum\includer\exception $exception)' .
+                        'catch (atoum\atoum\includer\exception $exception)' .
                         '{ die(\'Unable to include autoloader file \\\'' . $autoloaderFile . '\\\'\'); }'
                     ;
                 }
@@ -118,9 +118,9 @@ abstract class coverage extends report\field
 
                 if ($bootstrapFile !== null) {
                     $phpCode .=
-                        '$includer = new mageekguy\atoum\includer();' .
+                        '$includer = new atoum\atoum\includer();' .
                         'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
-                        'catch (mageekguy\atoum\includer\exception $exception)' .
+                        'catch (atoum\atoum\includer\exception $exception)' .
                         '{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }'
                     ;
                 }

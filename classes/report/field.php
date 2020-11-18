@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\report;
+namespace atoum\atoum\report;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 abstract class field
 {

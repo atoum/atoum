@@ -11,12 +11,12 @@ namespace
     }
 }
 
-namespace mageekguy\atoum\tests\units\asserters
+namespace atoum\atoum\tests\units\asserters
 {
-    use mageekguy\atoum;
-    use mageekguy\atoum\asserter;
-    use mageekguy\atoum\asserters;
-    use mageekguy\atoum\tools\variable;
+    use atoum\atoum;
+    use atoum\atoum\asserter;
+    use atoum\atoum\asserters;
+    use atoum\atoum\tools\variable;
 
     require_once __DIR__ . '/../../runner.php';
 
@@ -104,7 +104,7 @@ namespace mageekguy\atoum\tests\units\asserters
                         $this->testedInstance->isInstanceOf(uniqid());
                     })
                         ->isInstanceOf(atoum\exceptions\logic\invalidArgument::class)
-                        ->hasMessage('Argument of mageekguy\atoum\asserters\exception::isInstanceOf() must be a \exception instance or an exception class name')
+                        ->hasMessage('Argument of atoum\atoum\asserters\exception::isInstanceOf() must be a \exception instance or an exception class name')
 
                 ->if($this->calling($locale)->_ = $isNotAnInstance = uniqid())
                 ->then

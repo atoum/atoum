@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\failures\execute\macos;
+namespace atoum\atoum\tests\units\report\fields\runner\failures\execute\macos;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\fields\runner\failures\execute\macos\macvim as testedClass;
+use atoum\atoum;
+use atoum\atoum\report\fields\runner\failures\execute\macos\macvim as testedClass;
 
 require_once __DIR__ . '/../../../../../../../runner.php';
 
@@ -35,7 +35,7 @@ class macvim extends atoum\test
             ->then
                 ->castToString($field)->isEmpty()
                 ->adapter($adapter)->call('system')->never()
-            ->if($score = new \mock\mageekguy\atoum\runner\score())
+            ->if($score = new \mock\atoum\atoum\runner\score())
             ->and($score->getMockController()->getErrors = [])
             ->and($runner = new atoum\runner())
             ->and($runner->setScore($score))

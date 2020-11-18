@@ -1,9 +1,9 @@
 <?php
 
 use
-    mageekguy\atoum,
-    mageekguy\atoum\reports,
-    mageekguy\atoum\writers\std
+    atoum\atoum,
+    atoum\atoum\reports,
+    atoum\atoum\writers\std
 ;
 
 $script->addDefaultReport();
