@@ -1,0 +1,44 @@
+name: Linux
+
+on:
+  push:
+    branches:
+      - master
+      - 4.x
+  pull_request:
+
+jobs:
+  ubuntu-latest:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-versions: [ '7.2', '7.3' ]
+        coverage: [none]
+        include:
+          -   php-versions: '7.4'
+              coverage: xdebug
+          # see https://github.com/marketplace/actions/setup-php-action#nightly-build-setup
+          -   php-versions: '8.0'
+              experimental: true
+          -   php-versions: '8.1'
+              experimental: true
+      fail-fast: false
+
+    name: PHP ${{ matrix.php-versions }} on ubuntu-latest
+
+    steps:
+      -   name: PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: ${{ matrix.php-versions }}
+            coverage: ${{ matrix.coverage }}
+
+      -   name: Checkout
+          uses: actions/checkout@v2
+
+      -   name: Configure
+          run: cp resources/configurations/ci/.github.php.dist .atoum.php
+
+      -   name: Run
+          run: bin/atoum -ebpc

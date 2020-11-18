@@ -20,15 +20,15 @@ $coverallsReport = new reports\asynchronous\coveralls($sources, $token);
 $defaultFinder = $coverallsReport->getBranchFinder();
 $coverallsReport
     ->setBranchFinder(function() use ($defaultFinder) {
-        if (($branch = getenv('TRAVIS_BRANCH')) === false)
+        if (($branch = getenv('GITHUB_REF')) === false)
         {
             $branch = $defaultFinder();
         }
 
         return $branch;
     })
-    ->setServiceName(getenv('TRAVIS') ? 'travis-ci' : null)
-    ->setServiceJobId(getenv('TRAVIS_JOB_ID') ?: null)
+    ->setServiceName(getenv('CI') ? 'github-actions' : null)
+    ->setServiceJobId(getenv('GITHUB_RUN_NUMBER') ?: null)
     ->addDefaultWriter()
 ;
 
