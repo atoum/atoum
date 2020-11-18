@@ -1269,7 +1269,6 @@ class generator extends atoum\test
         ;
     }
 
-
     public function testGetMockedClassCodeForInterfaceWithTypeHint()
     {
         $this
@@ -1931,8 +1930,7 @@ class generator extends atoum\test
             }))
             ->and($generator->setAdapter($adapter))
             ->and($analyzerController = new mock\controller())
-            ->and($analyzerController->__construct = function () {
-            })
+            ->and($analyzerController->__construct = function () {})
             ->and($analyzerController->getTypeHintString[1] = 'string')
             ->and($analyzerController->getTypeHintString[2] = '')
             ->and($analyzerController->getTypeHintString[3] = '?int')
