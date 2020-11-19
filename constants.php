@@ -1,6 +1,6 @@
 <?php
 
-namespace atoum;
+namespace atoum\atoum;
 
 if (defined(__NAMESPACE__ . '\running') === false) {
     define(__NAMESPACE__ . '\running', true);
