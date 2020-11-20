@@ -111,7 +111,7 @@ class AtoumTask extends task
         } elseif ($this->atoumAutoloaderPath !== null) {
             require_once $this->atoumAutoloaderPath;
         } elseif (class_exists('atoum\atoum\scripts\runner', false) === false) {
-            throw new exception('Unknown class mageekguy\\atoum\\scripts\\runner, consider setting atoumPharPath parameter');
+            throw new exception('Unknown class atoum\\atoum\\scripts\\runner, consider setting atoumPharPath parameter');
         }
 
         atoum\scripts\runner::disableAutorun();

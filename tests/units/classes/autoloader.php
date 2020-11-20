@@ -25,21 +25,18 @@ class autoloader extends atoum\test
                 ->object($autoloader->addNamespaceAlias($alias = uniqid(), $target = uniqid()))->isIdenticalTo($autoloader)
                 ->array($autoloader->getNamespaceAliases())->isEqualTo(
                     [
-                        'atoum\\' => 'mageekguy\\atoum\\',
                         $alias . '\\' => $target . '\\'
                     ]
                 )
                 ->object($autoloader->addNamespaceAlias($alias, $target))->isIdenticalTo($autoloader)
                 ->array($autoloader->getNamespaceAliases())->isEqualTo(
                     [
-                        'atoum\\' => 'mageekguy\\atoum\\',
                         $alias . '\\' => $target . '\\'
                     ]
                 )
                 ->object($autoloader->addNamespaceAlias('\\' . ($otherAlias = uniqid()), '\\' . ($otherTarget = uniqid())))->isIdenticalTo($autoloader)
                 ->array($autoloader->getNamespaceAliases())->isEqualTo(
                     [
-                        'atoum\\' => 'mageekguy\\atoum\\',
                         $alias . '\\' => $target . '\\',
                         $otherAlias . '\\' => $otherTarget . '\\'
                     ]
@@ -47,7 +44,6 @@ class autoloader extends atoum\test
                 ->object($autoloader->addNamespaceAlias('\\' . ($anOtherAlias = uniqid()) . '\\', '\\' . ($anOtherTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
                 ->array($autoloader->getNamespaceAliases())->isEqualTo(
                     [
-                        'atoum\\' => 'mageekguy\\atoum\\',
                         $alias . '\\' => $target . '\\',
                         $otherAlias . '\\' => $otherTarget . '\\',
                         $anOtherAlias . '\\' => $anOtherTarget . '\\'
@@ -56,7 +52,6 @@ class autoloader extends atoum\test
                 ->object($autoloader->addNamespaceAlias('FOO', ($fooTarget = uniqid())))->isIdenticalTo($autoloader)
                 ->array($autoloader->getNamespaceAliases())->isEqualTo(
                     [
-                        'atoum\\' => 'mageekguy\\atoum\\',
                         $alias . '\\' => $target . '\\',
                         $otherAlias . '\\' => $otherTarget . '\\',
                         $anOtherAlias . '\\' => $anOtherTarget . '\\',
@@ -74,24 +69,24 @@ class autoloader extends atoum\test
                 ->object($autoloader->addClassAlias($alias = uniqid(), $target = uniqid()))->isIdenticalTo($autoloader)
                 ->array($autoloader->getClassAliases())->isEqualTo(
                     [
-                        'atoum' => 'mageekguy\\atoum\\test',
-                        'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
+                        'atoum' => 'atoum\\atoum\\test',
+                        'atoum\\atoum' => 'atoum\\atoum\\test',
                         $alias => $target
                     ]
                 )
                 ->object($autoloader->addClassAlias($alias, $target))->isIdenticalTo($autoloader)
                 ->array($autoloader->getClassAliases())->isEqualTo(
                     [
-                        'atoum' => 'mageekguy\\atoum\\test',
-                        'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
+                        'atoum' => 'atoum\\atoum\\test',
+                        'atoum\\atoum' => 'atoum\\atoum\\test',
                         $alias => $target
                     ]
                 )
                 ->object($autoloader->addClassAlias('\\' . ($otherAlias = uniqid()), '\\' . ($otherTarget = uniqid())))->isIdenticalTo($autoloader)
                 ->array($autoloader->getClassAliases())->isEqualTo(
                     [
-                        'atoum' => 'mageekguy\\atoum\\test',
-                        'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
+                        'atoum' => 'atoum\\atoum\\test',
+                        'atoum\\atoum' => 'atoum\\atoum\\test',
                         $alias => $target,
                         $otherAlias => $otherTarget
                     ]
@@ -99,8 +94,8 @@ class autoloader extends atoum\test
                 ->object($autoloader->addClassAlias('\\' . ($anOtherAlias = uniqid()) . '\\', '\\' . ($anOtherTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
                 ->array($autoloader->getClassAliases())->isEqualTo(
                     [
-                        'atoum' => 'mageekguy\\atoum\\test',
-                        'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
+                        'atoum' => 'atoum\\atoum\\test',
+                        'atoum\\atoum' => 'atoum\\atoum\\test',
                         $alias => $target,
                         $otherAlias => $otherTarget,
                         $anOtherAlias => $anOtherTarget
@@ -109,8 +104,8 @@ class autoloader extends atoum\test
                 ->object($autoloader->addClassAlias('FOO', '\\' . ($fooTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
                 ->array($autoloader->getClassAliases())->isEqualTo(
                     [
-                        'atoum' => 'mageekguy\\atoum\\test',
-                        'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
+                        'atoum' => 'atoum\\atoum\\test',
+                        'atoum\\atoum' => 'atoum\\atoum\\test',
                         $alias => $target,
                         $otherAlias => $otherTarget,
                         $anOtherAlias => $anOtherTarget,

@@ -2,7 +2,6 @@
 
 namespace atoum\atoum\tests\units\report\fields\runner\atoum;
 
-use mageekguy;
 use atoum\atoum\cli\colorizer;
 use atoum\atoum\cli\prompt;
 use atoum\atoum\locale;
