@@ -9,7 +9,7 @@ if (defined('atoum\atoum\phing\task\path') === false) {
     define('atoum\atoum\phing\task\path', 'phing/Task.php');
 }
 
-require_once atoum\atoum\phing\task\path;
+require_once constant('atoum\atoum\phing\task\path');
 
 class AtoumTask extends task
 {

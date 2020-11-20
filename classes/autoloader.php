@@ -34,7 +34,7 @@ class autoloader
             $this->addDirectory($namespace, $directory);
         }
 
-        foreach ($namespaceAliases ?: ['atoum' => __NAMESPACE__] as $alias => $target) {
+        foreach ($namespaceAliases ?: [] as $alias => $target) {
             $this->addNamespaceAlias($alias, $target);
         }
 
