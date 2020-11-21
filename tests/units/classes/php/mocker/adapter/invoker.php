@@ -4,8 +4,8 @@ namespace atoum\atoum\tests\units\php\mocker\adapter;
 
 require_once __DIR__ . '/../../../../runner.php';
 
-use atoum;
-use atoum\php\mocker\adapter\invoker as testedClass;
+use atoum\atoum;
+use atoum\atoum\php\mocker\adapter\invoker as testedClass;
 
 class invoker extends atoum
 {

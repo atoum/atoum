@@ -97,7 +97,7 @@ class funktion extends atoum\test
                 $this->mockGenerator
                     ->orphanize('__construct')
                     ->orphanize('resetCalls'),
-                php\mocker::setAdapter($adapter = new \mock\atoum\test\adapter())
+                php\mocker::setAdapter($adapter = new \mock\atoum\atoum\test\adapter())
             )
             ->then
                 ->object($this->testedInstance->resetCalls())->isTestedInstance
