@@ -3,7 +3,7 @@
 namespace atoum\atoum\tests\units\tools;
 
 use atoum;
-use atoum\tools;
+use atoum\atoum\tools;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -43,7 +43,7 @@ class diff extends atoum
         $this
             ->given(
                 $this->newTestedInstance,
-                $this->testedInstance->setDecorator($decorator = new \mock\atoum\tools\diff\decorator())
+                $this->testedInstance->setDecorator($decorator = new \mock\atoum\atoum\tools\diff\decorator())
             )
 
             ->if($this->calling($decorator)->decorate = uniqid())
