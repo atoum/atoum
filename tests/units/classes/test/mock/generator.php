@@ -11,7 +11,7 @@ class generator extends atoum
 {
     public function testClass()
     {
-        $this->testedClass->extends(atoum\mock\generator::class);
+        $this->testedClass->extends(atoum\atoum\mock\generator::class);
     }
 
     public function test__construct()

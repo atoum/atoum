@@ -5,7 +5,7 @@ namespace atoum\atoum\tests\units\test\assertion;
 require __DIR__ . '/../../../runner.php';
 
 use atoum;
-use atoum\asserter;
+use atoum\atoum\asserter;
 
 class aliaser extends atoum
 {
