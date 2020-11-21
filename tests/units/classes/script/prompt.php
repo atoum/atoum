@@ -51,8 +51,8 @@ class prompt extends atoum\test
     {
         $this
             ->if($prompt = new testedClass())
-            ->and($writer = new \mock\atoum\writer())
-            ->and($reader = new \mock\atoum\reader())
+            ->and($writer = new \mock\atoum\atoum\writer())
+            ->and($reader = new \mock\atoum\atoum\reader())
             ->and($prompt->setOutputWriter($writer))
             ->and($prompt->setInputReader($reader))
             ->and($this->calling($reader)->read = $line = uniqid())
