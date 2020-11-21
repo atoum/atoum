@@ -153,7 +153,7 @@ class treemap extends atoum\test
     {
         $this
             ->if($treemap = new testedClass(uniqid()))
-            ->and($treemap->setIncluder($includer = new \mock\atoum\includer()))
+            ->and($treemap->setIncluder($includer = new \mock\atoum\atoum\includer()))
             ->and($this->calling($includer)->includePath = function () {
             })
             ->then
