@@ -1221,7 +1221,7 @@ class generator extends atoum\test
             ->and($analyzerController->__construct = function () {
             })
             ->and($analyzerController->getTypeHintString = 'array')
-            ->and($analyzer = new \mock\atoum\tools\parameter\analyzer())
+            ->and($analyzer = new \mock\atoum\atoum\tools\parameter\analyzer())
             ->and($generator->setParameterAnalyzer($analyzer))
             ->then
                 ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
@@ -1322,7 +1322,7 @@ class generator extends atoum\test
             ->and($analyzerController->__construct = function () {
             })
             ->and($analyzerController->getTypeHintString = 'string')
-            ->and($analyzer = new \mock\atoum\tools\parameter\analyzer())
+            ->and($analyzer = new \mock\atoum\atoum\tools\parameter\analyzer())
             ->and($generator->setParameterAnalyzer($analyzer))
             ->then
                 ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
@@ -1934,7 +1934,7 @@ class generator extends atoum\test
             ->and($analyzerController->getTypeHintString[1] = 'string')
             ->and($analyzerController->getTypeHintString[2] = '')
             ->and($analyzerController->getTypeHintString[3] = '?int')
-            ->and($analyzer = new \mock\atoum\tools\parameter\analyzer())
+            ->and($analyzer = new \mock\atoum\atoum\tools\parameter\analyzer())
             ->and($generator->setParameterAnalyzer($analyzer))
             ->and($generator->orphanize('__construct'))
             ->then
@@ -2047,7 +2047,7 @@ class generator extends atoum\test
             })
             ->and($analyzerController->getTypeHintString[1] = '')
             ->and($analyzerController->getTypeHintString[2] = 'array')
-            ->and($analyzer = new \mock\atoum\tools\parameter\analyzer())
+            ->and($analyzer = new \mock\atoum\atoum\tools\parameter\analyzer())
             ->and($generator->setParameterAnalyzer($analyzer))
             ->then
                 ->string($generator->getMockedClassCode($className))->isEqualTo(
@@ -2177,7 +2177,7 @@ class generator extends atoum\test
             ->and($analyzerController->getTypeHintString[1] = 'string')
             ->and($analyzerController->getTypeHintString[2] = '\\Foo\\Bar')
             ->and($analyzerController->getTypeHintString[3] = '')
-            ->and($analyzer = new \mock\atoum\tools\parameter\analyzer())
+            ->and($analyzer = new \mock\atoum\atoum\tools\parameter\analyzer())
             ->and($generator->setParameterAnalyzer($analyzer))
             ->then
                 ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
