@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\autoloader;
+namespace atoum\atoum\autoloader;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use atoum\atoum;
+use atoum\atoum\exceptions;
 
 class mock
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts;
+namespace atoum\atoum\tests\units\scripts;
 
-use mageekguy\atoum;
-use mageekguy\atoum\scripts\treemap as testedClass;
-use mock\mageekguy\atoum\scripts\treemap\analyzer as analyzer;
-use mock\mageekguy\atoum\scripts\treemap\categorizer as categorizer;
+use atoum\atoum;
+use atoum\atoum\scripts\treemap as testedClass;
+use mock\atoum\atoum\scripts\treemap\analyzer as analyzer;
+use mock\atoum\atoum\scripts\treemap\categorizer as categorizer;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -153,7 +153,7 @@ class treemap extends atoum\test
     {
         $this
             ->if($treemap = new testedClass(uniqid()))
-            ->and($treemap->setIncluder($includer = new \mock\atoum\includer()))
+            ->and($treemap->setIncluder($includer = new \mock\atoum\atoum\includer()))
             ->and($this->calling($includer)->includePath = function () {
             })
             ->then

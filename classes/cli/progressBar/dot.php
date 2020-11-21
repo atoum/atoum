@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\cli\progressBar;
+namespace atoum\atoum\cli\progressBar;
 
 class dot
 {

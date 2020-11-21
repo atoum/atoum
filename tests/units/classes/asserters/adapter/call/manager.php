@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\adapter\call;
+namespace atoum\atoum\tests\units\asserters\adapter\call;
 
 require __DIR__ . '/../../../../runner.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class manager extends atoum\test
 {
@@ -13,7 +13,7 @@ class manager extends atoum\test
         $this
             ->given($manager = $this->newTestedInstance)
             ->then
-                ->object($this->testedInstance->add($call = new \mock\atoum\asserters\adapter\call()))->isTestedInstance
+                ->object($this->testedInstance->add($call = new \mock\atoum\atoum\asserters\adapter\call()))->isTestedInstance
                 ->object($this->testedInstance->add($call))->isTestedInstance
         ;
     }
@@ -23,8 +23,8 @@ class manager extends atoum\test
         $this
             ->given($this->newTestedInstance)
             ->then
-                ->object($this->testedInstance->remove($call = new \mock\atoum\asserters\adapter\call()))->isTestedInstance
-                ->object($this->testedInstance->add($call = new \mock\atoum\asserters\adapter\call()))->isTestedInstance
+                ->object($this->testedInstance->remove($call = new \mock\atoum\atoum\asserters\adapter\call()))->isTestedInstance
+                ->object($this->testedInstance->add($call = new \mock\atoum\atoum\asserters\adapter\call()))->isTestedInstance
         ;
     }
 
@@ -36,7 +36,7 @@ class manager extends atoum\test
                 ->object($this->testedInstance->check())->isTestedInstance
 
             ->if(
-                $this->testedInstance->add($call = new \mock\atoum\asserters\adapter\call()),
+                $this->testedInstance->add($call = new \mock\atoum\atoum\asserters\adapter\call()),
                 $this->calling($call)->getLastAssertionFile = $file = uniqid(),
                 $this->calling($call)->getLastAssertionLine = $line = rand(1, PHP_INT_MAX)
             )

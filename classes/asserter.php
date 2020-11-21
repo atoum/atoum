@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum\atoum;
 
-use mageekguy\atoum\tools\variable;
+use atoum\atoum\tools\variable;
 
 abstract class asserter implements asserter\definition
 {

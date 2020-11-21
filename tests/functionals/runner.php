@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\functionals;
+namespace atoum\atoum\tests\functionals;
 
-use mageekguy\atoum
+use atoum\atoum
 ;
 
 if (defined('atoum\scripts\runner') === false) {

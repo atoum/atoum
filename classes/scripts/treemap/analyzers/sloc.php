@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\scripts\treemap\analyzers;
+namespace atoum\atoum\scripts\treemap\analyzers;
 
-use mageekguy\atoum\scripts\treemap\analyzer;
+use atoum\atoum\scripts\treemap\analyzer;
 
 class sloc implements analyzer
 {

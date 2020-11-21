@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\template;
+namespace atoum\atoum\tests\units\template;
 
-use mageekguy\atoum;
-use mageekguy\atoum\template;
-use mageekguy\atoum\test;
+use atoum\atoum;
+use atoum\atoum\template;
+use atoum\atoum\test;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -56,7 +56,7 @@ class parser extends atoum\test
 
     public function testCheckString()
     {
-        $this->define->parserException = '\mageekguy\atoum\tests\units\asserters\template\parser\exception';
+        $this->define->parserException = '\atoum\atoum\tests\units\asserters\template\parser\exception';
 
         $this
             ->if($parser = new template\parser())
@@ -165,7 +165,7 @@ class parser extends atoum\test
 
     public function testCheckFile()
     {
-        $this->define->parserException = '\mageekguy\atoum\tests\units\asserters\template\parser\exception';
+        $this->define->parserException = '\atoum\atoum\tests\units\asserters\template\parser\exception';
 
         $this
             ->if($parser = new template\parser(null, $adapter = new test\adapter()))

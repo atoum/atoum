@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\test\adapter\call\decorators;
+namespace atoum\atoum\test\adapter\call\decorators;
 
-use mageekguy\atoum\test\adapter\call;
+use atoum\atoum\test\adapter\call;
 
 class addClass extends call\decorator
 {

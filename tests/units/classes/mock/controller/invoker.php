@@ -1,13 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\controller;
+namespace atoum\atoum\tests\units\mock\controller;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use atoum
-;
+use atoum\atoum;
 
-class invoker extends atoum
+class invoker extends atoum\test
 {
     public function testClass()
     {

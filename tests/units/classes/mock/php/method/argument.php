@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\php\method;
+namespace atoum\atoum\tests\units\mock\php\method;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock\php;
+use atoum\atoum;
+use atoum\atoum\mock\php;
 
 require_once __DIR__ . '/../../../../runner.php';
 

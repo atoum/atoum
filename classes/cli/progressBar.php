@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\cli;
+namespace atoum\atoum\cli;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class progressBar
 {

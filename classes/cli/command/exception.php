@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\cli\command;
+namespace atoum\atoum\cli\command;
 
-use mageekguy\atoum\exceptions;
+use atoum\atoum\exceptions;
 
 class exception extends exceptions\runtime
 {

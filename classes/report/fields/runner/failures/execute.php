@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\failures;
+namespace atoum\atoum\report\fields\runner\failures;
 
-use mageekguy\atoum\adapter;
-use mageekguy\atoum\report\fields\runner;
+use atoum\atoum\adapter;
+use atoum\atoum\report\fields\runner;
 
 class execute extends runner\failures
 {

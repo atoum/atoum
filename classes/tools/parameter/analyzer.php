@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tools\parameter;
+namespace atoum\atoum\tools\parameter;
 
 class analyzer
 {

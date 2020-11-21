@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\cli\commands;
+namespace atoum\atoum\tests\units\cli\commands;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli;
-use mageekguy\atoum\cli\commands\git as testedClass;
+use atoum\atoum;
+use atoum\atoum\cli;
+use atoum\atoum\cli\commands\git as testedClass;
 
 class git extends atoum
 {
@@ -44,7 +44,7 @@ class git extends atoum
         $this
             ->given(
                 $git = new testedClass(),
-                $git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+                $git->setCommand($command = new \mock\atoum\atoum\cli\command()),
                 $this->calling($command)->run = $command
             )
 
@@ -85,7 +85,7 @@ class git extends atoum
         $this
             ->given(
                 $git = new testedClass(),
-                $git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+                $git->setCommand($command = new \mock\atoum\atoum\cli\command()),
                 $this->calling($command)->run = $command
             )
 
@@ -126,7 +126,7 @@ class git extends atoum
         $this
             ->given(
                 $git = new testedClass(),
-                $git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+                $git->setCommand($command = new \mock\atoum\atoum\cli\command()),
                 $this->calling($command)->run = $command
             )
 
@@ -167,7 +167,7 @@ class git extends atoum
         $this
             ->given(
                 $git = new testedClass(),
-                $git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+                $git->setCommand($command = new \mock\atoum\atoum\cli\command()),
                 $this->calling($command)->run = $command
             )
 
@@ -208,7 +208,7 @@ class git extends atoum
         $this
             ->given(
                 $git = new testedClass(),
-                $git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+                $git->setCommand($command = new \mock\atoum\atoum\cli\command()),
                 $this->calling($command)->run = $command
             )
 
@@ -279,7 +279,7 @@ class git extends atoum
         $this
             ->given(
                 $git = new testedClass(),
-                $git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+                $git->setCommand($command = new \mock\atoum\atoum\cli\command()),
                 $this->calling($command)->run = $command
             )
 
@@ -350,7 +350,7 @@ class git extends atoum
         $this
             ->given(
                 $git = new testedClass(),
-                $git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+                $git->setCommand($command = new \mock\atoum\atoum\cli\command()),
                 $this->calling($command)->run = $command
             )
 
@@ -406,7 +406,7 @@ class git extends atoum
         $this
             ->given(
                 $git = new testedClass(),
-                $git->setCommand($command = new \mock\mageekguy\atoum\cli\command()),
+                $git->setCommand($command = new \mock\atoum\atoum\cli\command()),
                 $this->calling($command)->run = $command
             )
 

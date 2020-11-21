@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\atoum\tests\units;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 require_once __DIR__ . '/../runner.php';
 
@@ -21,11 +21,11 @@ class configurator extends atoum\test
     public function test__call()
     {
         $this
-            ->if($runner = new \mock\mageekguy\atoum\runner())
+            ->if($runner = new \mock\atoum\atoum\runner())
             ->and($runner->getMockController()->setBootstrapFile = function () {
             })
-            ->and($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-            ->and($this->calling($script)->addDefaultReport = $report = new \mock\mageekguy\atoum\report())
+            ->and($script = new \mock\atoum\atoum\scripts\runner(uniqid()))
+            ->and($this->calling($script)->addDefaultReport = $report = new \mock\atoum\atoum\report())
             ->and($script->setRunner($runner))
             ->and($configurator = new atoum\configurator($script))
             ->then

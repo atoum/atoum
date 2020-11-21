@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\script\arguments;
+namespace atoum\atoum\tests\units\script\arguments;
 
-use mageekguy\atoum;
-use mageekguy\atoum\script;
+use atoum\atoum;
+use atoum\atoum\script;
 
 require_once __DIR__ . '/../../../runner.php';
 
@@ -44,29 +44,29 @@ class parser extends atoum\test
             ->if($parser = new script\arguments\parser())
             ->then
                 ->castToString($parser)->isEmpty()
-            ->if($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), []))
+            ->if($parser->parse(new \mock\atoum\atoum\script(uniqid()), []))
             ->then
                 ->castToString($parser)->isEmpty()
             ->if($parser->addHandler(function ($script, $argument, $values) {
             }, ['-a']))
-            ->and($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), []))
+            ->and($parser->parse(new \mock\atoum\atoum\script(uniqid()), []))
             ->then
                 ->castToString($parser)->isEmpty()
-            ->if($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), ['-a']))
+            ->if($parser->parse(new \mock\atoum\atoum\script(uniqid()), ['-a']))
             ->then
                 ->castToString($parser)->isEqualTo('-a')
-            ->if($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), ['-a', 'A']))
+            ->if($parser->parse(new \mock\atoum\atoum\script(uniqid()), ['-a', 'A']))
             ->then
                 ->castToString($parser)->isEqualTo('-a A')
-            ->if($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), ['-a', 'A', 'B', 'C']))
+            ->if($parser->parse(new \mock\atoum\atoum\script(uniqid()), ['-a', 'A', 'B', 'C']))
             ->then
                 ->castToString($parser)->isEqualTo('-a A B C')
             ->if($parser->addHandler(function ($script, $argument, $values) {
             }, ['--b']))
-            ->and($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), ['-a', 'A', 'B', 'C']))
+            ->and($parser->parse(new \mock\atoum\atoum\script(uniqid()), ['-a', 'A', 'B', 'C']))
             ->then
                 ->castToString($parser)->isEqualTo('-a A B C')
-            ->and($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), ['-a', 'A', 'B', 'C', '--b']))
+            ->and($parser->parse(new \mock\atoum\atoum\script(uniqid()), ['-a', 'A', 'B', 'C', '--b']))
             ->then
                 ->castToString($parser)->isEqualTo('-a A B C --b')
         ;
@@ -85,7 +85,7 @@ class parser extends atoum\test
     public function testGetValues()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\script(uniqid()))
+            ->if($script = new \mock\atoum\atoum\script(uniqid()))
             ->and($parser = new script\arguments\parser())
             ->then
                 ->array($parser->getValues())->isEmpty()
@@ -119,7 +119,7 @@ class parser extends atoum\test
     public function testGetIterator()
     {
         $this
-            ->if($script = new \mock\mageekguy\atoum\script(uniqid()))
+            ->if($script = new \mock\atoum\atoum\script(uniqid()))
             ->and($parser = new script\arguments\parser())
             ->and($parser->parse($script, []))
             ->then
@@ -145,7 +145,7 @@ class parser extends atoum\test
     {
         $this
             ->assert('when using $_SERVER')
-                ->if($script = new \mock\mageekguy\atoum\script(uniqid()))
+                ->if($script = new \mock\atoum\atoum\script(uniqid()))
                 ->and($superglobals = new atoum\superglobals())
                 ->and($superglobals->_SERVER['argv'] = [])
                 ->and($parser = new script\arguments\parser($superglobals))

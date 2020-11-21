@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\travis;
+namespace atoum\atoum\report\fields\test\travis;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\fields;
-use mageekguy\atoum\test;
+use atoum\atoum;
+use atoum\atoum\report\fields;
+use atoum\atoum\test;
 
 class stop extends fields\test\travis
 {

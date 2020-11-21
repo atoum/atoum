@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
 require __DIR__ . '/../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\php;
+use atoum\atoum;
+use atoum\atoum\php;
 
 class phpFunction extends atoum\test
 {
@@ -19,7 +19,7 @@ class phpFunction extends atoum\test
         $this
             ->given($asserter = $this->newTestedInstance)
 
-            ->if($test = new \mock\atoum\test())
+            ->if($test = new \mock\atoum\atoum\test())
             ->then
                 ->object($this->testedInstance->setWithTest($test))->isTestedInstance
                 ->object($this->testedInstance->getTest())->isIdenticalTo($test)
@@ -152,7 +152,7 @@ class phpFunction extends atoum\test
                     ->isInstanceOf(atoum\asserter\exception::class)
 
             ->given(
-                $test = new \mock\atoum\test(),
+                $test = new \mock\atoum\atoum\test(),
                 $this->calling($test)->getTestedClassNamespace = $this->getTestedClassNamespace()
             )
             ->if(

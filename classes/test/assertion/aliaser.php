@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\test\assertion;
+namespace atoum\atoum\test\assertion;
 
-use mageekguy\atoum\asserter;
+use atoum\atoum\asserter;
 
 class aliaser implements \arrayAccess
 {

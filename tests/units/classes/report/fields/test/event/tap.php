@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\test\event;
+namespace atoum\atoum\tests\units\report\fields\test\event;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\report\fields\test\event\tap as testedClass;
+use atoum\atoum;
+use atoum\atoum\exceptions;
+use atoum\atoum\mock;
+use atoum\atoum\report\fields\test\event\tap as testedClass;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -31,7 +31,7 @@ class tap extends atoum\test
         $this
             ->if($adapter = new atoum\test\adapter())
             ->and($adapter->class_exists = true)
-            ->and($runner = new \mock\mageekguy\atoum\runner())
+            ->and($runner = new \mock\atoum\atoum\runner())
             ->and($scoreController = new mock\controller())
             ->and(
                 $scoreController->getLastErroredMethod = [
@@ -72,11 +72,11 @@ class tap extends atoum\test
                     'fail' => uniqid()
                 ]
             )
-            ->and($score = new \mock\mageekguy\atoum\test\score())
+            ->and($score = new \mock\atoum\atoum\test\score())
             ->and($testController = new mock\controller())
             ->and($testController->getTestedClassName = uniqid())
             ->and($testController->getScore = $score)
-            ->and($test = new \mock\mageekguy\atoum\test($adapter))
+            ->and($test = new \mock\atoum\atoum\test($adapter))
             ->and($field = new testedClass())
             ->then
                 ->boolean($field->handleEvent(atoum\runner::runStart, $runner))->isTrue()
@@ -127,7 +127,7 @@ class tap extends atoum\test
     public function test__toString()
     {
         $this
-            ->if($test = new \mock\mageekguy\atoum\test())
+            ->if($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getClass = $class = uniqid())
             ->and($this->calling($test)->getCurrentMethod = $method = uniqid())
             ->and($field = new testedClass())
@@ -152,7 +152,7 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
+            ->if($score = new \mock\atoum\atoum\test\score())
             ->and(
                 $this->calling($score)->getLastFailAssertion[1] = $failure1 = [
                     'case' => null,
@@ -201,7 +201,7 @@ class tap extends atoum\test
                     'fail' => $fail4 = uniqid()
                 ]
             )
-            ->and($test = new \mock\mageekguy\atoum\test())
+            ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($field = new testedClass())
             ->then
@@ -247,7 +247,7 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
+            ->if($score = new \mock\atoum\atoum\test\score())
             ->and(
                 $this->calling($score)->getLastVoidMethod[1] = [
                     'class' => $class1 = uniqid(),
@@ -262,7 +262,7 @@ class tap extends atoum\test
                     'file' => $file2 = uniqid()
                 ]
             )
-            ->and($test = new \mock\mageekguy\atoum\test())
+            ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($field = new testedClass())
             ->then
@@ -293,7 +293,7 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
+            ->if($score = new \mock\atoum\atoum\test\score())
             ->and(
                 $this->calling($score)->getLastSkippedMethod[1] = [
                     'file' => $file1 = uniqid(),
@@ -312,7 +312,7 @@ class tap extends atoum\test
                     'message' => ($message2 = uniqid()) . PHP_EOL . ($otherMessage2 = uniqid()) . PHP_EOL . ($anotherMessage2 = uniqid())
                 ]
             )
-            ->and($test = new \mock\mageekguy\atoum\test())
+            ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($field = new testedClass())
             ->then
@@ -363,8 +363,8 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
-            ->and($test = new \mock\mageekguy\atoum\test())
+            ->if($score = new \mock\atoum\atoum\test\score())
+            ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($this->calling($test)->getClass = $class = uniqid())
             ->and($this->calling($test)->getCurrentMethod[1] = $method = uniqid())
@@ -416,8 +416,8 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
-            ->and($test = new \mock\mageekguy\atoum\test())
+            ->if($score = new \mock\atoum\atoum\test\score())
+            ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($this->calling($test)->getClass = $class = uniqid())
             ->and($this->calling($test)->getCurrentMethod[1] = $method = uniqid())
@@ -465,8 +465,8 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
-            ->and($test = new \mock\mageekguy\atoum\test())
+            ->if($score = new \mock\atoum\atoum\test\score())
+            ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($this->calling($test)->getPath = $file = uniqid())
             ->and($this->calling($test)->getClass = $class = uniqid())
@@ -533,8 +533,8 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
-            ->and($test = new \mock\mageekguy\atoum\test())
+            ->if($score = new \mock\atoum\atoum\test\score())
+            ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($this->calling($test)->getClass = $class = uniqid())
             ->and($this->calling($test)->getCurrentMethod = $method = uniqid())

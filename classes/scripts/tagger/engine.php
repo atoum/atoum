@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\scripts\tagger;
+namespace atoum\atoum\scripts\tagger;
 
-use mageekguy\atoum;
-use mageekguy\atoum\adapter;
-use mageekguy\atoum\exceptions;
+use atoum\atoum;
+use atoum\atoum\adapter;
+use atoum\atoum\exceptions;
 
 class engine
 {

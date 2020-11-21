@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\writer\decorators;
+namespace atoum\atoum\tests\units\writer\decorators;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\writer\decorators\trim as testedClass;
+use atoum\atoum;
+use atoum\atoum\writer\decorators\trim as testedClass;
 
 class trim extends atoum
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\field\decorators\travis;
+namespace atoum\atoum\tests\units\report\field\decorators\travis;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 require_once __DIR__ . '/../../../../../runner.php';
 

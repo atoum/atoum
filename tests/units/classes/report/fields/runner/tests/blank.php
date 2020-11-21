@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests;
+namespace atoum\atoum\tests\units\report\fields\runner\tests;
 
-use mageekguy\atoum;
-use mageekguy\atoum\runner;
-use mock\mageekguy\atoum\report\fields\runner\tests\blank as testedClass;
+use atoum\atoum;
+use atoum\atoum\runner;
+use mock\atoum\atoum\report\fields\runner\tests\blank as testedClass;
 
 require __DIR__ . '/../../../../../runner.php';
 

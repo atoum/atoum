@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\php\mocker;
+namespace atoum\atoum\php\mocker;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class exception extends \runtimeException implements atoum\exception
 {

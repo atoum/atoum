@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test\data\providers;
+namespace atoum\atoum\test\data\providers;
 
-use mageekguy\atoum\exceptions\runtime;
-use mageekguy\atoum\mock\generator;
-use mageekguy\atoum\test\data\provider;
+use atoum\atoum\exceptions\runtime;
+use atoum\atoum\mock\generator;
+use atoum\atoum\test\data\provider;
 
 class mock extends phpObject
 {

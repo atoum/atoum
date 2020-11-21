@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\result;
+namespace atoum\atoum\report\fields\runner\result;
 
 class logo extends cli
 {

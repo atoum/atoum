@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\atoum\asserters;
 
-use mageekguy\atoum\exceptions;
+use atoum\atoum\exceptions;
 
 class dateTime extends phpObject
 {

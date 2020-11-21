@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\skipped;
+namespace atoum\atoum\tests\units\report\fields\runner\tests\skipped;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report\fields\runner\tests\skipped\cli as testedClass;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report\fields\runner\tests\skipped\cli as testedClass;
 
 require __DIR__ . '/../../../../../../runner.php';
 
@@ -89,7 +89,7 @@ class cli extends atoum\test
     public function test__toString()
     {
         $this
-            ->if($score = new \mock\mageekguy\atoum\runner\score())
+            ->if($score = new \mock\atoum\atoum\runner\score())
             ->and($this->calling($score)->getSkippedMethods = [])
             ->and($runner = new atoum\runner())
             ->and($runner->setScore($score))

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\cli\command;
+namespace atoum\atoum\tests\units\cli\command;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum
+use atoum\atoum
 ;
 
 class exception extends atoum

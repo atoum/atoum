@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\tools;
-use mageekguy\atoum\tools\diffs;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\tools;
+use atoum\atoum\tools\diffs;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -56,9 +56,9 @@ class variable extends atoum\test
     public function test__get()
     {
         $this
-            ->given($this->newTestedInstance($generator = new \mock\atoum\asserter\generator()))
+            ->given($this->newTestedInstance($generator = new \mock\atoum\atoum\asserter\generator()))
 
-            ->if($this->calling($generator)->__get = $asserterInstance = new \mock\atoum\asserter())
+            ->if($this->calling($generator)->__get = $asserterInstance = new \mock\atoum\atoum\asserter())
             ->then
                 ->object($this->testedInstance->{$asserterClass = uniqid()})->isIdenticalTo($asserterInstance)
                 ->mock($generator)->call('__get')->withArguments($asserterClass)->once
@@ -140,9 +140,9 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -180,8 +180,8 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -214,9 +214,9 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -263,8 +263,8 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -298,8 +298,8 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -421,8 +421,8 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -472,8 +472,8 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -538,8 +538,8 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -590,8 +590,8 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -642,8 +642,8 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -695,7 +695,7 @@ class variable extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
             )
             ->then
                 ->exception(function () use ($asserter) {

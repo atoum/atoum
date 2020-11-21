@@ -1,7 +1,7 @@
 <?php
 
-use mageekguy\atoum;
-use mageekguy\atoum\scripts;
+use atoum\atoum;
+use atoum\atoum\scripts;
 
 require_once __DIR__ . '/../constants.php';
 require_once __DIR__ . '/../classes/autoloader.php';

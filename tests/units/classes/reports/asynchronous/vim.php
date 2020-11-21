@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\asynchronous;
+namespace atoum\atoum\tests\units\reports\asynchronous;
 
-use mageekguy\atoum;
-use mageekguy\atoum\reports\asynchronous;
+use atoum\atoum;
+use atoum\atoum\reports\asynchronous;
 
 require_once __DIR__ . '/../../../runner.php';
 

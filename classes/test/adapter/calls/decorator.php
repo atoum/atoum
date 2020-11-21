@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\test\adapter\calls;
+namespace atoum\atoum\test\adapter\calls;
 
-use mageekguy\atoum\test\adapter\calls;
+use atoum\atoum\test\adapter\calls;
 
 class decorator
 {

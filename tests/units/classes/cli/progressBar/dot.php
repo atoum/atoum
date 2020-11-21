@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\cli\progressBar;
+namespace atoum\atoum\tests\units\cli\progressBar;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli;
+use atoum\atoum;
+use atoum\atoum\cli;
 
 require_once __DIR__ . '/../../../runner.php';
 

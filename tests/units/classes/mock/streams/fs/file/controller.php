@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\streams\fs\file;
+namespace atoum\atoum\tests\units\mock\streams\fs\file;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock\streams\fs\file\controller as testedClass;
-use mageekguy\atoum\test;
+use atoum\atoum;
+use atoum\atoum\mock\streams\fs\file\controller as testedClass;
+use atoum\atoum\test;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -214,7 +214,7 @@ class controller extends atoum\test
         $this
             ->assert('Use r and r+ mode')
                 ->if($controller = new testedClass(uniqid()))
-                ->and($controller->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+                ->and($controller->setCalls($calls = new \mock\atoum\atoum\test\adapter\calls()))
                 ->and($usePath = null)
                 ->then
                     ->boolean($controller->stream_open($path = uniqid(), 'z', 0))->isFalse()
@@ -318,7 +318,7 @@ class controller extends atoum\test
                     ->variable($usePath)->isNull()
             ->assert('Use w and w+ mode')
                 ->if($controller = new testedClass(uniqid()))
-                ->and($controller->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+                ->and($controller->setCalls($calls = new \mock\atoum\atoum\test\adapter\calls()))
                 ->and($usePath = null)
                 ->then
                     ->boolean($controller->stream_open($path = uniqid(), 'w', 0))->isTrue()
@@ -374,7 +374,7 @@ class controller extends atoum\test
                     ->error('Permission denied', E_USER_WARNING)->exists()
             ->assert('Use c and c+ mode')
                 ->if($controller = new testedClass(uniqid()))
-                ->and($controller->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+                ->and($controller->setCalls($calls = new \mock\atoum\atoum\test\adapter\calls()))
                 ->and($usePath = null)
                 ->then
                     ->boolean($controller->stream_open($path = uniqid(), 'c', 0))->isTrue()
@@ -429,7 +429,7 @@ class controller extends atoum\test
                     ->error('Permission denied', E_USER_WARNING)->exists()
             ->assert('Use a and a+ mode')
                 ->if($controller = new testedClass(uniqid()))
-                ->and($controller->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+                ->and($controller->setCalls($calls = new \mock\atoum\atoum\test\adapter\calls()))
                 ->then
                     ->boolean($controller->stream_open($path = uniqid(), 'a', 0))->isTrue()
                     ->mock($calls)->call('addCall')->withArguments(new test\adapter\call('stream_open', [$path, 'a', 0]))->once()
@@ -488,7 +488,7 @@ class controller extends atoum\test
                     ->boolean($controller->stream_open($path = uniqid(), 'a+', 0))->isFalse()
                     ->mock($calls)->call('addCall')->withArguments(new test\adapter\call('stream_open', [$path, 'a+', 0]))->once()
                 ->if($controller = new testedClass(uniqid()))
-                ->and($controller->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+                ->and($controller->setCalls($calls = new \mock\atoum\atoum\test\adapter\calls()))
                 ->and($controller->isWritable())
                 ->and($controller->isNotReadable())
                 ->then
@@ -502,7 +502,7 @@ class controller extends atoum\test
                     ->error('Permission denied', E_USER_WARNING)->exists()
             ->assert('Use x and x+ mode')
                 ->if($controller = new testedClass(uniqid()))
-                ->and($controller->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+                ->and($controller->setCalls($calls = new \mock\atoum\atoum\test\adapter\calls()))
                 ->then
                     ->boolean($controller->stream_open($path = uniqid(), 'x', 0))->isFalse()
                     ->mock($calls)->call('addCall')->withArguments(new test\adapter\call('stream_open', [$path, 'x', 0]))->once()

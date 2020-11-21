@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\tools\diffs;
+namespace atoum\atoum\tests\units\tools\diffs;
 
-use mageekguy\atoum;
-use mageekguy\atoum\tools;
+use atoum\atoum;
+use atoum\atoum\tools;
 
 require_once __DIR__ . '/../../../runner.php';
 

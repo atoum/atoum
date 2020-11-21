@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\memory;
+namespace atoum\atoum\report\fields\test\memory;
 
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report;
 
 class cli extends report\fields\test\memory
 {

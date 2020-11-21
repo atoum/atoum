@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\scripts\builder;
+namespace atoum\atoum\scripts\builder;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use atoum\atoum;
+use atoum\atoum\exceptions;
 
 abstract class vcs
 {

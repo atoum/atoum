@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\autoloader;
+namespace atoum\atoum\tests\units\autoloader;
 
-use mageekguy\atoum
+use atoum\atoum
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -16,7 +16,7 @@ class mock extends atoum\test
             ->then
                 ->object($this->testedInstance->setMockGenerator())->isTestedInstance
                 ->object($this->testedInstance->getMockGenerator())->isInstanceOf(atoum\mock\generator::class)
-                ->object($this->testedInstance->setMockGenerator($generator = new \mock\mageekguy\atoum\mock\generator))->isTestedInstance
+                ->object($this->testedInstance->setMockGenerator($generator = new \mock\atoum\atoum\mock\generator))->isTestedInstance
                 ->object($this->testedInstance->getMockGenerator())->isIdenticalTo($generator)
         ;
     }
@@ -28,7 +28,7 @@ class mock extends atoum\test
             ->then
                 ->object($this->testedInstance->setAdapter())->isTestedInstance
                 ->object($this->testedInstance->getAdapter())->isInstanceOf(atoum\adapter::class)
-                ->object($this->testedInstance->setAdapter($adapter = new \mock\mageekguy\atoum\adapter))->isTestedInstance
+                ->object($this->testedInstance->setAdapter($adapter = new \mock\atoum\atoum\adapter))->isTestedInstance
                 ->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
         ;
     }
@@ -85,7 +85,7 @@ class mock extends atoum\test
     {
         $this
             ->given(
-                $generator = new \mock\mageekguy\atoum\mock\generator,
+                $generator = new \mock\atoum\atoum\mock\generator,
                 $this->newTestedInstance($generator)
             )
             ->if($this->calling($generator)->generate->doesNothing)

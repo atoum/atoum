@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\report\field\decorators\travis;
+namespace atoum\atoum\report\field\decorators\travis;
 
-use mageekguy\atoum\report\field;
-use mageekguy\atoum\report\field\decorator;
+use atoum\atoum\report\field;
+use atoum\atoum\report\field\decorator;
 
 class fold extends decorator
 {

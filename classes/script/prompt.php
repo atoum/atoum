@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\script;
+namespace atoum\atoum\script;
 
-use mageekguy\atoum\reader;
-use mageekguy\atoum\readers\std;
-use mageekguy\atoum\writer;
-use mageekguy\atoum\writers;
+use atoum\atoum\reader;
+use atoum\atoum\readers\std;
+use atoum\atoum\writer;
+use atoum\atoum\writers;
 
 class prompt
 {

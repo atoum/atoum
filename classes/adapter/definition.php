@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\adapter;
+namespace atoum\atoum\adapter;
 
 interface definition
 {

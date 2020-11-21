@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\reports\realtime;
+namespace atoum\atoum\reports\realtime;
 
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report\fields\runner;
-use mageekguy\atoum\report\fields\test;
-use mageekguy\atoum\reports\realtime;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report\fields\runner;
+use atoum\atoum\report\fields\test;
+use atoum\atoum\reports\realtime;
 
 class cli extends realtime
 {

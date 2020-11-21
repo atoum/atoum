@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\atoum\asserters;
 
 class phpFloat extends integer
 {

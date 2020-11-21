@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\engines;
+namespace atoum\atoum\tests\units\test\engines;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\test\engines\concurrent as testedClass;
+use atoum\atoum;
+use atoum\atoum\test\engines\concurrent as testedClass;
 
 class concurrent extends atoum\test
 {
@@ -52,9 +52,9 @@ class concurrent extends atoum\test
     {
         $this
             ->if($engine = new testedClass())
-            ->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
+            ->and($engine->setPhp($php = new \mock\atoum\atoum\php()))
             ->then
-                ->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
+                ->object($engine->run($test = new \mock\atoum\atoum\test()))->isIdenticalTo($engine)
             ->if($test->getMockController()->getCurrentMethod = $method = uniqid())
             ->and($test->getMockController()->getPath = $testPath = uniqid())
             ->and($test->getMockController()->getPhpPath = $phpPath = uniqid())
@@ -83,7 +83,7 @@ class concurrent extends atoum\test
                         '$test->setPhpPath(\'' . $phpPath . '\');' .
                         '$test->disableCodeCoverage();' .
                         'ob_end_clean();' .
-                        'mageekguy\atoum\scripts\runner::disableAutorun();' .
+                        'atoum\atoum\scripts\runner::disableAutorun();' .
                         'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
                     )->twice()
                     ->call('__set')->withArguments('XDEBUG_CONFIG', $xdebugConfig)->twice()
@@ -95,9 +95,9 @@ class concurrent extends atoum\test
                         '<?php ' .
                         'ob_start();' .
                         'require \'' . atoum\directory . '/classes/autoloader.php\';' .
-                        '$includer = new mageekguy\atoum\includer();' .
+                        '$includer = new atoum\atoum\includer();' .
                         'try { $includer->includePath(\'' . $autoloaderFile . '\'); }' .
-                        'catch (mageekguy\atoum\includer\exception $exception)' .
+                        'catch (atoum\atoum\includer\exception $exception)' .
                         '{ die(\'Unable to include autoloader file \\\'' . $autoloaderFile . '\\\'\'); }' .
                         'require \'' . $testPath . '\';' .
                         '$test = new ' . get_class($test) . '();' .
@@ -105,7 +105,7 @@ class concurrent extends atoum\test
                         '$test->setPhpPath(\'' . $phpPath . '\');' .
                         '$test->disableCodeCoverage();' .
                         'ob_end_clean();' .
-                        'mageekguy\atoum\scripts\runner::disableAutorun();' .
+                        'atoum\atoum\scripts\runner::disableAutorun();' .
                         'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
                     )->once
             ->if($this->calling($test)->getBootstrapFile = $bootstrapFile = uniqid())
@@ -116,13 +116,13 @@ class concurrent extends atoum\test
                         '<?php ' .
                         'ob_start();' .
                         'require \'' . atoum\directory . '/classes/autoloader.php\';' .
-                        '$includer = new mageekguy\atoum\includer();' .
+                        '$includer = new atoum\atoum\includer();' .
                         'try { $includer->includePath(\'' . $autoloaderFile . '\'); }' .
-                        'catch (mageekguy\atoum\includer\exception $exception)' .
+                        'catch (atoum\atoum\includer\exception $exception)' .
                         '{ die(\'Unable to include autoloader file \\\'' . $autoloaderFile . '\\\'\'); }' .
-                        '$includer = new mageekguy\atoum\includer();' .
+                        '$includer = new atoum\atoum\includer();' .
                         'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
-                        'catch (mageekguy\atoum\includer\exception $exception)' .
+                        'catch (atoum\atoum\includer\exception $exception)' .
                         '{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }' .
                         'require \'' . $testPath . '\';' .
                         '$test = new ' . get_class($test) . '();' .
@@ -130,7 +130,7 @@ class concurrent extends atoum\test
                         '$test->setPhpPath(\'' . $phpPath . '\');' .
                         '$test->disableCodeCoverage();' .
                         'ob_end_clean();' .
-                        'mageekguy\atoum\scripts\runner::disableAutorun();' .
+                        'atoum\atoum\scripts\runner::disableAutorun();' .
                         'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
                     )->once
         ;
@@ -140,12 +140,12 @@ class concurrent extends atoum\test
     {
         $this
             ->if($engine = new testedClass())
-            ->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
+            ->and($engine->setPhp($php = new \mock\atoum\atoum\php()))
             ->and($this->calling($php)->run = $php)
             ->and($this->calling($php)->isRunning = false)
             ->then
                 ->variable($engine->getScore())->isNull()
-            ->if($engine->run($test = new \mock\mageekguy\atoum\test()))
+            ->if($engine->run($test = new \mock\atoum\atoum\test()))
             ->and($this->calling($php)->isRunning = true)
             ->then
                 ->variable($engine->getScore())->isNull()

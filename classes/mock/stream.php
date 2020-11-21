@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\mock;
+namespace atoum\atoum\mock;
 
-use mageekguy\atoum\adapter;
-use mageekguy\atoum\exceptions;
+use atoum\atoum\adapter;
+use atoum\atoum\exceptions;
 
 class stream
 {

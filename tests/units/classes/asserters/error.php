@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -96,7 +96,7 @@ class error extends atoum\test
             ->given($asserter = $this->newTestedInstance)
 
             ->if(
-                $asserter->setLocale($locale = new \mock\atoum\locale()),
+                $asserter->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $errorNotExists = uniqid()
             )
             ->then
@@ -181,7 +181,7 @@ class error extends atoum\test
             ->given($asserter = $this->newTestedInstance)
 
             ->if(
-                $asserter->setLocale($locale = new \mock\atoum\locale()),
+                $asserter->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $errorExists = uniqid()
             )
             ->then

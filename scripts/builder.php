@@ -1,6 +1,6 @@
 <?php
 
-use mageekguy\atoum\scripts;
+use atoum\atoum\scripts;
 
 require_once __DIR__ . '/../classes/autoloader.php';
 

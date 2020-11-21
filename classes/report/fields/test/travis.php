@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test;
+namespace atoum\atoum\report\fields\test;
 
-use mageekguy\atoum\report;
+use atoum\atoum\report;
 
 abstract class travis extends report\field
 {

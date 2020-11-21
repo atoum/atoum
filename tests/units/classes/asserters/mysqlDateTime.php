@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -20,8 +20,8 @@ class mysqlDateTime extends atoum\test
 
             ->if(
                 $asserter
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer()),
                 $this->calling($locale)->_ = $notMysqlDateTime = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
             )

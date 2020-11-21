@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\test\assertion\manager;
+namespace atoum\atoum\test\assertion\manager;
 
-use mageekguy\atoum\exceptions;
+use atoum\atoum\exceptions;
 
 class exception extends exceptions\runtime
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\extension;
+namespace atoum\atoum\extension;
 
-use mageekguy\atoum\exceptions\logic\invalidArgument;
+use atoum\atoum\exceptions\logic\invalidArgument;
 
 class aggregator extends \splObjectStorage
 {

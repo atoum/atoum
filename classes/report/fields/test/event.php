@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test;
+namespace atoum\atoum\report\fields\test;
 
-use mageekguy\atoum\report;
-use mageekguy\atoum\test;
+use atoum\atoum\report;
+use atoum\atoum\test;
 
 abstract class event extends report\fields\event
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\cli;
+namespace atoum\atoum\cli;
 
 class prompt
 {

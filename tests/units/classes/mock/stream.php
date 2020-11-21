@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock;
+namespace atoum\atoum\tests\units\mock;
 
-use mageekguy\atoum;
-use mageekguy\atoum\adapter;
-use mageekguy\atoum\mock\stream as testedClass;
-use mageekguy\atoum\test;
+use atoum\atoum;
+use atoum\atoum\adapter;
+use atoum\atoum\mock\stream as testedClass;
+use atoum\atoum\test;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -39,25 +39,25 @@ class stream extends test
                 ->object($streamController = testedClass::get($stream = uniqid()))->isInstanceOf(atoum\mock\stream\controller::class)
                 ->string($streamController->getPath())->isEqualTo(testedClass::defaultProtocol . '://' . testedClass::setDirectorySeparator($stream))
                 ->adapter($adapter)
-                    ->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
+                    ->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'atoum\atoum\mock\stream')->once()
             ->if($adapter->stream_get_wrappers = [testedClass::defaultProtocol])
             ->then
                 ->object($streamController = testedClass::get())->isInstanceOf(atoum\mock\stream\controller::class)
                 ->string($streamController->getPath())->matches('#^' . testedClass::defaultProtocol . '://\w+$#')
                 ->adapter($adapter)
-                    ->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
+                    ->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'atoum\atoum\mock\stream')->once()
                 ->object(testedClass::get($stream))->isIdenticalTo($streamController = testedClass::get($stream))
                 ->adapter($adapter)
-                    ->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
+                    ->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'atoum\atoum\mock\stream')->once()
                 ->object(testedClass::get($otherStream = ($protocol = uniqid()) . '://' . uniqid()))->isNotIdenticalTo($streamController)
                 ->adapter($adapter)
-                    ->call('stream_wrapper_register')->withArguments($protocol, 'mageekguy\atoum\mock\stream')->once()
+                    ->call('stream_wrapper_register')->withArguments($protocol, 'atoum\atoum\mock\stream')->once()
             ->if($adapter->stream_get_wrappers = [testedClass::defaultProtocol, $protocol])
             ->then
                 ->object(testedClass::get($otherStream))->isIdenticalTo(testedClass::get($otherStream))
                 ->object(testedClass::get($otherStream))->isIdenticalTo(testedClass::get($otherStream))
                 ->adapter($adapter)
-                    ->call('stream_wrapper_register')->withArguments($protocol, 'mageekguy\atoum\mock\stream')->once()
+                    ->call('stream_wrapper_register')->withArguments($protocol, 'atoum\atoum\mock\stream')->once()
             ->if($adapter->stream_get_wrappers = [])
             ->and($adapter->stream_wrapper_register = false)
             ->then

@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum\atoum;
 
 class adapter implements adapter\definition
 {

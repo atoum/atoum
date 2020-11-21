@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\mock\php\method;
+namespace atoum\atoum\mock\php\method;
 
 class argument
 {

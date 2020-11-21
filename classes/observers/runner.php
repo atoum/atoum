@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\observers;
+namespace atoum\atoum\observers;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 interface runner extends atoum\observer
 {

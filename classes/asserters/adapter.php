@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\atoum\asserters;
 
-use mageekguy\atoum\asserters\adapter\call;
-use mageekguy\atoum\asserters\adapter\exceptions;
+use atoum\atoum\asserters\adapter\call;
+use atoum\atoum\asserters\adapter\exceptions;
 
 class adapter extends call
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\tagger;
+namespace atoum\atoum\tests\units\scripts\tagger;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 require_once __DIR__ . '/../../../runner.php';
 
@@ -24,14 +24,14 @@ class engine extends atoum\test
                 ->variable($this->testedInstance->getSrcDirectory())->isNull()
                 ->variable($this->testedInstance->getDestinationDirectory())->isNull()
                 ->variable($this->testedInstance->getVersion())->isNull()
-                ->string($this->testedInstance->getVersionPattern())->isEqualTo(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)
+                ->string($this->testedInstance->getVersionPattern())->isEqualTo(\atoum\atoum\scripts\tagger\engine::defaultVersionPattern)
                 ->object($this->testedInstance->getAdapter())->isInstanceOf(atoum\adapter::class)
             ->if($this->newTestedInstance($adapter = new atoum\adapter()))
             ->then
                 ->variable($this->testedInstance->getSrcDirectory())->isNull()
                 ->variable($this->testedInstance->getDestinationDirectory())->isNull()
                 ->variable($this->testedInstance->getVersion())->isNull()
-                ->string($this->testedInstance->getVersionPattern())->isEqualTo(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)
+                ->string($this->testedInstance->getVersionPattern())->isEqualTo(\atoum\atoum\scripts\tagger\engine::defaultVersionPattern)
                 ->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
         ;
     }

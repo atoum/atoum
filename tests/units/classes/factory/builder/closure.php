@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\factory\builder;
+namespace atoum\atoum\tests\units\factory\builder;
 
 require __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class classWithoutConstructor
 {
@@ -74,7 +74,7 @@ class classWithConstructorWithVariadicArgument
     }
 }
 
-class closure extends atoum
+class closure extends atoum\test
 {
     public function testClass()
     {
@@ -186,7 +186,7 @@ class closure extends atoum
         $this
             ->given(
                 $this->newTestedInstance,
-                $assertionManager = new \mock\atoum\test\assertion\manager()
+                $assertionManager = new \mock\atoum\atoum\test\assertion\manager()
             )
             ->then
                 ->object($this->testedInstance->addToAssertionManager($assertionManager, $factoryName = uniqid(), $defaultHandler = function () {

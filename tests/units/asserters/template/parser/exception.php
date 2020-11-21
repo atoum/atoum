@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\template\parser;
+namespace atoum\atoum\tests\units\asserters\template\parser;
 
-use mageekguy\atoum\asserters
+use atoum\atoum\asserters
 ;
 
 class exception extends asserters\exception

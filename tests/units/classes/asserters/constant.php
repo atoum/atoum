@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\tools\diffs;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\tools\diffs;
+use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -102,9 +102,9 @@ class constant extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -141,9 +141,9 @@ class constant extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {

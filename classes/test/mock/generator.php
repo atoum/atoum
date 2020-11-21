@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\test\mock;
+namespace atoum\atoum\test\mock;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock;
+use atoum\atoum;
+use atoum\atoum\mock;
 
 class generator extends mock\generator
 {

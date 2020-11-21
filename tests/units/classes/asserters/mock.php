@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\test;
-use mageekguy\atoum\test\adapter\call\decorators;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\test;
+use atoum\atoum\test\adapter\call\decorators;
+use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -59,7 +59,7 @@ class mock extends atoum\test
     {
         $this
             ->given(
-                $mockController = new \mock\mageekguy\atoum\mock\controller(),
+                $mockController = new \mock\atoum\atoum\mock\controller(),
                 $asserter = $this->newTestedInstance
             )
             ->then
@@ -67,7 +67,7 @@ class mock extends atoum\test
                 ->variable($asserter->getAdapter())->isNull()
 
             ->if(
-                $asserter->setWith($mock = new \mock\mageekguy\atoum\score()),
+                $asserter->setWith($mock = new \mock\atoum\atoum\score()),
                 $mock->setMockController($mockController),
                 $this->resetMock($mockController)
             )
@@ -83,8 +83,8 @@ class mock extends atoum\test
             ->given($asserter = $this->newTestedInstance)
             ->if(
                 $asserter
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer()),
                 $this->calling($locale)->_ = $notMock = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
             )
@@ -97,7 +97,7 @@ class mock extends atoum\test
                 ->mock($locale)->call('_')->withArguments('%s is not a mock', $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($mock)->once
 
-                ->object($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\mock()))->isIdenticalTo($asserter)
+                ->object($asserter->setWith($mock = new \mock\atoum\atoum\tests\units\asserters\mock()))->isIdenticalTo($asserter)
                 ->object($asserter->getAdapter())->isIdenticalTo($mock->getMockController())
         ;
     }
@@ -114,8 +114,8 @@ class mock extends atoum\test
                         ->hasMessage('Mock is undefined')
             ->if(
                 $asserter
-                    ->setWith($mock = new \mock\foo($controller = new \mock\atoum\mock\controller()))
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setWith($mock = new \mock\foo($controller = new \mock\atoum\atoum\mock\controller()))
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $wasNotCalled = uniqid(),
                 $this->calling($controller)->getCallsNumber = 0,
                 $this->calling($controller)->getMockClass = $mockClass = uniqid()
@@ -160,8 +160,8 @@ class mock extends atoum\test
                         ->hasMessage('Mock is undefined')
             ->if(
                 $asserter
-                    ->setWith($mock = new \mock\foo($controller = new \mock\atoum\mock\controller()))
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setWith($mock = new \mock\foo($controller = new \mock\atoum\atoum\mock\controller()))
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $wasCalled = uniqid(),
                 $this->calling($controller)->getCallsNumber = rand(1, PHP_INT_MAX),
                 $this->calling($controller)->getMockClass = $mockClass = uniqid()
@@ -205,8 +205,8 @@ class mock extends atoum\test
                     ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Mock is undefined')
             ->given(
-                $asserter->setManager($manager = new \mock\atoum\asserters\adapter\call\manager()),
-                $mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()),
+                $asserter->setManager($manager = new \mock\atoum\atoum\asserters\adapter\call\manager()),
+                $mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()),
                 $this->calling($mockController)->getMockClass = $mockClass = uniqid()
             )
             ->if($asserter->setWith($mock))
@@ -241,8 +241,8 @@ class mock extends atoum\test
                     ->hasMessage('Mock is undefined')
 
             ->given(
-                $asserter->setManager($manager = new \mock\atoum\asserters\adapter\call\manager()),
-                $mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()),
+                $asserter->setManager($manager = new \mock\atoum\atoum\asserters\adapter\call\manager()),
+                $mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()),
                 $this->calling($mockController)->getMockClass = $mockClass = uniqid()
             )
             ->if($asserter->setWith($mock))
@@ -278,7 +278,7 @@ class mock extends atoum\test
                     ->hasMessage('Mock is undefined')
 
             ->given(
-                $mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()),
+                $mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()),
                 $this->calling($mockController)->getMockClass = $mockClass = uniqid()
             )
             ->if($asserter->setWith($mock))
@@ -290,7 +290,7 @@ class mock extends atoum\test
                     ->hasMessage('Call is undefined')
 
             ->if(
-                $asserter->setManager($manager = new \mock\atoum\asserters\adapter\call\manager()),
+                $asserter->setManager($manager = new \mock\atoum\atoum\asserters\adapter\call\manager()),
                 $asserter->call($function = uniqid())
             )
             ->then
@@ -332,7 +332,7 @@ class mock extends atoum\test
                     ->hasMessage('Mock is undefined')
 
             ->given(
-                $mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()),
+                $mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()),
                 $this->calling($mockController)->getMockClass = $mockClass = uniqid()
             )
             ->if($asserter->setWith($mock))
@@ -344,7 +344,7 @@ class mock extends atoum\test
                     ->hasMessage('Call is undefined')
 
             ->if(
-                $asserter->setManager($manager = new \mock\atoum\asserters\adapter\call\manager()),
+                $asserter->setManager($manager = new \mock\atoum\atoum\asserters\adapter\call\manager()),
                 $asserter->call($function = uniqid())
             )
             ->then
@@ -390,7 +390,7 @@ class mock extends atoum\test
                     ->hasMessage('Mock is undefined')
 
             ->given(
-                $mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()),
+                $mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()),
                 $this->calling($mockController)->getMockClass = $mockClass = uniqid()
             )
             ->if($asserter->setWith($mock))
@@ -414,7 +414,7 @@ class mock extends atoum\test
                     ->hasMessage('Call is undefined')
 
             ->if(
-                $asserter->setManager($manager = new \mock\atoum\asserters\adapter\call\manager()),
+                $asserter->setManager($manager = new \mock\atoum\atoum\asserters\adapter\call\manager()),
                 $asserter->call($function = uniqid())
             )
             ->then
@@ -480,7 +480,7 @@ class mock extends atoum\test
                     ->hasMessage('Mock is undefined')
 
             ->given(
-                $mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()),
+                $mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()),
                 $this->calling($mockController)->getMockClass = $mockClass = uniqid()
             )
             ->if($asserter->setWith($mock))
@@ -504,7 +504,7 @@ class mock extends atoum\test
                     ->hasMessage('Call is undefined')
 
             ->if(
-                $asserter->setManager($manager = new \mock\atoum\asserters\adapter\call\manager()),
+                $asserter->setManager($manager = new \mock\atoum\atoum\asserters\adapter\call\manager()),
                 $asserter->call($function = uniqid())
             )
             ->then
@@ -557,7 +557,7 @@ class mock extends atoum\test
                     ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Mock is undefined')
 
-            ->given($mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()))
+            ->given($mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()))
             ->if($asserter->setWith($mock))
             ->then
                 ->exception(function () use ($asserter) {
@@ -581,9 +581,9 @@ class mock extends atoum\test
             ->if(
                 $asserter
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = $number = rand(1, PHP_INT_MAX),
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -647,7 +647,7 @@ class mock extends atoum\test
                     ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Mock is undefined')
 
-            ->given($mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()))
+            ->given($mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()))
             ->if($asserter->setWith($mock))
             ->then
                 ->exception(function () use ($asserter) {
@@ -671,9 +671,9 @@ class mock extends atoum\test
             ->if(
                 $asserter
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -766,7 +766,7 @@ class mock extends atoum\test
                     ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Mock is undefined')
 
-            ->given($mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()))
+            ->given($mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()))
             ->if($asserter->setWith($mock))
             ->then
                 ->exception(function () use ($asserter) {
@@ -790,9 +790,9 @@ class mock extends atoum\test
             ->if(
                 $asserter
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -914,7 +914,7 @@ class mock extends atoum\test
                     ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Mock is undefined')
 
-            ->given($mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()))
+            ->given($mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()))
             ->if($asserter->setWith($mock))
             ->then
                 ->exception(function () use ($asserter) {
@@ -938,9 +938,9 @@ class mock extends atoum\test
             ->if(
                 $asserter
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -1062,7 +1062,7 @@ class mock extends atoum\test
                     ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Mock is undefined')
 
-            ->given($mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()))
+            ->given($mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()))
             ->if($asserter->setWith($mock))
             ->then
                 ->exception(function () use ($asserter) {
@@ -1086,9 +1086,9 @@ class mock extends atoum\test
             ->if(
                 $asserter
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->_ = $notCalled = uniqid()
@@ -1140,7 +1140,7 @@ class mock extends atoum\test
                     ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Mock is undefined')
 
-            ->given($mock = new \mock\foo($mockController = new \mock\atoum\mock\controller()))
+            ->given($mock = new \mock\foo($mockController = new \mock\atoum\atoum\mock\controller()))
             ->if($asserter->setWith($mock))
             ->then
                 ->exception(function () use ($asserter) {
@@ -1152,9 +1152,9 @@ class mock extends atoum\test
             ->if(
                 $asserter
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($mockController)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -1177,7 +1177,7 @@ class mock extends atoum\test
 
             ->if(
                 $this->calling($calls)->count = $count = rand(1, PHP_INT_MAX),
-                $this->calling($mockController)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($mockController)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = $count,
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )

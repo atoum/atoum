@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\reports\asynchronous;
+namespace atoum\atoum\reports\asynchronous;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use atoum\atoum;
+use atoum\atoum\exceptions;
 
 class xunit extends atoum\reports\asynchronous
 {

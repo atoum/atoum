@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\atoum\tests\units;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report as testedClass;
+use atoum\atoum;
+use atoum\atoum\report as testedClass;
 
 require_once __DIR__ . '/../runner.php';
 
@@ -74,10 +74,10 @@ class report extends atoum\test
         $this
             ->if($report = new testedClass())
             ->then
-                ->object($report->addField($field = new \mock\mageekguy\atoum\report\field()))->isIdenticalTo($report)
+                ->object($report->addField($field = new \mock\atoum\atoum\report\field()))->isIdenticalTo($report)
                 ->array($report->getFields())->isIdenticalTo([$field])
                 ->object($field->getLocale())->isIdenticalTo($report->getLocale())
-                ->object($report->addField($otherField = new \mock\mageekguy\atoum\report\field()))->isIdenticalTo($report)
+                ->object($report->addField($otherField = new \mock\atoum\atoum\report\field()))->isIdenticalTo($report)
                 ->array($report->getFields())->isIdenticalTo([$field, $otherField])
                 ->object($field->getLocale())->isIdenticalTo($report->getLocale())
                 ->object($otherField->getLocale())->isIdenticalTo($report->getLocale())
@@ -91,8 +91,8 @@ class report extends atoum\test
             ->then
                 ->object($report->resetFields())->isIdenticalTo($report)
                 ->array($report->getFields())->isEmpty()
-            ->if($report->addField(new \mock\mageekguy\atoum\report\field()))
-            ->and($report->addField(new \mock\mageekguy\atoum\report\field()))
+            ->if($report->addField(new \mock\atoum\atoum\report\field()))
+            ->and($report->addField(new \mock\atoum\atoum\report\field()))
             ->then
                 ->object($report->resetFields())->isIdenticalTo($report)
                 ->array($report->getFields())->isEmpty()
@@ -115,18 +115,18 @@ class report extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance,
-                $observable = new \mock\mageekguy\atoum\observable,
+                $observable = new \mock\atoum\atoum\observable,
                 $event = uniqid()
             )
             ->then
                 ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
-            ->given($field = new \mock\mageekguy\atoum\report\field)
+            ->given($field = new \mock\atoum\atoum\report\field)
             ->if($this->testedInstance->addField($field))
             ->then
                 ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
                 ->mock($field)
                     ->call('handleEvent')->withArguments($event, $observable)->once
-            ->given($otherField = new \mock\mageekguy\atoum\report\field)
+            ->given($otherField = new \mock\atoum\atoum\report\field)
             ->if($this->testedInstance->addField($otherField))
             ->then
                 ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
@@ -142,13 +142,13 @@ class report extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance,
-                $observable = new \mock\mageekguy\atoum\observable,
+                $observable = new \mock\atoum\atoum\observable,
                 $event = uniqid()
             )
             ->then
                 ->castToString($this->testedInstance)->isEmpty
             ->given(
-                $field = new \mock\mageekguy\atoum\report\field,
+                $field = new \mock\atoum\atoum\report\field,
                 $this->calling($field)->__toString = $string = uniqid()
             )
             ->if($this->testedInstance->addField($field))
@@ -158,7 +158,7 @@ class report extends atoum\test
             ->then
                 ->castToString($this->testedInstance)->isEqualTo($string)
             ->given(
-                $otherField = new \mock\mageekguy\atoum\report\field,
+                $otherField = new \mock\atoum\atoum\report\field,
                 $this->calling($otherField)->__toString = $otherString = uniqid()
             )
             ->if(

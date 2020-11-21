@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\scripts\git;
+namespace atoum\atoum\scripts\git;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\commands;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\script;
-use mageekguy\atoum\scripts;
+use atoum\atoum;
+use atoum\atoum\cli\commands;
+use atoum\atoum\exceptions;
+use atoum\atoum\script;
+use atoum\atoum\scripts;
 
 class pusher extends script\configurable
 {

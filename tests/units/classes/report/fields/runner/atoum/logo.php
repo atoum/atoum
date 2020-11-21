@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
+namespace atoum\atoum\tests\units\report\fields\runner\atoum;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\fields\runner\atoum\logo as testedClass;
-use mageekguy\atoum\runner;
-use mageekguy\atoum\runner\score;
+use atoum\atoum;
+use atoum\atoum\report\fields\runner\atoum\logo as testedClass;
+use atoum\atoum\runner;
+use atoum\atoum\runner\score;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
-class logo extends \mageekguy\atoum\test
+class logo extends \atoum\atoum\test
 {
     public function testClass()
     {
@@ -33,7 +33,7 @@ class logo extends \mageekguy\atoum\test
                 ->variable($field->getPath())->isNull()
                 ->variable($field->getVersion())->isNull()
                 ->boolean($field->handleEvent(runner::runStart, $runner))->isTrue()
-                ->string($field->getAuthor())->isEqualTo(\mageekguy\atoum\author)
+                ->string($field->getAuthor())->isEqualTo(\atoum\atoum\author)
                 ->string($field->getPath())->isEqualTo($atoumPath)
                 ->string($field->getVersion())->isEqualTo($atoumVersion)
         ;

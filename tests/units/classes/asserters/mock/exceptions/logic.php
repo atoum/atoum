@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\mock\exceptions;
+namespace atoum\atoum\tests\units\asserters\mock\exceptions;
 
 require __DIR__ . '/../../../../runner.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class logic extends atoum\test
 {

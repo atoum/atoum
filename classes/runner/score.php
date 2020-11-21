@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\runner;
+namespace atoum\atoum\runner;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use atoum\atoum;
+use atoum\atoum\exceptions;
 
 class score extends atoum\score
 {

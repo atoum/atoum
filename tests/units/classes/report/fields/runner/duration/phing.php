@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\duration;
+namespace atoum\atoum\tests\units\report\fields\runner\duration;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\report\fields\runner\duration\phing as testedClass;
-use mageekguy\atoum\runner;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\locale;
+use atoum\atoum\report\fields\runner\duration\phing as testedClass;
+use atoum\atoum\runner;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -81,7 +81,7 @@ class phing extends atoum\test
             ->then
                 ->boolean($field->handleEvent(runner::runStart, new atoum\runner()))->isFalse()
                 ->variable($field->getValue())->isNull()
-            ->if($runner = new \mock\mageekguy\atoum\runner())
+            ->if($runner = new \mock\atoum\atoum\runner())
             ->and($runner->getMockController()->getRunningDuration = $runningDuration = rand(0, PHP_INT_MAX))
             ->then
                 ->boolean($field->handleEvent(runner::runStop, $runner))->isTrue()
@@ -92,15 +92,15 @@ class phing extends atoum\test
     public function test__toString()
     {
         $this
-            ->if($runner = new \mock\mageekguy\atoum\runner())
+            ->if($runner = new \mock\atoum\atoum\runner())
             ->and($runner->getMockController()->getRunningDuration = 1)
-            ->and($prompt = new \mock\mageekguy\atoum\cli\prompt())
+            ->and($prompt = new \mock\atoum\atoum\cli\prompt())
             ->and($prompt->getMockController()->__toString = $promptString = uniqid())
-            ->and($titleColorizer = new \mock\mageekguy\atoum\cli\colorizer())
+            ->and($titleColorizer = new \mock\atoum\atoum\cli\colorizer())
             ->and($titleColorizer->getMockController()->colorize = $colorizedTitle = uniqid())
-            ->and($durationColorizer = new \mock\mageekguy\atoum\cli\colorizer())
+            ->and($durationColorizer = new \mock\atoum\atoum\cli\colorizer())
             ->and($durationColorizer->getMockController()->colorize = $colorizedDuration = uniqid())
-            ->and($locale = new \mock\mageekguy\atoum\locale())
+            ->and($locale = new \mock\atoum\atoum\locale())
             ->and($locale->getMockController()->_ = function ($string) {
                 return $string;
             })

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -63,7 +63,7 @@ class stream extends atoum\test
                 $streamController->file_get_contents = uniqid(),
                 $asserter
                     ->setWith($streamName)
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $streamNotRead = uniqid()
             )
             ->then
@@ -104,7 +104,7 @@ class stream extends atoum\test
                 $streamController->file_put_contents = strlen($contents = uniqid()),
                 $asserter
                     ->setWith($streamName)
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $streamNotWritten = uniqid()
             )
             ->then

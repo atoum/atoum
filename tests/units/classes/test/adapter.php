@@ -7,12 +7,12 @@ namespace
     }
 }
 
-namespace mageekguy\atoum\tests\units\test
+namespace atoum\atoum\tests\units\test
 {
-    use mageekguy\atoum;
-    use mageekguy\atoum\test;
-    use mageekguy\atoum\test\adapter as testedClass;
-    use mageekguy\atoum\test\adapter\call;
+    use atoum\atoum;
+    use atoum\atoum\test;
+    use atoum\atoum\test\adapter as testedClass;
+    use atoum\atoum\test\adapter\call;
 
     require_once __DIR__ . '/../../runner.php';
 
@@ -304,7 +304,7 @@ namespace mageekguy\atoum\tests\units\test
         {
             $this
                 ->if($adapter = new testedClass())
-                ->and($adapter->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+                ->and($adapter->setCalls($calls = new \mock\atoum\atoum\test\adapter\calls()))
                 ->and($this->calling($calls)->get = $innerCalls = new test\adapter\calls())
                 ->then
                     ->object($adapter->getCalls())->isIdenticalTo($calls)
@@ -316,7 +316,7 @@ namespace mageekguy\atoum\tests\units\test
         public function testGetCallsEqualTo()
         {
             $this
-                ->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+                ->if($calls = new \mock\atoum\atoum\test\adapter\calls())
                 ->and($this->calling($calls)->getEqualTo = $equalCalls = new test\adapter\calls())
                 ->and($adapter = new testedClass())
                 ->and($adapter->setCalls($calls))
@@ -329,7 +329,7 @@ namespace mageekguy\atoum\tests\units\test
         public function testGetPreviousCalls()
         {
             $this
-                ->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+                ->if($calls = new \mock\atoum\atoum\test\adapter\calls())
                 ->and($this->calling($calls)->getPrevious = $previousCalls = new test\adapter\calls())
                 ->and($adapter = new testedClass())
                 ->and($adapter->setCalls($calls))
@@ -344,7 +344,7 @@ namespace mageekguy\atoum\tests\units\test
         public function testHasPreviousCalls()
         {
             $this
-                ->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+                ->if($calls = new \mock\atoum\atoum\test\adapter\calls())
                 ->and($this->calling($calls)->hasPrevious = $has = (boolean) rand(0, 1))
                 ->and($adapter = new testedClass())
                 ->and($adapter->setCalls($calls))
@@ -359,7 +359,7 @@ namespace mageekguy\atoum\tests\units\test
         public function testGetAfterCalls()
         {
             $this
-                ->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+                ->if($calls = new \mock\atoum\atoum\test\adapter\calls())
                 ->and($this->calling($calls)->getAfter = $afterCalls = new test\adapter\calls())
                 ->and($adapter = new testedClass())
                 ->and($adapter->setCalls($calls))
@@ -374,7 +374,7 @@ namespace mageekguy\atoum\tests\units\test
         public function testHasAfterCalls()
         {
             $this
-                ->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+                ->if($calls = new \mock\atoum\atoum\test\adapter\calls())
                 ->and($this->calling($calls)->hasAfter = $has = (boolean) rand(0, 1))
                 ->and($adapter = new testedClass())
                 ->and($adapter->setCalls($calls))
@@ -389,7 +389,7 @@ namespace mageekguy\atoum\tests\units\test
         public function testGetCallsIdenticalTo()
         {
             $this
-                ->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+                ->if($calls = new \mock\atoum\atoum\test\adapter\calls())
                 ->and($this->calling($calls)->getIdenticalTo = $identicalCalls = new test\adapter\calls())
                 ->and($adapter = new testedClass())
                 ->and($adapter->setCalls($calls))
@@ -402,7 +402,7 @@ namespace mageekguy\atoum\tests\units\test
         public function testGetCallNumber()
         {
             $this
-                ->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+                ->if($calls = new \mock\atoum\atoum\test\adapter\calls())
                 ->and($this->calling($calls)->count = 0)
                 ->and($adapter = new testedClass())
                 ->and($adapter->setCalls($calls))
@@ -418,7 +418,7 @@ namespace mageekguy\atoum\tests\units\test
         {
             $this
                 ->if($adapter = new testedClass())
-                ->and($adapter->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+                ->and($adapter->setCalls($calls = new \mock\atoum\atoum\test\adapter\calls()))
                 ->and($this->calling($calls)->getTimeline = [])
                 ->then
                     ->array($adapter->getTimeline())->isEmpty()
@@ -430,7 +430,7 @@ namespace mageekguy\atoum\tests\units\test
         {
             $this
                 ->if($adapter = new testedClass())
-                ->and($adapter->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+                ->and($adapter->setCalls($calls = new \mock\atoum\atoum\test\adapter\calls()))
                 ->and($this->calling($calls)->addCall = $calls)
                 ->then
                     ->object($adapter->addCall($method = uniqid(), $args = [uniqid()]))->isIdenticalTo($adapter)

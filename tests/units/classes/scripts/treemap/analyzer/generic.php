@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\treemap\analyzer;
+namespace atoum\atoum\tests\units\scripts\treemap\analyzer;
 
-use mageekguy\atoum;
-use mageekguy\atoum\scripts\treemap\analyzer\generic as testedClass;
+use atoum\atoum;
+use atoum\atoum\scripts\treemap\analyzer\generic as testedClass;
 
 require_once __DIR__ . '/../../../../runner.php';
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\event;
+namespace atoum\atoum\report\fields\test\event;
 
-use mageekguy\atoum\cli\progressBar;
-use mageekguy\atoum\report;
-use mageekguy\atoum\test;
+use atoum\atoum\cli\progressBar;
+use atoum\atoum\report;
+use atoum\atoum\test;
 
 class cli extends report\fields\test\event
 {

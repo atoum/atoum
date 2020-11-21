@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\scripts\treemap\analyzer;
+namespace atoum\atoum\scripts\treemap\analyzer;
 
-use mageekguy\atoum\scripts\treemap\analyzer;
+use atoum\atoum\scripts\treemap\analyzer;
 
 class generic implements analyzer
 {

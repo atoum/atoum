@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php\mocker;
+namespace atoum\atoum\tests\units\php\mocker;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\php\mocker;
-use mageekguy\atoum\php\mocker\adapter as testedClass;
+use atoum\atoum;
+use atoum\atoum\php\mocker;
+use atoum\atoum\php\mocker\adapter as testedClass;
 
 class adapter extends atoum
 {

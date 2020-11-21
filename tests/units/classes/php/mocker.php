@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php;
+namespace atoum\atoum\tests\units\php;
 
 require_once __DIR__ . '/../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\php;
+use atoum\atoum;
+use atoum\atoum\php;
 
 class mocker extends atoum\test
 {

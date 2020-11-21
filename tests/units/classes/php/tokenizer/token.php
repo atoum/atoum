@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php\tokenizer;
+namespace atoum\atoum\tests\units\php\tokenizer;
 
-use mageekguy\atoum;
-use mageekguy\atoum\php\tokenizer;
+use atoum\atoum;
+use atoum\atoum\php\tokenizer;
 
 require_once __DIR__ . '/../../../runner.php';
 

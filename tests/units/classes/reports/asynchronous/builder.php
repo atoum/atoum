@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\asynchronous;
+namespace atoum\atoum\tests\units\reports\asynchronous;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report\fields\runner;
-use mageekguy\atoum\report\fields\test;
-use mageekguy\atoum\reports\asynchronous\builder as testedClass;
+use atoum\atoum;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report\fields\runner;
+use atoum\atoum\report\fields\test;
+use atoum\atoum\reports\asynchronous\builder as testedClass;
 
 require_once __DIR__ . '/../../../runner.php';
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\runner\loopers;
+namespace atoum\atoum\tests\units\scripts\runner\loopers;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class prompt extends atoum\test
 {

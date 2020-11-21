@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
+use atoum\atoum;
+use atoum\atoum\asserter;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -89,7 +89,7 @@ class extension extends atoum\test
 
             ->given(
                 $extensionName = uniqid(),
-                $extension = new \mock\mageekguy\atoum\php\extension($extensionName),
+                $extension = new \mock\atoum\atoum\php\extension($extensionName),
                 $this->calling($extension)->isLoaded = false
             )
             ->if(

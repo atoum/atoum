@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\test\duration;
+namespace atoum\atoum\tests\units\report\fields\test\duration;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\report\fields\test;
-use mageekguy\atoum\test\adapter;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\locale;
+use atoum\atoum\mock;
+use atoum\atoum\report\fields\test;
+use atoum\atoum\test\adapter;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -93,7 +93,7 @@ class phing extends atoum\test
     {
         $this
             ->if($field = new test\duration\phing())
-            ->and($score = new \mock\mageekguy\atoum\score())
+            ->and($score = new \mock\atoum\atoum\score())
             ->and($score->getMockController()->getTotalDuration = function () use (& $runningDuration) {
                 return $runningDuration = rand(0, PHP_INT_MAX);
             })
@@ -102,7 +102,7 @@ class phing extends atoum\test
             ->and($testController = new mock\controller())
             ->and($testController->getTestedClassName = uniqid())
             ->and($testController->getScore = $score)
-            ->and($test = new \mock\mageekguy\atoum\test($adapter))
+            ->and($test = new \mock\atoum\atoum\test($adapter))
             ->then
                 ->boolean($field->handleEvent(atoum\runner::runStop, $test))->isFalse()
                 ->variable($field->getValue())->isNull()
@@ -116,12 +116,12 @@ class phing extends atoum\test
         $this
             ->if($adapter = new adapter())
             ->and($adapter->class_exists = true)
-            ->and($score = new \mock\mageekguy\atoum\score())
+            ->and($score = new \mock\atoum\atoum\score())
             ->and($score->getMockController()->getTotalDuration = $runningDuration = rand(1, 1000) / 1000)
             ->and($testController = new mock\controller())
             ->and($testController->getTestedClassName = uniqid())
             ->and($testController->getScore = $score)
-            ->and($test = new \mock\mageekguy\atoum\test($adapter))
+            ->and($test = new \mock\atoum\atoum\test($adapter))
             ->and($defaultField = new test\duration\phing())
             ->and($customField = new test\duration\phing())
             ->and($customField->setPrompt($prompt = new prompt()))

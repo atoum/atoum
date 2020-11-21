@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\atoum\tests\units;
 
-use mageekguy\atoum;
-use mageekguy\atoum\includer as testedClass;
-use mageekguy\atoum\mock\stream;
+use atoum\atoum;
+use atoum\atoum\includer as testedClass;
+use atoum\atoum\mock\stream;
 
 require __DIR__ . '/../runner.php';
 

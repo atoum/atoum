@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\mock\streams\fs\controller;
+namespace atoum\atoum\mock\streams\fs\controller;
 
-use mageekguy\atoum\mock\streams\fs\controller;
+use atoum\atoum\mock\streams\fs\controller;
 
 class factory
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\failures;
+namespace atoum\atoum\report\fields\runner\failures;
 
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report\fields\runner;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report\fields\runner;
 
 class cli extends runner\failures
 {

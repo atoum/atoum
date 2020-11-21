@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test\engines;
+namespace atoum\atoum\test\engines;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\test;
+use atoum\atoum;
+use atoum\atoum\exceptions;
+use atoum\atoum\test;
 
 class concurrent extends test\engine
 {
@@ -72,9 +72,9 @@ class concurrent extends test\engine
 
             if ($autoloaderFile !== null) {
                 $phpCode .=
-                    '$includer = new mageekguy\atoum\includer();' .
+                    '$includer = new atoum\atoum\includer();' .
                     'try { $includer->includePath(\'' . $autoloaderFile . '\'); }' .
-                    'catch (mageekguy\atoum\includer\exception $exception)' .
+                    'catch (atoum\atoum\includer\exception $exception)' .
                     '{ die(\'Unable to include autoloader file \\\'' . $autoloaderFile . '\\\'\'); }'
                 ;
             }
@@ -83,9 +83,9 @@ class concurrent extends test\engine
 
             if ($bootstrapFile !== null) {
                 $phpCode .=
-                    '$includer = new mageekguy\atoum\includer();' .
+                    '$includer = new atoum\atoum\includer();' .
                     'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
-                    'catch (mageekguy\atoum\includer\exception $exception)' .
+                    'catch (atoum\atoum\includer\exception $exception)' .
                     '{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }'
                 ;
             }
@@ -158,7 +158,7 @@ class concurrent extends test\engine
 
             $phpCode .=
                 'ob_end_clean();' .
-                'mageekguy\atoum\scripts\runner::disableAutorun();' .
+                'atoum\atoum\scripts\runner::disableAutorun();' .
                 'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());'
             ;
 

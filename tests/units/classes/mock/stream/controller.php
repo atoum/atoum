@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\stream;
+namespace atoum\atoum\tests\units\mock\stream;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock\stream;
-use mageekguy\atoum\mock\stream\controller as testedClass;
+use atoum\atoum;
+use atoum\atoum\mock\stream;
+use atoum\atoum\mock\stream\controller as testedClass;
 
 require_once __DIR__ . '/../../../runner.php';
 

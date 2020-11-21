@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\report\fields;
+namespace atoum\atoum\report\fields;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report;
+use atoum\atoum;
+use atoum\atoum\report;
 
 abstract class runner extends report\field
 {

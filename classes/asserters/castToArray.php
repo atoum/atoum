@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\atoum\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\tools;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\tools;
 
 class castToArray extends phpArray
 {

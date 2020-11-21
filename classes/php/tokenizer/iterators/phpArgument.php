@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\php\tokenizer\iterators;
+namespace atoum\atoum\php\tokenizer\iterators;
 
-use mageekguy\atoum\php\tokenizer;
-use mageekguy\atoum\php\tokenizer\iterators;
+use atoum\atoum\php\tokenizer;
+use atoum\atoum\php\tokenizer\iterators;
 
 class phpArgument extends tokenizer\iterator
 {

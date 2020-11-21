@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\coverage;
+namespace atoum\atoum\tests\units\report\fields\runner\tests\coverage;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\report\fields\runner\tests\coverage\phing as testedClass;
-use mageekguy\atoum\score;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\locale;
+use atoum\atoum\mock;
+use atoum\atoum\report\fields\runner\tests\coverage\phing as testedClass;
+use atoum\atoum\score;
 
 require_once __DIR__ . '/../../../../../../runner.php';
 
@@ -150,7 +150,7 @@ class phing extends atoum\test
     {
         $this
             ->if($scoreCoverage = new score\coverage())
-            ->and($score = new \mock\mageekguy\atoum\runner\score())
+            ->and($score = new \mock\atoum\atoum\runner\score())
             ->and($score->getMockController()->getCoverage = function () use ($scoreCoverage) {
                 return $scoreCoverage;
             })

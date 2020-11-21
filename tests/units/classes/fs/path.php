@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\fs;
+namespace atoum\atoum\tests\units\fs;
 
 require_once __DIR__ . '/../../runner.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 // See http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx for more informations
 class path extends atoum\test

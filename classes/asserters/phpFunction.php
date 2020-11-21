@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\atoum\asserters;
 
-use mageekguy\atoum\asserters\adapter\call;
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\php;
-use mageekguy\atoum\test;
+use atoum\atoum\asserters\adapter\call;
+use atoum\atoum\exceptions;
+use atoum\atoum\php;
+use atoum\atoum\test;
 
 class phpFunction extends adapter\call
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\script\arguments;
+namespace atoum\atoum\script\arguments;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use atoum\atoum;
+use atoum\atoum\exceptions;
 
 class parser implements \iteratorAggregate
 {

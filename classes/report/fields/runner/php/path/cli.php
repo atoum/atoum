@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\php\path;
+namespace atoum\atoum\report\fields\runner\php\path;
 
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report;
 
 class cli extends report\fields\runner\php\path
 {

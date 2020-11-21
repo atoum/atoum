@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum
+namespace atoum\atoum
 {
     class emptyTest
     {
@@ -34,17 +34,17 @@ namespace mageekguy\atoum
     }
 }
 
-namespace mageekguy\atoum\mock\mageekguy\atoum
+namespace atoum\atoum\mock\atoum\atoum
 {
     class test
     {
     }
 }
 
-namespace mageekguy\atoum\tests\units
+namespace atoum\atoum\tests\units
 {
-    use mageekguy\atoum;
-    use mageekguy\atoum\mock;
+    use atoum\atoum;
+    use atoum\atoum\mock;
 
     require_once __DIR__ . '/../runner.php';
 
@@ -126,7 +126,7 @@ namespace mageekguy\atoum\tests\units
     {
         public function __construct()
         {
-            $this->setTestedClassName('mageekguy\atoum\test');
+            $this->setTestedClassName('atoum\atoum\test');
 
             parent::__construct();
         }
@@ -139,7 +139,7 @@ namespace mageekguy\atoum\tests\units
     {
         public function __construct()
         {
-            $this->setTestedClassName('mageekguy\atoum\withStatic');
+            $this->setTestedClassName('atoum\atoum\withStatic');
 
             parent::__construct();
         }
@@ -260,7 +260,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->given(
                     $test = new emptyTest(),
-                    $test->setAssertionManager($assertionManager = new \mock\mageekguy\atoum\test\assertion\manager())
+                    $test->setAssertionManager($assertionManager = new \mock\atoum\atoum\test\assertion\manager())
                 )
 
                 ->if($test->{$event = uniqid()} = $handler = function () {
@@ -412,7 +412,7 @@ namespace mageekguy\atoum\tests\units
                 ->then
                     ->object($test->getFactoryBuilder())->isInstanceOf(atoum\factory\builder\closure::class)
 
-                ->if($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\factory\builder()))
+                ->if($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\atoum\factory\builder()))
                 ->then
                     ->object($test->getFactoryBuilder())->isIdenticalTo($factoryBuilder)
             ;
@@ -423,7 +423,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\factory\builder()))->isIdenticalTo($test)
+                    ->object($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\atoum\factory\builder()))->isIdenticalTo($test)
                     ->object($test->getFactoryBuilder())->isIdenticalTo($factoryBuilder)
 
                     ->object($test->setFactoryBuilder())->isIdenticalTo($test)
@@ -957,12 +957,12 @@ namespace mageekguy\atoum\tests\units
                     ->object($test->run())->isIdenticalTo($test)
                     ->mock($test)
                         ->call('callObservers')
-                            ->withArguments(\mageekguy\atoum\test::runStart)->never()
-                            ->withArguments(\mageekguy\atoum\test::runStop)->never()
-                            ->withArguments(\mageekguy\atoum\test::beforeSetUp)->never()
-                            ->withArguments(\mageekguy\atoum\test::afterSetUp)->never()
-                            ->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
-                            ->withArguments(\mageekguy\atoum\test::afterTestMethod)->never()
+                            ->withArguments(\atoum\atoum\test::runStart)->never()
+                            ->withArguments(\atoum\atoum\test::runStop)->never()
+                            ->withArguments(\atoum\atoum\test::beforeSetUp)->never()
+                            ->withArguments(\atoum\atoum\test::afterSetUp)->never()
+                            ->withArguments(\atoum\atoum\test::beforeTestMethod)->never()
+                            ->withArguments(\atoum\atoum\test::afterTestMethod)->never()
             ;
         }
 
@@ -971,7 +971,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new foo())
                 ->then
-                    ->string($test->getTestedClassName())->isEqualTo('mageekguy\atoum\test')
+                    ->string($test->getTestedClassName())->isEqualTo('atoum\atoum\test')
                     ->exception(function () use ($test) {
                         $test->setTestedClassName(uniqid());
                     })
@@ -1131,7 +1131,7 @@ namespace mageekguy\atoum\tests\units
         {
             $this
                 ->if($test = new emptyTest())
-                ->and($mockController = new \mock\mageekguy\atoum\mock\controller())
+                ->and($mockController = new \mock\atoum\atoum\mock\controller())
                 ->and($mockController->control($mock = new \mock\phpObject()))
                 ->and($this->resetMock($mockController))
                 ->then
@@ -1154,7 +1154,7 @@ namespace mageekguy\atoum\tests\units
         {
             $this
                 ->if($test = new emptyTest())
-                ->and($adapter = new \mock\mageekguy\atoum\test\adapter())
+                ->and($adapter = new \mock\atoum\atoum\test\adapter())
                 ->and($this->resetMock($adapter))
                 ->then
                     ->object($test->resetAdapter($adapter))->isIdenticalTo($adapter)
@@ -1210,7 +1210,7 @@ namespace mageekguy\atoum\tests\units
 
                     return $reflection;
                 })
-                ->and($score = new \mock\mageekguy\atoum\test\score())
+                ->and($score = new \mock\atoum\atoum\test\score())
                 ->and($test = new emptyTest(null, null, null, null, $factory))
                 ->and($test->setAdapter($adapter))
                 ->and($test->setScore($score))
@@ -1227,7 +1227,7 @@ namespace mageekguy\atoum\tests\units
         public function testGetTestedClassNameFromTestClass()
         {
             $this
-                ->string(atoum\test::getTestedClassNameFromTestClass(__CLASS__))->isEqualTo('mageekguy\atoum\test')
+                ->string(atoum\test::getTestedClassNameFromTestClass(__CLASS__))->isEqualTo('atoum\atoum\test')
                 ->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\tests\units\testedClass'))->isEqualTo('foo\bar\testedClass')
                 ->if(atoum\test::setNamespace('test\unit'))
                 ->then
@@ -1266,7 +1266,7 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($test->addExtension($extension = new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
+                    ->object($test->addExtension($extension = new \mock\atoum\atoum\extension()))->isIdenticalTo($test)
                     ->array(iterator_to_array($test->getExtensions()))->isEqualTo([$extension])
                     ->array($test->getObservers())->isEqualTo([$extension])
                     ->mock($extension)
@@ -1288,16 +1288,16 @@ namespace mageekguy\atoum\tests\units
                 ->then
                     ->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
                     ->array($test->getObservers())->isEmpty()
-                    ->object($test->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
+                    ->object($test->removeExtension(new \mock\atoum\atoum\extension()))->isIdenticalTo($test)
                     ->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
                     ->array($test->getObservers())->isEmpty()
-                ->if($extension = new \mock\mageekguy\atoum\extension())
-                ->and($otherExtension = new \mock\mageekguy\atoum\extension())
+                ->if($extension = new \mock\atoum\atoum\extension())
+                ->and($otherExtension = new \mock\atoum\atoum\extension())
                 ->and($test->addExtension($extension)->addExtension($otherExtension))
                 ->then
                     ->array(iterator_to_array($test->getExtensions()))->isEqualTo([$extension, $otherExtension])
                     ->array($test->getObservers())->isEqualTo([$extension, $otherExtension])
-                    ->object($test->removeExtension(new \mock\mageekguy\atoum\extension()))->isIdenticalTo($test)
+                    ->object($test->removeExtension(new \mock\atoum\atoum\extension()))->isIdenticalTo($test)
                     ->array(iterator_to_array($test->getExtensions()))->isEqualTo([$extension, $otherExtension])
                     ->array($test->getObservers())->isEqualTo([$extension, $otherExtension])
                     ->object($test->removeExtension($extension))->isIdenticalTo($test)
@@ -1319,8 +1319,8 @@ namespace mageekguy\atoum\tests\units
                     ->object($test->removeExtensions())->isIdenticalTo($test)
                     ->object($test->getExtensions())->isEqualTo(new \splObjectStorage())
                     ->array($test->getObservers())->isEmpty()
-                ->if($extension = new \mock\mageekguy\atoum\extension())
-                ->and($otherExtension = new \mock\mageekguy\atoum\extension())
+                ->if($extension = new \mock\atoum\atoum\extension())
+                ->and($otherExtension = new \mock\atoum\atoum\extension())
                 ->and($test->addExtension($extension)->addExtension($otherExtension))
                 ->then
                     ->array(iterator_to_array($test->getExtensions()))->isEqualTo([$extension, $otherExtension])
@@ -1336,14 +1336,14 @@ namespace mageekguy\atoum\tests\units
             $this
                 ->if(
                     $test = new emptyTest(),
-                    $extension = new \mock\mageekguy\atoum\extension()
+                    $extension = new \mock\atoum\atoum\extension()
                 )
                 ->then
                     ->variable($test->getExtensionConfiguration($extension))->isNull
                 ->if($test->addExtension($extension))
                 ->then
                     ->variable($test->getExtensionConfiguration($extension))->isNull
-                ->given($configuration = new \mock\mageekguy\atoum\extension\configuration())
+                ->given($configuration = new \mock\atoum\atoum\extension\configuration())
                 ->if($test->addExtension($extension, $configuration))
                 ->then
                     ->object($test->getExtensionConfiguration($extension))->isIdenticalTo($configuration)
@@ -1390,7 +1390,7 @@ namespace mageekguy\atoum\tests\units
                 ->given($arguments = [$firstArgument = uniqid(), $secondArgument = rand(0, PHP_INT_MAX)])
                 ->then
                     ->object($mock = $test->newMockInstance(atoum\dummy::class, null, null, $arguments))
-                        ->isInstanceOf(\mock\mageekguy\atoum\dummy::class)
+                        ->isInstanceOf(\mock\atoum\atoum\dummy::class)
                         ->isInstanceOf(atoum\dummy::class)
                     ->mock($mock)
                         ->call('__construct')->withArguments($firstArgument, $secondArgument)->once
@@ -1398,7 +1398,7 @@ namespace mageekguy\atoum\tests\units
                 ->given($arguments = [uniqid(), rand(0, PHP_INT_MAX), $controller = new mock\controller()])
                 ->then
                     ->object($mock = $test->newMockInstance(atoum\dummy::class, null, null, $arguments))
-                        ->isInstanceOf(\mock\mageekguy\atoum\dummy::class)
+                        ->isInstanceOf(\mock\atoum\atoum\dummy::class)
                         ->isInstanceOf(atoum\dummy::class)
                     ->object($mock->getMockController())->isIdenticalTo($controller)
 
@@ -1408,7 +1408,7 @@ namespace mageekguy\atoum\tests\units
                 )
                 ->then
                     ->object($mock = $test->newMockInstance(atoum\dummy::class, null, null, $arguments))
-                        ->isInstanceOf(\mock\mageekguy\atoum\dummy::class)
+                        ->isInstanceOf(\mock\atoum\atoum\dummy::class)
                         ->isInstanceOf(atoum\dummy::class)
                     ->object($mock->getMockController())->isIdenticalTo($controller)
             ;

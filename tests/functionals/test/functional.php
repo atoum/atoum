@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\functionals\test;
+namespace atoum\atoum\tests\functionals\test;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class functional extends atoum\test
 {

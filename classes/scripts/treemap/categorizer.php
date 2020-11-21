@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\scripts\treemap;
+namespace atoum\atoum\scripts\treemap;
 
-use mageekguy\atoum\exceptions;
+use atoum\atoum\exceptions;
 
 class categorizer
 {

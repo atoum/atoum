@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\scripts\runner;
+namespace atoum\atoum\scripts\runner;
 
 interface looper
 {

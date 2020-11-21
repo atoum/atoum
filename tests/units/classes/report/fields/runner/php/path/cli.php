@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\php\path;
+namespace atoum\atoum\tests\units\report\fields\runner\php\path;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\report\fields\runner;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\locale;
+use atoum\atoum\report\fields\runner;
 
 require_once __DIR__ . '/../../../../../../runner.php';
 
@@ -75,7 +75,7 @@ class cli extends atoum\test
     {
         $this
             ->if($field = new runner\php\path\cli())
-            ->and($score = new \mock\mageekguy\atoum\runner\score())
+            ->and($score = new \mock\atoum\atoum\runner\score())
             ->and($score->getMockController()->getPhpPath = $phpPath = uniqid())
             ->then
                 ->boolean($field->handleEvent(atoum\runner::runStop, $runner = new atoum\runner()))->isFalse()
@@ -89,7 +89,7 @@ class cli extends atoum\test
     public function test__toString()
     {
         $this
-            ->if($score = new \mock\mageekguy\atoum\runner\score())
+            ->if($score = new \mock\atoum\atoum\runner\score())
             ->and($score->getMockController()->getPhpPath = $phpPath = uniqid())
             ->and($defaultField = new runner\php\path\cli())
             ->then

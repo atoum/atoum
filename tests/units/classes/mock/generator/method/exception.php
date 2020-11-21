@@ -1,13 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\generator\method;
+namespace atoum\atoum\tests\units\mock\generator\method;
 
 require __DIR__ . '/../../../../runner.php';
 
-use atoum
-;
+use atoum\atoum;
 
-class exception extends atoum
+class exception extends atoum\test
 {
     public function testClass()
     {

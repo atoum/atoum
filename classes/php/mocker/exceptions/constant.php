@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\php\mocker\exceptions;
+namespace atoum\atoum\php\mocker\exceptions;
 
-use mageekguy\atoum\php\mocker;
+use atoum\atoum\php\mocker;
 
 class constant extends mocker\exception
 {

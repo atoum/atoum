@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\cli\commands;
+namespace atoum\atoum\cli\commands;
 
-use mageekguy\atoum\cli;
+use atoum\atoum\cli;
 
 class git
 {

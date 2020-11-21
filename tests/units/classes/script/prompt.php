@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\script;
+namespace atoum\atoum\tests\units\script;
 
-use mageekguy\atoum;
-use mageekguy\atoum\script\prompt as testedClass;
+use atoum\atoum;
+use atoum\atoum\script\prompt as testedClass;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -51,8 +51,8 @@ class prompt extends atoum\test
     {
         $this
             ->if($prompt = new testedClass())
-            ->and($writer = new \mock\atoum\writer())
-            ->and($reader = new \mock\atoum\reader())
+            ->and($writer = new \mock\atoum\atoum\writer())
+            ->and($reader = new \mock\atoum\atoum\reader())
             ->and($prompt->setOutputWriter($writer))
             ->and($prompt->setInputReader($reader))
             ->and($this->calling($reader)->read = $line = uniqid())

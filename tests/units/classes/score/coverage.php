@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\score;
+namespace atoum\atoum\tests\units\score;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\score\coverage as testedClass;
+use atoum\atoum;
+use atoum\atoum\mock;
+use atoum\atoum\score\coverage as testedClass;
 
 require_once __DIR__ . '/../../runner.php';
 

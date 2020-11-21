@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\asynchronous;
+namespace atoum\atoum\tests\units\reports\asynchronous;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report;
-use mageekguy\atoum\reports\asynchronous as reports;
-use mageekguy\atoum\runner;
+use atoum\atoum;
+use atoum\atoum\report;
+use atoum\atoum\reports\asynchronous as reports;
+use atoum\atoum\runner;
 
 require_once __DIR__ . '/../../../runner.php';
 
@@ -56,11 +56,11 @@ class xunit extends atoum\test
             ->then
                 ->string($report->setTitle($title = uniqid())->handleEvent(atoum\runner::runStop, new atoum\runner())->getTitle())->isEqualTo($title)
             ->if($report = new reports\xunit($adapter))
-            ->and($writer = new \mock\mageekguy\atoum\writers\file())
+            ->and($writer = new \mock\atoum\atoum\writers\file())
             ->and($writer->getMockController()->write = $writer)
             ->then
                 ->when(function () use ($report, $writer) {
-                    $report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \mageekguy\atoum\runner());
+                    $report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \atoum\atoum\runner());
                 })
                     ->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
         ;
@@ -78,7 +78,7 @@ class xunit extends atoum\test
             ->and($runner->setScore($score))
             ->and($testScore = new atoum\test\score())
             ->and($testScore->addPass())
-            ->and($test = new \mock\mageekguy\atoum\test())
+            ->and($test = new \mock\atoum\atoum\test())
             ->and($test->getMockController()->getCurrentMethod[1] = $method = 'method')
             ->and($test->getMockController()->getCurrentMethod[2] = $otherMethod = 'otherMethod')
             ->and($test->getMockController()->getCurrentMethod[3] = $thirdMethod = 'thirdMethod')

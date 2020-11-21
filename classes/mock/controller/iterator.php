@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\mock\controller;
+namespace atoum\atoum\mock\controller;
 
-use mageekguy\atoum\mock;
+use atoum\atoum\mock;
 
 class iterator implements \iteratorAggregate
 {

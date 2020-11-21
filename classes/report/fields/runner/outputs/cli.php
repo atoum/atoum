@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\outputs;
+namespace atoum\atoum\report\fields\runner\outputs;
 
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report\fields\runner\outputs;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report\fields\runner\outputs;
 
 class cli extends outputs
 {

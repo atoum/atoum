@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\test\assertion;
+namespace atoum\atoum\test\assertion;
 
-use mageekguy\atoum\test\assertion;
+use atoum\atoum\test\assertion;
 
 class manager
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\coverage;
+namespace atoum\atoum\tests\units\report\fields\runner\coverage;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\fields\runner\coverage\treemap as testedClass;
+use atoum\atoum;
+use atoum\atoum\report\fields\runner\coverage\treemap as testedClass;
 
 require_once __DIR__ . '/../../../../../runner.php';
 

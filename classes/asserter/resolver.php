@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\asserter;
+namespace atoum\atoum\asserter;
 
-use mageekguy\atoum\tools\variable\analyzer;
+use atoum\atoum\tools\variable\analyzer;
 
 class resolver
 {
-    const defaultBaseClass = 'mageekguy\atoum\asserter';
-    const defaultNamespace = 'mageekguy\atoum\asserters';
+    const defaultBaseClass = 'atoum\atoum\asserter';
+    const defaultNamespace = 'atoum\atoum\asserters';
 
     protected $baseClass = '';
     protected $namespaces = [];

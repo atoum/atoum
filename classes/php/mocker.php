@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\php;
+namespace atoum\atoum\php;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 abstract class mocker
 {

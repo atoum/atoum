@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\test;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\test;
+use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -42,8 +42,8 @@ class adapter extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance($generator = new asserter\generator())
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
 
             ->if(
@@ -96,7 +96,7 @@ class adapter extends atoum\test
     {
         $this
             ->mockGenerator->orphanize('asserterFail')
-            ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
+            ->if($this->newTestedInstance(new \mock\atoum\atoum\asserter\generator()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->call(uniqid());
@@ -121,7 +121,7 @@ class adapter extends atoum\test
     {
         $this
             ->mockGenerator->orphanize('asserterFail')
-            ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
+            ->if($this->newTestedInstance(new \mock\atoum\atoum\asserter\generator()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->withArguments(uniqid());
@@ -152,7 +152,7 @@ class adapter extends atoum\test
     {
         $this
             ->mockGenerator->orphanize('asserterFail')
-            ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
+            ->if($this->newTestedInstance(new \mock\atoum\atoum\asserter\generator()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->withArguments(uniqid());
@@ -186,7 +186,7 @@ class adapter extends atoum\test
     {
         $this
             ->mockGenerator->orphanize('asserterFail')
-            ->if($this->newTestedInstance(new \mock\mageekguy\atoum\asserter\generator()))
+            ->if($this->newTestedInstance(new \mock\atoum\atoum\asserter\generator()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->withoutAnyArgument();
@@ -232,7 +232,7 @@ class adapter extends atoum\test
                     ->isInstanceOf(atoum\asserters\adapter\exceptions\logic::class)
                     ->hasMessage('Adapter is undefined')
 
-            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
+            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\atoum\test\adapter()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->once();
@@ -255,9 +255,9 @@ class adapter extends atoum\test
             ->if(
                 $this->testedInstance
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -298,7 +298,7 @@ class adapter extends atoum\test
 
             ->if(
                 $this->calling($calls)->count = $count = rand(2, PHP_INT_MAX),
-                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = rand(1, PHP_INT_MAX),
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
@@ -355,7 +355,7 @@ class adapter extends atoum\test
                     ->isInstanceOf(atoum\asserters\adapter\exceptions\logic::class)
                     ->hasMessage('Adapter is undefined')
 
-            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
+            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\atoum\test\adapter()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->twice();
@@ -378,9 +378,9 @@ class adapter extends atoum\test
             ->if(
                 $this->testedInstance
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -415,7 +415,7 @@ class adapter extends atoum\test
 
             ->if(
                 $this->calling($calls)->count = 1,
-                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = 1,
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
@@ -455,7 +455,7 @@ class adapter extends atoum\test
 
             ->if(
                 $this->calling($calls)->count = $count = rand(3, PHP_INT_MAX),
-                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = rand(1, PHP_INT_MAX),
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
@@ -512,7 +512,7 @@ class adapter extends atoum\test
                     ->isInstanceOf(atoum\asserters\adapter\exceptions\logic::class)
                     ->hasMessage('Adapter is undefined')
 
-            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
+            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\atoum\test\adapter()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->thrice();
@@ -535,9 +535,9 @@ class adapter extends atoum\test
             ->if(
                 $this->testedInstance
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -572,7 +572,7 @@ class adapter extends atoum\test
 
             ->if(
                 $this->calling($calls)->count = $count = rand(1, 2),
-                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = $count,
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
@@ -612,7 +612,7 @@ class adapter extends atoum\test
 
             ->if(
                 $this->calling($calls)->count = $count = rand(3, PHP_INT_MAX),
-                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = $count,
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
@@ -669,7 +669,7 @@ class adapter extends atoum\test
                     ->isInstanceOf(atoum\asserters\adapter\exceptions\logic::class)
                     ->hasMessage('Adapter is undefined')
 
-            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
+            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\atoum\test\adapter()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->atLeastOnce();
@@ -692,9 +692,9 @@ class adapter extends atoum\test
             ->if(
                 $this->testedInstance
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->_ = $notCalled = uniqid()
@@ -746,7 +746,7 @@ class adapter extends atoum\test
                     ->isInstanceOf(atoum\asserters\adapter\exceptions\logic::class)
                     ->hasMessage('Adapter is undefined')
 
-            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
+            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\atoum\test\adapter()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->exactly(2);
@@ -757,9 +757,9 @@ class adapter extends atoum\test
             ->if(
                 $this->testedInstance
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -782,7 +782,7 @@ class adapter extends atoum\test
 
             ->if(
                 $this->calling($calls)->count = $count = rand(1, PHP_INT_MAX),
-                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = $count,
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
@@ -821,7 +821,7 @@ class adapter extends atoum\test
                     ->isInstanceOf(atoum\asserters\adapter\exceptions\logic::class)
                     ->hasMessage('Adapter is undefined')
 
-            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\test\adapter()))
+            ->if($this->testedInstance->setWith($adapter = new \mock\atoum\atoum\test\adapter()))
             ->then
                 ->exception(function () {
                     $this->testedInstance->never();
@@ -838,9 +838,9 @@ class adapter extends atoum\test
             ->if(
                 $this->testedInstance
                     ->call(uniqid())
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
-                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
+                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = $count = rand(1, PHP_INT_MAX),
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $wasCalled = uniqid()

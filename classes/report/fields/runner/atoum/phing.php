@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\atoum;
+namespace atoum\atoum\report\fields\runner\atoum;
 
-use mageekguy\atoum\report;
+use atoum\atoum\report;
 
 class phing extends report\fields\runner\atoum\cli
 {

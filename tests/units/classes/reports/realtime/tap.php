@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\realtime;
+namespace atoum\atoum\tests\units\reports\realtime;
 
-use mageekguy\atoum;
-use mageekguy\atoum\report\fields;
-use mageekguy\atoum\reports\realtime\tap as testedClass;
+use atoum\atoum;
+use atoum\atoum\report\fields;
+use atoum\atoum\reports\realtime\tap as testedClass;
 
 require __DIR__ . '/../../../runner.php';
 

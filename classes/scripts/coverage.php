@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\scripts;
+namespace atoum\atoum\scripts;
 
 require_once __DIR__ . '/../../constants.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use atoum\atoum;
+use atoum\atoum\exceptions;
 
 class coverage extends runner
 {

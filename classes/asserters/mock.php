@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\atoum\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\test\adapter\call\decorators;
+use atoum\atoum;
+use atoum\atoum\test\adapter\call\decorators;
 
 class mock extends adapter
 {

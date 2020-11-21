@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php\mocker;
+namespace atoum\atoum\tests\units\php\mocker;
 
 require_once __DIR__ . '/../../runner.php';
 
-use mageekguy\atoum;
-use mageekguy\atoum\php;
+use atoum\atoum;
+use atoum\atoum\php;
 
 function doesSomething()
 {
@@ -97,7 +97,7 @@ class funktion extends atoum\test
                 $this->mockGenerator
                     ->orphanize('__construct')
                     ->orphanize('resetCalls'),
-                php\mocker::setAdapter($adapter = new \mock\atoum\test\adapter())
+                php\mocker::setAdapter($adapter = new \mock\atoum\atoum\test\adapter())
             )
             ->then
                 ->object($this->testedInstance->resetCalls())->isTestedInstance

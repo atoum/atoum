@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts;
+namespace atoum\atoum\tests\units\scripts;
 
-use mageekguy\atoum;
-use mageekguy\atoum\scripts;
-use mock\mageekguy\atoum as mock;
+use atoum\atoum;
+use atoum\atoum\scripts;
+use mock\atoum\atoum as mock;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -40,8 +40,8 @@ class tagger extends atoum\test
             ->if($helpWriter = new mock\writers\std\out())
             ->and($this->calling($helpWriter)->write = function () {
             })
-            ->and($tagger = new \mock\mageekguy\atoum\scripts\tagger(uniqid()))
-            ->and($tagger->setEngine($engine = new \mock\mageekguy\atoum\scripts\tagger\engine()))
+            ->and($tagger = new \mock\atoum\atoum\scripts\tagger(uniqid()))
+            ->and($tagger->setEngine($engine = new \mock\atoum\atoum\scripts\tagger\engine()))
             ->and($tagger->setHelpWriter($helpWriter))
             ->and($this->calling($engine)->tagVersion = function () {
             })

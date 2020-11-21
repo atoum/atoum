@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\adapter;
+namespace atoum\atoum\tests\units\asserters\adapter;
 
 require __DIR__ . '/../../../runner.php';
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class call extends atoum
 {
@@ -37,7 +37,7 @@ class call extends atoum
                     ->isInstanceOf(atoum\exceptions\logic::class)
                     ->hasMessage('Adapter is undefined')
 
-            ->given($adapter = new \mock\atoum\test\adapter())
+            ->given($adapter = new \mock\atoum\atoum\test\adapter())
             ->if($asserter->setWith($adapter))
             ->then
                 ->exception(function () use ($asserter) {
@@ -48,10 +48,10 @@ class call extends atoum
 
             ->if(
                 $asserter
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $call->setFunction(uniqid()),
-                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -66,7 +66,7 @@ class call extends atoum
 
             ->if(
                 $this->calling($calls)->count = $count = rand(1, PHP_INT_MAX),
-                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = $count,
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
@@ -80,7 +80,7 @@ class call extends atoum
 
             ->if(
                 $this->calling($calls)->count = $count = rand(1, 10),
-                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = $count,
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
@@ -105,7 +105,7 @@ class call extends atoum
                     ->isInstanceOf(atoum\asserters\adapter\call\exceptions\logic::class)
                     ->hasMessage('Adapter is undefined')
 
-            ->if($asserter->setWith($adapter = new \mock\atoum\test\adapter()))
+            ->if($asserter->setWith($adapter = new \mock\atoum\atoum\test\adapter()))
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->exactly(2);
@@ -115,10 +115,10 @@ class call extends atoum
 
             ->if(
                 $asserter
-                    ->setCall($call = new \mock\atoum\test\adapter\call())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setCall($call = new \mock\atoum\atoum\test\adapter\call())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $call->setFunction(uniqid()),
-                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCalls = $calls = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($calls)->count = 0,
                 $this->calling($call)->__toString = $callAsString = uniqid(),
                 $this->calling($locale)->__ = $notCalled = uniqid()
@@ -141,7 +141,7 @@ class call extends atoum
 
             ->if(
                 $this->calling($calls)->count = $count = rand(1, PHP_INT_MAX),
-                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = $count,
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
@@ -161,7 +161,7 @@ class call extends atoum
 
              ->if(
                 $this->calling($calls)->count = $count = rand(1, 10),
-                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\test\adapter\calls(),
+                $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = $count,
                 $this->calling($callsEqualTo)->__toString = $callsEqualToAsString = uniqid()
             )
@@ -180,15 +180,15 @@ class call extends atoum
         $this
             ->given($this->newTestedInstance)
             ->then
-                ->object($this->testedInstance->before($asserter1 = new \mock\atoum\asserters\adapter\call()))->isTestedInstance
+                ->object($this->testedInstance->before($asserter1 = new \mock\atoum\atoum\asserters\adapter\call()))->isTestedInstance
                 ->array($this->testedInstance->getBefore())->isEqualTo([$asserter1])
                 ->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
                 ->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
 
                 ->object(
                     $this->testedInstance->before(
-                        $asserter2 = new \mock\atoum\asserters\adapter\call(),
-                        $asserter3 = new \mock\atoum\asserters\adapter\call()
+                        $asserter2 = new \mock\atoum\atoum\asserters\adapter\call(),
+                        $asserter3 = new \mock\atoum\atoum\asserters\adapter\call()
                     )
                 )->isTestedInstance
                 ->array($this->testedInstance->getBefore())->isEqualTo([$asserter1, $asserter2, $asserter3])
@@ -202,15 +202,15 @@ class call extends atoum
         $this
             ->given($this->newTestedInstance)
             ->then
-                ->object($this->testedInstance->after($asserter1 = new \mock\atoum\asserters\adapter\call()))->isTestedInstance
+                ->object($this->testedInstance->after($asserter1 = new \mock\atoum\atoum\asserters\adapter\call()))->isTestedInstance
                 ->array($this->testedInstance->getAfter())->isEqualTo([$asserter1])
                 ->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
                 ->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
 
                 ->object(
                     $this->testedInstance->after(
-                            $asserter2 = new \mock\atoum\asserters\adapter\call(),
-                            $asserter3 = new \mock\atoum\asserters\adapter\call()
+                            $asserter2 = new \mock\atoum\atoum\asserters\adapter\call(),
+                            $asserter3 = new \mock\atoum\atoum\asserters\adapter\call()
                         )
                     )->isTestedInstance
                 ->array($this->testedInstance->getAfter())->isEqualTo([$asserter1, $asserter2, $asserter3])

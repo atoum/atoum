@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\test\run;
+namespace atoum\atoum\tests\units\report\fields\test\run;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\report\fields\test;
-use mageekguy\atoum\test\adapter;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\locale;
+use atoum\atoum\mock;
+use atoum\atoum\report\fields\test;
+use atoum\atoum\test\adapter;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
@@ -67,7 +67,7 @@ class cli extends atoum\test
             ->and($adapter->class_exists = true)
             ->and($testController = new mock\controller())
             ->and($testController->getTestedClassName = uniqid())
-            ->and($test = new \mock\mageekguy\atoum\test($adapter))
+            ->and($test = new \mock\atoum\atoum\test($adapter))
             ->then
                 ->boolean($field->handleEvent(atoum\test::runStop, $test))->isFalse()
                 ->variable($field->getTestClass())->isNull()
@@ -103,7 +103,7 @@ class cli extends atoum\test
             ->and($adapter->class_exists = true)
             ->and($testController = new mock\controller())
             ->and($testController->getTestedClassName = uniqid())
-            ->and($test = new \mock\mageekguy\atoum\test($adapter))
+            ->and($test = new \mock\atoum\atoum\test($adapter))
             ->and($defaultField = new test\run\cli())
             ->then
                 ->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)

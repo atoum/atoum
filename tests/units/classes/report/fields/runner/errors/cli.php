@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\errors;
+namespace atoum\atoum\tests\units\report\fields\runner\errors;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\report\fields\runner;
-use mock\mageekguy\atoum as mock;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\locale;
+use atoum\atoum\report\fields\runner;
+use mock\atoum\atoum as mock;
 
 require_once __DIR__ . '/../../../../../runner.php';
 

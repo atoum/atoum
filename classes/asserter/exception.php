@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\asserter;
+namespace atoum\atoum\asserter;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 class exception extends \runtimeException
 {
@@ -33,7 +33,7 @@ class exception extends \runtimeException
 
             $asserterName = preg_replace(
                 [
-                    '/^' . preg_quote('mageekguy\atoum\asserters\\') . '/',
+                    '/^' . preg_quote('atoum\atoum\asserters\\') . '/',
                     '/^php(?=.)/'
                 ],
                 '',

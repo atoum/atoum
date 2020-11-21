@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -41,7 +41,7 @@ class phpString extends atoum\test
     public function test__toString()
     {
         $this
-            ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
+            ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\atoum\locale()))
             ->if(
                 $this->testedInstance->setWith($value = uniqid()),
                 $this->calling($locale)->_ = $string = uniqid()
@@ -62,8 +62,8 @@ class phpString extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->if(
                 $this->calling($locale)->_ = $notString = uniqid(),
@@ -109,8 +109,8 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith($firstString = uniqid())
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $notEqual = uniqid(),
                 $this->calling($diff)->__toString = $diffValue = uniqid()
             )
@@ -152,8 +152,8 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith($firstString = uniqid())
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $unableToGetContents = uniqid(),
                 $this->function->file_get_contents = false
             )
@@ -207,8 +207,8 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith($firstString = uniqid())
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $notEmpty = uniqid(),
                 $this->calling($diff)->__toString = $diffValue = uniqid()
             )
@@ -259,7 +259,7 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith('')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $isEmpty = uniqid()
             )
             ->then
@@ -303,7 +303,7 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith('')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $hasNotLength = uniqid()
             )
             ->then
@@ -340,7 +340,7 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith('Chuck Norris')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $lengthNotGreater = uniqid()
             )
             ->then
@@ -377,7 +377,7 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith('Chuck Norris')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $lengthNotLess = uniqid()
             )
             ->then
@@ -414,7 +414,7 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith($string = 'Chuck Norris')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notContains = uniqid()
             )
             ->then
@@ -458,7 +458,7 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith($string = 'FreeAgent scans the field')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $contains = uniqid()
             )
             ->then
@@ -494,7 +494,7 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith('FreeAgent scans the field')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notStartWith = uniqid()
             )
             ->then
@@ -550,7 +550,7 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith('FreeAgent scans the field')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $startWith = uniqid()
             )
             ->then
@@ -586,7 +586,7 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith('FreeAgent scans the field')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notEndWith = uniqid()
             )
             ->then
@@ -635,7 +635,7 @@ class phpString extends atoum\test
             ->if(
                 $asserter
                     ->setWith('FreeAgent scans the field')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $endWith = uniqid()
             )
             ->then

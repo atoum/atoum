@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\atoum\tests\units;
 
 require __DIR__ . '/../runner.php';
 
-use atoum;
-use atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\tools\variable;
 
-class asserter extends atoum
+class asserter extends atoum\test
 {
     public function testClass()
     {
@@ -37,9 +37,9 @@ class asserter extends atoum
     public function test__get()
     {
         $this
-            ->given($this->newTestedInstance($generator = new \mock\atoum\asserter\generator()))
+            ->given($this->newTestedInstance($generator = new \mock\atoum\atoum\asserter\generator()))
 
-            ->if($this->calling($generator)->__get = $asserterInstance = new \mock\atoum\asserter())
+            ->if($this->calling($generator)->__get = $asserterInstance = new \mock\atoum\atoum\asserter())
             ->then
                 ->object($this->testedInstance->{$asserterClass = uniqid()})->isIdenticalTo($asserterInstance)
                 ->mock($generator)->call('__get')->withArguments($asserterClass)->once

@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\memory;
+namespace atoum\atoum\tests\units\report\fields\runner\tests\memory;
 
-use mageekguy\atoum;
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\locale;
-use mageekguy\atoum\report\fields\runner\tests\memory;
-use mageekguy\atoum\runner;
+use atoum\atoum;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\locale;
+use atoum\atoum\report\fields\runner\tests\memory;
+use atoum\atoum\runner;
 
 require_once __DIR__ . '/../../../../../../runner.php';
 
@@ -93,11 +93,11 @@ class cli extends atoum\test
     {
         $this
             ->if($field = new memory\cli())
-            ->and($score = new \mock\mageekguy\atoum\runner\score())
+            ->and($score = new \mock\atoum\atoum\runner\score())
             ->and($score->getMockController()->getTotalMemoryUsage = function () use (& $totalMemoryUsage) {
                 return $totalMemoryUsage = rand(1, PHP_INT_MAX);
             })
-            ->and($runner = new \mock\mageekguy\atoum\runner())
+            ->and($runner = new \mock\atoum\atoum\runner())
             ->and($runner->setScore($score))
             ->and($runner->getMockController()->getTestNumber = function () use (& $testNumber) {
                 return $testNumber = rand(0, PHP_INT_MAX);
@@ -115,11 +115,11 @@ class cli extends atoum\test
     public function test__toString()
     {
         $this
-            ->if($score = new \mock\mageekguy\atoum\runner\score())
+            ->if($score = new \mock\atoum\atoum\runner\score())
             ->and($score->getMockController()->getTotalMemoryUsage = function () use (& $totalMemoryUsage) {
                 return $totalMemoryUsage = rand(1, PHP_INT_MAX);
             })
-            ->and($runner = new \mock\mageekguy\atoum\runner())
+            ->and($runner = new \mock\atoum\atoum\runner())
             ->and($runner->setScore($score))
             ->and($runner->getMockController()->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
             ->and($defaultField = new memory\cli())

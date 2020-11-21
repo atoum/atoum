@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\asserters\adapter\call\exceptions;
+namespace atoum\atoum\asserters\adapter\call\exceptions;
 
-use mageekguy\atoum\exceptions;
+use atoum\atoum\exceptions;
 
 class logic extends exceptions\logic
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report;
+namespace atoum\atoum\tests\units\report;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -16,7 +16,7 @@ class field extends atoum\test
     public function test__construct()
     {
         $this
-            ->if($field = new \mock\mageekguy\atoum\report\field())
+            ->if($field = new \mock\atoum\atoum\report\field())
             ->then
                 ->variable($field->getEvents())->isNull()
                 ->object($field->getLocale())->isEqualTo(new atoum\locale())

@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\reports\realtime\cli;
+namespace atoum\atoum\reports\realtime\cli;
 
-use mageekguy\atoum\cli\colorizer;
-use mageekguy\atoum\cli\prompt;
-use mageekguy\atoum\report\fields\runner;
-use mageekguy\atoum\reports\realtime;
+use atoum\atoum\cli\colorizer;
+use atoum\atoum\cli\prompt;
+use atoum\atoum\report\fields\runner;
+use atoum\atoum\reports\realtime;
 
 class dot extends realtime
 {

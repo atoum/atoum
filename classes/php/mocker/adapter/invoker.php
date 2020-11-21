@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\php\mocker\adapter;
+namespace atoum\atoum\php\mocker\adapter;
 
-use mageekguy\atoum\test\adapter;
+use atoum\atoum\test\adapter;
 
 class invoker extends adapter\invoker
 {

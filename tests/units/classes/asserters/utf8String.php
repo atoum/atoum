@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\atoum\tests\units\asserters;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\asserters;
-use mageekguy\atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\asserter;
+use atoum\atoum\asserters;
+use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -69,8 +69,8 @@ class utf8String extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setLocale($locale = new \mock\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
             )
 
             ->if(
@@ -124,7 +124,7 @@ class utf8String extends atoum\test
             ->if(
                 $asserter
                     ->setWith('')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $hasNotLength = uniqid()
             )
             ->then
@@ -161,7 +161,7 @@ class utf8String extends atoum\test
             ->if(
                 $asserter
                     ->setWith('Chuck Norris')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $lengthNotGreater = uniqid()
             )
             ->then
@@ -198,7 +198,7 @@ class utf8String extends atoum\test
             ->if(
                 $asserter
                     ->setWith('Chuck Norris')
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $lengthNotLess = uniqid()
             )
             ->then
@@ -235,7 +235,7 @@ class utf8String extends atoum\test
             ->if(
                 $asserter
                     ->setWith($string = $this->getRandomUtf8String())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notContains = uniqid()
             )
             ->then
@@ -279,7 +279,7 @@ class utf8String extends atoum\test
             ->if(
                 $asserter
                     ->setWith($string = $this->getRandomUtf8String())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $contains = uniqid()
             )
             ->then
@@ -315,7 +315,7 @@ class utf8String extends atoum\test
             ->if(
                 $asserter
                     ->setWith($this->getRandomUtf8String())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notStartWith = uniqid()
             )
             ->then
@@ -364,7 +364,7 @@ class utf8String extends atoum\test
             ->if(
                 $asserter
                     ->setWith($this->getRandomUtf8String())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $startWith = uniqid()
             )
             ->then
@@ -400,7 +400,7 @@ class utf8String extends atoum\test
             ->if(
                 $asserter
                     ->setWith($string = $this->getRandomUtf8String())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notEndWith = uniqid()
             )
             ->then
@@ -449,7 +449,7 @@ class utf8String extends atoum\test
             ->if(
                 $asserter
                     ->setWith($this->getRandomUtf8String())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $endWith = uniqid()
             )
             ->then

@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\asserter;
+namespace atoum\atoum\asserter;
 
-use mageekguy\atoum;
+use atoum\atoum;
 
 interface definition
 {

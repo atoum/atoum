@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\test\adapter;
+namespace atoum\atoum\test\adapter;
 
-use mageekguy\atoum\exceptions;
-use mageekguy\atoum\test\adapter;
+use atoum\atoum\exceptions;
+use atoum\atoum\test\adapter;
 
 class calls implements \countable, \arrayAccess, \iteratorAggregate
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test;
+namespace atoum\atoum\test;
 
-use mageekguy\atoum;
-use mageekguy\atoum\fs\path;
-use mageekguy\atoum\template;
+use atoum\atoum;
+use atoum\atoum\fs\path;
+use atoum\atoum\template;
 
 class generator
 {
