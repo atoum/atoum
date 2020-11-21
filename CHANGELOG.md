@@ -1,5 +1,23 @@
 # `dev-master`
 
+# 4.0.0 - 2020-11-21
+
+## BC
+
+* [#707](https://github.com/atoum/atoum/pull/707) Remove ide extension from atoum core ([@Grummfy])
+* [#852](https://github.com/atoum/atoum/pull/852) Rename namespace \mageekguy\atoum to \atoum\atoum ([@Grummfy])
+* [#750](https://github.com/atoum/atoum/pull/750) Remove implementation of test hooks ([@jubianchi])
+* [#843](https://github.com/atoum/atoum/pull/843) & [#844](https://github.com/atoum/atoum/pull/844) Compatibility with PHP 7 & 8 ([@cedric-anne]) 
+
+## bugfixes
+
+* [#850](https://github.com/atoum/atoum/pull/850) Fix some static call ([@idetinkin])
+
+## others
+
+* [#846](https://github.com/atoum/atoum/pull/846) Fix code styles ([@cedric-anne])
+* [#845](https://github.com/atoum/atoum/pull/845) Fix StyleCi configuration ([@cedric-anne])
+
 # 3.4.2 - 2020-03-04
 
 * [#841](https://github.com/atoum/atoum/pull/841) Fix variadic support when you use all is interface in your mock ([@Grummfy])
@@ -311,3 +329,4 @@
 [@fvilpoix]: https://github.com/fvilpoix
 [@macintoshplus]: https://github.com/macintoshplus
 [@cedric-anne]: https://github.com/cedric-anne
+[@idetinkin]: https://github.com/idetinkin
