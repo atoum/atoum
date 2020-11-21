@@ -412,7 +412,7 @@ namespace atoum\atoum\tests\units
                 ->then
                     ->object($test->getFactoryBuilder())->isInstanceOf(atoum\factory\builder\closure::class)
 
-                ->if($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\factory\builder()))
+                ->if($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\atoum\factory\builder()))
                 ->then
                     ->object($test->getFactoryBuilder())->isIdenticalTo($factoryBuilder)
             ;
@@ -423,7 +423,7 @@ namespace atoum\atoum\tests\units
             $this
                 ->if($test = new emptyTest())
                 ->then
-                    ->object($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\factory\builder()))->isIdenticalTo($test)
+                    ->object($test->setFactoryBuilder($factoryBuilder = new \mock\atoum\atoum\factory\builder()))->isIdenticalTo($test)
                     ->object($test->getFactoryBuilder())->isIdenticalTo($factoryBuilder)
 
                     ->object($test->setFactoryBuilder())->isIdenticalTo($test)

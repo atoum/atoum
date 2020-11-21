@@ -4,10 +4,10 @@ namespace atoum\atoum\tests\units;
 
 require __DIR__ . '/../runner.php';
 
-use atoum;
-use atoum\tools\variable;
+use atoum\atoum;
+use atoum\atoum\tools\variable;
 
-class asserter extends atoum
+class asserter extends atoum\test
 {
     public function testClass()
     {
