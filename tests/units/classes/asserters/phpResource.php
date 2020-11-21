@@ -41,7 +41,7 @@ class phpResource extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notAResource = uniqid()
             )
             ->then
@@ -73,7 +73,7 @@ class phpResource extends atoum\test
             ->if(
                 $asserter
                     ->setWith($value = fopen(__FILE__, 'r'))
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notAResource = uniqid()
             )
             ->then

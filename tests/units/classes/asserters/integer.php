@@ -41,8 +41,8 @@ class integer extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
             $this->calling($locale)->_ = $notAnInteger = uniqid()
         )
         ->then
@@ -77,9 +77,9 @@ class integer extends atoum\test
 
             ->if(
                 $this->testedInstance
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $notEqual = uniqid(),
                 $this->calling($diff)->__toString = $diffValue = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
@@ -126,9 +126,9 @@ class integer extends atoum\test
             ->if(
                 $asserter
                     ->setWith(- PHP_INT_MAX)
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $notGreaterThan = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
             )
@@ -169,9 +169,9 @@ class integer extends atoum\test
             ->if(
                 $asserter
                     ->setWith(- PHP_INT_MAX)
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $notGreaterThanOrEqualTo = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
             )
@@ -211,9 +211,9 @@ class integer extends atoum\test
             ->if(
                 $asserter
                     ->setWith(PHP_INT_MAX)
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $notLessThan = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
             )
@@ -254,9 +254,9 @@ class integer extends atoum\test
             ->if(
                 $asserter
                     ->setWith(PHP_INT_MAX)
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $notLessThanOrEqualTo = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
             )
@@ -290,8 +290,8 @@ class integer extends atoum\test
             ->if(
                 $asserter
                     ->setWith($value = rand(1, PHP_INT_MAX))
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $notZero = uniqid(),
                 $this->calling($diff)->__toString = $diffValue = uniqid()
             )

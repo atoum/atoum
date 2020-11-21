@@ -41,8 +41,8 @@ class iterator extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
 
             ->if(
@@ -75,8 +75,8 @@ class iterator extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -117,8 +117,8 @@ class iterator extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -163,8 +163,8 @@ class iterator extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -233,10 +233,10 @@ class iterator extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -276,9 +276,9 @@ class iterator extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -323,10 +323,10 @@ class iterator extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {
@@ -360,9 +360,9 @@ class iterator extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
-                    ->setGenerator($generator = new \mock\atoum\asserter\generator())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
+                    ->setGenerator($generator = new \mock\atoum\atoum\asserter\generator())
             )
             ->then
                 ->exception(function () use ($asserter) {

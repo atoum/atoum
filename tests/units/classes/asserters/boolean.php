@@ -55,8 +55,8 @@ class boolean extends atoum\test
             ->if(
                 $asserter
                     ->setWith(false)
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $notTrue = uniqid(),
                 $this->calling($diff)->__toString = $diffValue = uniqid()
             )
@@ -111,8 +111,8 @@ class boolean extends atoum\test
             ->if(
                 $asserter
                     ->setWith(true)
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setDiff($diff = new \mock\atoum\tools\diffs\variable()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setDiff($diff = new \mock\atoum\atoum\tools\diffs\variable()),
                 $this->calling($locale)->_ = $notFalse = uniqid(),
                 $this->calling($diff)->__toString = $diffValue = uniqid()
             )
@@ -153,8 +153,8 @@ class boolean extends atoum\test
         $this
             ->given(
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
             )
             ->then
                 ->object($asserter->setWith(true))->isIdenticalTo($asserter)

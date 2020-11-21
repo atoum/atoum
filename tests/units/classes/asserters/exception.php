@@ -53,8 +53,8 @@ namespace atoum\atoum\tests\units\asserters
             $this
                 ->given(
                     $this->newTestedInstance
-                        ->setLocale($locale = new \mock\atoum\locale())
-                        ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                        ->setLocale($locale = new \mock\atoum\atoum\locale())
+                        ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
                 )
                 ->then
                     ->object($this->testedInstance->setWith($value = new \exception()))->isTestedInstance
@@ -84,7 +84,7 @@ namespace atoum\atoum\tests\units\asserters
         public function testIsInstanceOf()
         {
             $this
-                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
+                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\atoum\locale()))
                 ->then
                     ->exception(function () {
                         $this->testedInstance->hasSize(rand(0, PHP_INT_MAX));
@@ -132,7 +132,7 @@ namespace atoum\atoum\tests\units\asserters
         public function testHasCode()
         {
             $this
-                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
+                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\atoum\locale()))
                 ->then
                     ->exception(function () {
                         $this->testedInstance->hasCode(rand(- PHP_INT_MAX, PHP_INT_MAX));
@@ -164,7 +164,7 @@ namespace atoum\atoum\tests\units\asserters
         public function testHasDefaultCode()
         {
             $this
-                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
+                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\atoum\locale()))
                 ->then
                     ->exception(function () {
                         $this->testedInstance->hasDefaultCode();
@@ -213,7 +213,7 @@ namespace atoum\atoum\tests\units\asserters
         public function testHasMessage()
         {
             $this
-                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\locale()))
+                ->given($this->newTestedInstance->setLocale($locale = new \mock\atoum\atoum\locale()))
                 ->then
                     ->exception(function () {
                         $this->testedInstance->hasMessage(uniqid());
@@ -256,7 +256,7 @@ namespace atoum\atoum\tests\units\asserters
                 ->if(
                     $this->testedInstance
                         ->setWith(new \exception())
-                        ->setLocale($locale = new \mock\atoum\locale()),
+                        ->setLocale($locale = new \mock\atoum\atoum\locale()),
                     $this->calling($locale)->_ = $hasNoNestedException = uniqid()
                 )
                 ->then
@@ -364,10 +364,10 @@ namespace atoum\atoum\tests\units\asserters
         {
             $this
                 ->given(
-                    $generator = new \mock\atoum\asserter\generator(),
+                    $generator = new \mock\atoum\atoum\asserter\generator(),
                     $this->newTestedInstance($generator)
                 )
-                ->if($this->calling($generator)->__get = $asserterInstance = new \mock\atoum\asserter())
+                ->if($this->calling($generator)->__get = $asserterInstance = new \mock\atoum\atoum\asserter())
                 ->then
                     ->object($this->testedInstance->{$asserterClass = uniqid()})->isIdenticalTo($asserterInstance)
                     ->mock($generator)->call('__get')->withArguments($asserterClass)->once

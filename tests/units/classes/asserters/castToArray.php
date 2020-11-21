@@ -42,8 +42,8 @@ class castToArray extends atoum\test
             ->given(
                 $adapter = new atoum\test\adapter(),
                 $asserter = $this->newTestedInstance
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer())
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
                     ->setAdapter($adapter)
             )
             ->then

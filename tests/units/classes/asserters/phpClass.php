@@ -136,7 +136,7 @@ class phpClass extends atoum\test
 
                         return new \mock\reflectionClass($class, $mockController);
                     })
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notExists = uniqid()
             )
             ->then
@@ -187,7 +187,7 @@ class phpClass extends atoum\test
                         return new \mock\reflectionClass($class, $mockController);
                     })
                     ->setWith(uniqid())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $isNotChild = uniqid()
             )
             ->then
@@ -244,7 +244,7 @@ class phpClass extends atoum\test
             ->if(
                 $this->calling($reflectionClass)->getParentClass = $parentClass = new \mock\reflectionClass(uniqid()),
                 $this->calling($parentClass)->__toString = $parentClassName = uniqid(),
-                $this->testedInstance->setLocale($locale = new \mock\atoum\locale()),
+                $this->testedInstance->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $hasParent = uniqid()
             )
             ->then
@@ -304,7 +304,7 @@ class phpClass extends atoum\test
                         return $reflectionClass = new \mock\reflectionClass($class, $mockController);
                     })
                     ->setWith(uniqid())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $isNotSubclass = uniqid()
             )
 
@@ -386,7 +386,7 @@ class phpClass extends atoum\test
                         return $reflectionClass = new \mock\reflectionClass($class, $mockController);
                     })
                     ->setWith(uniqid())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notImplements = uniqid()
             )
 
@@ -462,7 +462,7 @@ class phpClass extends atoum\test
                         return $reflectionClass = new \mock\reflectionClass($class, $mockController);
                     })
                     ->setWith(uniqid())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notAbstract = uniqid()
             )
 
@@ -516,7 +516,7 @@ class phpClass extends atoum\test
                         return $reflectionClass = new \mock\reflectionClass($class, $mockController);
                     })
                     ->setWith(uniqid())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notFinal = uniqid()
             )
 
@@ -570,7 +570,7 @@ class phpClass extends atoum\test
                         return $reflectionClass = new \mock\reflectionClass($class, $mockController);
                     })
                     ->setWith(uniqid())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $methodUnknown = uniqid()
             )
 
@@ -617,7 +617,7 @@ class phpClass extends atoum\test
                         return $reflectionClass = new \mock\reflectionClass($class, $mockController);
                     })
                     ->setWith(uniqid())
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $constantUnknown = uniqid()
             )
 
@@ -639,7 +639,7 @@ class phpClass extends atoum\test
             ->if(
                 $this->calling($reflectionClass)->hasConstant = true,
                 $this->calling($reflectionClass)->getConstant = $constantObject = uniqid(),
-                $this->testedInstance->setGenerator($generator = new \mock\atoum\asserter\generator()),
+                $this->testedInstance->setGenerator($generator = new \mock\atoum\atoum\asserter\generator()),
                 $this->calling($generator)->getAsserterInstance = $asserter = uniqid()
             )
             ->then

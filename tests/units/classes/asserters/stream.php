@@ -63,7 +63,7 @@ class stream extends atoum\test
                 $streamController->file_get_contents = uniqid(),
                 $asserter
                     ->setWith($streamName)
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $streamNotRead = uniqid()
             )
             ->then
@@ -104,7 +104,7 @@ class stream extends atoum\test
                 $streamController->file_put_contents = strlen($contents = uniqid()),
                 $asserter
                     ->setWith($streamName)
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $streamNotWritten = uniqid()
             )
             ->then

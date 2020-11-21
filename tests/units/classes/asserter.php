@@ -37,9 +37,9 @@ class asserter extends atoum
     public function test__get()
     {
         $this
-            ->given($this->newTestedInstance($generator = new \mock\atoum\asserter\generator()))
+            ->given($this->newTestedInstance($generator = new \mock\atoum\atoum\asserter\generator()))
 
-            ->if($this->calling($generator)->__get = $asserterInstance = new \mock\atoum\asserter())
+            ->if($this->calling($generator)->__get = $asserterInstance = new \mock\atoum\atoum\asserter())
             ->then
                 ->object($this->testedInstance->{$asserterClass = uniqid()})->isIdenticalTo($asserterInstance)
                 ->mock($generator)->call('__get')->withArguments($asserterClass)->once

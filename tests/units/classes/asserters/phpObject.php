@@ -41,7 +41,7 @@ class phpObject extends atoum\test
             ->given($asserter = $this->newTestedInstance)
 
             ->if(
-                $asserter->setLocale($locale = new \mock\atoum\locale()),
+                $asserter->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $isNotAnObject = uniqid()
             )
             ->then
@@ -143,8 +143,8 @@ class phpObject extends atoum\test
             ->if(
                 $asserter
                     ->setWith($test = $this)
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer()),
                 $this->calling($locale)->_ = $isNotClone = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
             )
@@ -198,7 +198,7 @@ class phpObject extends atoum\test
                     ->hasMessage('Tested instance is undefined in the test')
 
             ->if(
-                $asserter->setWithTest($test = new \mock\atoum\test()),
+                $asserter->setWithTest($test = new \mock\atoum\atoum\test()),
                 $this->calling($test)->__get = $this->testedInstance
             )
             ->then
@@ -243,7 +243,7 @@ class phpObject extends atoum\test
                     ->hasMessage('Tested instance is undefined in the test')
 
             ->if(
-                $asserter->setWithTest($test = new \mock\atoum\test()),
+                $asserter->setWithTest($test = new \mock\atoum\atoum\test()),
                 $this->calling($test)->__get = $this->testedInstance
             )
             ->then
@@ -283,7 +283,7 @@ class phpObject extends atoum\test
                     ->hasMessage('Tested instance is undefined in the test')
 
             ->if(
-                $asserter->setWithTest($test = new \mock\atoum\test()),
+                $asserter->setWithTest($test = new \mock\atoum\atoum\test()),
                 $this->calling($test)->__get = $this->testedInstance,
                 $this->calling($test)->getTestedClassName = get_class($this->testedInstance)
             )
@@ -356,8 +356,8 @@ class phpObject extends atoum\test
             ->if(
                 $asserter
                     ->setWith($test = $this)
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer()),
                 $this->calling($locale)->_ = $isNotAnInstance = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
             )
@@ -410,8 +410,8 @@ class phpObject extends atoum\test
             ->if(
                 $asserter
                     ->setWith($test = $this)
-                    ->setLocale($locale = new \mock\atoum\locale())
-                    ->setAnalyzer($analyzer = new \mock\atoum\tools\variable\analyzer()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale())
+                    ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer()),
                 $this->calling($locale)->_ = $isAnInstance = uniqid(),
                 $this->calling($analyzer)->getTypeOf = $type = uniqid()
             )

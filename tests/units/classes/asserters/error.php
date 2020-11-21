@@ -96,7 +96,7 @@ class error extends atoum\test
             ->given($asserter = $this->newTestedInstance)
 
             ->if(
-                $asserter->setLocale($locale = new \mock\atoum\locale()),
+                $asserter->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $errorNotExists = uniqid()
             )
             ->then
@@ -181,7 +181,7 @@ class error extends atoum\test
             ->given($asserter = $this->newTestedInstance)
 
             ->if(
-                $asserter->setLocale($locale = new \mock\atoum\locale()),
+                $asserter->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $errorExists = uniqid()
             )
             ->then

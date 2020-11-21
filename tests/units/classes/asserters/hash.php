@@ -32,7 +32,7 @@ class hash extends atoum\test
             ->if(
                 $this->testedInstance
                     ->setWith(md5(uniqid()))
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notSha1 = uniqid()
             )
             ->then
@@ -98,7 +98,7 @@ class hash extends atoum\test
             ->if(
                 $this->testedInstance
                     ->setWith(md5(uniqid()))
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notSha256 = uniqid()
             )
             ->then
@@ -164,7 +164,7 @@ class hash extends atoum\test
             ->if(
                 $this->testedInstance
                     ->setWith(md5(uniqid()))
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notSha512 = uniqid()
             )
             ->then
@@ -230,7 +230,7 @@ class hash extends atoum\test
             ->if(
                 $this->testedInstance
                     ->setWith(sha1(uniqid()))
-                    ->setLocale($locale = new \mock\atoum\locale()),
+                    ->setLocale($locale = new \mock\atoum\atoum\locale()),
                 $this->calling($locale)->_ = $notMd5 = uniqid()
             )
             ->then
