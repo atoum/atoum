@@ -61,7 +61,7 @@ class generator extends atoum\test
         $this
             ->given($this->newTestedInstance)
 
-            ->if($this->testedInstance->setResolver($resolver = new \mock\atoum\asserter\resolver()))
+            ->if($this->testedInstance->setResolver($resolver = new \mock\atoum\atoum\asserter\resolver()))
             ->then
                 ->object($this->testedInstance->setBaseClass($baseClass = uniqid()))->isTestedInstance
                 ->mock($resolver)->call('setBaseClass')->withArguments($baseClass)->once
@@ -74,7 +74,7 @@ class generator extends atoum\test
             ->given($this->newTestedInstance)
 
             ->if(
-                $this->testedInstance->setResolver($resolver = new \mock\atoum\asserter\resolver()),
+                $this->testedInstance->setResolver($resolver = new \mock\atoum\atoum\asserter\resolver()),
                 $this->calling($resolver)->getBaseClass = $baseClass = uniqid()
             )
             ->then
@@ -87,7 +87,7 @@ class generator extends atoum\test
         $this
             ->given($this->newTestedInstance)
 
-            ->if($this->testedInstance->setResolver($resolver = new \mock\atoum\asserter\resolver()))
+            ->if($this->testedInstance->setResolver($resolver = new \mock\atoum\atoum\asserter\resolver()))
             ->then
                 ->object($this->testedInstance->addNamespace($namespace = uniqid()))->isTestedInstance
                 ->mock($resolver)->call('addNamespace')->withArguments($namespace)->once
@@ -100,7 +100,7 @@ class generator extends atoum\test
             ->given($this->newTestedInstance)
 
             ->if(
-                $this->testedInstance->setResolver($resolver = new \mock\atoum\asserter\resolver()),
+                $this->testedInstance->setResolver($resolver = new \mock\atoum\atoum\asserter\resolver()),
                 $this->calling($resolver)->getNamespaces = $namespaces = range(1, 5)
             )
             ->then
@@ -141,7 +141,7 @@ class generator extends atoum\test
     public function testGetAsserterClass()
     {
         $this
-            ->given($this->newTestedInstance->setResolver($resolver = new \mock\atoum\asserter\resolver()))
+            ->given($this->newTestedInstance->setResolver($resolver = new \mock\atoum\atoum\asserter\resolver()))
 
             ->if($this->calling($resolver)->resolve = null)
             ->then
