@@ -152,7 +152,7 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
+            ->if($score = new \mock\atoum\atoum\test\score())
             ->and(
                 $this->calling($score)->getLastFailAssertion[1] = $failure1 = [
                     'case' => null,
@@ -247,7 +247,7 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
+            ->if($score = new \mock\atoum\atoum\test\score())
             ->and(
                 $this->calling($score)->getLastVoidMethod[1] = [
                     'class' => $class1 = uniqid(),
@@ -293,7 +293,7 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
+            ->if($score = new \mock\atoum\atoum\test\score())
             ->and(
                 $this->calling($score)->getLastSkippedMethod[1] = [
                     'file' => $file1 = uniqid(),
@@ -363,7 +363,7 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
+            ->if($score = new \mock\atoum\atoum\test\score())
             ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($this->calling($test)->getClass = $class = uniqid())
@@ -416,7 +416,7 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
+            ->if($score = new \mock\atoum\atoum\test\score())
             ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($this->calling($test)->getClass = $class = uniqid())
@@ -465,7 +465,7 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
+            ->if($score = new \mock\atoum\atoum\test\score())
             ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($this->calling($test)->getPath = $file = uniqid())
@@ -533,7 +533,7 @@ class tap extends atoum\test
     {
         $this
             ->mockGenerator->shunt('__construct')
-            ->if($score = new \mock\atoum\test\score())
+            ->if($score = new \mock\atoum\atoum\test\score())
             ->and($test = new \mock\atoum\atoum\test())
             ->and($this->calling($test)->getScore = $score)
             ->and($this->calling($test)->getClass = $class = uniqid())

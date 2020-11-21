@@ -5,6 +5,7 @@ namespace atoum\atoum\tests\units\report\fields\runner\atoum;
 use atoum\atoum\cli\colorizer;
 use atoum\atoum\cli\prompt;
 use atoum\atoum\locale;
+use atoum\atoum\report\field;
 use atoum\atoum\report\fields\runner\atoum;
 use atoum\atoum\runner;
 use atoum\atoum\runner\score;
@@ -15,7 +16,7 @@ class phing extends \atoum\atoum\test
 {
     public function testClass()
     {
-        $this->testedClass->extends(atoum\atoum\report\field::class);
+        $this->testedClass->extends(field::class);
     }
 
     public function test__construct()
