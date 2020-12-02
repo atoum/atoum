@@ -38,6 +38,7 @@ abstract class call extends atoum\asserter
             case 'atleastonce':
             case 'wascalled':
             case 'wasnotcalled':
+            case 'notreceiveanymessage':
                 return $this->{$property}();
 
             default:

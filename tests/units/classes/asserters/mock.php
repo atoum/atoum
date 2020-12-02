@@ -265,6 +265,52 @@ class mock extends atoum\test
         ;
     }
 
+    public function testNotReceiveAnyMessage()
+    {
+        $this
+            ->if($asserter = $this->newTestedInstance)
+                ->then
+                    ->exception(function () use ($asserter) {
+                        $asserter->notReceiveAnyMessage();
+                    })
+                        ->isInstanceOf(atoum\exceptions\logic::class)
+                        ->hasMessage('Mock is undefined')
+            ->if(
+                $asserter
+                    ->setWith($mock = new \mock\foo($controller = new \mock\atoum\mock\controller()))
+                    ->setLocale($locale = new \mock\atoum\locale()),
+                $this->calling($locale)->_ = $wasCalled = uniqid(),
+                $this->calling($controller)->getCallsNumber = rand(1, PHP_INT_MAX),
+                $this->calling($controller)->getMockClass = $mockClass = uniqid()
+            )
+            ->then
+                ->exception(function () use ($asserter) {
+                    $asserter->notReceiveAnyMessage();
+                })
+                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->hasMessage($wasCalled)
+                ->mock($locale)->call('_')->withArguments('%s receive some messages', $mockClass)->once
+
+                ->exception(function () use ($asserter) {
+                    $asserter->notReceiveAnyMessage();
+                })
+                    ->hasMessage($wasCalled)
+                    ->isInstanceOf(atoum\asserter\exception::class)
+                ->mock($locale)->call('_')->withArguments('%s receive some messages', $mockClass)->twice
+
+                ->exception(function () use ($asserter, & $failMessage) {
+                    $asserter->notReceiveAnyMessage($failMessage = uniqid());
+                })
+                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->hasMessage($failMessage)
+
+            ->if($this->calling($controller)->getCallsNumber = 0)
+            ->then
+                ->object($asserter->notReceiveAnyMessage())->isIdenticalTo($asserter)
+                ->object($asserter->notReceiveAnyMessage)->isIdenticalTo($asserter)
+        ;
+    }
+
     public function testWithArguments()
     {
         $this
