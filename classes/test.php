@@ -1410,10 +1410,17 @@ abstract class test implements observable, \countable
 
                     $testException = $exception;
                 } finally {
-                    $this->callAfterTestMethod($this->currentMethod);
+                    $afterTestException = null;
+                    try {
+                        $this->callAfterTestMethod($this->currentMethod);
+                    } catch (\exception $exception) {
+                        $afterTestException = $exception;
+                    }
 
-                    if ($testException) {
+                    if ($testException !== null) {
                         throw $testException;
+                    } elseif ($afterTestException !== null) {
+                        throw $afterTestException;
                     }
                 }
             } catch (asserter\exception $exception) {
