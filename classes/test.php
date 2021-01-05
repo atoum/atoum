@@ -1281,6 +1281,7 @@ abstract class test implements observable, \countable
                     }
                 }
 
+                $testException = null;
                 try {
                     ob_start();
 
@@ -1407,9 +1408,13 @@ abstract class test implements observable, \countable
                 } catch (\exception $exception) {
                     $this->score->addOutput($this->path, $this->class, $this->currentMethod, ob_get_clean());
 
-                    throw $exception;
+                    $testException = $exception;
                 } finally {
                     $this->callAfterTestMethod($this->currentMethod);
+
+                    if ($testException) {
+                        throw $testException;
+                    }
                 }
             } catch (asserter\exception $exception) {
                 foreach ($this->executeOnFailure as $closure) {
