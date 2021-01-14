@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#853](https://github.com/atoum/atoum/pull/853) Handle usage of assertions in `test::afterTestMethod()` ([@cedric-anne]) 
+
 # 4.0.0 - 2020-11-21
 
 ## BC
