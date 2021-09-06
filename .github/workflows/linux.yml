@@ -13,14 +13,12 @@ jobs:
 
     strategy:
       matrix:
-        php-versions: [ '7.2', '7.3' ]
+        php-versions: [ '7.2', '7.3', '8.0' ]
         coverage: [none]
         include:
           -   php-versions: '7.4'
               coverage: xdebug
           # see https://github.com/marketplace/actions/setup-php-action#nightly-build-setup
-          -   php-versions: '8.0'
-              experimental: true
           -   php-versions: '8.1'
               experimental: true
       fail-fast: false
@@ -41,4 +39,5 @@ jobs:
           run: cp resources/configurations/ci/.github.php.dist .atoum.php
 
       -   name: Run
+          continue-on-error: ${{ matrix.experimental }}
           run: bin/atoum --enable-branch-and-path-coverage
