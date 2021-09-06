@@ -189,6 +189,8 @@ class controller extends fs\controller
         } else {
             $this->addCall(__FUNCTION__, func_get_args());
 
+            $this->eof = ($this->pointer < 0 || $this->pointer >= $this->stat['size']);
+
             return $this->seek($offset, $whence);
         }
     }
@@ -223,6 +225,8 @@ class controller extends fs\controller
             $this->addCall(__FUNCTION__, func_get_args());
 
             $data = '';
+
+            $this->eof = ($this->pointer < 0 || $this->pointer >= $this->stat['size']);
 
             if ($this->read === true && $this->pointer >= 0 && $this->eof === false) {
                 $data = substr($this->contents, $this->pointer, $count) ?: '';
@@ -445,7 +449,7 @@ class controller extends fs\controller
     protected function setPointer($pointer)
     {
         $this->pointer = $pointer;
-        $this->eof = ($this->pointer < 0 || $this->pointer >= $this->stat['size']);
+        $this->eof = false;
 
         return $this;
     }
