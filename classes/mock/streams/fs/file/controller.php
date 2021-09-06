@@ -222,15 +222,16 @@ class controller extends fs\controller
         } else {
             $this->addCall(__FUNCTION__, func_get_args());
 
-            if ($this->read === false || $this->pointer < 0 || $this->eof === true) {
-                return false;
+            if ($this->read === true && $this->pointer >= 0 && $this->eof === false) {
+                $data = substr($this->contents, $this->pointer, $count) ?: '';
+
+                $this->movePointer(strlen($data) ?: $count);
+
+                $this->eof = $this->pointer > $this->stat['size'];
+            } else {
+                $data = false;
+                $this->eof = true;
             }
-
-            $data = substr($this->contents, $this->pointer, $count) ?: '';
-
-            $this->movePointer(strlen($data) ?: $count);
-
-            $this->eof = ($this->pointer < 0 || $this->pointer > $this->stat['size']);
 
             return $data;
         }
