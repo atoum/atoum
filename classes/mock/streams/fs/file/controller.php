@@ -228,12 +228,12 @@ class controller extends fs\controller
 
             $data = '';
 
-            $this->eof = ($this->pointer < 0 || $this->pointer >= $this->stat['size']);
-
             if ($this->read === true && $this->pointer >= 0 && $this->eof === false) {
                 $data = substr($this->contents, $this->pointer, $count) ?: '';
 
                 $this->movePointer(strlen($data) ?: $count);
+
+                $this->eof = ($this->pointer < 0 || $this->pointer >= $this->stat['size']);
             }
 
             return $data;
