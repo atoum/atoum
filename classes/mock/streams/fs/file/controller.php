@@ -189,9 +189,11 @@ class controller extends fs\controller
         } else {
             $this->addCall(__FUNCTION__, func_get_args());
 
+            $result = $this->seek($offset, $whence);
+
             $this->eof = ($this->pointer < 0 || $this->pointer >= $this->stat['size']);
 
-            return $this->seek($offset, $whence);
+            return $result;
         }
     }
 
