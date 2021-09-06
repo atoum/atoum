@@ -224,8 +224,6 @@ class controller extends fs\controller
 
             $data = '';
 
-            $this->eof = ($this->pointer < 0 || $this->pointer >= $this->stat['size']);
-
             if ($this->read === true && $this->pointer >= 0 && $this->eof === false) {
                 $data = substr($this->contents, $this->pointer, $count) ?: '';
 
@@ -447,7 +445,7 @@ class controller extends fs\controller
     protected function setPointer($pointer)
     {
         $this->pointer = $pointer;
-        $this->eof = false;
+        $this->eof = ($this->pointer < 0 || $this->pointer >= $this->stat['size']);
 
         return $this;
     }
