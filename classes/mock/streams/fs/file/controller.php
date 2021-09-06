@@ -229,7 +229,7 @@ class controller extends fs\controller
 
                 $this->movePointer(strlen($data) ?: $count);
 
-                $this->eof = ($this->pointer < 0 || $this->pointer >= $this->stat['size']);
+                $this->eof = ($this->pointer < 0 || $this->pointer > $this->stat['size']);
             }
 
             return $data;
