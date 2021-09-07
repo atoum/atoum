@@ -5,9 +5,12 @@ clone_folder: C:\projects\atoum
 
 environment:
   matrix:
-    - PHP_DOWNLOAD_FILE: https://windows.php.net/downloads/releases/latest/php-7.2-nts-Win32-VC15-x86-latest.zip
-    - PHP_DOWNLOAD_FILE: https://windows.php.net/downloads/releases/latest/php-7.3-nts-Win32-VC15-x86-latest.zip
-    - PHP_DOWNLOAD_FILE: https://windows.php.net/downloads/releases/latest/php-7.4-nts-Win32-vc15-x86-latest.zip
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PHP_DOWNLOAD_FILE: https://windows.php.net/downloads/releases/latest/php-7.3-nts-Win32-VC15-x86-latest.zip
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PHP_DOWNLOAD_FILE: https://windows.php.net/downloads/releases/latest/php-7.4-nts-Win32-vc15-x86-latest.zip
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PHP_DOWNLOAD_FILE: https://windows.php.net/downloads/releases/latest/php-8.0-nts-Win32-vs16-x86-latest.zip
 
 notifications:
   - provider: Webhook
