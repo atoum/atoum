@@ -201,7 +201,7 @@ class file extends atoum\test
             ->then
                 ->variable($resource = fopen($file, 'a'))->isNotFalse()
                 ->integer(ftell($resource))->isZero()
-                ->string(fread($resource, 1))->isEmpty()
+                ->boolean(fread($resource, 1))->isFalse()
                 ->integer(fseek($resource, 0))->isZero()
                 ->integer(ftell($resource))->isZero()
                 ->string(fread($resource, 1))->isEmpty()
