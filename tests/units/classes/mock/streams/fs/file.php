@@ -204,11 +204,11 @@ class file extends atoum\test
                 ->boolean(fread($resource, 1))->isFalse()
                 ->integer(fseek($resource, 0))->isZero()
                 ->integer(ftell($resource))->isZero()
-                ->string(fread($resource, 1))->isEmpty()
+                ->boolean(fread($resource, 1))->isFalse()
                 ->integer(fwrite($resource, 'A'))->isEqualTo(1)
                 ->integer(fseek($resource, 0))->isZero()
                 ->integer(ftell($resource))->isZero()
-                ->string(fread($resource, 1))->isEmpty()
+                ->boolean(fread($resource, 1))->isFalse()
                 ->string($file->getContents())->isEqualTo('abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'A')
             ->then
                 ->variable($resource = fopen($file, 'r'))->isNotFalse()
@@ -409,8 +409,8 @@ class file extends atoum\test
                 ->string($fileObject->current())->isEqualTo($line0)
             ->if($fileObject->seek(6))
             ->then
-                ->boolean($fileObject->eof())->isEqualTo(version_compare(PHP_VERSION, '8.0.1', '<'))
-                ->boolean($fileObject->valid())->isEqualTo(!version_compare(PHP_VERSION, '8.0.1', '<'))
+                ->boolean($fileObject->eof())->isTrue()
+                ->boolean($fileObject->valid())->isFalse()
                 ->string($fileObject->current())->isEmpty()
             ->if($fileObject->seek(5))
             ->then
