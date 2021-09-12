@@ -52,36 +52,39 @@ class coverage implements \countable, \serializable
         return $this->reflectionClassFactory;
     }
 
-    public function serialize()
+    public function __serialize(): array
     {
-        return serialize(
-            [
-                $this->classes,
-                $this->methods,
-                $this->paths,
-                $this->branches,
-                $this->excludedClasses,
-                $this->excludedNamespaces,
-                $this->excludedDirectories
-            ]
-        );
+        return [
+            'classes'             => $this->classes,
+            'methods'             => $this->methods,
+            'paths'               => $this->paths,
+            'branches'            => $this->branches,
+            'excludedClasses'     => $this->excludedClasses,
+            'excludedNamespaces'  => $this->excludedNamespaces,
+            'excludedDirectories' => $this->excludedDirectories
+       ];
     }
 
-    public function unserialize($string, \closure $reflectionClassFactory = null)
+    public function serialize()
     {
-        $this->setReflectionClassFactory($reflectionClassFactory);
+        return serialize($this->__serialize());
+    }
 
-        list(
-            $this->classes,
-            $this->methods,
-            $this->paths,
-            $this->branches,
-            $this->excludedClasses,
-            $this->excludedNamespaces,
-            $this->excludedDirectories
-        ) = unserialize($string);
+    public function __unserialize(array $data): void
+    {
+        $this->classes             = $data['classes'];
+        $this->methods             = $data['methods'];
+        $this->paths               = $data['paths'];
+        $this->branches            = $data['branches'];
+        $this->excludedClasses     = $data['excludedClasses'];
+        $this->excludedNamespaces  = $data['excludedNamespaces'];
+        $this->excludedDirectories = $data['excludedDirectories'];
+    }
 
-        return $this;
+    public function unserialize($string)
+    {
+        $data = unserialize($string);
+        $this->__unserialize($data);
     }
 
     public function getClasses()
@@ -670,7 +673,7 @@ class coverage implements \countable, \serializable
         return $this->excludedDirectories;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->methods);
     }

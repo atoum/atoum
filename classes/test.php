@@ -1088,7 +1088,7 @@ abstract class test implements observable, \countable
         return $this->score->getCoverage();
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->runTestMethods);
     }
