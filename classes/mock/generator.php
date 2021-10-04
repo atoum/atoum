@@ -675,6 +675,16 @@ class generator
                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $method->getDeclaringClass()->getParentClass()->getName();
                 break;
 
+            case $returnType instanceof \reflectionUnionType:
+                $types = array_map(
+                    function (\reflectionNamedType $type) {
+                        return (!$type->isBuiltin() ? '\\' : '') . $type->getName();
+                    },
+                    $returnType->getTypes()
+                );
+                $returnTypeCode = ': ' . implode('|', $types);
+                break;
+
             case $returnType->isBuiltin():
                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . $returnTypeName;
                 break;
