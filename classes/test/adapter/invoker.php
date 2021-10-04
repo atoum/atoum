@@ -63,6 +63,7 @@ class invoker implements \arrayAccess, \countable
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->closuresByCall);
@@ -144,6 +145,7 @@ class invoker implements \arrayAccess, \countable
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($call = null, $mixed = null)
     {
         if ($mixed instanceof \closure === false) {
@@ -152,19 +154,22 @@ class invoker implements \arrayAccess, \countable
             };
         }
 
-        return $this->setClosure($mixed, $call);
+        $this->setClosure($mixed, $call);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($call)
     {
         return $this->atCall($call);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($call)
     {
-        return $this->unsetClosure($call);
+        $this->unsetClosure($call);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($call)
     {
         return $this->closureIsSetForCall($call) ?: $this->closureIsSetForCall(0);

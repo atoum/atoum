@@ -673,7 +673,8 @@ class coverage implements \countable, \serializable
         return $this->excludedDirectories;
     }
 
-    public function count(): int
+    #[\ReturnTypeWillChange]
+    public function count()
     {
         return count($this->methods);
     }

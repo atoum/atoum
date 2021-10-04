@@ -88,6 +88,7 @@ class phpArray extends variable implements \arrayAccess
         return parent::reset()->resetInnerAsserter();
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         if ($this->innerAsserter === null) {
@@ -108,16 +109,19 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($key, $value)
     {
         throw new exceptions\logic('Tested array is read only');
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($key)
     {
         throw new exceptions\logic('Array is read only');
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($key)
     {
         $value = ($this->innerAsserter === null ? $this->value : $this->innerValue);

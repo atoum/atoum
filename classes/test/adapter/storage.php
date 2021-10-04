@@ -39,6 +39,7 @@ class storage implements \countable, \iteratorAggregate
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         $adapters = [];

@@ -145,6 +145,7 @@ class child extends asserters\phpArray
         return $this->parentIsSet()->parent->containsValue($value, $failMessage, $strict);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         $asserter = new self($this);

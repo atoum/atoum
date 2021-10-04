@@ -18,12 +18,13 @@ class invoker extends adapter\invoker
         return $this->methodName;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($call = null, $mixed = null)
     {
         if ($this->methodName == 'dir_readdir' && $mixed instanceof \atoum\atoum\mock\stream\controller) {
             $mixed = $mixed->getBasename();
         }
 
-        return parent::offsetSet($call, $mixed);
+        parent::offsetSet($call, $mixed);
     }
 }

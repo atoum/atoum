@@ -51,6 +51,7 @@ class aliaser implements \arrayAccess
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($context)
     {
         $this->context = $context;
@@ -58,6 +59,7 @@ class aliaser implements \arrayAccess
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($newContext, $context)
     {
         $contextKey = $this->getContextKey($context);
@@ -65,10 +67,9 @@ class aliaser implements \arrayAccess
         if (isset($this->aliases[$contextKey]) === true) {
             $this->aliases[$this->getContextKey($newContext)] = $this->aliases[$contextKey];
         }
-
-        return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($context)
     {
         $contextKey = $this->getContextKey($context);
@@ -76,10 +77,9 @@ class aliaser implements \arrayAccess
         if (isset($this->aliases[$contextKey]) === true) {
             unset($this->aliases[$contextKey]);
         }
-
-        return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($context)
     {
         return (isset($this->aliases[$this->getContextKey($context)]) === true);
