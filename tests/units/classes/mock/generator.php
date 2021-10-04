@@ -278,6 +278,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->returnsReference = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -353,6 +354,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->returnsReference = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -427,6 +429,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($otherReflectionMethodController = new mock\controller())
             ->and($otherReflectionMethodController->__construct = function () {
@@ -442,6 +445,7 @@ class generator extends atoum\test
             ->and($otherReflectionMethodController->isAbstract = false)
             ->and($otherReflectionMethodController->returnsReference = false)
             ->and($otherReflectionMethodController->hasReturnType = false)
+            ->and($otherReflectionMethodController->isUserDefined = true)
             ->and($otherReflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -530,6 +534,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -611,6 +616,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->isAbstract = true)
             ->and($reflectionMethodController->returnsReference = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -685,6 +691,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isFinal = false)
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -759,6 +766,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -914,6 +922,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isFinal = false)
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -981,6 +990,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1116,6 +1126,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1196,6 +1207,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1297,6 +1309,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1396,6 +1409,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1489,6 +1503,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1574,6 +1589,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1658,6 +1674,7 @@ class generator extends atoum\test
             ->and($publicMethodController->isStatic = false)
             ->and($publicMethodController->isAbstract = true)
             ->and($publicMethodController->returnsReference = false)
+            ->and($publicMethodController->isUserDefined = true)
             ->and($publicMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($classController = new mock\controller())
             ->and($classController->__construct = function () {
@@ -1835,6 +1852,7 @@ class generator extends atoum\test
             ->and($this->calling($method)->isAbstract = false)
             ->and($this->calling($method)->isPrivate = false)
             ->and($this->calling($method)->isProtected = false)
+            ->and($this->calling($method)->isUserDefined = true)
             ->then
                 ->boolean($generator->methodIsMockable($method))->isTrue()
             ->if($this->calling($method)->isFinal = true)
@@ -1870,6 +1888,7 @@ class generator extends atoum\test
             ->and($this->calling($method)->isAbstract = false)
             ->and($this->calling($method)->isPrivate = false)
             ->and($this->calling($method)->isProtected = false)
+            ->and($this->calling($method)->isUserDefined = true)
             ->then
                 ->boolean($generator->methodIsMockable($method))->isFalse()
         ;
@@ -1912,6 +1931,7 @@ class generator extends atoum\test
             ->and($this->calling($constructor)->isStatic = false)
             ->and($this->calling($constructor)->isAbstract = false)
             ->and($this->calling($constructor)->returnsReference = false)
+            ->and($this->calling($constructor)->isUserDefined = true)
             ->and->mockGenerator->orphanize('__construct')
             ->and($class = new \mock\reflectionClass())
             ->and($this->calling($class)->getName = $className = uniqid())
@@ -2008,6 +2028,7 @@ class generator extends atoum\test
             ->and($publicMethodController->isAbstract = true)
             ->and($publicMethodController->returnsReference = false)
             ->and($publicMethodController->hasReturnType = false)
+            ->and($publicMethodController->isUserDefined = true)
             ->and($publicMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($protectedMethodController = new mock\controller())
             ->and($protectedMethodController->__construct = function () {
@@ -2023,6 +2044,7 @@ class generator extends atoum\test
             ->and($protectedMethodController->isAbstract = true)
             ->and($protectedMethodController->returnsReference = false)
             ->and($protectedMethodController->hasReturnType = false)
+            ->and($protectedMethodController->isUserDefined = true)
             ->and($protectedMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($classController = new mock\controller())
             ->and($classController->__construct = function () {
@@ -2150,6 +2172,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2251,6 +2274,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2336,6 +2360,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2429,6 +2454,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
+            ->and($reflectionMethodController->isUserDefined = true)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {

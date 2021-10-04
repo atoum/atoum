@@ -485,7 +485,11 @@ class generator
 
     protected function generateMethodSignature(\reflectionMethod $method)
     {
-        return ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $method->getName() . '(' . $this->getParametersSignature($method) . ')' . $this->getReturnType($method);
+        $prefix = '';
+        if (!$method->isUserDefined() && !$this->hasReturnType($method) && version_compare(phpversion(), '8.1.0-dev', '>=')) {
+           $prefix = !$this->hasReturnType($method) ? '#[\ReturnTypeWillChange]' . "\t" : '';
+        }
+        return $prefix . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $method->getName() . '(' . $this->getParametersSignature($method) . ')' . $this->getReturnType($method);
     }
 
     protected function generateClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
