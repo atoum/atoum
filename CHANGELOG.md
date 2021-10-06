@@ -1,7 +1,8 @@
 # `dev-master`
 
-# 4.0.3 - 2021-10-22
+* [#868](https://github.com/atoum/atoum/pull/868) Drop PHP 7.2 and PHP 7.3 support ([@cedric-anne])
 
+# 4.0.3 - 2021-10-22
 
 * [#876](https://github.com/atoum/atoum/pull/876) Properly handle output made in setUp() tearDown() and afterTestMethod() ([@cedric-anne])
 * [#873](https://github.com/atoum/atoum/pull/873) Migrate lint job on Github Actions ([@cedric-anne])
