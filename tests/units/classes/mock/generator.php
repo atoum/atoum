@@ -1396,8 +1396,6 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
-            ->and($reflectionMethodController->hasTentativeReturnType = false)
-            ->and($reflectionMethodController->getTentativeReturnType = null)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1491,8 +1489,6 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
-            ->and($reflectionMethodController->hasTentativeReturnType = false)
-            ->and($reflectionMethodController->getTentativeReturnType = null)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2255,8 +2251,6 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
-            ->and($reflectionMethodController->hasTentativeReturnType = false)
-            ->and($reflectionMethodController->getTentativeReturnType = null)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2435,8 +2429,6 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
-            ->and($reflectionMethodController->hasTentativeReturnType = false)
-            ->and($reflectionMethodController->getTentativeReturnType = null)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
