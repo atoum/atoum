@@ -693,12 +693,28 @@ class generator
 
     protected function hasReturnType(\reflectionMethod $method)
     {
-        return $method->hasReturnType() === true;
+        $hasReturnType = $method->hasReturnType() === true;
+
+        if (!$hasReturnType && version_compare(phpversion(), '8.1.0-dev', '>=')) {
+            $hasReturnType = $method->hasTentativeReturnType();
+        }
+
+        return $hasReturnType;
     }
 
     protected function getReflectionType(\reflectionMethod $method)
     {
-        return $this->hasReturnType($method) ? $method->getReturnType() : null;
+        if (!$this->hasReturnType($method)) {
+            return null;
+        }
+
+        $returnType = $method->getReturnType();
+
+        if ($returnType === null && version_compare(phpversion(), '8.1.0-dev', '>=') && $method->hasTentativeReturnType()) {
+            $returnType = $method->getTentativeReturnType();
+        }
+
+        return $returnType;
     }
 
     protected function getReflectionTypeName(\reflectionType $type)
@@ -708,7 +724,7 @@ class generator
 
     protected function isVoid(\reflectionMethod $method)
     {
-        return $this->hasReturnType($method) ? $this->getReflectionTypeName($method->getReturnType()) === 'void' : false;
+        return $this->hasReturnType($method) ? $this->getReflectionTypeName($this->getReflectionType($method)) === 'void' : false;
     }
 
     protected static function isDefaultParameterNull(\ReflectionParameter $parameter)
