@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#869](https://github.com/atoum/atoum/pull/869) Fix deprecated usage of addcslashes ([@cedric-anne])
 * [#860](https://github.com/atoum/atoum/pull/860) Fix PHP8.1 compatibility issue related to missing return type & unserialize ([@cedric-anne])
 * [#858](https://github.com/atoum/atoum/pull/858) Fix PHP8.0 compatibility and CI matrix ([@villfa])
 * [#853](https://github.com/atoum/atoum/pull/853) Handle usage of assertions in `test::afterTestMethod()` ([@cedric-anne]) 
