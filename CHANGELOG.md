@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#860](https://github.com/atoum/atoum/pull/860) Fix PHP8.1 compatibility issue related to missing return type & unserialize ([@cedric-anne])
+* [#858](https://github.com/atoum/atoum/pull/858) Fix PHP8.0 compatibility and CI matrix ([@villfa])
 * [#853](https://github.com/atoum/atoum/pull/853) Handle usage of assertions in `test::afterTestMethod()` ([@cedric-anne]) 
 
 # 4.0.0 - 2020-11-21
@@ -332,3 +334,4 @@
 [@macintoshplus]: https://github.com/macintoshplus
 [@cedric-anne]: https://github.com/cedric-anne
 [@idetinkin]: https://github.com/idetinkin
+[@villfa]: https://github.com/villfa
