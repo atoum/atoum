@@ -695,7 +695,7 @@ class generator
     {
         $hasReturnType = $method->hasReturnType() === true;
 
-        if (!$hasReturnType && version_compare(phpversion(), '8.1.0-dev', '>=')) {
+        if (!$hasReturnType && version_compare(phpversion(), '8.1', '>=')) {
             $hasReturnType = $method->hasTentativeReturnType();
         }
 
