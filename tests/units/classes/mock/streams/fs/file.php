@@ -409,8 +409,8 @@ class file extends atoum\test
                 ->string($fileObject->current())->isEqualTo($line0)
             ->if($fileObject->seek(6))
             ->then
-                ->boolean($fileObject->eof())->isTrue()
-                ->boolean($fileObject->valid())->isFalse()
+                ->boolean($fileObject->eof())->isEqualTo(version_compare(PHP_VERSION, '8.0.1', '<'))
+                ->boolean($fileObject->valid())->isEqualTo(!version_compare(PHP_VERSION, '8.0.1', '<'))
                 ->string($fileObject->current())->isEmpty()
             ->if($fileObject->seek(5))
             ->then

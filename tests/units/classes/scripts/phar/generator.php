@@ -334,7 +334,7 @@ class generator extends atoum\test
                             ]
                         )
                         ->once()
-                    ->call('setStub')->withArguments($stub, version_compare(PHP_VERSION, '8.0.0-dev', '<') ? null : -1)->once()
+                    ->call('setStub')->withArguments($stub, null)->once()
                     ->call('buildFromIterator')
                         ->withArguments(new iterators\recursives\atoum\source($generator->getOriginDirectory(), '1'), null)
                         ->once()
@@ -397,7 +397,7 @@ class generator extends atoum\test
                             ]
                         )
                         ->once()
-                    ->call('setStub')->withArguments($stub, version_compare(PHP_VERSION, '8.0.0-dev', '<') ? null : -1)->once()
+                    ->call('setStub')->withArguments($stub, null)->once()
                     ->call('buildFromIterator')
                         ->withArguments(new iterators\recursives\atoum\source($generator->getOriginDirectory(), '1'), null)
                         ->once()

@@ -18,7 +18,6 @@ class superglobals extends atoum\test
         $this
             ->if($superglobals = new testedClass())
             ->then
-                ->array->setByReferenceWith($superglobals->GLOBALS)->isReferenceTo($GLOBALS)
                 ->array->setByReferenceWith($superglobals->_SERVER)->isReferenceTo($_SERVER)
                 ->array->setByReferenceWith($superglobals->_GET)->isReferenceTo($_GET)
                 ->array->setByReferenceWith($superglobals->_POST)->isReferenceTo($_POST)
@@ -33,6 +32,16 @@ class superglobals extends atoum\test
         } else {
             $this->assert()->array->setByReferenceWith($superglobals->_SESSION)->isReferenceTo($superglobals->_SESSION);
         }
+    }
+
+    /** @php <= 8.0 */
+    public function test__get_globals()
+    {
+        $this
+            ->if($superglobals = new testedClass())
+            ->then
+                ->array->setByReferenceWith($superglobals->GLOBALS)->isReferenceTo($GLOBALS)
+        ;
     }
 
     public function test__set()

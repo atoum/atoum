@@ -141,7 +141,7 @@ $runner->setTestGenerator($testGenerator);
 On UNIX, in order to check whether you have the right PHP version, you just need to run the following command in your terminal:
 
 ```sh
-$ php -v | grep -oE 'php 5\.3\.(?:[3-9]|[1-9][0-9])|5\.[4-6]\.[0-9]+|[5-7]\.[0-9]+\.[0-9]+'
+$ php -v | grep -oE 'php 5\.3\.(?:[3-9]|[1-9][0-9])|5\.[4-6]\.[0-9]+|[5-8]\.[0-9]+\.[0-9]+'
 ```
 
 If `PHP 5.6.x` or equivalent gets displayed, then you have the right PHP version installed.
