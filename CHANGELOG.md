@@ -1,11 +1,13 @@
 # `dev-master`
 
+# 4.0.1 - 2021-10-10
+
 * [#865](https://github.com/atoum/atoum/pull/865) Warning about return type break ([@cedric-anne])
 * [#864](https://github.com/atoum/atoum/pull/864) Fix UnionType handling in mock generator ([@cedric-anne])
 * [#869](https://github.com/atoum/atoum/pull/869) Fix deprecated usage of addcslashes ([@cedric-anne])
 * [#860](https://github.com/atoum/atoum/pull/860) Fix PHP8.1 compatibility issue related to missing return type & unserialize ([@cedric-anne])
 * [#858](https://github.com/atoum/atoum/pull/858) Fix PHP8.0 compatibility and CI matrix ([@villfa])
-* [#853](https://github.com/atoum/atoum/pull/853) Handle usage of assertions in `test::afterTestMethod()` ([@cedric-anne]) 
+* [#853](https://github.com/atoum/atoum/pull/853) Handle usage of assertions in `test::afterTestMethod()` ([@cedric-anne])
 
 # 4.0.0 - 2020-11-21
 
