@@ -13,6 +13,7 @@ class storage implements \countable, \iteratorAggregate
         $this->reset();
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->adapters);
@@ -39,6 +40,7 @@ class storage implements \countable, \iteratorAggregate
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         $adapters = [];

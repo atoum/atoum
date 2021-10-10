@@ -35,6 +35,7 @@ class extension extends \recursiveFilterIterator
         return $this->acceptedExtensions;
     }
 
+    #[\ReturnTypeWillChange]
     public function accept()
     {
         $path = basename((string) $this->getInnerIterator()->current());
@@ -44,6 +45,7 @@ class extension extends \recursiveFilterIterator
         return ($extension == '' || in_array($extension, $this->acceptedExtensions) === true);
     }
 
+    #[\ReturnTypeWillChange]
     public function getChildren()
     {
         return new self($this->getInnerIterator()->getChildren(), $this->acceptedExtensions);

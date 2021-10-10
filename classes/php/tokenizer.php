@@ -17,6 +17,7 @@ class tokenizer implements \iteratorAggregate
         $this->resetIterator();
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->iterator;

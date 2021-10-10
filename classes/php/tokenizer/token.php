@@ -27,6 +27,7 @@ class token extends iterator\value
         return (string) ($this->string ?: $this->tag);
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return 1;
@@ -47,16 +48,19 @@ class token extends iterator\value
         return $this->line;
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->key === 0 ? 0 : null;
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->key !== 0 ? null : $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->key = 0;
@@ -71,11 +75,13 @@ class token extends iterator\value
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return ($this->key === 0);
     }
 
+    #[\ReturnTypeWillChange]
     public function next()
     {
         if ($this->valid() === true) {

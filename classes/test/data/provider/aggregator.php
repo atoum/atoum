@@ -43,6 +43,7 @@ class aggregator implements provider, \countable
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->providers);

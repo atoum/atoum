@@ -77,27 +77,31 @@ class asserterProxy implements definition, ArrayAccess
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         $this->checkIfProxySupportsArrayAccess();
         return $this->proxyfyAsserter($this->proxiedAsserter->offsetExists($offset));
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $this->checkIfProxySupportsArrayAccess();
         return $this->proxyfyAsserter($this->proxiedAsserter->offsetGet($offset));
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->checkIfProxySupportsArrayAccess();
-        return $this->proxyfyAsserter($this->proxiedAsserter->offsetSet($offset, $value));
+        $this->proxyfyAsserter($this->proxiedAsserter->offsetSet($offset, $value));
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->checkIfProxySupportsArrayAccess();
-        return $this->proxyfyAsserter($this->proxiedAsserter->offsetUnset($offset));
+        $this->proxyfyAsserter($this->proxiedAsserter->offsetUnset($offset));
     }
 }

@@ -29,11 +29,13 @@ class source implements \outerIterator
         return $this->pharDirectory;
     }
 
+    #[\ReturnTypeWillChange]
     public function getInnerIterator()
     {
         return $this->innerIterator;
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         $current = $this->innerIterator->current();
@@ -41,21 +43,25 @@ class source implements \outerIterator
         return $current === null ? null : (string) $current;
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return ($this->pharDirectory === null ? $this->innerIterator->key() : (preg_replace('#^(:[^:]+://)?' . preg_quote($this->sourceDirectory, '#') . '#', $this->pharDirectory, $this->innerIterator->current()) ?: null));
     }
 
+    #[\ReturnTypeWillChange]
     public function next()
     {
         return $this->innerIterator->next();
     }
 
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         return $this->innerIterator->rewind();
     }
 
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->innerIterator->valid();

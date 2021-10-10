@@ -25,6 +25,7 @@ class iterator implements \iteratorAggregate
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \arrayIterator($this->getMethods());

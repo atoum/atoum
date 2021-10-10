@@ -62,7 +62,8 @@ class parser implements \iteratorAggregate
         return $this->priorities;
     }
 
-    public function getIterator(): \traversable
+    #[\ReturnTypeWillChange]
+    public function getIterator()
     {
         return new \arrayIterator($this->getValues());
     }

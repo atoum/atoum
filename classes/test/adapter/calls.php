@@ -28,25 +28,29 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
         return $this->decorator->decorate($this);
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->size;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($functionName = null, $call = null)
     {
         if ($functionName !== null) {
             $call->setFunction($functionName);
         }
 
-        return $this->addCall($call);
+        $this->addCall($call);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($mixed)
     {
         return $this->getEqualTo(self::buildCall($mixed));
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($mixed)
     {
         $key = self::getKey(self::buildCall($mixed));
@@ -56,15 +60,15 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
             unset($this->calls[$key]);
         }
-
-        return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($mixed)
     {
         return (isset($this->calls[self::getKey(self::buildCall($mixed))]) === true);
     }
 
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \arrayIterator($this());
