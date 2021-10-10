@@ -61,6 +61,7 @@ class iterator implements \iterator, \countable
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         reset($this->tags);
@@ -68,21 +69,25 @@ class iterator implements \iterator, \countable
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return (key($this->tags) !== null);
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return current($this->tags) ?: null;
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return key($this->tags);
     }
 
+    #[\ReturnTypeWillChange]
     public function next()
     {
         next($this->tags);
@@ -90,6 +95,7 @@ class iterator implements \iterator, \countable
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->tags);

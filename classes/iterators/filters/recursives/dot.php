@@ -15,6 +15,7 @@ class dot extends \recursiveFilterIterator
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function accept()
     {
         return (substr($this->getInnerIterator()->current()->getBasename(), 0, 1) != '.');

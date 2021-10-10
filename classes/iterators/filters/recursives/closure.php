@@ -29,6 +29,7 @@ class closure extends \recursiveFilterIterator
         return $this->closures;
     }
 
+    #[\ReturnTypeWillChange]
     public function accept()
     {
         foreach ($this->closures as $closure) {
@@ -40,6 +41,7 @@ class closure extends \recursiveFilterIterator
         return true;
     }
 
+    #[\ReturnTypeWillChange]
     public function getChildren()
     {
         return new static(

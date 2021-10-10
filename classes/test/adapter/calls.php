@@ -28,6 +28,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
         return $this->decorator->decorate($this);
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->size;

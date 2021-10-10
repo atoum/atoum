@@ -25,11 +25,13 @@ class iterator extends value
         return $string;
     }
 
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return (current($this->values) !== false);
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         $value = null;
@@ -41,6 +43,7 @@ class iterator extends value
         return $value;
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->key < 0 || $this->key >= $this->size ? null : $this->key;
@@ -76,6 +79,7 @@ class iterator extends value
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function next($offset = 1)
     {
         while (($valid = $this->valid()) === true && $offset > 0) {
@@ -106,6 +110,7 @@ class iterator extends value
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         if ($this->size > 0) {
@@ -198,6 +203,7 @@ class iterator extends value
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->size;
