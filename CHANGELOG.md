@@ -1,5 +1,9 @@
 # `dev-master`
 
+# 4.0.2 - 2021-10-10
+
+* [#870](https://github.com/atoum/atoum/pull/870) Handle tentative return types in mocked methods ([@cedric-anne])
+
 # 4.0.1 - 2021-10-10
 
 * [#865](https://github.com/atoum/atoum/pull/865) Warning about return type break ([@cedric-anne])
