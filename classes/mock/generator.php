@@ -663,8 +663,8 @@ class generator
         }
 
         $returnType = $this->getReflectionType($method);
-        $isNullable = $this->isNullable($returnType);
         $returnTypeName = $this->getReflectionTypeName($returnType);
+        $isNullable = $returnTypeName !== 'mixed' && $this->isNullable($returnType);
 
         switch (true) {
             case $returnTypeName === 'self':
