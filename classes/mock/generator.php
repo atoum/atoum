@@ -720,7 +720,7 @@ class generator
 
         $returnType = $method->getReturnType();
 
-        if ($returnType === null && version_compare(phpversion(), '8.1.0-dev', '>=') && $method->hasTentativeReturnType()) {
+        if ($returnType === null && version_compare(phpversion(), '8.1', '>=') && $method->hasTentativeReturnType()) {
             $returnType = $method->getTentativeReturnType();
         }
 

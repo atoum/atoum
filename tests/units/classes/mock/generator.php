@@ -427,6 +427,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($otherReflectionMethodController = new mock\controller())
             ->and($otherReflectionMethodController->__construct = function () {
@@ -442,6 +443,7 @@ class generator extends atoum\test
             ->and($otherReflectionMethodController->isAbstract = false)
             ->and($otherReflectionMethodController->returnsReference = false)
             ->and($otherReflectionMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '>=') ? $otherReflectionMethodController->hasTentativeReturnType = false : true)
             ->and($otherReflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -759,6 +761,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -981,6 +984,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1116,6 +1120,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1196,6 +1201,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1297,6 +1303,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1396,6 +1403,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1489,6 +1497,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -1574,6 +1583,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isStatic = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2008,6 +2018,7 @@ class generator extends atoum\test
             ->and($publicMethodController->isAbstract = true)
             ->and($publicMethodController->returnsReference = false)
             ->and($publicMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '>=') ? $publicMethodController->hasTentativeReturnType = false : true)
             ->and($publicMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($protectedMethodController = new mock\controller())
             ->and($protectedMethodController->__construct = function () {
@@ -2023,6 +2034,7 @@ class generator extends atoum\test
             ->and($protectedMethodController->isAbstract = true)
             ->and($protectedMethodController->returnsReference = false)
             ->and($protectedMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '>=') ? $protectedMethodController->hasTentativeReturnType = false : true)
             ->and($protectedMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($classController = new mock\controller())
             ->and($classController->__construct = function () {
@@ -2150,6 +2162,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2251,6 +2264,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2336,6 +2350,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->isAbstract = false)
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = false)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2429,6 +2444,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2542,6 +2558,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $unionType)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
@@ -2636,6 +2653,7 @@ class generator extends atoum\test
             ->and($reflectionMethodController->returnsReference = false)
             ->and($reflectionMethodController->hasReturnType = true)
             ->and($reflectionMethodController->getReturnType = $reflectionType)
+            ->and(version_compare(phpversion(), '8.1', '<') ? true : $reflectionMethodController->hasTentativeReturnType = false)
             ->and($reflectionMethod = new \mock\reflectionMethod(uniqid(), uniqid()))
             ->and($reflectionClassController = new mock\controller())
             ->and($reflectionClassController->__construct = function () {
