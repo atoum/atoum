@@ -238,6 +238,6 @@ class command
 
     private static function osIsWindows()
     {
-        return (defined('PHP_WINDOWS_VERSION_MAJOR') === true);
+        return PHP_OS_FAMILY === 'Windows';
     }
 }
