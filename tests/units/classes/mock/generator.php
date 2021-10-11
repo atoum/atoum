@@ -1055,6 +1055,8 @@ class generator extends atoum\test
             ->and($generator->setReflectionClassFactory(function ($class) use ($reflectionClass) {
                 return ($class == 'iteratorAggregate' ? new \reflectionClass('iteratorAggregate') : $reflectionClass);
             }))
+            ->and($getIteratorReturnType = version_compare(phpversion(), '8.1', '>=') ? ': \\Traversable' : '')
+            ->and($getIteratorMockedReturn = version_compare(phpversion(), '8.1', '>=') ? "\t\t\t\t" . 'return null;' . PHP_EOL : '')
             ->then
                 ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
@@ -1079,12 +1081,13 @@ class generator extends atoum\test
                     "\t\t" . '}' . PHP_EOL .
                     "\t\t" . '$this->getMockController()->invoke(\'__construct\', $arguments);' . PHP_EOL .
                     "\t" . '}' . PHP_EOL .
-                    "\t" . 'public function getIterator()' . PHP_EOL .
+                    "\t" . 'public function getIterator()' . $getIteratorReturnType . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0));' . PHP_EOL .
                     "\t\t" . 'if (isset($this->getMockController()->getIterator) === false)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
                     "\t\t\t" . '$this->getMockController()->getIterator = function() {' . PHP_EOL .
+                    $getIteratorMockedReturn .
                     "\t\t\t" . '};' . PHP_EOL .
                     "\t\t" . '}' . PHP_EOL .
                     "\t\t" . '$return = $this->getMockController()->invoke(\'getIterator\', $arguments);' . PHP_EOL .
