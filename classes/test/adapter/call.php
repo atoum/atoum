@@ -109,7 +109,7 @@ class call
     public function isEqualTo(self $call)
     {
         switch (true) {
-            case $this->function === null || strtolower($this->function) != strtolower($call->function):
+            case $this->function === null || $call->function === null || strtolower($this->function) != strtolower($call->function):
                 return false;
 
             case $this->verify !== null:

@@ -48,7 +48,7 @@ class phpString extends atoum\test
             )
             ->then
                 ->castToString($this->testedInstance)->isEqualTo($string)
-                ->mock($locale)->call('_')->withArguments('string(%s) \'%s\'', strlen($value), addcslashes($value, null))->once
+                ->mock($locale)->call('_')->withArguments('string(%s) \'%s\'', strlen($value), addcslashes($value, ''))->once
 
             ->if($this->testedInstance->setWith($value = "\010" . uniqid() . "\010", $charlist = "\010"))
             ->then

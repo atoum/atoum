@@ -125,6 +125,7 @@ class notifier extends atoum\test
                 return $output = uniqid();
             })
             ->and($field = new \mock\atoum\atoum\report\fields\runner\result\notifier($adapter))
+            ->and($this->calling($field)->getCommand = uniqid())
             ->and($field->setLocale($locale))
             ->and($field->handleEvent(atoum\runner::runStop, $runner))
             ->then
@@ -140,6 +141,7 @@ class notifier extends atoum\test
             ->and($this->calling($runner)->getTestMethodNumber = $testMethodNumber = rand(2, PHP_INT_MAX))
             ->and($this->calling($score)->getAssertionNumber = $assertionNumber = rand(2, PHP_INT_MAX))
             ->and($field = new \mock\atoum\atoum\report\fields\runner\result\notifier($adapter))
+            ->and($this->calling($field)->getCommand = uniqid())
             ->and($field->setLocale($locale))
             ->and($field->handleEvent(atoum\runner::runStop, $runner))
             ->then
@@ -157,6 +159,7 @@ class notifier extends atoum\test
             ->and($this->calling($score)->getExceptionNumber = 1)
             ->and($this->calling($score)->getUncompletedMethodNumber = 1)
             ->and($field = new \mock\atoum\atoum\report\fields\runner\result\notifier($adapter))
+            ->and($this->calling($field)->getCommand = uniqid())
             ->and($field->setLocale($locale))
             ->and($field->handleEvent(atoum\runner::runStop, $runner))
             ->then
@@ -176,6 +179,7 @@ class notifier extends atoum\test
             ->and($this->calling($score)->getExceptionNumber = $exceptionNumber = rand(2, PHP_INT_MAX))
             ->and($this->calling($score)->getUncompletedMethodNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX))
             ->and($field = new \mock\atoum\atoum\report\fields\runner\result\notifier($adapter))
+            ->and($this->calling($field)->getCommand = uniqid())
             ->and($field->setLocale($locale))
             ->and($field->handleEvent(atoum\runner::runStop, $runner))
             ->then
@@ -212,6 +216,7 @@ class notifier extends atoum\test
                 return $output = uniqid();
             })
             ->and($field = new \mock\atoum\atoum\report\fields\runner\result\notifier($adapter))
+            ->and($this->calling($field)->getCommand = uniqid())
             ->then
                 ->string($field->send(uniqid(), uniqid(), true))->isEqualTo($output)
         ;
