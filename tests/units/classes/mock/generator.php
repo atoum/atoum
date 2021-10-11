@@ -2515,7 +2515,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.0.0-dev */
+    /** @php >= 8.0 */
     public function testGetMockedClassCodeForMethodWithUnionedReturnType()
     {
         $this
@@ -2629,7 +2629,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.0.0-dev */
+    /** @php >= 8.0 */
     public function testGetMockedClassCodeForMethodWithMixedReturnType()
     {
         $this
@@ -2761,7 +2761,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.1.0-dev */
+    /** @php >= 8.1 */
     public function testGetMockedClassCodeForMethodWithTentativeReturnType()
     {
         $this
