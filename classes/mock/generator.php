@@ -663,8 +663,8 @@ class generator
         }
 
         $returnType = $this->getReflectionType($method);
-        $isNullable = $this->isNullable($returnType);
         $returnTypeName = $this->getReflectionTypeName($returnType);
+        $isNullable = $returnTypeName !== 'mixed' && $this->isNullable($returnType);
 
         switch (true) {
             case $returnTypeName === 'self':
@@ -720,7 +720,7 @@ class generator
 
         $returnType = $method->getReturnType();
 
-        if ($returnType === null && version_compare(phpversion(), '8.1.0-dev', '>=') && $method->hasTentativeReturnType()) {
+        if ($returnType === null && version_compare(phpversion(), '8.1', '>=') && $method->hasTentativeReturnType()) {
             $returnType = $method->getTentativeReturnType();
         }
 

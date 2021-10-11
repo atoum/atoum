@@ -126,6 +126,6 @@ class diff
 
     protected static function split($value)
     {
-        return explode(PHP_EOL, $value);
+        return explode(PHP_EOL, $value ?? '');
     }
 }

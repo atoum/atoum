@@ -22,6 +22,6 @@ class terminal extends notifier
 
     public function send($title, $message, $success)
     {
-        return $this->adapter->system(sprintf($this->getCommand(), escapeshellarg($title), escapeshellarg($message), escapeshellarg($this->callbackCommand)));
+        return $this->adapter->system(sprintf($this->getCommand(), escapeshellarg($title), escapeshellarg($message), escapeshellarg($this->callbackCommand ?? '')));
     }
 }

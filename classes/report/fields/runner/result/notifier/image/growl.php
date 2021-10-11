@@ -22,6 +22,6 @@ class growl extends image
 
     public function send($title, $message, $success)
     {
-        return $this->adapter->system(sprintf($this->getCommand(), escapeshellarg($title), escapeshellarg($message), escapeshellarg($this->getImage($success)), escapeshellarg($this->callbackUrl)));
+        return $this->adapter->system(sprintf($this->getCommand(), escapeshellarg($title), escapeshellarg($message), escapeshellarg($this->getImage($success)), escapeshellarg($this->callbackUrl ?? '')));
     }
 }

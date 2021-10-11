@@ -123,7 +123,7 @@ class phpClass extends atoum\asserter
                 $this->fail($failMessage ?: $this->_('%s does not extend %s', $this, $parent));
             }
         } catch (\reflectionException $exception) {
-            throw new exceptions\logic('Argument of ' . __METHOD__ . '() must be a class name', null, $exception);
+            throw new exceptions\logic('Argument of ' . __METHOD__ . '() must be a class name', 0, $exception);
         }
 
         return $this;
@@ -138,7 +138,7 @@ class phpClass extends atoum\asserter
                 $this->fail($failMessage ?: $this->_('%s does not implement %s', $this, $interface));
             }
         } catch (\reflectionException $exception) {
-            throw new exceptions\logic('Argument of ' . __METHOD__ . '() must be an interface name', null, $exception);
+            throw new exceptions\logic('Argument of ' . __METHOD__ . '() must be an interface name', 0, $exception);
         }
 
         return $this;

@@ -172,7 +172,7 @@ class stub extends atoum\test
                 };
                 $pharController->offsetExists = true;
                 $pharController->offsetGet = function ($path) {
-                    return $path;
+                    return new \mock\splFileInfo($path);
                 };
                 $pharController->offsetSet = function () {
                 };
