@@ -269,6 +269,7 @@ class generator extends atoum\test
                 $pharController->setMetadata = function () {
                 };
                 $pharController->buildFromIterator = function () {
+                    return [];
                 };
                 $pharController->setSignatureAlgorithm = function () {
                 };
@@ -368,6 +369,7 @@ class generator extends atoum\test
                 $pharController->setMetadata = function () {
                 };
                 $pharController->buildFromIterator = function () {
+                    return [];
                 };
                 $pharController->setSignatureAlgorithm = function () {
                 };
