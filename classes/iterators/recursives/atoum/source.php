@@ -46,7 +46,13 @@ class source implements \outerIterator
     #[\ReturnTypeWillChange]
     public function key()
     {
-        return ($this->pharDirectory === null ? $this->innerIterator->key() : (preg_replace('#^(:[^:]+://)?' . preg_quote($this->sourceDirectory, '#') . '#', $this->pharDirectory, $this->innerIterator->current() ?? '') ?: null));
+        if ($this->pharDirectory === null) {
+            return $this->innerIterator->key();
+        }
+
+        $current = $this->innerIterator->current();
+
+        return $current === null ? null : preg_replace('#^(:[^:]+://)?' . preg_quote($this->sourceDirectory, '#') . '#', $this->pharDirectory, $current);
     }
 
     #[\ReturnTypeWillChange]
