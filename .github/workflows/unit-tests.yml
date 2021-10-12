@@ -2,9 +2,9 @@ name: Unit tests
 
 on:
   push:
-#    branches:
-#      - master
-#      - 4.x
+    branches:
+      - master
+      - 4.x
   pull_request:
 
 jobs:
