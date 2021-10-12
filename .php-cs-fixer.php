@@ -14,7 +14,7 @@ $finder = CS\Finder::create()
 return
     (new CS\Config())
         ->setRules([
-            '@PSR2'                              => true,
+            '@PSR12'                             => true,
             'array_syntax'                       => ['syntax' => 'short'],
             'blank_line_after_opening_tag'       => true,
             'cast_spaces'                        => true,

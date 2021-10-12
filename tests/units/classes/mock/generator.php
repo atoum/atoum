@@ -2960,7 +2960,7 @@ class classWithVariadicInConstructor
 
 class classWithScalarTypeHints
 {
-    public function foo(int $bar) : int
+    public function foo(int $bar): int
     {
         return $bar * 2;
     }

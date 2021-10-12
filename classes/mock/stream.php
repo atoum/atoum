@@ -7,8 +7,8 @@ use atoum\atoum\exceptions;
 
 class stream
 {
-    const defaultProtocol = 'atoum';
-    const protocolSeparator = '://';
+    public const defaultProtocol = 'atoum';
+    public const protocolSeparator = '://';
 
     protected $streamController = null;
 

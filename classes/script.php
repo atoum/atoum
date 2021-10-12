@@ -4,7 +4,7 @@ namespace atoum\atoum;
 
 abstract class script
 {
-    const padding = '   ';
+    public const padding = '   ';
 
     protected $name = '';
     protected $locale = null;

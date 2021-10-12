@@ -16,7 +16,7 @@ class mock extends atoum\test
             ->then
                 ->object($this->testedInstance->setMockGenerator())->isTestedInstance
                 ->object($this->testedInstance->getMockGenerator())->isInstanceOf(atoum\mock\generator::class)
-                ->object($this->testedInstance->setMockGenerator($generator = new \mock\atoum\atoum\mock\generator))->isTestedInstance
+                ->object($this->testedInstance->setMockGenerator($generator = new \mock\atoum\atoum\mock\generator()))->isTestedInstance
                 ->object($this->testedInstance->getMockGenerator())->isIdenticalTo($generator)
         ;
     }
@@ -28,7 +28,7 @@ class mock extends atoum\test
             ->then
                 ->object($this->testedInstance->setAdapter())->isTestedInstance
                 ->object($this->testedInstance->getAdapter())->isInstanceOf(atoum\adapter::class)
-                ->object($this->testedInstance->setAdapter($adapter = new \mock\atoum\atoum\adapter))->isTestedInstance
+                ->object($this->testedInstance->setAdapter($adapter = new \mock\atoum\atoum\adapter()))->isTestedInstance
                 ->object($this->testedInstance->getAdapter())->isIdenticalTo($adapter)
         ;
     }
@@ -37,7 +37,7 @@ class mock extends atoum\test
     {
         $this
             ->given(
-                $adapter = new atoum\test\adapter,
+                $adapter = new atoum\test\adapter(),
                 $this->newTestedInstance(null, $adapter)
             )
             ->if($adapter->spl_autoload_register = false)
@@ -61,7 +61,7 @@ class mock extends atoum\test
     {
         $this
             ->given(
-                $adapter = new atoum\test\adapter,
+                $adapter = new atoum\test\adapter(),
                 $this->newTestedInstance(null, $adapter)
             )
             ->if($adapter->spl_autoload_unregister = false)
@@ -85,7 +85,7 @@ class mock extends atoum\test
     {
         $this
             ->given(
-                $generator = new \mock\atoum\atoum\mock\generator,
+                $generator = new \mock\atoum\atoum\mock\generator(),
                 $this->newTestedInstance($generator)
             )
             ->if($this->calling($generator)->generate->doesNothing)

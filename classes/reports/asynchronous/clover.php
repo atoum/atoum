@@ -8,11 +8,11 @@ use atoum\atoum\score;
 
 class clover extends atoum\reports\asynchronous
 {
-    const defaultTitle = 'atoum code coverage';
-    const defaultPackage = 'atoumCodeCoverage';
-    const lineTypeMethod = 'method';
-    const lineTypeStatement = 'stmt';
-    const lineTypeConditional = 'cond';
+    public const defaultTitle = 'atoum code coverage';
+    public const defaultPackage = 'atoumCodeCoverage';
+    public const lineTypeMethod = 'method';
+    public const lineTypeStatement = 'stmt';
+    public const lineTypeConditional = 'cond';
 
     protected $score = null;
     protected $loc = 0;

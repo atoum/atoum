@@ -8,9 +8,9 @@ use atoum\atoum\exceptions;
 
 class engine
 {
-    const defaultVersionPattern = '/\$Rev: ([^ %]+) \$/';
-    const defaultChangelogName = 'CHANGELOG.md';
-    const defaultChangelogHeader = '# `dev-master`';
+    public const defaultVersionPattern = '/\$Rev: ([^ %]+) \$/';
+    public const defaultChangelogName = 'CHANGELOG.md';
+    public const defaultChangelogHeader = '# `dev-master`';
 
     protected $adapter = null;
     protected $version = null;

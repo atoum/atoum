@@ -13,7 +13,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 
     private $resource = null;
 
-    const defaultFileName = 'atoum.log';
+    public const defaultFileName = 'atoum.log';
 
     public function __construct($filename = null, atoum\adapter $adapter = null)
     {

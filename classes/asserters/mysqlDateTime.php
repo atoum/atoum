@@ -4,7 +4,7 @@ namespace atoum\atoum\asserters;
 
 class mysqlDateTime extends dateTime
 {
-    const mysqlDateTimeFormat = 'Y-m-d H:i:s';
+    public const mysqlDateTimeFormat = 'Y-m-d H:i:s';
 
     public function setWith($value, $checkType = true)
     {

@@ -44,7 +44,7 @@ class stub extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance(uniqid()),
-                $writer = new \mock\atoum\atoum\writer
+                $writer = new \mock\atoum\atoum\writer()
             )
             ->if($this->testedInstance->setOutputWriter($writer))
             ->then
@@ -64,7 +64,7 @@ class stub extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance(uniqid()),
-                $writer = new \mock\atoum\atoum\writer
+                $writer = new \mock\atoum\atoum\writer()
             )
             ->and->mockGenerator->shuntParentClassCalls()
             ->and(
@@ -95,7 +95,7 @@ class stub extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance(uniqid()),
-                $writer = new \mock\atoum\atoum\writer
+                $writer = new \mock\atoum\atoum\writer()
             )
             ->and->mockGenerator->shuntParentClassCalls()
             ->and(
@@ -124,7 +124,7 @@ class stub extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance(uniqid()),
-                $writer = new \mock\atoum\atoum\writer
+                $writer = new \mock\atoum\atoum\writer()
             )
             ->if($this->testedInstance->setInfoWriter($writer))
             ->then

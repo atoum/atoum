@@ -12,7 +12,7 @@ use atoum\atoum\report;
 
 class treemap extends report\fields\runner\coverage\cli
 {
-    const dataFile = 'data.json';
+    public const dataFile = 'data.json';
 
     protected $urlPrompt = null;
     protected $urlColorizer = null;

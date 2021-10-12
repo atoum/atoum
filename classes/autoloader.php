@@ -4,9 +4,9 @@ namespace atoum\atoum;
 
 class autoloader
 {
-    const version = 1;
-    const defaultFileSuffix = '.php';
-    const defaultCacheFileName = '%s.atoum.cache';
+    public const version = 1;
+    public const defaultFileSuffix = '.php';
+    public const defaultCacheFileName = '%s.atoum.cache';
 
     protected $version = null;
     protected $classes = [];

@@ -8,10 +8,10 @@ use atoum\atoum\scripts;
 
 class stub extends scripts\runner
 {
-    const scriptsDirectory = 'scripts';
-    const scriptsExtension = '.php';
-    const updateUrl = 'http://downloads.atoum.org/update.php?version=%s';
-    const githubUpdateUrl = 'https://api.github.com/repos/atoum/atoum/releases';
+    public const scriptsDirectory = 'scripts';
+    public const scriptsExtension = '.php';
+    public const updateUrl = 'http://downloads.atoum.org/update.php?version=%s';
+    public const githubUpdateUrl = 'https://api.github.com/repos/atoum/atoum/releases';
 
     protected $pharFactory = null;
 

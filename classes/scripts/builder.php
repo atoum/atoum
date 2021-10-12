@@ -7,9 +7,9 @@ use atoum\atoum\exceptions;
 
 class builder extends atoum\script\configurable
 {
-    const defaultConfigFile = '.builder.php';
-    const defaultUnitTestRunnerScript = 'scripts/runner.php';
-    const defaultPharGeneratorScript = 'scripts/phar/generator.php';
+    public const defaultConfigFile = '.builder.php';
+    public const defaultUnitTestRunnerScript = 'scripts/runner.php';
+    public const defaultPharGeneratorScript = 'scripts/phar/generator.php';
 
     private $lockResource = null;
 

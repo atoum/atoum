@@ -84,7 +84,7 @@ class clover extends atoum\test
             ->and($report = new testedClass($adapter))
             ->then
                 ->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
-                ->string(str_replace("\n", PHP_EOL, (string)$report))->isEqualToContentsOfFile($filepath)
+                ->string(str_replace("\n", PHP_EOL, (string) $report))->isEqualToContentsOfFile($filepath)
             ->if($coverage->getMockController()->getClasses = [])
             ->and($classController = new mock\controller())
             ->and($classController->disableMethodChecking())
@@ -137,7 +137,7 @@ class clover extends atoum\test
             ->and($coverage->addXdebugDataForTest($this, $xdebugData))
             ->then
                 ->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
-                ->string(str_replace("\n", PHP_EOL, (string)$report))->isEqualToContentsOfFile($filepath)
+                ->string(str_replace("\n", PHP_EOL, (string) $report))->isEqualToContentsOfFile($filepath)
         ;
     }
 

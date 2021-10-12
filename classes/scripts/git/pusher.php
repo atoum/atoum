@@ -10,13 +10,13 @@ use atoum\atoum\scripts;
 
 class pusher extends script\configurable
 {
-    const defaultRemote = 'origin';
-    const defaultTagFile = '.tag';
-    const defaultMasterTag = 'dev-master';
-    const versionPattern = '$Rev: %s $';
-    const majorVersion = 1;
-    const minorVersion = 2;
-    const patchVersion = 3;
+    public const defaultRemote = 'origin';
+    public const defaultTagFile = '.tag';
+    public const defaultMasterTag = 'dev-master';
+    public const versionPattern = '$Rev: %s $';
+    public const majorVersion = 1;
+    public const minorVersion = 2;
+    public const patchVersion = 3;
 
     protected $remote = '';
     protected $tagFile = null;

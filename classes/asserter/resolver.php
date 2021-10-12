@@ -6,8 +6,8 @@ use atoum\atoum\tools\variable\analyzer;
 
 class resolver
 {
-    const defaultBaseClass = 'atoum\atoum\asserter';
-    const defaultNamespace = 'atoum\atoum\asserters';
+    public const defaultBaseClass = 'atoum\atoum\asserter';
+    public const defaultNamespace = 'atoum\atoum\asserters';
 
     protected $baseClass = '';
     protected $namespaces = [];

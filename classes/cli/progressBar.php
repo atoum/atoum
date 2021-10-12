@@ -6,9 +6,9 @@ use atoum\atoum;
 
 class progressBar
 {
-    const width = 60;
-    const defaultProgressBarFormat = '[%s]';
-    const defaultCounterFormat = '[%s/%s]';
+    public const width = 60;
+    public const defaultProgressBarFormat = '[%s]';
+    public const defaultCounterFormat = '[%s/%s]';
 
     protected $cli = null;
     protected $refresh = null;

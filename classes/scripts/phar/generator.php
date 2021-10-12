@@ -10,7 +10,7 @@ use atoum\atoum\iterators;
 
 class generator extends atoum\script
 {
-    const phar = 'atoum.phar';
+    public const phar = 'atoum.phar';
 
     protected $originDirectory = null;
     protected $destinationDirectory = null;

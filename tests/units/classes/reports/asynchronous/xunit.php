@@ -101,7 +101,7 @@ class xunit extends atoum\test
             ->and($score->merge($testScore))
             ->and($report->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->string(str_replace("\n", PHP_EOL, (string)$report))->isEqualToContentsOfFile(implode(DIRECTORY_SEPARATOR, [$path, '1.xml']))
+                ->string(str_replace("\n", PHP_EOL, (string) $report))->isEqualToContentsOfFile(implode(DIRECTORY_SEPARATOR, [$path, '1.xml']))
             ->if($adapter->get_class = $otherClass = 'otherClass')
             ->and($test->setScore($testScore = new atoum\test\score()))
             ->and($test->getMockController()->getCurrentMethod[4] = $otherMethod)
@@ -115,7 +115,7 @@ class xunit extends atoum\test
             ->and($report->handleEvent(atoum\test::afterTestMethod, $test))
             ->and($report->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->string(str_replace("\n", PHP_EOL, (string)$report))->isEqualToContentsOfFile(implode(DIRECTORY_SEPARATOR, [$path, '2.xml']))
+                ->string(str_replace("\n", PHP_EOL, (string) $report))->isEqualToContentsOfFile(implode(DIRECTORY_SEPARATOR, [$path, '2.xml']))
             ->if($adapter->get_class = $thirdClassFqn = 'package\\thirdClass')
             ->and($test->setScore($testScore = new atoum\test\score()))
             ->and($test->getMockController()->getCurrentMethod[6] = $fourthMethod = 'fourthMethod')
@@ -124,7 +124,7 @@ class xunit extends atoum\test
             ->and($report->handleEvent(atoum\test::afterTestMethod, $test))
             ->and($report->handleEvent(atoum\runner::runStop, $runner))
             ->then
-                ->string(str_replace("\n", PHP_EOL, (string)$report))->isEqualToContentsOfFile(implode(DIRECTORY_SEPARATOR, [$path, '3.xml']))
+                ->string(str_replace("\n", PHP_EOL, (string) $report))->isEqualToContentsOfFile(implode(DIRECTORY_SEPARATOR, [$path, '3.xml']))
         ;
     }
 }

@@ -9,7 +9,7 @@ use atoum\atoum\exceptions;
 
 class coverage extends runner
 {
-    const defaultReportFormat = 'xml';
+    public const defaultReportFormat = 'xml';
 
     protected $reportOutputPath;
     protected $reportFormat;

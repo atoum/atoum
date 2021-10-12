@@ -8,8 +8,8 @@ use atoum\atoum\scripts\treemap\analyzers;
 
 class treemap extends atoum\script\configurable
 {
-    const defaultConfigFile = '.treemap.php';
-    const dataFile = 'data.json';
+    public const defaultConfigFile = '.treemap.php';
+    public const dataFile = 'data.json';
 
     protected $projectName = null;
     protected $projectUrl = null;

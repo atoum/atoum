@@ -28,7 +28,7 @@ class cli extends report\fields\runner\atoum
 
     public function setPrompt(prompt $prompt = null)
     {
-        $this->prompt = $prompt ?: new prompt;
+        $this->prompt = $prompt ?: new prompt();
 
         return $this;
     }

@@ -31,7 +31,7 @@ class realtime extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance,
-                $writer = new \mock\atoum\atoum\report\writers\realtime
+                $writer = new \mock\atoum\atoum\report\writers\realtime()
             )
             ->then
                 ->object($this->testedInstance->addWriter($writer))->isTestedInstance
@@ -43,8 +43,8 @@ class realtime extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance,
-                $observable = new \mock\atoum\atoum\observable,
-                $writer = new \mock\atoum\atoum\report\writers\realtime
+                $observable = new \mock\atoum\atoum\observable(),
+                $writer = new \mock\atoum\atoum\report\writers\realtime()
             )
             ->if(
                 $this->testedInstance->addWriter($writer),
@@ -61,7 +61,7 @@ class realtime extends atoum\test
                 ->mock($writer)
                     ->call('writeRealtimeReport')->withArguments($this->testedInstance, $event)->once
                     ->call('reset')->once
-            ->given($otherWriter = new \mock\atoum\atoum\report\writers\realtime)
+            ->given($otherWriter = new \mock\atoum\atoum\report\writers\realtime())
             ->if(
                 $this->testedInstance->addWriter($otherWriter),
                 $event = uniqid()

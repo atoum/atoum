@@ -6,11 +6,11 @@ use atoum\atoum\extension\aggregator;
 
 class runner implements observable
 {
-    const atoumVersionConstant = 'atoum\atoum\version';
-    const atoumDirectoryConstant = 'atoum\atoum\directory';
+    public const atoumVersionConstant = 'atoum\atoum\version';
+    public const atoumDirectoryConstant = 'atoum\atoum\directory';
 
-    const runStart = 'runnerStart';
-    const runStop = 'runnerStop';
+    public const runStart = 'runnerStart';
+    public const runStop = 'runnerStop';
 
     protected $score = null;
     protected $adapter = null;
