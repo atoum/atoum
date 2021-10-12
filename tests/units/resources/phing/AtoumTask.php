@@ -17,8 +17,8 @@ namespace
 
 namespace tests\units
 {
-    use AtoumTask as testedClass;
     use atoum\atoum;
+    use AtoumTask as testedClass;
 
     require_once __DIR__ . '/../../runner.php';
 

@@ -240,40 +240,40 @@ class cli extends atoum\test
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                        $defaultField->getTitlePrompt() . sprintf($defaultField->getLocale()->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
-                        $defaultField->getClassPrompt() . sprintf($defaultField->getLocale()->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL .
-                        $defaultField->getMethodPrompt() . sprintf($defaultField->getLocale()->_('%s::%s(): %3.2f%%'), $className, $methodName, $scoreCoverage->getValueForMethod($className, $methodName) * 100.0) . PHP_EOL
-                    )
+                    $defaultField->getTitlePrompt() . sprintf($defaultField->getLocale()->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
+                    $defaultField->getClassPrompt() . sprintf($defaultField->getLocale()->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL .
+                    $defaultField->getMethodPrompt() . sprintf($defaultField->getLocale()->_('%s::%s(): %3.2f%%'), $className, $methodName, $scoreCoverage->getValueForMethod($className, $methodName) * 100.0) . PHP_EOL
+                )
                 ->castToString($customField)->isEqualTo(
-                        $titlePrompt .
-                        sprintf(
-                            $locale->_('%s: %s'),
-                            $titleColorizer->colorize($locale->_('Code coverage value')),
-                            $coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValue() * 100.0))
-                        ) .
-                        PHP_EOL .
-                        $classPrompt .
-                        sprintf(
-                            $locale->_('%s: %s'),
-                            $titleColorizer->colorize(sprintf($locale->_('Class %s'), $className)),
-                            $coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className) * 100.0))
-                        ) .
-                        PHP_EOL .
-                        $methodPrompt .
-                        sprintf(
-                            $locale->_('%s: %s'),
-                            $titleColorizer->colorize(sprintf($locale->_('%s::%s()'), $className, $methodName)),
-                            $coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className, $methodName) * 100.0))
-                        ) .
-                        PHP_EOL
-                    )
+                    $titlePrompt .
+                    sprintf(
+                        $locale->_('%s: %s'),
+                        $titleColorizer->colorize($locale->_('Code coverage value')),
+                        $coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValue() * 100.0))
+                    ) .
+                    PHP_EOL .
+                    $classPrompt .
+                    sprintf(
+                        $locale->_('%s: %s'),
+                        $titleColorizer->colorize(sprintf($locale->_('Class %s'), $className)),
+                        $coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className) * 100.0))
+                    ) .
+                    PHP_EOL .
+                    $methodPrompt .
+                    sprintf(
+                        $locale->_('%s: %s'),
+                        $titleColorizer->colorize(sprintf($locale->_('%s::%s()'), $className, $methodName)),
+                        $coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className, $methodName) * 100.0))
+                    ) .
+                    PHP_EOL
+                )
             ->if($defaultField->hideMethodsCoverageDetails())
             ->and($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                        $defaultField->getTitlePrompt() . sprintf($defaultField->getLocale()->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
-                        $defaultField->getClassPrompt() . sprintf($defaultField->getLocale()->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL
-                    )
+                    $defaultField->getTitlePrompt() . sprintf($defaultField->getLocale()->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
+                    $defaultField->getClassPrompt() . sprintf($defaultField->getLocale()->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL
+                )
             ->if($defaultField->hideClassesCoverageDetails())
             ->and($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->then

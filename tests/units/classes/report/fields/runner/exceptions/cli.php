@@ -175,7 +175,7 @@ class cli extends atoum\test
             ->if($field->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($field)->isEqualTo(
-                    sprintf('There are %d exceptions:', sizeof($exceptions)) . PHP_EOL .
+                    sprintf('There are %d exceptions:', count($exceptions)) . PHP_EOL .
                     $class . '::' . $method . '():' . PHP_EOL .
                     sprintf('An exception has been thrown in file %s on line %d:', $file, $line) . PHP_EOL .
                     $value . PHP_EOL .
@@ -203,7 +203,7 @@ class cli extends atoum\test
                     $titlePrompt .
                     sprintf(
                         $locale->_('%s:'),
-                        $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d exception', 'There are %d exceptions', sizeof($exceptions)), sizeof($exceptions)))
+                        $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d exception', 'There are %d exceptions', count($exceptions)), count($exceptions)))
                     ) .
                     PHP_EOL .
                     $methodPrompt .

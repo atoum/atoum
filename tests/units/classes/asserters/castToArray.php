@@ -77,7 +77,7 @@ class castToArray extends atoum\test
 
             ->if($asserter->setWith($object = new \exception()))
             ->then
-                ->castToString($asserter)->isEqualTo('array(' . sizeof((array) $object) . ')')
+                ->castToString($asserter)->isEqualTo('array(' . count((array) $object) . ')')
         ;
     }
 }

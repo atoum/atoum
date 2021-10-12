@@ -115,11 +115,11 @@ class cli extends atoum\test
             ->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                        $defaultField->getLocale()->_('PHP version:') .
+                    $defaultField->getLocale()->_('PHP version:') .
                         PHP_EOL .
                         $phpVersion .
                         PHP_EOL
-                    )
+                )
             ->if($customField = new runner\php\version\cli())
             ->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
             ->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))

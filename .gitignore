@@ -1,4 +1,4 @@
-.php_cs.cache
+.php-cs-fixer.cache
 composer.lock
 vendor/
 .atoum.php

@@ -131,42 +131,42 @@ class cli extends atoum\test
             ->then
                 ->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%1$s: %2$s.',
-                            $titleColorizer->colorize($locale->_('Test duration')),
-                            $locale->_('unknown')
-                        ) .
-                        PHP_EOL
-                    )
+                    $prompt .
+                    sprintf(
+                        '%1$s: %2$s.',
+                        $titleColorizer->colorize($locale->_('Test duration')),
+                        $locale->_('unknown')
+                    ) .
+                    PHP_EOL
+                )
             ->if($defaultField->handleEvent(atoum\runner::runStop, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
             ->if($customField->handleEvent(atoum\runner::runStop, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%1$s: %2$s.',
-                            $titleColorizer->colorize($locale->_('Test duration')),
-                            $locale->_('unknown')
-                        ) .
-                        PHP_EOL
-                    )
+                    $prompt .
+                    sprintf(
+                        '%1$s: %2$s.',
+                        $titleColorizer->colorize($locale->_('Test duration')),
+                        $locale->_('unknown')
+                    ) .
+                    PHP_EOL
+                )
             ->if($defaultField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo(sprintf('Test duration: %4.2f second.', $runningDuration) . PHP_EOL)
             ->if($customField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%1$s: %2$s.',
-                            $titleColorizer->colorize($locale->_('Test duration')),
-                            $durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $runningDuration), $runningDuration))
-                        ) .
-                        PHP_EOL
-                    )
+                    $prompt .
+                    sprintf(
+                        '%1$s: %2$s.',
+                        $titleColorizer->colorize($locale->_('Test duration')),
+                        $durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $runningDuration), $runningDuration))
+                    ) .
+                    PHP_EOL
+                )
             ->if($score->getMockController()->getTotalDuration = $runningDuration = rand(2, PHP_INT_MAX))
             ->and($defaultField = new test\duration\cli())
             ->and($customField = new test\duration\cli())
@@ -177,42 +177,42 @@ class cli extends atoum\test
             ->then
                 ->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%1$s: %2$s.',
-                            $titleColorizer->colorize($locale->_('Test duration')),
-                            $locale->_('unknown')
-                        ) .
-                        PHP_EOL
-                    )
+                    $prompt .
+                    sprintf(
+                        '%1$s: %2$s.',
+                        $titleColorizer->colorize($locale->_('Test duration')),
+                        $locale->_('unknown')
+                    ) .
+                    PHP_EOL
+                )
             ->if($defaultField->handleEvent(atoum\runner::runStop, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
             ->if($customField->handleEvent(atoum\runner::runStop, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%1$s: %2$s.',
-                            $titleColorizer->colorize($locale->_('Test duration')),
-                            $locale->_('unknown')
-                        ) .
-                        PHP_EOL
-                    )
+                    $prompt .
+                    sprintf(
+                        '%1$s: %2$s.',
+                        $titleColorizer->colorize($locale->_('Test duration')),
+                        $locale->_('unknown')
+                    ) .
+                    PHP_EOL
+                )
             ->if($defaultField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo(sprintf('Test duration: %4.2f seconds.', $runningDuration) . PHP_EOL)
             ->if($customField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%1$s: %2$s.',
-                            $titleColorizer->colorize($locale->_('Test duration')),
-                            $durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $runningDuration), $runningDuration))
-                        ) .
-                        PHP_EOL
-                    )
+                    $prompt .
+                    sprintf(
+                        '%1$s: %2$s.',
+                        $titleColorizer->colorize($locale->_('Test duration')),
+                        $durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $runningDuration), $runningDuration))
+                    ) .
+                    PHP_EOL
+                )
         ;
     }
 }

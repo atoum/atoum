@@ -1,0 +1,30 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - master
+      - 4.x
+  pull_request:
+
+jobs:
+  test:
+    runs-on: 'ubuntu-latest'
+
+    name: Lint
+
+    steps:
+      -   name: PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: '8.0'
+            coverage: 'none'
+
+      -   name: Checkout
+          uses: actions/checkout@v2
+
+      -   name: Install dependencies
+          run: composer install --ansi --no-interaction --no-progress
+
+      -   name: Run
+          run: vendor/bin/php-cs-fixer fix --dry-run --diff

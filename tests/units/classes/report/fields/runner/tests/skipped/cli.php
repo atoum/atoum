@@ -155,7 +155,7 @@ class cli extends atoum\test
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                    sprintf('There are %d skipped methods:', sizeof($allSkippedMethods)) . PHP_EOL .
+                    sprintf('There are %d skipped methods:', count($allSkippedMethods)) . PHP_EOL .
                     sprintf('%s::%s(): %s', $class, $method, $message) . PHP_EOL .
                     sprintf('%s::%s(): %s', $otherClass, $otherMethod, $otherMessage) . PHP_EOL .
                     sprintf('%s::%s(): %s', $anotherClass, $anotherMethod, $anotherMessage) . PHP_EOL
@@ -166,7 +166,7 @@ class cli extends atoum\test
                     $titlePrompt .
                     sprintf(
                         $locale->_('%s:'),
-                        $titleColorizer->colorize(sprintf($locale->__('There is %d skipped method', 'There are %d skipped methods', sizeof($allSkippedMethods)), sizeof($allSkippedMethods)))
+                        $titleColorizer->colorize(sprintf($locale->__('There is %d skipped method', 'There are %d skipped methods', count($allSkippedMethods)), count($allSkippedMethods)))
                     ) .
                     PHP_EOL .
                     $methodPrompt .

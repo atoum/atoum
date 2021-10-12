@@ -218,7 +218,7 @@ class cli extends atoum\test
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                    sprintf('There are %d uncompleted methods:', sizeof($allUncompletedMethods)) . PHP_EOL .
+                    sprintf('There are %d uncompleted methods:', count($allUncompletedMethods)) . PHP_EOL .
                     sprintf('%s::%s() with exit code %d:', $class, $method, $exitCode) . PHP_EOL .
                     'output(' . strlen($output) . ') "' . $output . '"' . PHP_EOL .
                     sprintf('%s::%s() with exit code %d:', $otherClass, $otherMethod, $otherExitCode) . PHP_EOL .
@@ -233,7 +233,7 @@ class cli extends atoum\test
                     $titlePrompt .
                     sprintf(
                         $locale->_('%s:'),
-                        $titleColorizer->colorize(sprintf($locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', sizeof($allUncompletedMethods)), sizeof($allUncompletedMethods)))
+                        $titleColorizer->colorize(sprintf($locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', count($allUncompletedMethods)), count($allUncompletedMethods)))
                     ) .
                     PHP_EOL .
                     $methodPrompt .

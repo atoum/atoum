@@ -195,18 +195,18 @@ class cli extends atoum\test
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                    sprintf('There are %d outputs:', sizeof($fields)) . PHP_EOL .
+                    sprintf('There are %d outputs:', count($fields)) . PHP_EOL .
                         'In ' . $class . '::' . $method . '():' . PHP_EOL .
                         $value . PHP_EOL .
                         'In ' . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
                         $firstOtherValue . PHP_EOL .
                         $secondOtherValue . PHP_EOL
-                    )
+                )
                 ->castToString($customField)->isEqualTo(
                     $titlePrompt .
                     sprintf(
                         $locale->_('%s:'),
-                        $titleColorizer->colorize(sprintf($locale->__('There is %d output', 'There are %d outputs', sizeof($fields)), sizeof($fields)))
+                        $titleColorizer->colorize(sprintf($locale->__('There is %d output', 'There are %d outputs', count($fields)), count($fields)))
                     ) .
                     PHP_EOL .
                     $methodPrompt .
@@ -260,7 +260,7 @@ class cli extends atoum\test
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
                 ->castToString($defaultField)->isEqualTo(
-                    sprintf('There are %d outputs:', sizeof($fields)) . PHP_EOL .
+                    sprintf('There are %d outputs:', count($fields)) . PHP_EOL .
                         'In ' . $class . '::' . $method . '():' . PHP_EOL .
                         $value . PHP_EOL .
                         'In ' . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
@@ -272,7 +272,7 @@ class cli extends atoum\test
                     $titlePrompt .
                     sprintf(
                         $locale->_('%s:'),
-                        $titleColorizer->colorize(sprintf($locale->__('There is %d output', 'There are %d outputs', sizeof($fields)), sizeof($fields)))
+                        $titleColorizer->colorize(sprintf($locale->__('There is %d output', 'There are %d outputs', count($fields)), count($fields)))
                     ) .
                     PHP_EOL .
                     $methodPrompt .

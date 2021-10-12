@@ -838,34 +838,34 @@ class coverage extends atoum\test
                         8 => 3,
                         9 => 2
                     ]
-            ]
-        )
-        ->and($coverage->reset()->addXdebugDataForTest($this, $xdebugData))
-        ->then
-            ->float($coverage->getValue())->isEqualTo(2 / 4)
-        ->if(
-            $xdebugData = [
-                $classFile => [
-                    3 => -2,
-                    4 => 1,
-                    5 => 1,
-                    6 => 1,
-                    7 => 1,
-                    8 => -2,
-                    9 => -1
-                ],
-                uniqid() => [
-                    5 => 2,
-                    6 => 3,
-                    7 => 4,
-                    8 => 3,
-                    9 => 2
                 ]
-            ]
-        )
-        ->and($coverage->reset()->addXdebugDataForTest($this, $xdebugData))
-        ->then
-            ->float($coverage->getValue())->isEqualTo(1.0)
+            )
+            ->and($coverage->reset()->addXdebugDataForTest($this, $xdebugData))
+            ->then
+                ->float($coverage->getValue())->isEqualTo(2 / 4)
+            ->if(
+                $xdebugData = [
+                    $classFile => [
+                        3 => -2,
+                        4 => 1,
+                    5 => 1,
+                        6 => 1,
+                        7 => 1,
+                        8 => -2,
+                        9 => -1
+                    ],
+                    uniqid() => [
+                        5 => 2,
+                        6 => 3,
+                        7 => 4,
+                        8 => 3,
+                        9 => 2
+                    ]
+                ]
+            )
+            ->and($coverage->reset()->addXdebugDataForTest($this, $xdebugData))
+            ->then
+                ->float($coverage->getValue())->isEqualTo(1.0)
         ;
     }
 

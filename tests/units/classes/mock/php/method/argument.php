@@ -3,7 +3,6 @@
 namespace atoum\atoum\tests\units\mock\php\method;
 
 use atoum\atoum;
-use atoum\atoum\mock\php;
 
 require_once __DIR__ . '/../../../../runner.php';
 

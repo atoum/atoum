@@ -43,14 +43,14 @@ class integer extends atoum\test
                 $asserter = $this->newTestedInstance
                     ->setAnalyzer($analyzer = new \mock\atoum\atoum\tools\variable\analyzer())
                     ->setLocale($locale = new \mock\atoum\atoum\locale()),
-            $this->calling($locale)->_ = $notAnInteger = uniqid()
-        )
-        ->then
-            ->exception(function () use ($asserter, & $value) {
-                $asserter->setWith($value = uniqid());
-            })
-                ->isInstanceOf(atoum\asserter\exception::class)
-                ->hasMessage($notAnInteger)
+                $this->calling($locale)->_ = $notAnInteger = uniqid()
+            )
+            ->then
+                ->exception(function () use ($asserter, & $value) {
+                    $asserter->setWith($value = uniqid());
+                })
+                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->hasMessage($notAnInteger)
             ->mock($locale)->call('_')->withArguments('%s is not an integer', $asserter)->once
             ->string($asserter->getValue())->isEqualTo($value)
 

@@ -34,16 +34,16 @@ class decorator extends atoum\test
             ->and($calls[] = $call10 = clone $call1)
             ->then
                 ->string($decorator->decorate($calls))->isEqualTo(
-                        '[ 1] ' . $call1 . PHP_EOL .
-                        '[ 2] ' . $call2 . PHP_EOL .
-                        '[ 3] ' . $call3 . PHP_EOL .
-                        '[ 4] ' . $call4 . PHP_EOL .
-                        '[ 5] ' . $call5 . PHP_EOL .
-                        '[ 6] ' . $call6 . PHP_EOL .
-                        '[ 7] ' . $call7 . PHP_EOL .
-                        '[ 8] ' . $call8 . PHP_EOL .
-                        '[ 9] ' . $call9 . PHP_EOL .
-                        '[10] ' . $call10 . PHP_EOL
+                    '[ 1] ' . $call1 . PHP_EOL .
+                    '[ 2] ' . $call2 . PHP_EOL .
+                    '[ 3] ' . $call3 . PHP_EOL .
+                    '[ 4] ' . $call4 . PHP_EOL .
+                    '[ 5] ' . $call5 . PHP_EOL .
+                    '[ 6] ' . $call6 . PHP_EOL .
+                    '[ 7] ' . $call7 . PHP_EOL .
+                    '[ 8] ' . $call8 . PHP_EOL .
+                    '[ 9] ' . $call9 . PHP_EOL .
+                    '[10] ' . $call10 . PHP_EOL
                 )
         ;
     }

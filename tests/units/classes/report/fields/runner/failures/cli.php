@@ -165,7 +165,7 @@ class cli extends atoum\test
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                    sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+                    sprintf('There are %d failures:', count($fails)) . PHP_EOL .
                     $class . '::' . $method . '():' . PHP_EOL .
                     sprintf('In file %s on line %d, %s failed: %s', $file, $line, $asserter, $fail) . PHP_EOL .
                     $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
@@ -175,7 +175,7 @@ class cli extends atoum\test
                     $titlePrompt .
                     sprintf(
                         $locale->_('%s:'),
-                        $titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
+                        $titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', count($fails)), count($fails)))
                     ) .
                     PHP_EOL .
                     $methodPrompt .
@@ -233,7 +233,7 @@ class cli extends atoum\test
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                    sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+                    sprintf('There are %d failures:', count($fails)) . PHP_EOL .
                     $class . '::' . $method . '():' . PHP_EOL .
                     sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $file, $line, $case, $asserter, $fail) . PHP_EOL .
                     $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
@@ -243,7 +243,7 @@ class cli extends atoum\test
                     $titlePrompt .
                     sprintf(
                         $locale->_('%s:'),
-                        $titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
+                        $titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', count($fails)), count($fails)))
                     ) .
                     PHP_EOL .
                     $methodPrompt .
@@ -303,7 +303,7 @@ class cli extends atoum\test
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                    sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+                    sprintf('There are %d failures:', count($fails)) . PHP_EOL .
                     $class . '::' . $method . '():' . PHP_EOL .
                     sprintf('In file %s on line %d in case \'%s\', %s failed for data set [%s] of data provider %s: %s', $file, $line, $case, $asserter, $dataSetKey, $dataSetProvider, $fail) . PHP_EOL .
                     $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
@@ -313,7 +313,7 @@ class cli extends atoum\test
                     $titlePrompt .
                     sprintf(
                         $locale->_('%s:'),
-                        $titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
+                        $titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', count($fails)), count($fails)))
                     ) .
                     PHP_EOL .
                     $methodPrompt .

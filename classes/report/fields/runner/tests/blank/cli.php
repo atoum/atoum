@@ -32,7 +32,7 @@ class cli extends report\fields\runner\tests\blank
         if ($this->runner !== null) {
             $voidMethods = $this->runner->getScore()->getVoidMethods();
 
-            $sizeOfVoidMethod = sizeof($voidMethods);
+            $sizeOfVoidMethod = count($voidMethods);
 
             if ($sizeOfVoidMethod > 0) {
                 $string .=

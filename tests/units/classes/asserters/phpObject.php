@@ -78,13 +78,13 @@ class phpObject extends atoum\test
                     $asserter->hasSize(0);
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
-                    ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d, expected size %d'), $asserter, sizeof($this), 0))
+                    ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d, expected size %d'), $asserter, count($this), 0))
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasSize(0, $failMessage = uniqid());
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
-                ->object($asserter->hasSize(sizeof($this)))->isIdenticalTo($asserter);
+                ->object($asserter->hasSize(count($this)))->isIdenticalTo($asserter);
         ;
     }
 
@@ -110,7 +110,7 @@ class phpObject extends atoum\test
                     $asserter->isEmpty();
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
-                    ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d'), $asserter, sizeof($this)))
+                    ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d'), $asserter, count($this)))
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isEmpty($failMessage = uniqid());
                 })
@@ -120,7 +120,7 @@ class phpObject extends atoum\test
                     $asserter->isEmpty;
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
-                    ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d'), $asserter, sizeof($this)))
+                    ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d'), $asserter, count($this)))
 
             ->if($asserter->setWith(new \arrayIterator()))
             ->then

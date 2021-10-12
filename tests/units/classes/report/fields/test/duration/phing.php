@@ -131,36 +131,36 @@ class phing extends atoum\test
             ->then
                 ->castToString($defaultField)->isEqualTo('unknown')
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%s',
-                            $locale->_('unknown')
-                        )
+                    $prompt .
+                    sprintf(
+                        '%s',
+                        $locale->_('unknown')
                     )
+                )
             ->if($defaultField->handleEvent(atoum\runner::runStop, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo('unknown')
             ->if($customField->handleEvent(atoum\runner::runStop, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%s',
-                            $locale->_('unknown')
-                        )
+                    $prompt .
+                    sprintf(
+                        '%s',
+                        $locale->_('unknown')
                     )
+                )
             ->if($defaultField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo(sprintf('%4.2f s', $runningDuration))
             ->if($customField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%s',
-                            $durationColorizer->colorize(sprintf($locale->__('%4.2f s', '%4.2f s', $runningDuration), $runningDuration))
-                        )
+                    $prompt .
+                    sprintf(
+                        '%s',
+                        $durationColorizer->colorize(sprintf($locale->__('%4.2f s', '%4.2f s', $runningDuration), $runningDuration))
                     )
+                )
             ->if($score->getMockController()->getTotalDuration = $runningDuration = rand(2, PHP_INT_MAX))
             ->and($defaultField = new test\duration\phing())
             ->and($customField = new test\duration\phing())
@@ -171,36 +171,36 @@ class phing extends atoum\test
             ->then
                 ->castToString($defaultField)->isEqualTo('unknown')
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%s',
-                            $locale->_('unknown')
-                        )
+                    $prompt .
+                    sprintf(
+                        '%s',
+                        $locale->_('unknown')
                     )
+                )
             ->if($defaultField->handleEvent(atoum\runner::runStop, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo('unknown')
             ->if($customField->handleEvent(atoum\runner::runStop, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%s',
-                            $locale->_('unknown')
-                        )
+                    $prompt .
+                    sprintf(
+                        '%s',
+                        $locale->_('unknown')
                     )
+                )
             ->if($defaultField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo(sprintf('%4.2f s', $runningDuration))
             ->if($customField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            '%s',
-                            $durationColorizer->colorize(sprintf($locale->__('%4.2f s', '%4.2f s', $runningDuration), $runningDuration))
-                        )
+                    $prompt .
+                    sprintf(
+                        '%s',
+                        $durationColorizer->colorize(sprintf($locale->__('%4.2f s', '%4.2f s', $runningDuration), $runningDuration))
                     )
+                )
         ;
     }
 }

@@ -3,7 +3,6 @@
 namespace atoum\atoum\tests\units\reports\asynchronous;
 
 use atoum\atoum;
-use atoum\atoum\report;
 use atoum\atoum\reports\asynchronous as reports;
 use atoum\atoum\runner;
 

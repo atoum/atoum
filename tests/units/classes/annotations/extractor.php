@@ -246,7 +246,7 @@ class extractor extends atoum\test
                     ->string($ignore)->isEqualTo('on')
                 ->object(
                     $extractor->extract(
-                         '/**
+                        '/**
                           * @tags ManySetGetPredis
                           * @dataProvider manySetGetDataProvider
                           */'

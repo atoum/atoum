@@ -159,7 +159,7 @@ class call extends atoum
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($failMessage)
 
-             ->if(
+            ->if(
                 $this->calling($calls)->count = $count = rand(1, 10),
                 $this->calling($adapter)->getCallsEqualTo = $callsEqualTo = new \mock\atoum\atoum\test\adapter\calls(),
                 $this->calling($callsEqualTo)->count = $count,
@@ -209,10 +209,10 @@ class call extends atoum
 
                 ->object(
                     $this->testedInstance->after(
-                            $asserter2 = new \mock\atoum\atoum\asserters\adapter\call(),
-                            $asserter3 = new \mock\atoum\atoum\asserters\adapter\call()
-                        )
-                    )->isTestedInstance
+                        $asserter2 = new \mock\atoum\atoum\asserters\adapter\call(),
+                        $asserter3 = new \mock\atoum\atoum\asserters\adapter\call()
+                    )
+                )->isTestedInstance
                 ->array($this->testedInstance->getAfter())->isEqualTo([$asserter1, $asserter2, $asserter3])
                 ->variable($this->testedInstance->getLastAssertionFile())->isNotNull()
                 ->variable($this->testedInstance->getLastAssertionLine())->isNotNull()
