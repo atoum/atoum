@@ -1,5 +1,6 @@
 # `dev-master`
 
+* [#876](https://github.com/atoum/atoum/pull/876) Properly handle output made in afterTestMethod() ([@cedric-anne])
 * [#873](https://github.com/atoum/atoum/pull/873) Migrate lint job on Github Actions ([@cedric-anne])
 * [#872](https://github.com/atoum/atoum/pull/872) Migrate Windows test job on Github Actions and add a MacOS test job ([@cedric-anne])
 * [#871](https://github.com/atoum/atoum/pull/871) Fix PHP8.1 compatibility issue related to unexpected arguments types ([@cedric-anne])

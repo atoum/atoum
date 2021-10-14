@@ -1413,7 +1413,9 @@ abstract class test implements observable, \countable
                 } finally {
                     $afterTestException = null;
                     try {
+                        ob_start();
                         $this->callAfterTestMethod($this->currentMethod);
+                        $this->score->addOutput($this->path, $this->class, $this->currentMethod, ob_get_clean());
                     } catch (\exception $exception) {
                         $afterTestException = $exception;
                     }
