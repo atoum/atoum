@@ -967,12 +967,13 @@ class path extends atoum\test
             ->given($path = $this->newTestedInstance('/a/b', '/'))
 
             ->if(
+                $this->function->file_exists = false,
                 $this->function->mkdir = true,
                 $this->function->file_put_contents = true
             )
             ->then
                 ->object($this->testedInstance->putContents($data = uniqid()))->isTestedInstance()
-                ->function('mkdir')->wasCalledWithArguments('/a', true)->once()
+                ->function('mkdir')->wasCalledWithArguments('/a', 0777, true)->once()
                 ->function('file_put_contents')->wasCalledWithArguments((string) $this->testedInstance, $data)->once()
 
             ->if($this->function->file_put_contents = false)

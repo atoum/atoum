@@ -1,0 +1,46 @@
+name: Unit tests
+
+on:
+  push:
+    branches:
+      - master
+      - 4.x
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+        php-version: [ '7.2', '7.3', '7.4', '8.0' ]
+        experimental: [ false ]
+        include:
+          -   os: 'ubuntu-latest'
+              php-version: '8.1'
+              experimental: true
+      fail-fast: false
+
+    env:
+      coverage: ${{ (matrix.os == 'ubuntu-latest' && matrix.php-version == '8.0') && 'xdebug' || 'none' }}
+      copy: ${{ matrix.os == 'windows-latest' && 'copy' || 'cp' }}
+
+    name: PHP ${{ matrix.php-version }} on ${{ matrix.os }}
+
+    steps:
+      -   name: PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: ${{ matrix.php-version }}
+            coverage: ${{ env.coverage }}
+
+      -   name: Checkout
+          uses: actions/checkout@v2
+
+      -   name: Configure
+          run: ${{ env.copy }} resources/configurations/ci/.github.php.dist .atoum.php
+
+      -   name: Run
+          continue-on-error: ${{ matrix.experimental }}
+          run: php bin/atoum --enable-branch-and-path-coverage

@@ -25,7 +25,7 @@ class cli
 
                 $isTerminal = (($stdoutStat['mode'] & 0170000) === 0020000); // See <sys/stat.h> for more information.
 
-                if ($isTerminal === true && $this->adapter->defined('PHP_WINDOWS_VERSION_BUILD') === true) {
+                if ($isTerminal === true && $this->adapter->constant('PHP_OS_FAMILY') === 'Windows') {
                     $isTerminal = ($isTerminal && $this->adapter->getenv('ANSICON') == true);
                 }
             }

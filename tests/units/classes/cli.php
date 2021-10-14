@@ -30,16 +30,17 @@ class cli extends atoum\test
         $this
             ->if($adapter = new atoum\test\adapter())
             ->and($adapter->defined = function ($constant) {
-                switch ($constant) {
-                    case 'STDOUT':
-                        return true;
-
-                    case 'PHP_WINDOWS_VERSION_BUILD':
-                        return false;
-                }
+                return $constant === 'STDOUT';
             })
             ->and($adapter->constant = function ($constant) {
-                return ($constant == 'STDOUT' ? uniqid() : null);
+                switch ($constant) {
+                    case 'STDOUT':
+                        return uniqid();
+
+                    case 'PHP_OS_FAMILY':
+                        return 'Linux';
+                }
+                return null;
             })
             ->and($adapter->fstat = ['mode' => 8592])
             ->and($cli = new atoum\cli($adapter))
@@ -53,16 +54,17 @@ class cli extends atoum\test
         $this
             ->if($adapter = new atoum\test\adapter())
             ->and($adapter->defined = function ($constant) {
-                switch ($constant) {
-                    case 'STDOUT':
-                        return true;
-
-                    case 'PHP_WINDOWS_VERSION_BUILD':
-                        return false;
-                }
+                return $constant === 'STDOUT';
             })
             ->and($adapter->constant = function ($constant) {
-                return ($constant == 'STDOUT' ? uniqid() : null);
+                switch ($constant) {
+                    case 'STDOUT':
+                        return uniqid();
+
+                    case 'PHP_OS_FAMILY':
+                        return 'Linux';
+                }
+                return null;
             })
             ->and($adapter->fstat = ['mode' => 0])
             ->and($cli = new atoum\cli($adapter))
@@ -76,16 +78,17 @@ class cli extends atoum\test
         $this
             ->if($adapter = new atoum\test\adapter())
             ->and($adapter->defined = function ($constant) {
-                switch ($constant) {
-                    case 'STDOUT':
-                        return true;
-
-                    case 'PHP_WINDOWS_VERSION_BUILD':
-                        return true;
-                }
+                return $constant === 'STDOUT';
             })
             ->and($adapter->constant = function ($constant) {
-                return ($constant == 'STDOUT' ? uniqid() : null);
+                switch ($constant) {
+                    case 'STDOUT':
+                        return uniqid();
+
+                    case 'PHP_OS_FAMILY':
+                        return 'Windows';
+                }
+                return null;
             })
             ->and($adapter->fstat = ['mode' => 8592])
             ->and($adapter->getenv = function ($variable) {
@@ -102,16 +105,17 @@ class cli extends atoum\test
         $this
             ->if($adapter = new atoum\test\adapter())
             ->and($adapter->defined = function ($constant) {
-                switch ($constant) {
-                    case 'STDOUT':
-                        return true;
-
-                    case 'PHP_WINDOWS_VERSION_BUILD':
-                        return true;
-                }
+                return $constant === 'STDOUT';
             })
             ->and($adapter->constant = function ($constant) {
-                return ($constant == 'STDOUT' ? uniqid() : null);
+                switch ($constant) {
+                    case 'STDOUT':
+                        return uniqid();
+
+                    case 'PHP_OS_FAMILY':
+                        return 'Windows';
+                }
+                return null;
             })
             ->and($adapter->fstat = ['mode' => 8592])
             ->and($adapter->getenv = function ($variable) {
