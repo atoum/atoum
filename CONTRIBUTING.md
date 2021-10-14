@@ -103,6 +103,11 @@ To check the coding style, please run the following script:
 $ vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
 ```
 
+To automatically fix errors, you can run the same script without using `--dry-run` and `-diff` options:
+```sh
+$ vendor/bin/php-cs-fixer fix --verbose
+```
+
 ### Compatibility
 
 Your code **must** work on PHP from version 7.2 to the latest stable.
