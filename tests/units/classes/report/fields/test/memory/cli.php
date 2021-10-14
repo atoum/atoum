@@ -113,42 +113,42 @@ class cli extends atoum\test
             ->then
                 ->castToString($defaultField)->isEqualTo($defaultField->getPrompt() . $defaultField->getLocale()->_('Memory usage: unknown.') . PHP_EOL)
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            $locale->_('%1$s: %2$s.'),
-                            $titleColorizer->colorize($locale->_('Memory usage')),
-                            $memoryColorizer->colorize($locale->_('unknown'))
-                        ) .
-                        PHP_EOL
-                    )
+                    $prompt .
+                    sprintf(
+                        $locale->_('%1$s: %2$s.'),
+                        $titleColorizer->colorize($locale->_('Memory usage')),
+                        $memoryColorizer->colorize($locale->_('unknown'))
+                    ) .
+                    PHP_EOL
+                )
             ->if($defaultField->handleEvent(atoum\test::runStart, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo($defaultField->getPrompt() . $defaultField->getLocale()->_('Memory usage: unknown.') . PHP_EOL)
             ->if($customField->handleEvent(atoum\test::runStart, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            $locale->_('%1$s: %2$s.'),
-                            $titleColorizer->colorize($locale->_('Memory usage')),
-                            $memoryColorizer->colorize($locale->_('unknown'))
-                        ) .
-                        PHP_EOL
-                    )
+                    $prompt .
+                    sprintf(
+                        $locale->_('%1$s: %2$s.'),
+                        $titleColorizer->colorize($locale->_('Memory usage')),
+                        $memoryColorizer->colorize($locale->_('unknown'))
+                    ) .
+                    PHP_EOL
+                )
             ->if($defaultField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo($defaultField->getPrompt() . sprintf($defaultField->getLocale()->_('Memory usage: %4.2f Mb.'), $totalMemoryUsage / 1048576) . PHP_EOL)
             ->if($customField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            $locale->_('%1$s: %2$s.'),
-                            $titleColorizer->colorize($locale->_('Memory usage')),
-                            $memoryColorizer->colorize(sprintf($locale->_('%4.2f Mb'), $totalMemoryUsage / 1048576))
-                        ) .
-                        PHP_EOL
-                    )
+                    $prompt .
+                    sprintf(
+                        $locale->_('%1$s: %2$s.'),
+                        $titleColorizer->colorize($locale->_('Memory usage')),
+                        $memoryColorizer->colorize(sprintf($locale->_('%4.2f Mb'), $totalMemoryUsage / 1048576))
+                    ) .
+                    PHP_EOL
+                )
         ;
     }
 }

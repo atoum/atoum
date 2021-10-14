@@ -134,8 +134,8 @@ class cli extends atoum\test
             ->and($customField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                        $defaultField->getPrompt() . sprintf($defaultField->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($defaultField->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL
-                    )
+                    $defaultField->getPrompt() . sprintf($defaultField->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($defaultField->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL
+                )
                 ->castToString($customField)->isEqualTo(
                     $prompt .
                     sprintf(

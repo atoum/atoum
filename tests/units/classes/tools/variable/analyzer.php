@@ -37,7 +37,7 @@ class analyzer extends atoum\test
                     $this->function->get_class = $class = uniqid()
                 )
                 ->then
-                    ->string($this->testedInstance->getTypeOf((object)uniqid()))->isEqualTo('object(' . $class . ')')
+                    ->string($this->testedInstance->getTypeOf((object) uniqid()))->isEqualTo('object(' . $class . ')')
 
                 ->if(
                     $this->function->gettype = 'resource',

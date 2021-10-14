@@ -7,7 +7,7 @@ use atoum\atoum\exceptions;
 
 class mail extends atoum\mailer
 {
-    const eol = "\r\n";
+    public const eol = "\r\n";
 
     public function send($something)
     {

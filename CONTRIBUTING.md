@@ -95,12 +95,17 @@ the feature you added.
 
 ## Coding style
 
-Coding style respects [the PSR-2 recommendation](http://www.php-fig.org/psr/psr-2/), in addition to some other fixers provided by [the PHP CS Fixer tool](https://github.com/FriendsOfPhp/PHP-CS-Fixer).
+Coding style respects [the PSR-12 recommendation](http://www.php-fig.org/psr/psr-12/), in addition to some other fixers provided by [the PHP CS Fixer tool](https://github.com/FriendsOfPhp/PHP-CS-Fixer).
 
 To check the coding style, please run the following script:
 
 ```sh
-$ vendor/bin/php-cs-fixer --dry-run --diff --verbose
+$ vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
+```
+
+To automatically fix errors, you can run the same script without using `--dry-run` and `-diff` options:
+```sh
+$ vendor/bin/php-cs-fixer fix --verbose
 ```
 
 ### Compatibility

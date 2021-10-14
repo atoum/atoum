@@ -7,7 +7,6 @@ use atoum\atoum\cli\colorizer;
 use atoum\atoum\cli\prompt;
 use atoum\atoum\locale;
 use atoum\atoum\report\fields\runner\tests\memory;
-use atoum\atoum\runner;
 
 require_once __DIR__ . '/../../../../../../runner.php';
 
@@ -125,8 +124,8 @@ class cli extends atoum\test
             ->and($defaultField = new memory\cli())
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                        $defaultField->getPrompt() . $defaultField->getTitleColorizer()->colorize($defaultField->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $defaultField->getMemoryColorizer()->colorize($defaultField->getLocale()->_('unknown')) . '.' . PHP_EOL
-                    )
+                    $defaultField->getPrompt() . $defaultField->getTitleColorizer()->colorize($defaultField->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $defaultField->getMemoryColorizer()->colorize($defaultField->getLocale()->_('unknown')) . '.' . PHP_EOL
+                )
             ->if($customField = new memory\cli())
             ->and($customField->setPrompt($prompt = new prompt(uniqid())))
             ->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))
@@ -134,18 +133,18 @@ class cli extends atoum\test
             ->and($customField->setLocale($locale = new locale()))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt . $titleColorizer->colorize($locale->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $memoryColorizer->colorize($locale->_('unknown')) . '.' . PHP_EOL
-                    )
+                    $prompt . $titleColorizer->colorize($locale->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $memoryColorizer->colorize($locale->_('unknown')) . '.' . PHP_EOL
+                )
             ->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo(
-                        $defaultField->getPrompt() . $defaultField->getTitleColorizer()->colorize($defaultField->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $defaultField->getMemoryColorizer()->colorize($defaultField->getLocale()->_('unknown')) . '.' . PHP_EOL
-                    )
+                    $defaultField->getPrompt() . $defaultField->getTitleColorizer()->colorize($defaultField->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $defaultField->getMemoryColorizer()->colorize($defaultField->getLocale()->_('unknown')) . '.' . PHP_EOL
+                )
             ->if($customField->handleEvent(atoum\runner::runStart, $runner))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt . $titleColorizer->colorize($locale->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $memoryColorizer->colorize($locale->_('unknown')) . '.' . PHP_EOL
-                    )
+                    $prompt . $titleColorizer->colorize($locale->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $memoryColorizer->colorize($locale->_('unknown')) . '.' . PHP_EOL
+                )
             ->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
             ->then
                 ->castToString($defaultField)->isEqualTo($defaultField->getPrompt() . $defaultField->getTitleColorizer()->colorize($defaultField->getLocale()->__('Total test memory usage', 'Total tests memory usage', $testNumber)) . ': ' . $defaultField->getMemoryColorizer()->colorize(sprintf($defaultField->getLocale()->_('%4.2f Mb'), $totalMemoryUsage / 1048576)) . '.' . PHP_EOL)

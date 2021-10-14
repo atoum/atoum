@@ -27,29 +27,24 @@ class script extends atoum\test
                 $argumentColorizer->setPattern('/((?:^| )[-+]+[-a-z]+)/'),
                 $valueColorizer = new atoum\cli\colorizer('0;36'),
                 $valueColorizer->setPattern('/(<[^>]+>(?:\.\.\.)?)/'),
-
                 $defaultOutputWriter = new writers\std\out(),
-
                 $defaultInfoWriter = new writers\std\out(),
                 $defaultInfoWriter
                     ->addDecorator(new writer\decorators\rtrim())
                     ->addDecorator(new writer\decorators\eol())
                     ->addDecorator(new atoum\cli\clear()),
-
                 $defaultWarningWriter = new writers\std\err(),
                 $defaultWarningWriter
                     ->addDecorator(new writer\decorators\trim())
                     ->addDecorator(new writer\decorators\prompt('Warning: '))
                     ->addDecorator(new writer\decorators\eol())
                     ->addDecorator(new atoum\cli\clear()),
-
                 $defaultErrorWriter = new writers\std\err(),
                 $defaultErrorWriter
                     ->addDecorator(new writer\decorators\trim())
                     ->addDecorator(new writer\decorators\prompt('Error: '))
                     ->addDecorator(new writer\decorators\eol())
                     ->addDecorator(new atoum\cli\clear()),
-
                 $defaultHelpWriter = new writers\std\out(),
                 $defaultHelpWriter
                     ->addDecorator($labelColorizer)

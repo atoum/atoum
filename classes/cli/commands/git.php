@@ -6,7 +6,7 @@ use atoum\atoum\cli;
 
 class git
 {
-    const defaultPath = 'git';
+    public const defaultPath = 'git';
 
     protected $command = null;
 

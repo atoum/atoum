@@ -12,10 +12,10 @@ use atoum\atoum\writers;
 
 class runner extends atoum\script\configurable
 {
-    const defaultConfigFile = '.atoum.php';
-    const defaultBootstrapFile = '.bootstrap.atoum.php';
-    const defaultAutoloaderFile = '.autoloader.atoum.php';
-    const defaultComposerAutoloaderFile = 'vendor/autoload.php';
+    public const defaultConfigFile = '.atoum.php';
+    public const defaultBootstrapFile = '.bootstrap.atoum.php';
+    public const defaultAutoloaderFile = '.autoloader.atoum.php';
+    public const defaultComposerAutoloaderFile = 'vendor/autoload.php';
 
     protected $runner = null;
     protected $configuratorFactory = null;

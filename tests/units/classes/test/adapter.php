@@ -345,7 +345,7 @@ namespace atoum\atoum\tests\units\test
         {
             $this
                 ->if($calls = new \mock\atoum\atoum\test\adapter\calls())
-                ->and($this->calling($calls)->hasPrevious = $has = (boolean) rand(0, 1))
+                ->and($this->calling($calls)->hasPrevious = $has = (bool) rand(0, 1))
                 ->and($adapter = new testedClass())
                 ->and($adapter->setCalls($calls))
                 ->then
@@ -375,7 +375,7 @@ namespace atoum\atoum\tests\units\test
         {
             $this
                 ->if($calls = new \mock\atoum\atoum\test\adapter\calls())
-                ->and($this->calling($calls)->hasAfter = $has = (boolean) rand(0, 1))
+                ->and($this->calling($calls)->hasAfter = $has = (bool) rand(0, 1))
                 ->and($adapter = new testedClass())
                 ->and($adapter->setCalls($calls))
                 ->then
@@ -530,7 +530,7 @@ namespace atoum\atoum\tests\units\test
                     ->integer($this->testedInstance->getCallsNumber(new call('md5')))->isEqualTo(1)
                     ->integer($this->testedInstance->getCallsNumber(new call('sha1')))->isEqualTo(1)
                 ->given(
-                    $castable = new \mock\castable,
+                    $castable = new \mock\castable(),
                     $this->calling($castable)->__toString = $string = uniqid()
                 )
                 ->if(

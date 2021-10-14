@@ -12,7 +12,7 @@ class phing extends report\fields\runner\tests\coverage\cli
     {
         $string = '';
 
-        if ($this->coverage !== null && sizeof($this->coverage) > 0) {
+        if ($this->coverage !== null && count($this->coverage) > 0) {
             $string .= $this->titlePrompt .
                 sprintf(
                     $this->locale->_('%s : %s'),
@@ -21,7 +21,7 @@ class phing extends report\fields\runner\tests\coverage\cli
                 )
             ;
 
-            if (sizeof($this->coverage->getPaths()) > 0) {
+            if (count($this->coverage->getPaths()) > 0) {
                 $string .= $this->titlePrompt .
                     sprintf(
                         $this->locale->_('%s: %s'),
@@ -31,7 +31,7 @@ class phing extends report\fields\runner\tests\coverage\cli
                 ;
             }
 
-            if (sizeof($this->coverage->getBranches()) > 0) {
+            if (count($this->coverage->getBranches()) > 0) {
                 $string .= $this->titlePrompt .
                     sprintf(
                         $this->locale->_('%s: %s'),

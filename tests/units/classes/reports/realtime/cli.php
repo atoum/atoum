@@ -77,9 +77,12 @@ class cli extends atoum\test
                         ->setSuccessColorizer(new colorizer('1;30', '42'))
                         ->setFailureColorizer(new colorizer('1;37', '41'))
                 )
-            ->define($runnerFailuresField = new fields\runner\failures\cli(),
-                     $failureColorizer = new colorizer('0;31'))
-                ->and($runnerFailuresField
+            ->define(
+                $runnerFailuresField = new fields\runner\failures\cli(),
+                $failureColorizer = new colorizer('0;31')
+            )
+                ->and(
+                    $runnerFailuresField
                     ->setTitlePrompt(new prompt('> '))
                     ->setTitleColorizer($failureColorizer)
                     ->setMethodPrompt(new prompt(PHP_EOL . '=> ', new colorizer('0;31')))
@@ -93,14 +96,16 @@ class cli extends atoum\test
                         ->setMethodPrompt(new prompt('=> ', new colorizer('1;36')))
                 )
             ->define($runnerErrorsField = new fields\runner\errors\cli())
-                ->and($runnerErrorsField
+                ->and(
+                    $runnerErrorsField
                     ->setTitlePrompt(new prompt('> '))
                     ->setTitleColorizer(new colorizer('0;33'))
                     ->setMethodPrompt(new prompt(PHP_EOL . '=> ', new colorizer('0;33')))
                     ->setErrorPrompt(new prompt('==> ', new colorizer('0;33')))
                 )
             ->define($runnerExceptionsField = new fields\runner\exceptions\cli())
-                ->and($runnerExceptionsField
+                ->and(
+                    $runnerExceptionsField
                     ->setTitlePrompt(new prompt('> '))
                     ->setTitleColorizer(new colorizer('0;35'))
                     ->setMethodPrompt(new prompt(PHP_EOL . '=> ', new colorizer('0;35')))

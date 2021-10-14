@@ -90,7 +90,7 @@ class html extends atoum\test
                 $indexTemplate
                     ->addChild($coverageAvailableTemplate = new \mock\atoum\atoum\template\tag('coverageAvailable'))
                     ->addChild($classCoverageTemplate)
-                )
+            )
             ->and($indexTemplateController = $indexTemplate->getMockController())
             ->and($indexTemplateController->__set = function () {
             })
@@ -120,7 +120,7 @@ class html extends atoum\test
                     ->addChild($lineTemplate)
                     ->addChild($coveredLineTemplate)
                     ->addChild($notCoveredLineTemplate)
-                )
+            )
             ->and($methodCoverageAvailableTemplate = new \mock\atoum\atoum\template\tag('methodCoverageAvailable'))
             ->and($methodTemplate = new \mock\atoum\atoum\template\tag('method'))
             ->and($methodTemplate->addChild($methodCoverageAvailableTemplate))
@@ -134,7 +134,7 @@ class html extends atoum\test
                 $classTemplate
                     ->addChild($methodsTemplate)
                     ->addChild($sourceFileTemplate)
-                )
+            )
             ->and($reflectedClassController = new mock\controller())
             ->and($reflectedClassController->__construct = function () {
             })
@@ -185,7 +185,7 @@ class html extends atoum\test
                     ->setTemplateParser($templateParser)
                     ->setTemplatesDirectory($templatesDirectory = uniqid())
                     ->setAdapter($adapter = new test\adapter())
-                )
+            )
             ->and($fieldController = $field->getMockController())
             ->and($fieldController->cleanDestinationDirectory = function () {
             })

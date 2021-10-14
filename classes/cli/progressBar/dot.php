@@ -4,8 +4,8 @@ namespace atoum\atoum\cli\progressBar;
 
 class dot
 {
-    const width = 60;
-    const defaultCounterFormat = '[%s/%s]';
+    public const width = 60;
+    public const defaultCounterFormat = '[%s/%s]';
 
     protected $refresh = null;
     protected $iterations = 0;

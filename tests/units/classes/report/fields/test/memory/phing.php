@@ -113,36 +113,36 @@ class phing extends atoum\test
             ->then
                 ->castToString($defaultField)->isEqualTo($defaultField->getPrompt() . $defaultField->getLocale()->_('unknown'))
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            $locale->_('%s'),
-                            $memoryColorizer->colorize($locale->_('unknown'))
-                        )
+                    $prompt .
+                    sprintf(
+                        $locale->_('%s'),
+                        $memoryColorizer->colorize($locale->_('unknown'))
                     )
+                )
             ->if($defaultField->handleEvent(atoum\test::runStart, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo($defaultField->getPrompt() . $defaultField->getLocale()->_('unknown'))
             ->if($customField->handleEvent(atoum\test::runStart, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            $locale->_('%s'),
-                            $memoryColorizer->colorize($locale->_('unknown'))
-                        )
+                    $prompt .
+                    sprintf(
+                        $locale->_('%s'),
+                        $memoryColorizer->colorize($locale->_('unknown'))
                     )
+                )
             ->if($defaultField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($defaultField)->isEqualTo($defaultField->getPrompt() . sprintf($defaultField->getLocale()->_('%4.2f Mb'), $totalMemoryUsage / 1048576))
             ->if($customField->handleEvent(atoum\test::runStop, $test))
             ->then
                 ->castToString($customField)->isEqualTo(
-                        $prompt .
-                        sprintf(
-                            $locale->_('%s'),
-                            $memoryColorizer->colorize(sprintf($locale->_('%4.2f Mb'), $totalMemoryUsage / 1048576))
-                        )
+                    $prompt .
+                    sprintf(
+                        $locale->_('%s'),
+                        $memoryColorizer->colorize(sprintf($locale->_('%4.2f Mb'), $totalMemoryUsage / 1048576))
                     )
+                )
         ;
     }
 }

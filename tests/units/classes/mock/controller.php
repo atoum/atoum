@@ -361,7 +361,7 @@ class controller extends atoum\test
                 ->sizeOf($mockController->getCalls())->isZero()
                 ->object($mockController->control($aMock))->isIdenticalTo($mockController)
                 ->string($mockController->getMockClass())->isEqualTo(get_class($aMock))
-                ->array($mockController->getInvokers())->hasSize(sizeof(\mock\reflectionClass::getMockedMethods()))
+                ->array($mockController->getInvokers())->hasSize(count(\mock\reflectionClass::getMockedMethods()))
                 ->array($mockController->getMethods())->isEqualTo(\mock\reflectionClass::getMockedMethods())
                 ->sizeOf($mockController->getCalls())->isZero()
             ->if($mock = new \mock\foo())

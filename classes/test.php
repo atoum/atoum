@@ -6,27 +6,27 @@ use atoum\atoum\tools\variable\analyzer;
 
 abstract class test implements observable, \countable
 {
-    const testMethodPrefix = 'test';
-    const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
-    const defaultMethodPrefix = '#^(?:test|_*[^_]+_should_)#i';
-    const runStart = 'testRunStart';
-    const beforeSetUp = 'beforeTestSetUp';
-    const afterSetUp = 'afterTestSetUp';
-    const beforeTestMethod = 'beforeTestMethod';
-    const fail = 'testAssertionFail';
-    const error = 'testError';
-    const void = 'testVoid';
-    const uncompleted = 'testUncompleted';
-    const skipped = 'testSkipped';
-    const exception = 'testException';
-    const runtimeException = 'testRuntimeException';
-    const success = 'testAssertionSuccess';
-    const afterTestMethod = 'afterTestMethod';
-    const beforeTearDown = 'beforeTestTearDown';
-    const afterTearDown = 'afterTestTearDown';
-    const runStop = 'testRunStop';
-    const defaultEngine = 'concurrent';
-    const enginesNamespace = '\atoum\atoum\test\engines';
+    public const testMethodPrefix = 'test';
+    public const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
+    public const defaultMethodPrefix = '#^(?:test|_*[^_]+_should_)#i';
+    public const runStart = 'testRunStart';
+    public const beforeSetUp = 'beforeTestSetUp';
+    public const afterSetUp = 'afterTestSetUp';
+    public const beforeTestMethod = 'beforeTestMethod';
+    public const fail = 'testAssertionFail';
+    public const error = 'testError';
+    public const void = 'testVoid';
+    public const uncompleted = 'testUncompleted';
+    public const skipped = 'testSkipped';
+    public const exception = 'testException';
+    public const runtimeException = 'testRuntimeException';
+    public const success = 'testAssertionSuccess';
+    public const afterTestMethod = 'afterTestMethod';
+    public const beforeTearDown = 'beforeTestTearDown';
+    public const afterTearDown = 'afterTestTearDown';
+    public const runStop = 'testRunStop';
+    public const defaultEngine = 'concurrent';
+    public const enginesNamespace = '\atoum\atoum\test\engines';
 
     private $score = null;
     private $locale = null;

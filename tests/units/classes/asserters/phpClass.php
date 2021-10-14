@@ -230,7 +230,6 @@ class phpClass extends atoum\test
                 $reflectionClass = new \mock\reflectionClass($className = uniqid()),
                 $this->calling($reflectionClass)->getName = $className,
                 $this->calling($reflectionClass)->getParentClass = false,
-
                 $asserter
                     ->setReflectionClassInjector(function ($class) use ($reflectionClass) {
                         return $reflectionClass;

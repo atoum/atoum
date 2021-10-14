@@ -7,8 +7,8 @@ use atoum\atoum\exceptions;
 
 class parser
 {
-    const eol = "\n";
-    const defaultNamespace = 'tpl';
+    public const eol = "\n";
+    public const defaultNamespace = 'tpl';
 
     protected $namespace = '';
     protected $adapter = null;

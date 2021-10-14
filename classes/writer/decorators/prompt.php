@@ -6,7 +6,7 @@ use atoum\atoum\writer;
 
 class prompt implements writer\decorator
 {
-    const defaultPrompt = '$ ';
+    public const defaultPrompt = '$ ';
 
     protected $prompt = '';
 

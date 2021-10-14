@@ -8,7 +8,7 @@ use atoum\atoum\includer;
 
 abstract class configurable extends atoum\script
 {
-    const defaultConfigFile = '.config.php';
+    public const defaultConfigFile = '.config.php';
 
     protected $includer = null;
     protected $configFiles = [];

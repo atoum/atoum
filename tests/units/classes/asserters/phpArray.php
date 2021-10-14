@@ -59,7 +59,7 @@ class phpArray extends atoum\test
 
             ->if(
                 $this->testedInstance->setWith(
-                [
+                    [
                         0 => [
                             0 => [
                                 1 => ['foo', 'bar']

@@ -279,7 +279,7 @@ class AtoumTask extends task
 
     public function setCodeCoverage($codeCoverage)
     {
-        $this->codeCoverage = (boolean) $codeCoverage;
+        $this->codeCoverage = (bool) $codeCoverage;
 
         return $this;
     }
@@ -291,7 +291,7 @@ class AtoumTask extends task
 
     public function setBranchAndPathCoverage($branchAndPathCoverage)
     {
-        $this->branchAndPathCoverage = (boolean) $branchAndPathCoverage;
+        $this->branchAndPathCoverage = (bool) $branchAndPathCoverage;
 
         return $this;
     }
@@ -303,7 +303,7 @@ class AtoumTask extends task
 
     public function setTelemetry($telemetry)
     {
-        $this->telemetry = (boolean) $telemetry;
+        $this->telemetry = (bool) $telemetry;
 
         return $this;
     }
@@ -351,7 +351,7 @@ class AtoumTask extends task
 
     public function setShowCodeCoverage($showCodeCoverage)
     {
-        $this->showCodeCoverage = (boolean) $showCodeCoverage;
+        $this->showCodeCoverage = (bool) $showCodeCoverage;
 
         return $this;
     }
@@ -363,7 +363,7 @@ class AtoumTask extends task
 
     public function setShowDuration($showDurationReport)
     {
-        $this->showDuration = (boolean) $showDurationReport;
+        $this->showDuration = (bool) $showDurationReport;
 
         return $this;
     }
@@ -375,7 +375,7 @@ class AtoumTask extends task
 
     public function setShowMemory($showMemoryReport)
     {
-        $this->showMemory = (boolean) $showMemoryReport;
+        $this->showMemory = (bool) $showMemoryReport;
 
         return $this;
     }
@@ -387,7 +387,7 @@ class AtoumTask extends task
 
     public function setShowMissingCodeCoverage($showMissingCodeCoverage)
     {
-        $this->showMissingCodeCoverage = (boolean) $showMissingCodeCoverage;
+        $this->showMissingCodeCoverage = (bool) $showMissingCodeCoverage;
 
         return $this;
     }
@@ -399,7 +399,7 @@ class AtoumTask extends task
 
     public function setShowProgress($showProgress)
     {
-        $this->showProgress = (boolean) $showProgress;
+        $this->showProgress = (bool) $showProgress;
 
         return $this;
     }

@@ -47,7 +47,7 @@ class sizeOf extends atoum\test
 
                 ->object($this->testedInstance->setWith($countable = range(1, rand(2, 5))))->isTestedInstance
                 ->boolean($this->testedInstance->wasSet())->isTrue()
-                ->integer($this->testedInstance->getValue())->isEqualTo(sizeof($countable))
+                ->integer($this->testedInstance->getValue())->isEqualTo(count($countable))
         ;
     }
 }

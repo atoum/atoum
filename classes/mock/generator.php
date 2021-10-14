@@ -7,7 +7,7 @@ use atoum\atoum\exceptions;
 
 class generator
 {
-    const defaultNamespace = 'mock';
+    public const defaultNamespace = 'mock';
 
     protected $adapter = null;
     protected $parameterAnalyzer = null;
@@ -908,7 +908,7 @@ class generator
 
     protected static function generateUnknownClassCode($mockNamespace, $mockClass, $uniqueId = false, $useStrictTypes = false)
     {
-        return ($useStrictTypes ? 'declare(strict_types=1);' . PHP_EOL  : '') .
+        return ($useStrictTypes ? 'declare(strict_types=1);' . PHP_EOL : '') .
             'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
             'final class ' . $mockClass . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
             '{' . PHP_EOL .

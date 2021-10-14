@@ -115,18 +115,18 @@ class report extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance,
-                $observable = new \mock\atoum\atoum\observable,
+                $observable = new \mock\atoum\atoum\observable(),
                 $event = uniqid()
             )
             ->then
                 ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
-            ->given($field = new \mock\atoum\atoum\report\field)
+            ->given($field = new \mock\atoum\atoum\report\field())
             ->if($this->testedInstance->addField($field))
             ->then
                 ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
                 ->mock($field)
                     ->call('handleEvent')->withArguments($event, $observable)->once
-            ->given($otherField = new \mock\atoum\atoum\report\field)
+            ->given($otherField = new \mock\atoum\atoum\report\field())
             ->if($this->testedInstance->addField($otherField))
             ->then
                 ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
@@ -142,13 +142,13 @@ class report extends atoum\test
         $this
             ->given(
                 $this->newTestedInstance,
-                $observable = new \mock\atoum\atoum\observable,
+                $observable = new \mock\atoum\atoum\observable(),
                 $event = uniqid()
             )
             ->then
                 ->castToString($this->testedInstance)->isEmpty
             ->given(
-                $field = new \mock\atoum\atoum\report\field,
+                $field = new \mock\atoum\atoum\report\field(),
                 $this->calling($field)->__toString = $string = uniqid()
             )
             ->if($this->testedInstance->addField($field))
@@ -158,7 +158,7 @@ class report extends atoum\test
             ->then
                 ->castToString($this->testedInstance)->isEqualTo($string)
             ->given(
-                $otherField = new \mock\atoum\atoum\report\field,
+                $otherField = new \mock\atoum\atoum\report\field(),
                 $this->calling($otherField)->__toString = $otherString = uniqid()
             )
             ->if(

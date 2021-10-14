@@ -8,11 +8,11 @@ use atoum\atoum\score;
 
 class coveralls extends atoum\reports\asynchronous
 {
-    const defaultServiceName = 'atoum';
-    const defaultEvent = 'manual';
-    const defaultCoverallsApiUrl = 'https://coveralls.io/api/v1/jobs';
-    const defaultCoverallsApiMethod = 'POST';
-    const defaultCoverallsApiParameter = 'json';
+    public const defaultServiceName = 'atoum';
+    public const defaultEvent = 'manual';
+    public const defaultCoverallsApiUrl = 'https://coveralls.io/api/v1/jobs';
+    public const defaultCoverallsApiMethod = 'POST';
+    public const defaultCoverallsApiParameter = 'json';
 
     protected $sourceDir = null;
     protected $repositoryToken = null;

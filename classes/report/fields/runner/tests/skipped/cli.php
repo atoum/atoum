@@ -35,7 +35,7 @@ class cli extends skipped
         if ($this->runner !== null) {
             $skippedMethods = $this->runner->getScore()->getSkippedMethods();
 
-            $sizeOfSkippedMethod = sizeof($skippedMethods);
+            $sizeOfSkippedMethod = count($skippedMethods);
 
             if ($sizeOfSkippedMethod > 0) {
                 $string .=

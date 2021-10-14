@@ -58,7 +58,7 @@ class iterator extends atoum\test
                 ->mock($locale)->call('_')->withArguments('%s is not an object', $type)->once
 
                 ->exception(function () use ($asserter, & $value) {
-                    $asserter->setWith($value = new \stdClass);
+                    $asserter->setWith($value = new \stdClass());
                 })
                     ->isInstanceOf(atoum\asserter\exception::class)
                     ->hasMessage($notAnArray)

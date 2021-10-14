@@ -13,7 +13,7 @@ use atoum\atoum\template;
 
 class html extends report\fields\runner\coverage\cli
 {
-    const htmlExtensionFile = '.html';
+    public const htmlExtensionFile = '.html';
 
     protected $urlPrompt = null;
     protected $urlColorizer = null;

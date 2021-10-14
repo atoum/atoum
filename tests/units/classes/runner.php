@@ -3,7 +3,6 @@
 namespace atoum\atoum\tests\units;
 
 use atoum\atoum;
-use atoum\atoum\mock;
 use atoum\atoum\runner as testedClass;
 use atoum\atoum\test;
 

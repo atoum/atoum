@@ -7,7 +7,7 @@ use atoum\atoum\exceptions;
 
 class xunit extends atoum\reports\asynchronous
 {
-    const defaultTitle = 'atoum testsuite';
+    public const defaultTitle = 'atoum testsuite';
 
     protected $score = null;
     protected $assertions = [];
