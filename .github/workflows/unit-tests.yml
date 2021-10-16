@@ -14,12 +14,8 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
-        php-version: [ '7.2', '7.3', '7.4', '8.0' ]
+        php-version: [ '7.2', '7.3', '7.4', '8.0', '8.1' ]
         experimental: [ false ]
-        include:
-          -   os: 'ubuntu-latest'
-              php-version: '8.1'
-              experimental: true
       fail-fast: false
 
     env:
