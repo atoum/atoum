@@ -8,14 +8,24 @@ require_once __DIR__ . '/../runner.php';
 
 class test extends atoum\tests\functionals\test\functional
 {
+    public function setUp()
+    {
+        echo __METHOD__;
+    }
+
     public function beforeTestMethod($method)
     {
-        echo "start\n";
+        echo __METHOD__;
     }
 
     public function afterTestMethod($method)
     {
-        echo "end\n";
+        echo __METHOD__;
+    }
+
+    public function tearDown()
+    {
+        echo __METHOD__;
     }
 
     /** @tags issue issue-820 */
