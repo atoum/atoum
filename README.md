@@ -306,7 +306,7 @@ However, if you want to further explore immediately *atoum*'s possibilities, we 
 * Exploring the contents of the `tests/unit/classes` directory in *atoum*'s source, as it contains all of the unit tests,
 * Read the (french) [conference slides](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) about it, available online,
 * Read the (french) [wiki](https://github.com/atoum/atoum/wiki),
-* Join the IRC channel *##atoum* on the *Freenode* network,
+* Join the [discussion channel](https://github.com/atoum/atoum/discussions),
 * Ask questions by e-mail at the address *support[AT]atoum(DOT)org*.
 
 ## Troubleshooting
@@ -343,7 +343,7 @@ $ php -d detect_unicode=0 atoum.phar [options]
 ```
 
 If these three operations do not allow *atoum* to work, we suggest you send an e-mail to the address *support[AT]atoum(DOT)org*, describing in detail your configuration and your problem.
-You can also ask for help from the *atoum* development staff on the IRC channel *##atoum* on the *Freenode* network.
+You can also ask for help from the *atoum* development staff on the [discussion channel](https://github.com/atoum/atoum/discussions) of the atoum repository..
 
 ### Error: Constant `__COMPILER_HALT_OFFSET__` already defined `/path/to/atoum.phar`
 
