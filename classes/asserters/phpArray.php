@@ -499,7 +499,7 @@ class phpArray extends variable implements \arrayAccess
     protected function callAssertion($method, array $arguments)
     {
         if ($this->innerAsserterCanUse($method) === false) {
-            call_user_func_array(['parent', $method], $arguments);
+            call_user_func_array([parent::class, $method], $arguments);
         } else {
             $this->callInnerAsserterMethod($method, $arguments);
         }
