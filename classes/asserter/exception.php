@@ -19,14 +19,15 @@ class exception extends \runtimeException
             $line = null;
             $function = null;
 
-            foreach (array_filter(debug_backtrace(false), function ($backtrace) use ($file) {
-                return isset($backtrace['file']) === true && $backtrace['file'] === $file;
-            }) as $backtrace) {
-                if ($line === null && isset($backtrace['line']) === true) {
+            $backtrace = $this->getBacktrace($test);
+            if ($backtrace !== null) {
+                $file = $backtrace['file'] ?? $file;
+
+                if (isset($backtrace['line']) === true) {
                     $line = $backtrace['line'];
                 }
 
-                if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $asserter && $backtrace['function'] !== '__call') {
+                if (isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $asserter && $backtrace['function'] !== '__call') {
                     $function = $backtrace['function'];
                 }
             }
@@ -44,5 +45,29 @@ class exception extends \runtimeException
         }
 
         parent::__construct($message, $code);
+    }
+
+
+    protected function getBacktrace(atoum\test $test)
+    {
+        $debugBacktrace = debug_backtrace(false);
+        foreach ($debugBacktrace as $key => $value) {
+            if (isset($value['class']) === false) {
+                continue;
+            }
+
+            if (
+                $value['class'] === $test->getClass()
+                || is_subclass_of($test->getClass(), $value['class'], true)
+            ) {
+                if (isset($debugBacktrace[$key - 1]) === true) {
+                    $key -= 1;
+                }
+
+                return $debugBacktrace[$key];
+            }
+        }
+
+        return null;
     }
 }
