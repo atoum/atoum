@@ -387,7 +387,7 @@ class phpObject extends atoum\test
                 ->object($asserter->isInstanceOf(get_class($test)))->isIdenticalTo($asserter)
                 ->object($asserter->isInstanceOf('\\' . get_class($test)))->isIdenticalTo($asserter)
                 ->object($asserter->isInstanceOf($test))->isIdenticalTo($asserter)
-            ;
+        ;
     }
 
     public function testIsNotInstanceOf()

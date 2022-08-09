@@ -14,28 +14,28 @@ class phing extends report\fields\test\event\cli
                 return '[';
 
             case atoum\test::runStop:
-                 return '] ';
+                return '] ';
 
             case atoum\test::success:
-                 return 'S';
+                return 'S';
 
             case atoum\test::void:
-                 return '0';
+                return '0';
 
             case atoum\test::uncompleted:
-                 return 'U';
+                return 'U';
 
             case atoum\test::fail:
-                 return 'F';
+                return 'F';
 
             case atoum\test::error:
-                 return 'e';
+                return 'e';
 
             case atoum\test::exception:
-                 return 'E';
+                return 'E';
 
             default:
-                 return '';
+                return '';
         }
     }
 }
