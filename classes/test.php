@@ -1711,14 +1711,14 @@ abstract class test implements observable, \countable
                             $version = $value[1];
 
                             switch ($value[0]) {
-                            case '<':
-                            case '<=':
-                            case '=':
-                            case '==':
-                            case '>=':
-                            case '>':
-                                $operator = $value[0];
-                        }
+                                case '<':
+                                case '<=':
+                                case '=':
+                                case '==':
+                                case '>=':
+                                case '>':
+                                    $operator = $value[0];
+                            }
                         }
 
                         $this->addClassPhpVersion($version, $operator);
@@ -1778,14 +1778,14 @@ abstract class test implements observable, \countable
                             $version = $value[1];
 
                             switch ($value[0]) {
-                            case '<':
-                            case '<=':
-                            case '=':
-                            case '==':
-                            case '>=':
-                            case '>':
-                                $operator = $value[0];
-                        }
+                                case '<':
+                                case '<=':
+                                case '=':
+                                case '==':
+                                case '>=':
+                                case '>':
+                                    $operator = $value[0];
+                            }
                         }
 
                         $this->addMethodPhpVersion($methodName, $version, $operator);

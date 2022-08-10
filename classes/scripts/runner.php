@@ -864,7 +864,7 @@ class runner extends atoum\script\configurable
                     $script
                             ->resetExcludedDirectoriesFromCoverage()
                             ->excludeDirectoriesFromCoverage($directories)
-                        ;
+                    ;
                 },
                 ['-nccid', '--no-code-coverage-in-directories'],
                 '<directory>...',
@@ -879,7 +879,7 @@ class runner extends atoum\script\configurable
                     $script
                             ->resetExcludedNamespacesFromCoverage()
                             ->excludeNamespacesFromCoverage($namespaces)
-                        ;
+                    ;
                 },
                 ['-nccfns', '--no-code-coverage-for-namespaces'],
                 '<namespace>...',
@@ -894,7 +894,7 @@ class runner extends atoum\script\configurable
                     $script
                             ->resetExcludedClassesFromCoverage()
                             ->excludeClassesFromCoverage($classes)
-                        ;
+                    ;
                 },
                 ['-nccfc', '--no-code-coverage-for-classes'],
                 '<class>...',
@@ -909,7 +909,7 @@ class runner extends atoum\script\configurable
                     $script
                             ->resetExcludedMethodsFromCoverage()
                             ->excludeMethodsFromCoverage($classes)
-                        ;
+                    ;
                 },
                 ['-nccfm', '--no-code-coverage-for-methods'],
                 '<method>...',
@@ -1018,7 +1018,7 @@ class runner extends atoum\script\configurable
                     $script
                             ->resetTestedNamespaces()
                             ->testNamespaces($namespaces)
-                        ;
+                    ;
                 },
                 ['-ns', '--namespaces'],
                 '<namespace>...',

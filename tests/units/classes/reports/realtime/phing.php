@@ -150,7 +150,7 @@ class phing extends atoum\test
                         $testMemoryField,
                     ]
                 )
-          ;
+        ;
     }
 
     public function testShowProgress()

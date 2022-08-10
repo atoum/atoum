@@ -31,18 +31,18 @@ abstract class call extends atoum\asserter
             return $this->exactly($property);
         } else {
             switch (strtolower($property)) {
-            case 'once':
-            case 'twice':
-            case 'thrice':
-            case 'never':
-            case 'atleastonce':
-            case 'wascalled':
-            case 'wasnotcalled':
-                return $this->{$property}();
+                case 'once':
+                case 'twice':
+                case 'thrice':
+                case 'never':
+                case 'atleastonce':
+                case 'wascalled':
+                case 'wasnotcalled':
+                    return $this->{$property}();
 
-            default:
-                return parent::__get($property);
-        }
+                default:
+                    return parent::__get($property);
+            }
         }
     }
 
