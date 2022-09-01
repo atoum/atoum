@@ -2586,7 +2586,7 @@ class generator extends atoum\test
                 "\t\t\t" . '$this->getMockController()->invoke(\'__construct\', func_get_args());' . PHP_EOL .
                 "\t\t" . '}' . PHP_EOL .
                 "\t" . '}' . PHP_EOL .
-                "\t" . 'public function ' . $methodName . '(): \\' . $realClass . PHP_EOL .
+                "\t" . 'public function ' . $methodName . '(): static' . PHP_EOL .
                 "\t" . '{' . PHP_EOL .
                 "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0));' . PHP_EOL .
                 "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL .

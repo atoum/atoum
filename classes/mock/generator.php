@@ -667,7 +667,6 @@ class generator
         $isNullable = $returnTypeName !== 'mixed' && $this->isNullable($returnType);
 
         switch (true) {
-            case $returnTypeName === 'static':
             case $returnTypeName === 'self':
                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . '\\' . $method->getDeclaringClass()->getName();
                 break;
@@ -686,6 +685,7 @@ class generator
                 $returnTypeCode = ': ' . implode('|', $types);
                 break;
 
+            case $returnTypeName === 'static':
             case $returnType->isBuiltin():
                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . $returnTypeName;
                 break;
