@@ -685,6 +685,7 @@ class generator
                 $returnTypeCode = ': ' . implode('|', $types);
                 break;
 
+            case $returnTypeName === 'static':
             case $returnType->isBuiltin():
                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . $returnTypeName;
                 break;
