@@ -508,7 +508,7 @@ class template extends atoum\test
                 })
                     ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('Id \'' . $id . '\' is already defined')
-            ;
+        ;
     }
 
     public function testDeleteChild()
