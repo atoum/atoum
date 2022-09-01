@@ -10,6 +10,7 @@ use atoum\atoum\test;
 class dot extends report\fields\runner\event
 {
     protected $count = 0;
+    protected $progressBar;
 
     public function __construct(progressBar\dot $progressBar = null)
     {

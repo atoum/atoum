@@ -47,10 +47,10 @@ class castToArray extends atoum\test
                     ->setAdapter($adapter)
             )
             ->then
-                ->object($asserter->setWith($object = new \exception()))->isIdenticalTo($asserter)
+                ->object($asserter->setWith($object = new \arrayiterator()))->isIdenticalTo($asserter)
                 ->array($asserter->getValue())->isEqualTo((array) $object)
 
-                ->object($asserter->setWith($object = new \exception()))->isIdenticalTo($asserter)
+                ->object($asserter->setWith($object = new \arrayiterator()))->isIdenticalTo($asserter)
                 ->array($asserter->getValue())->isEqualTo((array) $object)
 
             ->if(
