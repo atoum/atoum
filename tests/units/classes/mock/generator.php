@@ -2597,7 +2597,7 @@ class generator extends atoum\test
                 "\t\t" . 'else' . PHP_EOL .
                 "\t\t" . '{' . PHP_EOL .
                 "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL .
-                "\t\t\t" . '$return = call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL .
+                "\t\t\t" . '$return = call_user_func_array([parent::class, \'' . $methodName . '\'], $arguments);' . PHP_EOL .
                 "\t\t\t" . 'return $return;' . PHP_EOL .
                 "\t\t" . '}' . PHP_EOL .
                 "\t" . '}' . PHP_EOL .
