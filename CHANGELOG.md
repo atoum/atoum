@@ -1,5 +1,9 @@
 # `dev-master`
 
+# 4.1.0
+
+* [#883](https://github.com/atoum/atoum/pull/883) and [#884](https://github.com/atoum/atoum/pull/884) Handle `static` return type in mock generator ([@shavounet])
+* [#881](https://github.com/atoum/atoum/pull/881) Fix PHP 8.2 compatibility issues ([@cedric-anne])
 * [#868](https://github.com/atoum/atoum/pull/868) Drop PHP 7.2 and PHP 7.3 support ([@cedric-anne])
 
 # 4.0.3 - 2021-10-22
