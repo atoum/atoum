@@ -1,6 +1,6 @@
 # `dev-master`
 
-# 4.1.0
+# 4.1.0 - 2022-11-20
 
 * [#883](https://github.com/atoum/atoum/pull/883) and [#884](https://github.com/atoum/atoum/pull/884) Handle `static` return type in mock generator ([@shavounet])
 * [#881](https://github.com/atoum/atoum/pull/881) Fix PHP 8.2 compatibility issues ([@cedric-anne])
@@ -357,3 +357,4 @@
 [@cedric-anne]: https://github.com/cedric-anne
 [@idetinkin]: https://github.com/idetinkin
 [@villfa]: https://github.com/villfa
+[@shavounet]: https://github.com/shavounet
