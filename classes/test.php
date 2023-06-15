@@ -533,7 +533,7 @@ abstract class test implements observable, \countable
         $asserterGenerator = $this->asserterGenerator;
 
         $this->assertionManager->setDefaultHandler(
-            function ($keyword, $arguments) use ($asserterGenerator, $assertionAliaser, & $lastAsserter) {
+            function ($keyword, $arguments) use ($asserterGenerator, $assertionAliaser) {
                 static $lastAsserter = null;
 
                 if ($lastAsserter !== null) {
