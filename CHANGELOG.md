@@ -1,5 +1,9 @@
 # `dev-master`
 
+* [#893](https://github.com/atoum/atoum/pull/893) Drop PHP 7.4 support ([@cedric-anne])
+* [#892](https://github.com/atoum/atoum/pull/892) Fix `null`, `true` and `false` type handling ([@cedric-anne])
+* [#890](https://github.com/atoum/atoum/pull/890) Fix duplicate variable declaration on PHP 8.3 ([@cedric-anne])
+
 # 4.1.0 - 2022-11-20
 
 * [#883](https://github.com/atoum/atoum/pull/883) and [#884](https://github.com/atoum/atoum/pull/884) Handle `static` return type in mock generator ([@shavounet])
