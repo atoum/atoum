@@ -190,6 +190,34 @@ class analyzer extends atoum\test
         ;
     }
 
+    /** @php >= 8.2 */
+    public function getTypeHintStringForNull()
+    {
+        $this
+            ->if($analyzer = new testedClass())
+            ->and($reflectionNamedTypeController = new mock\controller())
+            ->and($reflectionNamedTypeController->__construct = function () {
+            })
+            ->and($reflectionNamedTypeController->getName = 'null')
+            ->and($reflectionNamedTypeController->isBuiltin = true)
+            ->and($reflectionNamedType = new \mock\reflectionNamedType())
+            ->and($reflectionParameterController = new mock\controller())
+            ->and($reflectionParameterController->__construct = function () {
+            })
+            ->and($reflectionParameterController->getName = 'param')
+            ->and($reflectionParameterController->isPassedByReference = false)
+            ->and($reflectionParameterController->isDefaultValueAvailable = false)
+            ->and($reflectionParameterController->isOptional = false)
+            ->and($reflectionParameterController->isVariadic = false)
+            ->and($reflectionParameterController->allowsNull = true)
+            ->and($reflectionParameterController->hasType = true)
+            ->and($reflectionParameterController->getType = $reflectionNamedType)
+            ->and($reflectionParameter = new \mock\reflectionParameter([uniqid(), uniqid()], 0))
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('null')
+        ;
+    }
+
     /** @php >= 8.0 */
     public function getTypeHintStringForUnionType()
     {
