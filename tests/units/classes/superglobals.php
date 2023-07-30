@@ -34,16 +34,6 @@ class superglobals extends atoum\test
         }
     }
 
-    /** @php <= 8.0 */
-    public function test__get_globals()
-    {
-        $this
-            ->if($superglobals = new testedClass())
-            ->then
-                ->array->setByReferenceWith($superglobals->GLOBALS)->isReferenceTo($GLOBALS)
-        ;
-    }
-
     public function test__set()
     {
         $this

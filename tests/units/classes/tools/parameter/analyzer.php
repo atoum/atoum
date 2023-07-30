@@ -162,7 +162,6 @@ class analyzer extends atoum\test
         ;
     }
 
-    /** @php >= 8.0 */
     public function getTypeHintStringForMixed()
     {
         $this
@@ -256,7 +255,6 @@ class analyzer extends atoum\test
         ;
     }
 
-    /** @php >= 8.0 */
     public function getTypeHintStringForUnionType()
     {
         $this
