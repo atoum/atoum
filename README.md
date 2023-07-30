@@ -2,10 +2,11 @@
 
 # *atoum* [![Package version](https://img.shields.io/packagist/v/atoum/atoum.svg)](https://packagist.org/packages/atoum/atoum) [![Build Status](https://github.com/atoum/atoum/actions/workflows/unit-tests.yml/badge.svg?branch=master)](https://github.com/atoum/atoum/actions/workflows/unit-tests.yml?query=branch%3Amaster) [![Coverage Status](https://coveralls.io/repos/github/atoum/atoum/badge.svg?branch=master)](https://coveralls.io/github/atoum/atoum?branch=master) [![Lint](https://github.com/atoum/atoum/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/atoum/atoum/actions/workflows/lint.yml?query=branch%3Amaster) [![Gitter](https://badges.gitter.im/atoum/atoum.svg)](https://gitter.im/atoum/atoum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-| PHP version | atoum version |
-| ------------- | ------------- |
-| 5.3 -> 5.6  | 1.x -> 3.x  |
-| 7.2 -> 8.x  | 4.x (current) |
+| PHP version | atoum version       |
+|-------------|---------------------|
+| 5.3 -> 5.6  | 1.x -> 3.x          |
+| 7.2 -> 8.1  | 4.X -> 4.1          |
+| 8.x         | 4.1 < 4.X (current) |
 
 ## A simple, modern and intuitive unit testing framework for PHP!
 
