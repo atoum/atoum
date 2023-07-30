@@ -664,7 +664,7 @@ class generator
 
         $returnType = $this->getReflectionType($method);
         $returnTypeName = $this->getReflectionTypeName($returnType);
-        $isNullable = $returnTypeName !== 'mixed' && $this->isNullable($returnType);
+        $isNullable = $returnType->allowsNull() === true;
 
         switch (true) {
             case $returnTypeName === 'self':
@@ -685,6 +685,11 @@ class generator
                 $returnTypeCode = ': ' . implode('|', $types);
                 break;
 
+            case in_array($this->getReflectionTypeName($returnType), ['mixed', 'null']):
+                // 'mixed' and 'null' cannot be marked as nullable
+                $returnTypeCode = ': ' . $returnTypeName;
+                break;
+
             case $returnTypeName === 'static':
             case $returnType->isBuiltin():
                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . $returnTypeName;
@@ -695,11 +700,6 @@ class generator
         }
 
         return $returnTypeCode;
-    }
-
-    protected function isNullable(\reflectionType $type)
-    {
-        return $type->allowsNull() === true;
     }
 
     protected function hasReturnType(\reflectionMethod $method)

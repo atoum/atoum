@@ -12,9 +12,12 @@ class analyzer
 
         $parameterType = $parameter->getType();
 
-        if ($parameterType instanceof \reflectionNamedType && $parameterType->getName() === 'mixed') {
-            // 'mixed' cannot be prefixed by nullable flag '?' and cannot be part of union types
-            return 'mixed';
+        if (
+            $parameterType instanceof \reflectionNamedType
+            && in_array($parameterType->getName(), ['mixed', 'null'])
+        ) {
+            // 'mixed' and 'null' cannot be prefixed by nullable flag '?'
+            return $parameterType->getName();
         }
 
         $parameterTypes = $parameterType instanceof \ReflectionUnionType
