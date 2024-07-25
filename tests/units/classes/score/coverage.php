@@ -276,8 +276,8 @@ class coverage extends atoum\test
                 return $class;
             }))
             ->and($coverage->addXdebugDataForTest($this, $xdebugData))
-            ->and($coverage->excludeClass($excludedClass =uniqid()))
-            ->and($coverage->excludeNamespace($excludedNamespace= uniqid()))
+            ->and($coverage->excludeClass($excludedClass = uniqid()))
+            ->and($coverage->excludeNamespace($excludedNamespace = uniqid()))
             ->and($coverage->excludeDirectory($excludedDirectory = uniqid()))
             ->then
                 ->array($coverage->getClasses())->isNotEmpty()
@@ -398,7 +398,7 @@ class coverage extends atoum\test
                         6 => -1,
                         7 => 1,
                         8 => -2,
-                        9 =>-2
+                        9 => -2
                     ],
                   uniqid() =>
                      [
@@ -524,7 +524,7 @@ class coverage extends atoum\test
                             $methodName => [
                                 6 => -1,
                                 7 => 1,
-                                8 =>-2
+                                8 => -2
                             ]
                         ],
                         $otherClassName => [
@@ -582,7 +582,7 @@ class coverage extends atoum\test
                         6 => -1,
                         7 => 1,
                         8 => -2,
-                        9 =>-2
+                        9 => -2
                     ],
                     uniqid() => [
                         5 => 2,

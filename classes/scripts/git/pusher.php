@@ -107,7 +107,7 @@ class pusher extends script\configurable
         return $this->git;
     }
 
-    public function setForceMode($force=true)
+    public function setForceMode($force = true)
     {
         $this->forceMode = $force;
 

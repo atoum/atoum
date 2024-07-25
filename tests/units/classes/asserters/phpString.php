@@ -359,7 +359,7 @@ class phpString extends atoum\test
 
             ->if($asserter->setWith($string = uniqid()))
             ->then
-                ->object($asserter->hasLengthGreaterThan(strlen($string)-1))->isIdenticalTo($asserter)
+                ->object($asserter->hasLengthGreaterThan(strlen($string) - 1))->isIdenticalTo($asserter)
         ;
     }
 
