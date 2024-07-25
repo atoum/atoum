@@ -55,7 +55,7 @@ class execute extends runner\failures
         return $this->command;
     }
 
-    public function setAdapter(adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();
 

@@ -19,7 +19,7 @@ class generic implements analyzer
         ;
     }
 
-    public function setCallback(\closure $callback = null)
+    public function setCallback(?\closure $callback = null)
     {
         $this->callback = $callback ?: function () {
             return 0;

@@ -15,7 +15,7 @@ class variable extends asserter
     protected $value = null;
     protected $isSetByReference = false;
 
-    public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
+    public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
     {
         parent::__construct($generator, $analyzer, $locale);
 
@@ -71,7 +71,7 @@ class variable extends asserter
         return call_user_func_array([$this, $assertion], $arguments);
     }
 
-    public function setDiff(diffs\variable $diff = null)
+    public function setDiff(?diffs\variable $diff = null)
     {
         $this->diff = $diff ?: new diffs\variable();
 

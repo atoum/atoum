@@ -4,7 +4,7 @@ namespace atoum\atoum\tools\parameter;
 
 class analyzer
 {
-    public function getTypeHintString(\reflectionParameter $parameter): string
+    public function getTypeHintString(\reflectionParameter $parameter, bool $force_nullable = false): string
     {
         if (!$parameter->hasType()) {
             return '';
@@ -33,7 +33,7 @@ class analyzer
             $names[] = ($type instanceof \reflectionType && !$type->isBuiltin() ? '\\' : '') . $name;
         }
 
-        $prefix = $parameter->allowsNull() && !($parameterType instanceof \ReflectionUnionType) ? '?' : '';
+        $prefix = ($force_nullable || $parameter->allowsNull()) && !($parameterType instanceof \ReflectionUnionType) ? '?' : '';
 
         return $prefix . implode('|', $names);
     }

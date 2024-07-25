@@ -37,7 +37,7 @@ class funktion extends mocker
         $this->setDefaultBehavior($this->getFqdn($functionName));
     }
 
-    public function setReflectedFunctionFactory(\closure $factory = null)
+    public function setReflectedFunctionFactory(?\closure $factory = null)
     {
         $this->reflectedFunctionFactory = $factory ?: function ($functionName) {
             return new \reflectionFunction($functionName);
@@ -101,7 +101,7 @@ class funktion extends mocker
         return $this->getFqdn($functionName);
     }
 
-    protected function setDefaultBehavior($fqdn, \reflectionFunction $reflectedFunction = null)
+    protected function setDefaultBehavior($fqdn, ?\reflectionFunction $reflectedFunction = null)
     {
         $function = substr($fqdn, strrpos($fqdn, '\\') + 1);
 
@@ -160,7 +160,7 @@ class funktion extends mocker
         return 'array(' . implode(',', $parameters) . ')';
     }
 
-    protected static function defineMockedFunction($namespace, $class, $function, \reflectionFunction $reflectedFunction = null)
+    protected static function defineMockedFunction($namespace, $class, $function, ?\reflectionFunction $reflectedFunction = null)
     {
         eval(sprintf(
             'namespace %s { function %s(%s) { return \\%s::getAdapter()->invoke(__FUNCTION__, %s); } }',

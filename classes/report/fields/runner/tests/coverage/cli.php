@@ -111,7 +111,7 @@ class cli extends report\fields\runner\tests\coverage
         return $string;
     }
 
-    public function setTitlePrompt(prompt $prompt = null)
+    public function setTitlePrompt(?prompt $prompt = null)
     {
         $this->titlePrompt = $prompt ?: new prompt();
 
@@ -123,7 +123,7 @@ class cli extends report\fields\runner\tests\coverage
         return $this->titlePrompt;
     }
 
-    public function setClassPrompt(prompt $prompt = null)
+    public function setClassPrompt(?prompt $prompt = null)
     {
         $this->classPrompt = $prompt ?: new prompt();
 
@@ -135,7 +135,7 @@ class cli extends report\fields\runner\tests\coverage
         return $this->classPrompt;
     }
 
-    public function setMethodPrompt(prompt $prompt = null)
+    public function setMethodPrompt(?prompt $prompt = null)
     {
         $this->methodPrompt = $prompt ?: new prompt();
 
@@ -147,7 +147,7 @@ class cli extends report\fields\runner\tests\coverage
         return $this->methodPrompt;
     }
 
-    public function setTitleColorizer(colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null)
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
@@ -159,7 +159,7 @@ class cli extends report\fields\runner\tests\coverage
         return $this->titleColorizer;
     }
 
-    public function setCoverageColorizer(colorizer $colorizer = null)
+    public function setCoverageColorizer(?colorizer $colorizer = null)
     {
         $this->coverageColorizer = $colorizer ?: new colorizer();
 

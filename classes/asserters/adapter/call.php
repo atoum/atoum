@@ -18,7 +18,7 @@ abstract class call extends atoum\asserter
     protected $trace = ['file' => null, 'line' => null];
     protected $manager = null;
 
-    public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null, atoum\locale $locale = null)
+    public function __construct(?asserter\generator $generator = null, ?variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
     {
         parent::__construct($generator, $analyzer, $locale);
 
@@ -53,7 +53,7 @@ abstract class call extends atoum\asserter
         return $this;
     }
 
-    public function setCall(test\adapter\call $call = null)
+    public function setCall(?test\adapter\call $call = null)
     {
         if ($call === null) {
             $call = new test\adapter\call();

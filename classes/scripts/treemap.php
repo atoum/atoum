@@ -21,7 +21,7 @@ class treemap extends atoum\script\configurable
     protected $analyzers = [];
     protected $categorizers = [];
 
-    public function __construct($name, atoum\adapter $adapter = null)
+    public function __construct($name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 

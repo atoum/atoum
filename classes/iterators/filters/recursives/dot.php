@@ -4,7 +4,7 @@ namespace atoum\atoum\iterators\filters\recursives;
 
 class dot extends \recursiveFilterIterator
 {
-    public function __construct($mixed, \closure $iteratorFactory = null)
+    public function __construct($mixed, ?\closure $iteratorFactory = null)
     {
         if ($mixed instanceof \recursiveIterator) {
             parent::__construct($mixed);

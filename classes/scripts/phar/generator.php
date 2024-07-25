@@ -17,14 +17,14 @@ class generator extends atoum\script
     protected $stubFile = null;
     protected $pharFactory = null;
 
-    public function __construct($name, atoum\adapter $adapter = null)
+    public function __construct($name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
         $this->setPharFactory();
     }
 
-    public function setPharFactory(\closure $factory = null)
+    public function setPharFactory(?\closure $factory = null)
     {
         $this->pharFactory = $factory ?: function ($path) {
             return new \phar($path);

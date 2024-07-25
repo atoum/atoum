@@ -82,7 +82,7 @@ abstract class test implements observable, \countable
     private static $methodPrefix = null;
     private static $defaultEngine = self::defaultEngine;
 
-    public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null, \closure $phpExtensionFactory = null, analyzer $analyzer = null)
+    public function __construct(?adapter $adapter = null, ?annotations\extractor $annotationExtractor = null, ?asserter\generator $asserterGenerator = null, ?test\assertion\manager $assertionManager = null, ?\closure $reflectionClassFactory = null, ?\closure $phpExtensionFactory = null, ?analyzer $analyzer = null)
     {
         $this
             ->setAdapter($adapter)
@@ -194,7 +194,7 @@ abstract class test implements observable, \countable
         return $this->assertionManager->__call($method, $arguments);
     }
 
-    public function setAnalyzer(analyzer $analyzer = null)
+    public function setAnalyzer(?analyzer $analyzer = null)
     {
         $this->analyzer = $analyzer ?: new analyzer();
 
@@ -206,7 +206,7 @@ abstract class test implements observable, \countable
         return $this->analyzer;
     }
 
-    public function setTestAdapterStorage(test\adapter\storage $storage = null)
+    public function setTestAdapterStorage(?test\adapter\storage $storage = null)
     {
         $this->testAdapterStorage = $storage ?: new test\adapter\storage();
 
@@ -218,7 +218,7 @@ abstract class test implements observable, \countable
         return $this->testAdapterStorage;
     }
 
-    public function setMockControllerLinker(mock\controller\linker $linker = null)
+    public function setMockControllerLinker(?mock\controller\linker $linker = null)
     {
         $this->mockControllerLinker = $linker ?: new mock\controller\linker();
 
@@ -230,7 +230,7 @@ abstract class test implements observable, \countable
         return $this->mockControllerLinker;
     }
 
-    public function setScore(test\score $score = null)
+    public function setScore(?test\score $score = null)
     {
         $this->score = $score ?: new test\score();
 
@@ -242,7 +242,7 @@ abstract class test implements observable, \countable
         return $this->score;
     }
 
-    public function setLocale(locale $locale = null)
+    public function setLocale(?locale $locale = null)
     {
         $this->locale = $locale ?: new locale();
 
@@ -254,7 +254,7 @@ abstract class test implements observable, \countable
         return $this->locale;
     }
 
-    public function setAdapter(adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();
 
@@ -266,7 +266,7 @@ abstract class test implements observable, \countable
         return $this->adapter;
     }
 
-    public function setPhpMocker(php\mocker $phpMocker = null)
+    public function setPhpMocker(?php\mocker $phpMocker = null)
     {
         $phpMocker = $phpMocker ?: new php\mocker();
 
@@ -275,7 +275,7 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    public function setPhpFunctionMocker(php\mocker\funktion $phpFunctionMocker = null)
+    public function setPhpFunctionMocker(?php\mocker\funktion $phpFunctionMocker = null)
     {
         $this->phpFunctionMocker = $phpFunctionMocker ?: new php\mocker\funktion();
 
@@ -287,7 +287,7 @@ abstract class test implements observable, \countable
         return $this->phpFunctionMocker;
     }
 
-    public function setPhpConstantMocker(php\mocker\constant $phpConstantMocker = null)
+    public function setPhpConstantMocker(?php\mocker\constant $phpConstantMocker = null)
     {
         $this->phpConstantMocker = $phpConstantMocker ?: new php\mocker\constant();
 
@@ -299,7 +299,7 @@ abstract class test implements observable, \countable
         return $this->phpConstantMocker;
     }
 
-    public function setMockGenerator(test\mock\generator $generator = null)
+    public function setMockGenerator(?test\mock\generator $generator = null)
     {
         if ($generator !== null) {
             $generator->setTest($this);
@@ -317,7 +317,7 @@ abstract class test implements observable, \countable
         return $this->mockGenerator;
     }
 
-    public function setMockAutoloader(autoloader\mock $autoloader = null)
+    public function setMockAutoloader(?autoloader\mock $autoloader = null)
     {
         $this->mockAutoloader = $autoloader ?: new autoloader\mock();
 
@@ -329,7 +329,7 @@ abstract class test implements observable, \countable
         return $this->mockAutoloader;
     }
 
-    public function setFactoryBuilder(factory\builder $factoryBuilder = null)
+    public function setFactoryBuilder(?factory\builder $factoryBuilder = null)
     {
         $this->factoryBuilder = $factoryBuilder ?: new factory\builder\closure();
 
@@ -341,7 +341,7 @@ abstract class test implements observable, \countable
         return $this->factoryBuilder;
     }
 
-    public function setReflectionMethodFactory(\closure $factory = null)
+    public function setReflectionMethodFactory(?\closure $factory = null)
     {
         $this->reflectionMethodFactory = $factory ?: function ($class, $method) {
             return new \reflectionMethod($class, $method);
@@ -350,7 +350,7 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    public function setPhpExtensionFactory(\closure $factory = null)
+    public function setPhpExtensionFactory(?\closure $factory = null)
     {
         $this->phpExtensionFactory = $factory ?: function ($extensionName) {
             return new php\extension($extensionName);
@@ -359,7 +359,7 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    public function setAsserterGenerator(test\asserter\generator $generator = null)
+    public function setAsserterGenerator(?test\asserter\generator $generator = null)
     {
         if ($generator !== null) {
             $generator->setTest($this);
@@ -379,7 +379,7 @@ abstract class test implements observable, \countable
         return $this->asserterGenerator;
     }
 
-    public function setAssertionManager(test\assertion\manager $assertionManager = null)
+    public function setAssertionManager(?test\assertion\manager $assertionManager = null)
     {
         $this->assertionManager = $assertionManager ?: new test\assertion\manager();
 
@@ -410,7 +410,7 @@ abstract class test implements observable, \countable
             })
             ->setHandler(
                 'newMockInstance',
-                function ($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = null) {
+                function ($class, $mockNamespace = null, $mockClass = null, ?array $constructorArguments = null) {
                     $mockNamespace = trim($mockNamespace ?: $this->getMockGenerator()->getDefaultNamespace(), '\\');
                     $mockClass = trim($mockClass ?: $class, '\\');
                     $className = $mockNamespace . '\\' . $mockClass;
@@ -567,7 +567,7 @@ abstract class test implements observable, \countable
         return $this->asserterCallManager;
     }
 
-    public function setAsserterCallManager(asserters\adapter\call\manager $asserterCallManager = null)
+    public function setAsserterCallManager(?asserters\adapter\call\manager $asserterCallManager = null)
     {
         $this->asserterCallManager = $asserterCallManager ?: new asserters\adapter\call\manager();
 
@@ -1642,7 +1642,7 @@ abstract class test implements observable, \countable
         return self::$defaultEngine ?: self::defaultEngine;
     }
 
-    public static function getTestedClassNameFromTestClass($fullyQualifiedClassName, $testNamespace = null, analyzer $analyzer = null)
+    public static function getTestedClassNameFromTestClass($fullyQualifiedClassName, $testNamespace = null, ?analyzer $analyzer = null)
     {
         $analyzer = $analyzer ?: new analyzer();
 
@@ -1809,7 +1809,7 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    protected function getBacktrace(array $trace = null)
+    protected function getBacktrace(?array $trace = null)
     {
         $debugBacktrace = $trace === null ? debug_backtrace(false) : $trace;
 
@@ -1993,7 +1993,7 @@ abstract class test implements observable, \countable
         return $this;
     }
 
-    public function addExtension(extension $extension, extension\configuration $configuration = null)
+    public function addExtension(extension $extension, ?extension\configuration $configuration = null)
     {
         if ($this->extensions->contains($extension) === false) {
             $this->extensions->detach($extension);

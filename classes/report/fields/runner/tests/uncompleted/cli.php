@@ -74,7 +74,7 @@ class cli extends report\fields\runner\tests\uncompleted
         return $string;
     }
 
-    public function setTitlePrompt(prompt $prompt = null)
+    public function setTitlePrompt(?prompt $prompt = null)
     {
         $this->titlePrompt = $prompt ?: new prompt();
 
@@ -86,7 +86,7 @@ class cli extends report\fields\runner\tests\uncompleted
         return $this->titlePrompt;
     }
 
-    public function setTitleColorizer(colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null)
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
@@ -98,7 +98,7 @@ class cli extends report\fields\runner\tests\uncompleted
         return $this->titleColorizer;
     }
 
-    public function setMethodPrompt(prompt $prompt = null)
+    public function setMethodPrompt(?prompt $prompt = null)
     {
         $this->methodPrompt = $prompt ?: new prompt();
 
@@ -110,7 +110,7 @@ class cli extends report\fields\runner\tests\uncompleted
         return $this->methodPrompt;
     }
 
-    public function setMethodColorizer(colorizer $colorizer = null)
+    public function setMethodColorizer(?colorizer $colorizer = null)
     {
         $this->methodColorizer = $colorizer ?: new colorizer();
 
@@ -122,7 +122,7 @@ class cli extends report\fields\runner\tests\uncompleted
         return $this->methodColorizer;
     }
 
-    public function setOutputPrompt(prompt $prompt = null)
+    public function setOutputPrompt(?prompt $prompt = null)
     {
         $this->outputPrompt = $prompt ?: new prompt();
 
@@ -134,7 +134,7 @@ class cli extends report\fields\runner\tests\uncompleted
         return $this->outputPrompt;
     }
 
-    public function setOutputColorizer(colorizer $colorizer = null)
+    public function setOutputColorizer(?colorizer $colorizer = null)
     {
         $this->outputColorizer = $colorizer ?: new colorizer();
 

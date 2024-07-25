@@ -41,7 +41,7 @@ class cli extends report\fields\runner\coverage
         ;
     }
 
-    public function setPrompt(prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null)
     {
         $this->prompt = $prompt ?: new prompt();
 
@@ -53,7 +53,7 @@ class cli extends report\fields\runner\coverage
         return $this->prompt;
     }
 
-    public function setTitleColorizer(colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null)
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
@@ -65,7 +65,7 @@ class cli extends report\fields\runner\coverage
         return $this->titleColorizer;
     }
 
-    public function setCoverageColorizer(colorizer $colorizer = null)
+    public function setCoverageColorizer(?colorizer $colorizer = null)
     {
         $this->coverageColorizer = $colorizer ?: new colorizer();
 

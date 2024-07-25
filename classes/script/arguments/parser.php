@@ -13,7 +13,7 @@ class parser implements \iteratorAggregate
     protected $priorities = [];
     protected $superglobals = null;
 
-    public function __construct(atoum\superglobals $superglobals = null)
+    public function __construct(?atoum\superglobals $superglobals = null)
     {
         $this->setSuperglobals($superglobals ?: new atoum\superglobals());
     }

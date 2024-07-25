@@ -23,7 +23,7 @@ class categorizer
         return $this->name;
     }
 
-    public function setCallback(\closure $callback = null)
+    public function setCallback(?\closure $callback = null)
     {
         $this->callback = $callback ?: function () {
             return false;

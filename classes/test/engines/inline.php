@@ -14,12 +14,12 @@ class inline extends test\engine
         return false;
     }
 
-    public function __construct(atoum\test\score $score = null)
+    public function __construct(?atoum\test\score $score = null)
     {
         $this->setScore();
     }
 
-    public function setScore(atoum\test\score $score = null)
+    public function setScore(?atoum\test\score $score = null)
     {
         $this->score = $score ?: new atoum\test\score();
 

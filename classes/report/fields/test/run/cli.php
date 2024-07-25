@@ -35,7 +35,7 @@ class cli extends report\fields\test\run
         ;
     }
 
-    public function setPrompt(prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null)
     {
         $this->prompt = $prompt ?: new prompt();
 
@@ -47,7 +47,7 @@ class cli extends report\fields\test\run
         return $this->prompt;
     }
 
-    public function setColorizer(colorizer $colorizer = null)
+    public function setColorizer(?colorizer $colorizer = null)
     {
         $this->colorizer = $colorizer ?: new colorizer();
 

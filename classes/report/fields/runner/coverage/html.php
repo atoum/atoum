@@ -290,7 +290,7 @@ class html extends report\fields\runner\coverage\cli
         return $this->destinationDirectory;
     }
 
-    public function setUrlPrompt(prompt $prompt = null)
+    public function setUrlPrompt(?prompt $prompt = null)
     {
         $this->urlPrompt = $prompt ?: new prompt();
 
@@ -302,7 +302,7 @@ class html extends report\fields\runner\coverage\cli
         return $this->urlPrompt;
     }
 
-    public function setUrlColorizer(colorizer $colorizer = null)
+    public function setUrlColorizer(?colorizer $colorizer = null)
     {
         $this->urlColorizer = $colorizer ?: new colorizer();
 
@@ -326,7 +326,7 @@ class html extends report\fields\runner\coverage\cli
         return $this->templatesDirectory;
     }
 
-    public function setTemplateParser(template\parser $parser = null)
+    public function setTemplateParser(?template\parser $parser = null)
     {
         $this->templateParser = $parser ?: new template\parser();
 

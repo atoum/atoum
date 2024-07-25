@@ -185,7 +185,7 @@ class treemap extends report\fields\runner\coverage\cli
         return $this->destinationDirectory;
     }
 
-    public function setAdapter(atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 
@@ -197,7 +197,7 @@ class treemap extends report\fields\runner\coverage\cli
         return $this->adapter;
     }
 
-    public function setUrlPrompt(prompt $prompt = null)
+    public function setUrlPrompt(?prompt $prompt = null)
     {
         $this->urlPrompt = $prompt ?: new prompt();
 
@@ -209,7 +209,7 @@ class treemap extends report\fields\runner\coverage\cli
         return $this->urlPrompt;
     }
 
-    public function setUrlColorizer(colorizer $colorizer = null)
+    public function setUrlColorizer(?colorizer $colorizer = null)
     {
         $this->urlColorizer = $colorizer ?: new colorizer();
 

@@ -27,7 +27,7 @@ abstract class coverage extends report\field
         ;
     }
 
-    public function setPhp(php $php = null)
+    public function setPhp(?php $php = null)
     {
         $this->php = $php ?: new php();
 
@@ -39,7 +39,7 @@ abstract class coverage extends report\field
         return $this->php;
     }
 
-    public function setAdapter(adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();
 
@@ -51,7 +51,7 @@ abstract class coverage extends report\field
         return $this->adapter;
     }
 
-    public function addSrcDirectory($srcDirectory, \closure $filterClosure = null)
+    public function addSrcDirectory($srcDirectory, ?\closure $filterClosure = null)
     {
         $srcDirectory = (string) $srcDirectory;
 

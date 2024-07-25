@@ -9,7 +9,7 @@ abstract class notifier extends result
 {
     protected $adapter = null;
 
-    public function __construct(atoum\adapter $adapter = null)
+    public function __construct(?atoum\adapter $adapter = null)
     {
         parent::__construct();
 
@@ -53,7 +53,7 @@ abstract class notifier extends result
         return $this->send($title, $message, $this->success);
     }
 
-    public function setAdapter(atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 

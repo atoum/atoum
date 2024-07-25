@@ -45,12 +45,12 @@ class asserterProxy implements definition, ArrayAccess
         return $return;
     }
 
-    public function setLocale(atoum\locale $locale = null)
+    public function setLocale(?atoum\locale $locale = null)
     {
         return $this->proxiedAsserter->setLocale($locale);
     }
 
-    public function setGenerator(atoum\asserter\generator $generator = null)
+    public function setGenerator(?atoum\asserter\generator $generator = null)
     {
         return $this->setGenerator($generator);
     }

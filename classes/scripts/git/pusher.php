@@ -28,7 +28,7 @@ class pusher extends script\configurable
     protected $tagMinorVersion = false;
     protected $tagBetaVersion = false;
 
-    public function __construct($name, atoum\adapter $adapter = null)
+    public function __construct($name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
@@ -71,7 +71,7 @@ class pusher extends script\configurable
         return $this->tagFile;
     }
 
-    public function setTaggerEngine(scripts\tagger\engine $engine = null)
+    public function setTaggerEngine(?scripts\tagger\engine $engine = null)
     {
         $this->taggerEngine = $engine ?: new scripts\tagger\engine();
 
@@ -95,7 +95,7 @@ class pusher extends script\configurable
         return $this->workingDirectory;
     }
 
-    public function setGit(commands\git $git = null)
+    public function setGit(?commands\git $git = null)
     {
         $this->git = $git ?: new commands\git();
 

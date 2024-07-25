@@ -13,14 +13,14 @@ abstract class configurable extends atoum\script
     protected $includer = null;
     protected $configFiles = [];
 
-    public function __construct($name, atoum\adapter $adapter = null)
+    public function __construct($name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
         $this->setIncluder();
     }
 
-    public function setIncluder(atoum\includer $includer = null)
+    public function setIncluder(?atoum\includer $includer = null)
     {
         $this->includer = $includer ?: new atoum\includer();
 
@@ -144,7 +144,7 @@ abstract class configurable extends atoum\script
         return $this;
     }
 
-    protected function includeConfigFile($path, \closure $callback = null)
+    protected function includeConfigFile($path, ?\closure $callback = null)
     {
         if ($callback === null) {
             $script = $this;

@@ -14,7 +14,7 @@ class coverage extends runner
     protected $reportOutputPath;
     protected $reportFormat;
 
-    public function __construct($name, atoum\adapter $adapter = null)
+    public function __construct($name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 

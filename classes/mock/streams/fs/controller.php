@@ -11,7 +11,7 @@ class controller extends stream\controller
     protected $exists = true;
     protected $stat = [];
 
-    public function __construct($path, atoum\adapter $adapter = null)
+    public function __construct($path, ?atoum\adapter $adapter = null)
     {
         parent::__construct($path);
 
@@ -51,7 +51,7 @@ class controller extends stream\controller
         return $this->adapter;
     }
 
-    public function setAdapter(atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 

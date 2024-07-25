@@ -31,7 +31,7 @@ class builder extends atoum\script\configurable
     protected $reportTitle = null;
     protected $runnerConfigurationFiles = [];
 
-    public function __construct($name, atoum\adapter $adapter = null)
+    public function __construct($name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
@@ -43,7 +43,7 @@ class builder extends atoum\script\configurable
         ;
     }
 
-    public function setVcs(builder\vcs $vcs = null)
+    public function setVcs(?builder\vcs $vcs = null)
     {
         $this->vcs = $vcs ?: new builder\vcs\svn();
 
@@ -67,7 +67,7 @@ class builder extends atoum\script\configurable
         return $this->taggerEngine;
     }
 
-    public function setPhp(atoum\php $php = null)
+    public function setPhp(?atoum\php $php = null)
     {
         $this->php = $php ?: new atoum\php();
 
@@ -440,7 +440,7 @@ class builder extends atoum\script\configurable
         return $this;
     }
 
-    protected function includeConfigFile($path, \closure $callback = null)
+    protected function includeConfigFile($path, ?\closure $callback = null)
     {
         if ($callback === null) {
             $builder = $this;
