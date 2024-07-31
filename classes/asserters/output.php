@@ -8,7 +8,7 @@ use atoum\atoum\tools;
 
 class output extends phpString
 {
-    public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
+    public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
     {
         parent::__construct($generator, $analyzer, $locale);
 

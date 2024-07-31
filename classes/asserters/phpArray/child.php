@@ -9,7 +9,7 @@ class child extends asserters\phpArray
 {
     private $parent;
 
-    public function __construct(asserters\phpArray $parent = null)
+    public function __construct(?asserters\phpArray $parent = null)
     {
         parent::__construct($parent->getGenerator(), $parent->getAnalyzer(), $parent->getLocale());
 

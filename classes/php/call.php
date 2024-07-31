@@ -12,7 +12,7 @@ class call
     protected $object = null;
     protected $decorator = null;
 
-    public function __construct($function, array $arguments = null, $object = null)
+    public function __construct($function, ?array $arguments = null, $object = null)
     {
         $this->function = (string) $function;
         $this->arguments = $arguments;
@@ -88,7 +88,7 @@ class call
         return $this->object;
     }
 
-    public function setDecorator(adapter\call\decorator $decorator = null)
+    public function setDecorator(?adapter\call\decorator $decorator = null)
     {
         $this->decorator = $decorator ?: new adapter\call\decorator();
 

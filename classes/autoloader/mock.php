@@ -10,7 +10,7 @@ class mock
     protected $mockGenerator;
     protected $adapter;
 
-    public function __construct(atoum\mock\generator $generator = null, atoum\adapter $adapter = null)
+    public function __construct(?atoum\mock\generator $generator = null, ?atoum\adapter $adapter = null)
     {
         $this
             ->setAdapter($adapter)
@@ -18,7 +18,7 @@ class mock
         ;
     }
 
-    public function setMockGenerator(atoum\mock\generator $generator = null)
+    public function setMockGenerator(?atoum\mock\generator $generator = null)
     {
         $this->mockGenerator = $generator ?: new atoum\mock\generator();
 
@@ -30,7 +30,7 @@ class mock
         return $this->mockGenerator;
     }
 
-    public function setAdapter(atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 

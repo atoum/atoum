@@ -9,12 +9,12 @@ class clear implements writer\decorator
 {
     protected $cli = null;
 
-    public function __construct(atoum\cli $cli = null)
+    public function __construct(?atoum\cli $cli = null)
     {
         $this->setCli($cli);
     }
 
-    public function setCli(atoum\cli $cli = null)
+    public function setCli(?atoum\cli $cli = null)
     {
         $this->cli = $cli ?: new atoum\cli();
 

@@ -26,7 +26,7 @@ class cli extends report\fields\runner\atoum
         return ($this->author === null || $this->version === null ? '' : $this->prompt . $this->colorizer->colorize($this->locale->_('atoum version %s by %s (%s)', $this->version, $this->author, $this->path)) . PHP_EOL);
     }
 
-    public function setPrompt(prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null)
     {
         $this->prompt = $prompt ?: new prompt();
 
@@ -38,7 +38,7 @@ class cli extends report\fields\runner\atoum
         return $this->prompt;
     }
 
-    public function setColorizer(colorizer $colorizer = null)
+    public function setColorizer(?colorizer $colorizer = null)
     {
         $this->colorizer = $colorizer ?: new colorizer();
 

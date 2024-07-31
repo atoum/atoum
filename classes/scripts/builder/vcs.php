@@ -14,7 +14,7 @@ abstract class vcs
     protected $password = null;
     protected $workingDirectory = null;
 
-    public function __construct(atoum\adapter $adapter = null)
+    public function __construct(?atoum\adapter $adapter = null)
     {
         $this->setAdapter($adapter ?: new atoum\adapter());
     }

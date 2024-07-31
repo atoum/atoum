@@ -30,7 +30,7 @@ class git
         return $this->command->getBinaryPath();
     }
 
-    public function setCommand(cli\command $command = null)
+    public function setCommand(?cli\command $command = null)
     {
         $this->command = $command ?: new cli\command();
 

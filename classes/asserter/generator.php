@@ -11,7 +11,7 @@ class generator
     protected $locale = null;
     protected $resolver = null;
 
-    public function __construct(atoum\locale $locale = null, asserter\resolver $resolver = null)
+    public function __construct(?atoum\locale $locale = null, ?asserter\resolver $resolver = null)
     {
         $this
             ->setLocale($locale)
@@ -58,7 +58,7 @@ class generator
         return $this->resolver->getNamespaces();
     }
 
-    public function setLocale(atoum\locale $locale = null)
+    public function setLocale(?atoum\locale $locale = null)
     {
         $this->locale = $locale ?: new atoum\locale();
 
@@ -70,7 +70,7 @@ class generator
         return $this->locale;
     }
 
-    public function setResolver(asserter\resolver $resolver = null)
+    public function setResolver(?asserter\resolver $resolver = null)
     {
         $this->resolver = $resolver ?: new asserter\resolver();
 
@@ -87,7 +87,7 @@ class generator
         return $this->resolver->resolve($asserter);
     }
 
-    public function getAsserterInstance($asserter, array $arguments = [], atoum\test $test = null)
+    public function getAsserterInstance($asserter, array $arguments = [], ?atoum\test $test = null)
     {
         if (($asserterClass = $this->getAsserterClass($asserter)) === null) {
             throw new exceptions\logic\invalidArgument('Asserter \'' . $asserter . '\' does not exist');

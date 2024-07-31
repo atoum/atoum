@@ -66,7 +66,7 @@ class controller extends test\adapter
         return $this->setInvoker($method);
     }
 
-    public function setIterator(controller\iterator $iterator = null)
+    public function setIterator(?controller\iterator $iterator = null)
     {
         $this->iterator = $iterator ?: new controller\iterator();
 
@@ -97,7 +97,7 @@ class controller extends test\adapter
         return $this->mockMethods;
     }
 
-    public function methods(\closure $filter = null)
+    public function methods(?\closure $filter = null)
     {
         $this->iterator->resetFilters();
 
@@ -115,7 +115,7 @@ class controller extends test\adapter
         });
     }
 
-    public function getCalls(test\adapter\call $call = null, $identical = false)
+    public function getCalls(?test\adapter\call $call = null, $identical = false)
     {
         if ($call !== null) {
             $this->checkMethod($call->getFunction());
@@ -243,7 +243,7 @@ class controller extends test\adapter
         return $instance;
     }
 
-    public static function setLinker(controller\linker $linker = null)
+    public static function setLinker(?controller\linker $linker = null)
     {
         self::$linker = $linker ?: new controller\linker();
     }
@@ -272,7 +272,7 @@ class controller extends test\adapter
         return $this;
     }
 
-    protected function buildInvoker($methodName, \closure $factory = null)
+    protected function buildInvoker($methodName, ?\closure $factory = null)
     {
         if ($factory === null) {
             $factory = function ($methodName, $mock) {
@@ -283,7 +283,7 @@ class controller extends test\adapter
         return $factory($methodName, $this->getMock());
     }
 
-    protected function setInvoker($methodName, \closure $factory = null)
+    protected function setInvoker($methodName, ?\closure $factory = null)
     {
         $invoker = parent::setInvoker($methodName, $factory);
 

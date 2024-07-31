@@ -104,8 +104,8 @@ PHP
     public function testYields()
     {
         $generator = function () {
-            for ($i=0; $i<10; $i++) {
-                yield ($i+1);
+            for ($i = 0; $i < 10; $i++) {
+                yield ($i + 1);
             }
         };
 
@@ -135,13 +135,13 @@ PHP
     public function testSetWith()
     {
         $generator = function () {
-            for ($i=0; $i<10; $i++) {
-                yield ($i+1);
+            for ($i = 0; $i < 10; $i++) {
+                yield ($i + 1);
             }
         };
 
         $notAGenerator = function () {
-            for ($i=0; $i<10; $i++) {
+            for ($i = 0; $i < 10; $i++) {
             }
         };
 

@@ -44,7 +44,7 @@ class cli extends report\fields\test\memory
         ;
     }
 
-    public function setPrompt(prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null)
     {
         $this->prompt = $prompt ?: new prompt();
 
@@ -56,7 +56,7 @@ class cli extends report\fields\test\memory
         return $this->prompt;
     }
 
-    public function setTitleColorizer(colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null)
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
@@ -68,7 +68,7 @@ class cli extends report\fields\test\memory
         return $this->titleColorizer;
     }
 
-    public function setMemoryColorizer(colorizer $colorizer = null)
+    public function setMemoryColorizer(?colorizer $colorizer = null)
     {
         $this->memoryColorizer = $colorizer ?: new colorizer();
 

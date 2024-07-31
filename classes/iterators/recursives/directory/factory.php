@@ -12,7 +12,7 @@ class factory
     protected $extensionFilterFactory = null;
     protected $acceptedExtensions = ['php'];
 
-    public function __construct(\closure $iteratorFactory = null, \closure $dotFilterFactory = null, \closure $extensionFilterFactory = null)
+    public function __construct(?\closure $iteratorFactory = null, ?\closure $dotFilterFactory = null, ?\closure $extensionFilterFactory = null)
     {
         $this
             ->setIteratorFactory($iteratorFactory)
@@ -21,7 +21,7 @@ class factory
         ;
     }
 
-    public function setIteratorFactory(\closure $factory = null)
+    public function setIteratorFactory(?\closure $factory = null)
     {
         $this->iteratorFactory = $factory ?: function ($path) {
             return new \recursiveDirectoryIterator($path);
@@ -35,7 +35,7 @@ class factory
         return $this->iteratorFactory;
     }
 
-    public function setDotFilterFactory(\closure $factory = null)
+    public function setDotFilterFactory(?\closure $factory = null)
     {
         $this->dotFilterFactory = $factory ?: function ($iterator) {
             return new filters\recursives\dot($iterator);
@@ -49,7 +49,7 @@ class factory
         return $this->dotFilterFactory;
     }
 
-    public function setExtensionFilterFactory(\closure $factory = null)
+    public function setExtensionFilterFactory(?\closure $factory = null)
     {
         $this->extensionFilterFactory = $factory ?: function ($iterator, $extensions) {
             return new filters\recursives\extension($iterator, $extensions);

@@ -9,7 +9,7 @@ class iterator implements \iteratorAggregate
     protected $controller = null;
     protected $filters = [];
 
-    public function __construct(mock\controller $controller = null)
+    public function __construct(?mock\controller $controller = null)
     {
         if ($controller != null) {
             $this->setMockController($controller);

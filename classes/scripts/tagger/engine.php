@@ -21,7 +21,7 @@ class engine
     protected $srcIteratorInjector = null;
     protected $destinationDirectory = null;
 
-    public function __construct(atoum\adapter $adapter = null)
+    public function __construct(?atoum\adapter $adapter = null)
     {
         if ($adapter === null) {
             $adapter = new adapter();

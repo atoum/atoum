@@ -40,7 +40,7 @@ class cli extends report\fields\runner\tests\duration
         ;
     }
 
-    public function setPrompt(prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null)
     {
         $this->prompt = $prompt ?: new prompt();
 
@@ -52,7 +52,7 @@ class cli extends report\fields\runner\tests\duration
         return $this->prompt;
     }
 
-    public function setTitleColorizer(colorizer $titleColorizer = null)
+    public function setTitleColorizer(?colorizer $titleColorizer = null)
     {
         $this->titleColorizer = $titleColorizer ?: new colorizer();
 
@@ -64,7 +64,7 @@ class cli extends report\fields\runner\tests\duration
         return $this->titleColorizer;
     }
 
-    public function setDurationColorizer(colorizer $durationColorizer = null)
+    public function setDurationColorizer(?colorizer $durationColorizer = null)
     {
         $this->durationColorizer = $durationColorizer ?: new colorizer();
 

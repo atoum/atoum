@@ -6,7 +6,7 @@ class extension extends \recursiveFilterIterator
 {
     protected $acceptedExtensions = [];
 
-    public function __construct($mixed, array $acceptedExtensions = [], \closure $iteratorFactory = null)
+    public function __construct($mixed, array $acceptedExtensions = [], ?\closure $iteratorFactory = null)
     {
         if ($mixed instanceof \recursiveIterator) {
             parent::__construct($mixed);

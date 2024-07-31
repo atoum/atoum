@@ -43,7 +43,7 @@ class cli extends report\fields\runner\php\version
         return $string;
     }
 
-    public function setTitlePrompt(prompt $prompt = null)
+    public function setTitlePrompt(?prompt $prompt = null)
     {
         $this->titlePrompt = $prompt ?: new prompt();
 
@@ -55,7 +55,7 @@ class cli extends report\fields\runner\php\version
         return $this->titlePrompt;
     }
 
-    public function setTitleColorizer(colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null)
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
@@ -67,7 +67,7 @@ class cli extends report\fields\runner\php\version
         return $this->titleColorizer;
     }
 
-    public function setVersionPrompt(prompt $prompt = null)
+    public function setVersionPrompt(?prompt $prompt = null)
     {
         $this->versionPrompt = $prompt ?: new prompt();
 
@@ -79,7 +79,7 @@ class cli extends report\fields\runner\php\version
         return $this->versionPrompt;
     }
 
-    public function setVersionColorizer(colorizer $colorizer = null)
+    public function setVersionColorizer(?colorizer $colorizer = null)
     {
         $this->versionColorizer = $colorizer ?: new colorizer();
 

@@ -9,12 +9,12 @@ abstract class writer
     protected $adapter = null;
     protected $decorators = [];
 
-    public function __construct(adapter $adapter = null)
+    public function __construct(?adapter $adapter = null)
     {
         $this->setAdapter($adapter);
     }
 
-    public function setAdapter(adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();
 

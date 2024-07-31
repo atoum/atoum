@@ -7,7 +7,7 @@ class prompt
     protected $value = '';
     protected $colorizer = null;
 
-    public function __construct($value = '', colorizer $colorizer = null)
+    public function __construct($value = '', ?colorizer $colorizer = null)
     {
         if ($colorizer === null) {
             $colorizer = new colorizer();

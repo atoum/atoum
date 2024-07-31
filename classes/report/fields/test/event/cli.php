@@ -74,7 +74,7 @@ class cli extends report\fields\test\event
         return $string;
     }
 
-    public function setProgressBar(progressBar $progressBar = null)
+    public function setProgressBar(?progressBar $progressBar = null)
     {
         $this->progressBar = $progressBar ?: new progressBar();
 

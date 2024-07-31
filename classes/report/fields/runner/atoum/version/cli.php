@@ -37,7 +37,7 @@ class cli extends report\fields\runner\atoum\version
         ;
     }
 
-    public function setTitlePrompt(prompt $prompt = null)
+    public function setTitlePrompt(?prompt $prompt = null)
     {
         $this->titlePrompt = $prompt ?: new prompt();
 
@@ -49,7 +49,7 @@ class cli extends report\fields\runner\atoum\version
         return $this->titlePrompt;
     }
 
-    public function setTitleColorizer(colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null)
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
@@ -61,7 +61,7 @@ class cli extends report\fields\runner\atoum\version
         return $this->titleColorizer;
     }
 
-    public function setVersionColorizer(colorizer $colorizer = null)
+    public function setVersionColorizer(?colorizer $colorizer = null)
     {
         $this->versionColorizer = $colorizer ?: new colorizer();
 

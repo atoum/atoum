@@ -10,14 +10,14 @@ class castToArray extends phpArray
 {
     protected $adapter = null;
 
-    public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null, atoum\adapter $adapter = null)
+    public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null, ?atoum\adapter $adapter = null)
     {
         parent::__construct($generator, $analyzer, $locale);
 
         $this->setAdapter($adapter);
     }
 
-    public function setAdapter(atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 

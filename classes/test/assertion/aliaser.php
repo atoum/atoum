@@ -12,7 +12,7 @@ class aliaser implements \arrayAccess
     private $context = null;
     private $keyword = null;
 
-    public function __construct(asserter\resolver $resolver = null)
+    public function __construct(?asserter\resolver $resolver = null)
     {
         $this->setResolver($resolver);
     }
@@ -85,7 +85,7 @@ class aliaser implements \arrayAccess
         return (isset($this->aliases[$this->getContextKey($context)]) === true);
     }
 
-    public function setResolver(asserter\resolver $resolver = null)
+    public function setResolver(?asserter\resolver $resolver = null)
     {
         $this->resolver = $resolver ?: new asserter\resolver();
 
