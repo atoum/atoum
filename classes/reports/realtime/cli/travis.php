@@ -24,24 +24,21 @@ class travis extends realtime
         $atoumPathField = new runner\atoum\path\cli();
         $atoumPathField
             ->setPrompt($firstLevelPrompt)
-            ->setTitleColorizer($defaultColorizer)
-        ;
+            ->setTitleColorizer($defaultColorizer);
 
         $this->addField($atoumPathField);
 
         $atoumVersionField = new runner\atoum\version\cli();
         $atoumVersionField
             ->setTitlePrompt($firstLevelPrompt)
-            ->setTitleColorizer($defaultColorizer)
-        ;
+            ->setTitleColorizer($defaultColorizer);
 
         $this->addField($atoumVersionField);
 
         $phpPathField = new runner\php\path\cli();
         $phpPathField
             ->setPrompt($firstLevelPrompt)
-            ->setTitleColorizer($defaultColorizer)
-        ;
+            ->setTitleColorizer($defaultColorizer);
 
         $this->addField($phpPathField);
 
@@ -49,50 +46,44 @@ class travis extends realtime
         $phpVersionField
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($defaultColorizer)
-            ->setVersionPrompt($secondLevelPrompt)
-        ;
+            ->setVersionPrompt($secondLevelPrompt);
 
         $this->addField($phpVersionField);
 
         $runnerTestsDurationField = new runner\tests\duration\cli();
         $runnerTestsDurationField
             ->setPrompt($firstLevelPrompt)
-            ->setTitleColorizer($defaultColorizer)
-        ;
+            ->setTitleColorizer($defaultColorizer);
 
         $this->addField($runnerTestsDurationField);
 
         $runnerTestsMemoryField = new runner\tests\memory\cli();
         $runnerTestsMemoryField
             ->setPrompt($firstLevelPrompt)
-            ->setTitleColorizer($defaultColorizer)
-        ;
+            ->setTitleColorizer($defaultColorizer);
 
         $this->addField($runnerTestsMemoryField);
 
-        $this->runnerTestsCoverageField = new runner\tests\coverage\cli();
-        $this->runnerTestsCoverageField
+        $runnerTestsCoverageField = new runner\tests\coverage\cli();
+        $runnerTestsCoverageField
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($defaultColorizer)
             ->setClassPrompt($secondLevelPrompt)
-            ->setMethodPrompt(new prompt('==> ', $defaultColorizer))
-        ;
+            ->setMethodPrompt(new prompt('==> ', $defaultColorizer));
 
-        $this->addField(new fold($this->runnerTestsCoverageField, 'coverage'));
+        $this->addField(new fold($runnerTestsCoverageField, 'coverage'));
 
         $runnerDurationField = new runner\duration\cli();
         $runnerDurationField
             ->setPrompt($firstLevelPrompt)
-            ->setTitleColorizer($defaultColorizer)
-        ;
+            ->setTitleColorizer($defaultColorizer);
 
         $this->addField($runnerDurationField);
 
         $runnerResultField = new runner\result\cli();
         $runnerResultField
             ->setSuccessColorizer(new colorizer('0;37', '42'))
-            ->setFailureColorizer(new colorizer('0;37', '41'))
-        ;
+            ->setFailureColorizer(new colorizer('0;37', '41'));
 
         $this->addField($runnerResultField);
 
@@ -104,8 +95,7 @@ class travis extends realtime
         $runnerFailuresField
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($failureColorizer)
-            ->setMethodPrompt($failurePrompt)
-        ;
+            ->setMethodPrompt($failurePrompt);
 
         $this->addField(new fold($runnerFailuresField, 'failures'));
 
@@ -113,8 +103,7 @@ class travis extends realtime
         $runnerOutputsField
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($defaultColorizer)
-            ->setMethodPrompt($secondLevelPrompt)
-        ;
+            ->setMethodPrompt($secondLevelPrompt);
 
         $this->addField(new fold($runnerOutputsField, 'outputs'));
 
@@ -129,8 +118,7 @@ class travis extends realtime
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($errorColorizer)
             ->setMethodPrompt($errorMethodPrompt)
-            ->setErrorPrompt($errorPrompt)
-        ;
+            ->setErrorPrompt($errorPrompt);
 
         $this->addField(new fold($runnerErrorsField, 'errors'));
 
@@ -145,8 +133,7 @@ class travis extends realtime
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($exceptionColorizer)
             ->setMethodPrompt($exceptionMethodPrompt)
-            ->setExceptionPrompt($exceptionPrompt)
-        ;
+            ->setExceptionPrompt($exceptionPrompt);
 
         $this->addField(new fold($runnerExceptionsField, 'exceptions'));
 
@@ -161,8 +148,7 @@ class travis extends realtime
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($uncompletedTestColorizer)
             ->setMethodPrompt($uncompletedTestMethodPrompt)
-            ->setOutputPrompt($uncompletedTestOutputPrompt)
-        ;
+            ->setOutputPrompt($uncompletedTestOutputPrompt);
 
         $this->addField(new fold($runnerUncompletedField, 'uncompleted'));
 
@@ -174,8 +160,7 @@ class travis extends realtime
         $runnerVoidField
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($voidTestColorizer)
-            ->setMethodPrompt($voidTestMethodPrompt)
-        ;
+            ->setMethodPrompt($voidTestMethodPrompt);
 
         $this->addField(new fold($runnerVoidField, 'void'));
 
@@ -187,8 +172,7 @@ class travis extends realtime
         $runnerSkippedField
             ->setTitlePrompt($firstLevelPrompt)
             ->setTitleColorizer($skippedTestColorizer)
-            ->setMethodPrompt($skippedTestMethodPrompt)
-        ;
+            ->setMethodPrompt($skippedTestMethodPrompt);
 
         $this->addField(new fold($runnerSkippedField, 'skipped'));
 
@@ -197,24 +181,19 @@ class travis extends realtime
         $testRunField = new test\run\cli();
         $testRunField
             ->setPrompt($firstLevelPrompt)
-            ->setColorizer($defaultColorizer)
-        ;
+            ->setColorizer($defaultColorizer);
 
         $this->addField($testRunField);
 
         $this->addField(new test\event\cli());
 
         $testDurationField = new test\duration\cli();
-        $testDurationField
-            ->setPrompt($secondLevelPrompt)
-        ;
+        $testDurationField->setPrompt($secondLevelPrompt);
 
         $this->addField($testDurationField);
 
         $testMemoryField = new test\memory\cli();
-        $testMemoryField
-            ->SetPrompt($secondLevelPrompt)
-        ;
+        $testMemoryField->SetPrompt($secondLevelPrompt);
 
         $this->addField($testMemoryField);
 
