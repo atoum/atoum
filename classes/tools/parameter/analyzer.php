@@ -33,6 +33,10 @@ class analyzer
             $names[] = ($type instanceof \reflectionType && !$type->isBuiltin() ? '\\' : '') . $name;
         }
 
+        if ($parameterType instanceof \ReflectionUnionType && $force_nullable && !in_array('null', $names)) {
+            $names[] = 'null';
+        }
+
         $prefix = ($force_nullable || $parameter->allowsNull()) && !($parameterType instanceof \ReflectionUnionType) ? '?' : '';
 
         return $prefix . implode('|', $names);
