@@ -80,7 +80,7 @@ class cli extends runner\failures
         return $string;
     }
 
-    public function setTitlePrompt(prompt $prompt = null)
+    public function setTitlePrompt(?prompt $prompt = null)
     {
         $this->titlePrompt = $prompt ?: new prompt();
 
@@ -92,7 +92,7 @@ class cli extends runner\failures
         return $this->titlePrompt;
     }
 
-    public function setTitleColorizer(colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null)
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
@@ -104,7 +104,7 @@ class cli extends runner\failures
         return $this->titleColorizer;
     }
 
-    public function setMethodPrompt(prompt $prompt = null)
+    public function setMethodPrompt(?prompt $prompt = null)
     {
         $this->methodPrompt = $prompt ?: new prompt();
 
@@ -116,7 +116,7 @@ class cli extends runner\failures
         return $this->methodPrompt;
     }
 
-    public function setMethodColorizer(colorizer $colorizer = null)
+    public function setMethodColorizer(?colorizer $colorizer = null)
     {
         $this->methodColorizer = $colorizer ?: new colorizer();
 

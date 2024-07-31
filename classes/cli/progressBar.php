@@ -19,7 +19,7 @@ class progressBar
     protected $iterations = 0;
     protected $currentIteration = 0;
 
-    public function __construct($iterations = 0, atoum\cli $cli = null)
+    public function __construct($iterations = 0, ?atoum\cli $cli = null)
     {
         $this->iterations = $iterations;
         $this->progressBarFormat = self::defaultProgressBarFormat;

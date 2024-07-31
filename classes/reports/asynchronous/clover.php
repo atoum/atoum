@@ -25,7 +25,7 @@ class clover extends atoum\reports\asynchronous
     protected $classes = 0;
     protected $package = '';
 
-    public function __construct(atoum\adapter $adapter = null)
+    public function __construct(?atoum\adapter $adapter = null)
     {
         parent::__construct();
 

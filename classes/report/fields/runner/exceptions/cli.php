@@ -85,7 +85,7 @@ class cli extends report\fields\runner\exceptions
         return $string;
     }
 
-    public function setTitlePrompt(prompt $prompt = null)
+    public function setTitlePrompt(?prompt $prompt = null)
     {
         $this->titlePrompt = $prompt ?: new prompt();
 
@@ -97,7 +97,7 @@ class cli extends report\fields\runner\exceptions
         return $this->titlePrompt;
     }
 
-    public function setTitleColorizer(colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null)
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
@@ -109,7 +109,7 @@ class cli extends report\fields\runner\exceptions
         return $this->titleColorizer;
     }
 
-    public function setMethodPrompt(prompt $prompt = null)
+    public function setMethodPrompt(?prompt $prompt = null)
     {
         $this->methodPrompt = $prompt ?: new prompt();
 
@@ -121,7 +121,7 @@ class cli extends report\fields\runner\exceptions
         return $this->methodPrompt;
     }
 
-    public function setMethodColorizer(colorizer $colorizer = null)
+    public function setMethodColorizer(?colorizer $colorizer = null)
     {
         $this->methodColorizer = $colorizer ?: new colorizer();
 
@@ -133,7 +133,7 @@ class cli extends report\fields\runner\exceptions
         return $this->methodColorizer;
     }
 
-    public function setExceptionPrompt(prompt $prompt = null)
+    public function setExceptionPrompt(?prompt $prompt = null)
     {
         $this->exceptionPrompt = $prompt ?: new prompt();
 
@@ -145,7 +145,7 @@ class cli extends report\fields\runner\exceptions
         return $this->exceptionPrompt;
     }
 
-    public function setExceptionColorizer(colorizer $colorizer = null)
+    public function setExceptionColorizer(?colorizer $colorizer = null)
     {
         $this->exceptionColorizer = $colorizer ?: new colorizer();
 

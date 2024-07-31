@@ -54,26 +54,38 @@ class analyzer extends atoum\test
             ->and($reflectionParameter = new \mock\reflectionParameter([uniqid(), uniqid()], 0))
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('string')
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('?string')
 
             ->if($reflectionNamedTypeController->getName = 'bool')
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('bool')
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('?bool')
 
             ->if($reflectionNamedTypeController->getName = 'int')
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('int')
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('?int')
 
             ->if($reflectionNamedTypeController->getName = 'float')
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('float')
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('?float')
 
             ->if($reflectionNamedTypeController->getName = 'array')
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('array')
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('?array')
 
             ->if($reflectionNamedTypeController->getName = 'callable')
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('callable')
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('?callable')
         ;
     }
 
@@ -155,10 +167,14 @@ class analyzer extends atoum\test
             ->and($reflectionParameter = new \mock\reflectionParameter([uniqid(), uniqid()], 0))
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo($class)
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('?' . $class)
 
             ->if($reflectionNamedTypeController->allowsNull = true)
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('?' . $class)
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('?' . $class)
         ;
     }
 
@@ -186,6 +202,8 @@ class analyzer extends atoum\test
             ->and($reflectionParameter = new \mock\reflectionParameter([uniqid(), uniqid()], 0))
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('mixed')
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('mixed')
         ;
     }
 
@@ -214,6 +232,8 @@ class analyzer extends atoum\test
             ->and($reflectionParameter = new \mock\reflectionParameter([uniqid(), uniqid()], 0))
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('null')
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('null')
         ;
     }
 
@@ -289,10 +309,22 @@ class analyzer extends atoum\test
             ->and($reflectionParameter = new \mock\reflectionParameter([uniqid(), uniqid()], 0))
             ->then
                 ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('string|array')
-
-            ->if($reflectionParameterController->allowsNull = true)
             ->then
-                ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('string|array')
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('string|array|null')
+
+            ->and($typeController3 = new mock\controller())
+            ->and($typeController3->__construct = function () {
+            })
+            ->and($typeController3->getName = 'null')
+            ->and($typeController3->isBuiltin = true)
+            ->and($type3 = new \mock\reflectionNamedType())
+            ->and($this->calling($unionTypeController)->getTypes = [$type1, $type2, $type3])
+            ->and($this->calling($unionTypeController)->allowsNull = true)
+            ->and($reflectionParameterController->allowsNull = true)
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter))->isEqualTo('string|array|null')
+            ->then
+                ->string($analyzer->getTypeHintString($reflectionParameter, true))->isEqualTo('string|array|null')
         ;
     }
 }

@@ -9,7 +9,7 @@ class invoker extends adapter\invoker
 {
     protected $mock = null;
 
-    public function __construct($method, mock\aggregator $mock = null)
+    public function __construct($method, ?mock\aggregator $mock = null)
     {
         parent::__construct($method);
 

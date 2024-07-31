@@ -25,7 +25,7 @@ class prompt
         return $this->inputReader;
     }
 
-    public function setInputReader(reader $inputReader = null)
+    public function setInputReader(?reader $inputReader = null)
     {
         $this->inputReader = $inputReader ?: new std\in();
 
@@ -37,7 +37,7 @@ class prompt
         return $this->outputWriter;
     }
 
-    public function setOutputWriter(writer $writer = null)
+    public function setOutputWriter(?writer $writer = null)
     {
         $this->outputWriter = $writer ?: new writers\std\out();
 

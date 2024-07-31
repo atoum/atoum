@@ -10,14 +10,14 @@ class tagger extends atoum\script
 {
     protected $engine = null;
 
-    public function __construct($name, atoum\adapter $adapter = null)
+    public function __construct($name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
         $this->setEngine();
     }
 
-    public function setEngine(tagger\engine $engine = null)
+    public function setEngine(?tagger\engine $engine = null)
     {
         $this->engine = $engine ?: new scripts\tagger\engine();
 

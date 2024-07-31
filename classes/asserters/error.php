@@ -13,7 +13,7 @@ class error extends asserter
     protected $type = null;
     protected $messageIsPattern = false;
 
-    public function __construct(asserter\generator $generator = null, test\score $score = null, atoum\locale $locale = null)
+    public function __construct(?asserter\generator $generator = null, ?test\score $score = null, ?atoum\locale $locale = null)
     {
         parent::__construct($generator, null, $locale);
 
@@ -49,7 +49,7 @@ class error extends asserter
         ;
     }
 
-    public function setScore(test\score $score = null)
+    public function setScore(?test\score $score = null)
     {
         $this->score = $score ?: new test\score();
 

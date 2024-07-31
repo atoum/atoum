@@ -14,7 +14,7 @@ class http extends atoum\writer implements writers\asynchronous
     protected $parameter = null;
     protected $headers = [];
 
-    public function __construct(atoum\adapter $adapter = null)
+    public function __construct(?atoum\adapter $adapter = null)
     {
         parent::__construct($adapter);
 

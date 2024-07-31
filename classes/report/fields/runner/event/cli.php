@@ -11,7 +11,7 @@ class cli extends report\fields\runner\event
 {
     protected $progressBar = null;
 
-    public function __construct(progressBar $progressBar = null)
+    public function __construct(?progressBar $progressBar = null)
     {
         parent::__construct();
 

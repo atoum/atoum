@@ -319,9 +319,9 @@ class file extends atoum\test
             ->and($resource = fopen($file, 'w'))
             ->then
                 ->boolean(flock($resource, LOCK_EX))->isTrue()
-                ->boolean(flock($resource, LOCK_EX|LOCK_NB))->isTrue()
+                ->boolean(flock($resource, LOCK_EX | LOCK_NB))->isTrue()
                 ->boolean(flock($resource, LOCK_SH))->isTrue()
-                ->boolean(flock($resource, LOCK_SH|LOCK_NB))->isTrue()
+                ->boolean(flock($resource, LOCK_SH | LOCK_NB))->isTrue()
                 ->boolean(flock($resource, LOCK_UN))->isTrue()
         ;
     }

@@ -19,12 +19,12 @@ class score
 
     private static $failId = 0;
 
-    public function __construct(score\coverage $coverage = null)
+    public function __construct(?score\coverage $coverage = null)
     {
         $this->setCoverage($coverage);
     }
 
-    public function setCoverage(score\coverage $coverage = null)
+    public function setCoverage(?score\coverage $coverage = null)
     {
         $this->coverage = $coverage ?: new score\coverage();
 

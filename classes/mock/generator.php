@@ -38,7 +38,7 @@ class generator
         return $this->shuntParentClassCalls;
     }
 
-    public function setAdapter(atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 
@@ -50,7 +50,7 @@ class generator
         return $this->adapter;
     }
 
-    public function setParameterAnalyzer(atoum\tools\parameter\analyzer $analyzer = null)
+    public function setParameterAnalyzer(?atoum\tools\parameter\analyzer $analyzer = null)
     {
         $this->parameterAnalyzer = $analyzer ?: new atoum\tools\parameter\analyzer();
 
@@ -62,7 +62,7 @@ class generator
         return $this->parameterAnalyzer;
     }
 
-    public function setReflectionClassFactory(\closure $factory = null)
+    public function setReflectionClassFactory(?\closure $factory = null)
     {
         $this->reflectionClassFactory = $factory ?: function ($class) {
             return new \reflectionClass($class);
@@ -771,7 +771,7 @@ class generator
         $mustBeNull = $this->isOrphanized($method->getName());
 
         foreach ($method->getParameters() as $parameter) {
-            $typeHintString = $this->parameterAnalyzer->getTypeHintString($parameter);
+            $typeHintString = $this->parameterAnalyzer->getTypeHintString($parameter, $mustBeNull);
             $parameterCode = (!empty($typeHintString) ? $typeHintString . ' ' : '') . ($parameter->isPassedByReference() == false ? '' : '& ') . ($parameter->isVariadic() == false ? '' : '... ') . '$' . $parameter->getName();
 
             switch (true) {
@@ -789,7 +789,7 @@ class generator
         }
 
         if (self::hasVariadic($method) === false && ($method->isConstructor() || $forceMockController)) {
-            $parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
+            $parameters[] = '?\\' . __NAMESPACE__ . '\\controller $mockController = null';
         }
 
         return implode(', ', $parameters);
@@ -846,7 +846,7 @@ class generator
     protected static function generateDefaultConstructor($disableMethodChecking = false, $uniqueId = false)
     {
         $defaultConstructor =
-            "\t" . 'public function __construct(\\' . __NAMESPACE__ . '\\controller $mockController = null)' . PHP_EOL .
+            "\t" . 'public function __construct(?\\' . __NAMESPACE__ . '\\controller $mockController = null)' . PHP_EOL .
             "\t" . '{' . PHP_EOL;
 
         if ($uniqueId === true) {

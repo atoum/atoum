@@ -35,7 +35,7 @@ class cli extends duration
         ;
     }
 
-    public function setPrompt(prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null)
     {
         $this->prompt = $prompt ?: new prompt();
 
@@ -47,7 +47,7 @@ class cli extends duration
         return $this->prompt;
     }
 
-    public function setTitleColorizer(colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null)
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
@@ -59,7 +59,7 @@ class cli extends duration
         return $this->titleColorizer;
     }
 
-    public function setDurationColorizer(colorizer $colorizer = null)
+    public function setDurationColorizer(?colorizer $colorizer = null)
     {
         $this->durationColorizer = $colorizer ?: new colorizer();
 

@@ -9,7 +9,7 @@ class generator extends asserter\generator
 {
     protected $test = null;
 
-    public function __construct(atoum\test $test, asserter\resolver $resolver = null)
+    public function __construct(atoum\test $test, ?asserter\resolver $resolver = null)
     {
         parent::__construct($test->getLocale(), $resolver);
 
@@ -38,7 +38,7 @@ class generator extends asserter\generator
         return $this->test;
     }
 
-    public function getAsserterInstance($asserter, array $arguments = [], atoum\test $test = null)
+    public function getAsserterInstance($asserter, array $arguments = [], ?atoum\test $test = null)
     {
         return parent::getAsserterInstance($asserter, $arguments, $test ?: $this->test);
     }

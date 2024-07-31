@@ -11,7 +11,7 @@ class manager
     protected $methodHandlers = [];
     protected $defaultHandler = null;
 
-    public function __construct(assertion\aliaser $aliaser = null)
+    public function __construct(?assertion\aliaser $aliaser = null)
     {
         $this->setAliaser($aliaser);
     }
@@ -31,7 +31,7 @@ class manager
         return $this->invokeMethodHandler($event, $arguments);
     }
 
-    public function setAliaser(assertion\aliaser $aliaser = null)
+    public function setAliaser(?assertion\aliaser $aliaser = null)
     {
         $this->aliaser = $aliaser ?: new assertion\aliaser();
 

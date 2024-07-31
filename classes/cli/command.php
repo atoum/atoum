@@ -18,7 +18,7 @@ class command
     private $stdErr = '';
     private $exitCode = null;
 
-    public function __construct($binaryPath = null, atoum\adapter $adapter = null)
+    public function __construct($binaryPath = null, ?atoum\adapter $adapter = null)
     {
         $this
             ->setAdapter($adapter)
@@ -103,7 +103,7 @@ class command
         return $this->adapter;
     }
 
-    public function setAdapter(atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 

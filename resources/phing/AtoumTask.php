@@ -38,12 +38,12 @@ class AtoumTask extends task
     private $showMissingCodeCoverage = true;
     private $maxChildren = 0;
 
-    public function __construct(atoum\runner $runner = null)
+    public function __construct(?atoum\runner $runner = null)
     {
         $this->setRunner($runner);
     }
 
-    public function setRunner(atoum\runner $runner = null)
+    public function setRunner(?atoum\runner $runner = null)
     {
         $this->runner = $runner;
 
@@ -207,7 +207,7 @@ class AtoumTask extends task
         return $this;
     }
 
-    public function configureDefaultReport(realtime\phing $report = null)
+    public function configureDefaultReport(?realtime\phing $report = null)
     {
         $report = $report ?: new realtime\phing();
 

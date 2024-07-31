@@ -11,7 +11,7 @@ class token extends iterator\value
     protected $string = null;
     protected $line = null;
 
-    public function __construct($tag, $string = null, $line = null, iterator\value $parent = null)
+    public function __construct($tag, $string = null, $line = null, ?iterator\value $parent = null)
     {
         $this->tag = $tag;
         $this->string = $string;

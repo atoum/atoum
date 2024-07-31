@@ -11,7 +11,7 @@ class extension extends asserter
     protected $name = null;
     protected $phpExtensionFactory = null;
 
-    public function __construct(asserter\generator $generator = null, atoum\locale $locale = null, \closure $phpExtensionFactory = null)
+    public function __construct(?asserter\generator $generator = null, ?atoum\locale $locale = null, ?\closure $phpExtensionFactory = null)
     {
         parent::__construct($generator, null, $locale);
 
@@ -82,7 +82,7 @@ class extension extends asserter
         return $this;
     }
 
-    public function setPhpExtensionFactory(\closure $factory = null)
+    public function setPhpExtensionFactory(?\closure $factory = null)
     {
         $this->phpExtensionFactory = $factory ?: function ($extensionName) {
             return new atoum\php\extension($extensionName);

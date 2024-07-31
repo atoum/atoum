@@ -14,7 +14,7 @@ class prompt implements looper
     private $locale;
     private $cli;
 
-    public function __construct(script\prompt $prompt = null, atoum\writer $writer = null, atoum\cli $cli = null, atoum\locale $locale = null)
+    public function __construct(?script\prompt $prompt = null, ?atoum\writer $writer = null, ?atoum\cli $cli = null, ?atoum\locale $locale = null)
     {
         $this
             ->setCli($cli)
@@ -24,7 +24,7 @@ class prompt implements looper
         ;
     }
 
-    public function setCli(atoum\cli $cli = null)
+    public function setCli(?atoum\cli $cli = null)
     {
         $this->cli = $cli ?: new atoum\cli();
 
@@ -36,7 +36,7 @@ class prompt implements looper
         return $this->cli;
     }
 
-    public function setOutputWriter(atoum\writer $writer = null)
+    public function setOutputWriter(?atoum\writer $writer = null)
     {
         $this->writer = $writer ?: new writers\std\out($this->cli);
 
@@ -48,7 +48,7 @@ class prompt implements looper
         return $this->writer;
     }
 
-    public function setPrompt(script\prompt $prompt = null)
+    public function setPrompt(?script\prompt $prompt = null)
     {
         if ($prompt === null) {
             $prompt = new script\prompt();
@@ -64,7 +64,7 @@ class prompt implements looper
         return $this->prompt;
     }
 
-    public function setLocale(atoum\locale $locale = null)
+    public function setLocale(?atoum\locale $locale = null)
     {
         $this->locale = $locale ?: new atoum\locale();
 

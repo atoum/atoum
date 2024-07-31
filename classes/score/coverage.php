@@ -18,7 +18,7 @@ class coverage implements \countable, \serializable
     protected $excludedNamespaces = [];
     protected $excludedDirectories = [];
 
-    public function __construct(atoum\adapter $adapter = null, \closure $reflectionClassFactory = null)
+    public function __construct(?atoum\adapter $adapter = null, ?\closure $reflectionClassFactory = null)
     {
         $this
             ->setAdapter($adapter)
@@ -26,7 +26,7 @@ class coverage implements \countable, \serializable
         ;
     }
 
-    public function setAdapter(atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 
@@ -38,7 +38,7 @@ class coverage implements \countable, \serializable
         return $this->adapter;
     }
 
-    public function setReflectionClassFactory(\closure $factory = null)
+    public function setReflectionClassFactory(?\closure $factory = null)
     {
         $this->reflectionClassFactory = $factory ?: function ($class) {
             return new \reflectionClass($class);

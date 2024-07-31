@@ -12,7 +12,7 @@ class colorizer implements writer\decorator
     protected $foreground = null;
     protected $background = null;
 
-    public function __construct($foreground = null, $background = null, atoum\cli $cli = null)
+    public function __construct($foreground = null, $background = null, ?atoum\cli $cli = null)
     {
         if ($foreground !== null) {
             $this->setForeground($foreground);
@@ -25,7 +25,7 @@ class colorizer implements writer\decorator
         $this->setCli($cli);
     }
 
-    public function setCli(atoum\cli $cli = null)
+    public function setCli(?atoum\cli $cli = null)
     {
         $this->cli = $cli ?: new atoum\cli();
 

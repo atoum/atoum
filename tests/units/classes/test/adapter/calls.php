@@ -667,7 +667,7 @@ class calls extends atoum\test
                     ->hasSize(1)
                     ->array($previousCalls->toArray())
                         ->isIdenticalTo([3 => $call3])
-                ->object($previousCalls =$calls->getPreviousIdenticalTo($call4, 5))
+                ->object($previousCalls = $calls->getPreviousIdenticalTo($call4, 5))
                     ->isInstanceOf(atoum\test\adapter\calls::class)
                     ->hasSize(1)
                     ->array($previousCalls->toArray())
@@ -755,7 +755,7 @@ class calls extends atoum\test
                 ->boolean($previousCalls = $calls->hasPreviousIdenticalTo($call3, 4))->isTrue()
                 ->boolean($calls->hasPreviousIdenticalTo($call4, 4))->isFalse()
                 ->boolean($previousCalls = $calls->hasPreviousIdenticalTo($call3, 5))->isTrue()
-                ->boolean($previousCalls =$calls->hasPreviousIdenticalTo($call4, 5))->isTrue()
+                ->boolean($previousCalls = $calls->hasPreviousIdenticalTo($call4, 5))->isTrue()
         ;
     }
 

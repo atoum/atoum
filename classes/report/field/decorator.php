@@ -19,7 +19,7 @@ abstract class decorator extends field
         return $this->decorate($this->field->__toString());
     }
 
-    public function setLocale(atoum\locale $locale = null)
+    public function setLocale(?atoum\locale $locale = null)
     {
         $this->field->setLocale($locale);
 

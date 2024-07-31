@@ -18,7 +18,7 @@ class decorator
         return $this->argumentsDecorator;
     }
 
-    public function setArgumentsDecorator(arguments\decorator $decorator = null)
+    public function setArgumentsDecorator(?arguments\decorator $decorator = null)
     {
         $this->argumentsDecorator = $decorator ?: new arguments\decorator();
 

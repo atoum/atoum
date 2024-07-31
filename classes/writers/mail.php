@@ -11,7 +11,7 @@ class mail extends atoum\writer implements report\writers\asynchronous
     protected $mailer = null;
     protected $locale = null;
 
-    public function __construct(atoum\mailer $mailer = null, atoum\locale $locale = null, atoum\adapter $adapter = null)
+    public function __construct(?atoum\mailer $mailer = null, ?atoum\locale $locale = null, ?atoum\adapter $adapter = null)
     {
         parent::__construct($adapter);
 

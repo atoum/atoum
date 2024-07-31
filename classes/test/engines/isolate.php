@@ -9,12 +9,12 @@ class isolate extends engines\concurrent
 {
     protected $score = null;
 
-    public function __construct(atoum\score $score = null)
+    public function __construct(?atoum\score $score = null)
     {
         parent::__construct($score);
     }
 
-    public function setScore(atoum\score $score = null)
+    public function setScore(?atoum\score $score = null)
     {
         $this->score = $score ?: new atoum\score();
 

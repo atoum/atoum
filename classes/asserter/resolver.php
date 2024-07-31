@@ -14,7 +14,7 @@ class resolver
     private $analyzer;
     private $resolved = [];
 
-    public function __construct($baseClass = null, $namespace = null, analyzer $analyzer = null)
+    public function __construct($baseClass = null, $namespace = null, ?analyzer $analyzer = null)
     {
         $this
             ->setBaseClass($baseClass ?: static::defaultBaseClass)
@@ -23,7 +23,7 @@ class resolver
         ;
     }
 
-    public function setAnalyzer(analyzer $analyzer = null)
+    public function setAnalyzer(?analyzer $analyzer = null)
     {
         $this->analyzer = $analyzer ?: new analyzer();
 

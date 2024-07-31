@@ -12,7 +12,7 @@ abstract class mailer
     protected $contentType = null;
     protected $adapter = null;
 
-    public function __construct(adapter $adapter = null)
+    public function __construct(?adapter $adapter = null)
     {
         $this->setAdapter($adapter ?: new adapter());
     }
