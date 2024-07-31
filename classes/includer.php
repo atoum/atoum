@@ -9,7 +9,7 @@ class includer
 
     private $path = '';
 
-    public function __construct(adapter $adapter = null)
+    public function __construct(?adapter $adapter = null)
     {
         $this->setAdapter($adapter);
     }
@@ -21,7 +21,7 @@ class includer
         return $this;
     }
 
-    public function setAdapter(adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();
 
@@ -38,7 +38,7 @@ class includer
         return $this->errors;
     }
 
-    public function includePath($path, \closure $closure = null)
+    public function includePath($path, ?\closure $closure = null)
     {
         $this->resetErrors();
 

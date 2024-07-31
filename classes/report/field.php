@@ -9,14 +9,14 @@ abstract class field
     protected $events = [];
     protected $locale = null;
 
-    public function __construct(array $events = null)
+    public function __construct(?array $events = null)
     {
         $this->events = $events;
 
         $this->setLocale();
     }
 
-    public function setLocale(atoum\locale $locale = null)
+    public function setLocale(?atoum\locale $locale = null)
     {
         $this->locale = $locale ?: new atoum\locale();
 

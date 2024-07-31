@@ -8,7 +8,7 @@ use atoum\atoum\scripts\builder;
 
 class svn extends builder\vcs
 {
-    public function __construct(atoum\adapter $adapter = null)
+    public function __construct(?atoum\adapter $adapter = null)
     {
         parent::__construct($adapter);
     }

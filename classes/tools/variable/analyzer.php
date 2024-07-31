@@ -89,7 +89,7 @@ class analyzer
 
     public function isRegex($namespace)
     {
-        return false !== @preg_match($namespace, null);
+        return false !== @preg_match($namespace, '');
     }
 
     public function isValidIdentifier($identifier)

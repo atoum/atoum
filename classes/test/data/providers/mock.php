@@ -10,7 +10,7 @@ class mock extends phpObject
 {
     private $mockGenerator;
 
-    public function __construct(generator $mockGenerator = null)
+    public function __construct(?generator $mockGenerator = null)
     {
         $this->setMockGenerator($mockGenerator);
     }
@@ -30,7 +30,7 @@ class mock extends phpObject
         return $this->mockGenerator;
     }
 
-    public function setMockGenerator(generator $mockGenerator = null)
+    public function setMockGenerator(?generator $mockGenerator = null)
     {
         $this->mockGenerator = $mockGenerator ?: new generator();
     }

@@ -8,7 +8,7 @@ class cli
 
     private static $isTerminal = null;
 
-    public function __construct(adapter $adapter = null)
+    public function __construct(?adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();
     }

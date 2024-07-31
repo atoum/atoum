@@ -16,7 +16,7 @@ class variable extends tools\diff
         parent::__construct($expected, $actual);
     }
 
-    public function setAnalyzer(tools\variable\analyzer $analyzer = null)
+    public function setAnalyzer(?tools\variable\analyzer $analyzer = null)
     {
         $this->analyzer = $analyzer ?: new tools\variable\analyzer();
 

@@ -1,5 +1,9 @@
 # `dev-master`
 
+# 4.3.0 - unreleased
+
+* [#899](https://github.com/atoum/atoum/pull/899) Fix PHP 8.4 deprecations ([@cedric-anne])
+
 # 4.2.0 - 2023-07-30
 
 * [#893](https://github.com/atoum/atoum/pull/893) Drop PHP 7.4 support ([@cedric-anne])

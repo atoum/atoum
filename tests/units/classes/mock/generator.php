@@ -205,7 +205,7 @@ class generator extends atoum\test
                     'final class ' . $unknownClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -305,7 +305,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -378,7 +378,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -472,7 +472,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -640,7 +640,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -715,7 +715,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -791,7 +791,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -831,7 +831,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -875,7 +875,7 @@ class generator extends atoum\test
                     'final class classWithVariadicInConstructor extends \atoum\atoum\tests\units\mock\classWithVariadicInConstructor implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -943,7 +943,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -1012,7 +1012,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' implements \\' . $realClass . ', \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -1063,7 +1063,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' implements \\iteratorAggregate, \\' . $realClass . ', \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -1152,7 +1152,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' implements \\' . $realClass . ', \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -1238,7 +1238,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' implements \\' . $realClass . ', \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(array $param, \atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(array $param, ?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array($param), array_slice(func_get_args(), 1, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -1340,7 +1340,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -1434,7 +1434,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -1528,7 +1528,7 @@ class generator extends atoum\test
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
                 $this->getMockControllerMethods() .
-                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                 "\t" . '{' . PHP_EOL .
                 "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                 "\t\t" . '{' . PHP_EOL .
@@ -1614,7 +1614,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -1696,7 +1696,7 @@ class generator extends atoum\test
                     'final class ' . $className . ' extends \\' . $className . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -1945,7 +1945,7 @@ class generator extends atoum\test
             ->and($analyzerController = new mock\controller())
             ->and($analyzerController->__construct = function () {
             })
-            ->and($analyzerController->getTypeHintString[1] = 'string')
+            ->and($analyzerController->getTypeHintString[1] = '?string')
             ->and($analyzerController->getTypeHintString[2] = '')
             ->and($analyzerController->getTypeHintString[3] = '?int')
             ->and($analyzer = new \mock\atoum\atoum\tools\parameter\analyzer())
@@ -1957,7 +1957,7 @@ class generator extends atoum\test
                     'final class ' . $className . ' extends \\' . $className . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(string $a = null, $b = null, ?int $c = null, \atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?string $a = null, $b = null, ?int $c = null, ?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$arguments = array_merge(array($a, $b, $c), array_slice(func_get_args(), 3, -1));' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -2071,7 +2071,7 @@ class generator extends atoum\test
                     'final class ' . $className . ' extends \\' . $className . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -2202,7 +2202,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -2296,7 +2296,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -2382,7 +2382,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -2476,7 +2476,7 @@ class generator extends atoum\test
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
                 $this->getMockControllerMethods() .
-                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                 "\t" . '{' . PHP_EOL .
                 "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                 "\t\t" . '{' . PHP_EOL .
@@ -2570,7 +2570,7 @@ class generator extends atoum\test
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
                 $this->getMockControllerMethods() .
-                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                 "\t" . '{' . PHP_EOL .
                 "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                 "\t\t" . '{' . PHP_EOL .
@@ -2665,7 +2665,7 @@ class generator extends atoum\test
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
                 $this->getMockControllerMethods() .
-                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                 "\t" . '{' . PHP_EOL .
                 "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                 "\t\t" . '{' . PHP_EOL .
@@ -2760,7 +2760,7 @@ class generator extends atoum\test
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
                 $this->getMockControllerMethods() .
-                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                 "\t" . '{' . PHP_EOL .
                 "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                 "\t\t" . '{' . PHP_EOL .
@@ -2855,7 +2855,7 @@ class generator extends atoum\test
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
                 $this->getMockControllerMethods() .
-                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                 "\t" . '{' . PHP_EOL .
                 "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                 "\t\t" . '{' . PHP_EOL .
@@ -2968,7 +2968,7 @@ class generator extends atoum\test
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
                 $this->getMockControllerMethods() .
-                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                 "\t" . '{' . PHP_EOL .
                 "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                 "\t\t" . '{' . PHP_EOL .
@@ -3062,7 +3062,7 @@ class generator extends atoum\test
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
                 $this->getMockControllerMethods() .
-                "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                 "\t" . '{' . PHP_EOL .
                 "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                 "\t\t" . '{' . PHP_EOL .
@@ -3113,7 +3113,7 @@ class generator extends atoum\test
                     'final class mockable extends \\' . __NAMESPACE__ . '\mockable implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . '$this->{\'mock\' . uniqid()} = true;' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -3195,7 +3195,7 @@ class generator extends atoum\test
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .
@@ -3247,7 +3247,7 @@ class generator extends atoum\test
                     'final class classWithScalarTypeHints extends \\' . __NAMESPACE__ . '\classWithScalarTypeHints implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
                     $this->getMockControllerMethods() .
-                    "\t" . 'public function __construct(\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
+                    "\t" . 'public function __construct(?\atoum\atoum\mock\controller $mockController = null)' . PHP_EOL .
                     "\t" . '{' . PHP_EOL .
                     "\t\t" . 'if ($mockController === null)' . PHP_EOL .
                     "\t\t" . '{' . PHP_EOL .

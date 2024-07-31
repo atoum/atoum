@@ -43,7 +43,7 @@ abstract class mocker
         return $this->defaultNamespace;
     }
 
-    public static function setAdapter(atoum\test\adapter $adapter = null)
+    public static function setAdapter(?atoum\test\adapter $adapter = null)
     {
         static::$adapter = $adapter ?: new atoum\php\mocker\adapter();
     }
@@ -53,7 +53,7 @@ abstract class mocker
         return static::$adapter;
     }
 
-    public static function setParameterAnalyzer(atoum\tools\parameter\analyzer $analyzer = null)
+    public static function setParameterAnalyzer(?atoum\tools\parameter\analyzer $analyzer = null)
     {
         static::$parameterAnalyzer = $analyzer ?: new atoum\tools\parameter\analyzer();
     }

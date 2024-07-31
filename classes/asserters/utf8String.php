@@ -11,7 +11,7 @@ class utf8String extends phpString
 {
     protected $adapter = null;
 
-    public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
+    public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
     {
         if (extension_loaded('mbstring') === false) {
             throw new exceptions\runtime('mbstring PHP extension is mandatory to use utf8String asserter');

@@ -21,7 +21,7 @@ class concurrent extends test\engine
         ;
     }
 
-    public function setScoreFactory(\closure $factory = null)
+    public function setScoreFactory(?\closure $factory = null)
     {
         $this->scoreFactory = $factory ?: function () {
             return new atoum\score();
@@ -35,7 +35,7 @@ class concurrent extends test\engine
         return $this->scoreFactory;
     }
 
-    public function setPhp(atoum\php $php = null)
+    public function setPhp(?atoum\php $php = null)
     {
         $this->php = $php ?: new atoum\php();
 

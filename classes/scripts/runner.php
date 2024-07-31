@@ -33,7 +33,7 @@ class runner extends atoum\script\configurable
     protected static $runnerFile = null;
     protected static $configurationCallables = [];
 
-    public function __construct($name, atoum\adapter $adapter = null, atoum\scripts\runner\looper $looper = null)
+    public function __construct($name, ?atoum\adapter $adapter = null, ?atoum\scripts\runner\looper $looper = null)
     {
         parent::__construct($name, $adapter);
 
@@ -46,7 +46,7 @@ class runner extends atoum\script\configurable
         ;
     }
 
-    public function setInfoWriter(atoum\writer $writer = null)
+    public function setInfoWriter(?atoum\writer $writer = null)
     {
         parent::setInfoWriter($writer);
 
@@ -57,7 +57,7 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function setWarningWriter(atoum\writer $writer = null)
+    public function setWarningWriter(?atoum\writer $writer = null)
     {
         if ($writer === null) {
             $writer = new writers\std\err();
@@ -73,7 +73,7 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function setErrorWriter(atoum\writer $writer = null)
+    public function setErrorWriter(?atoum\writer $writer = null)
     {
         parent::setErrorWriter($writer);
 
@@ -92,7 +92,7 @@ class runner extends atoum\script\configurable
         return atoum\directory . '/resources';
     }
 
-    public function setRunner(atoum\runner $runner = null)
+    public function setRunner(?atoum\runner $runner = null)
     {
         $this->runner = $runner ?: new atoum\runner();
 
@@ -104,7 +104,7 @@ class runner extends atoum\script\configurable
         return $this->runner;
     }
 
-    public function setConfiguratorFactory(\closure $factory = null)
+    public function setConfiguratorFactory(?\closure $factory = null)
     {
         $this->configuratorFactory = $factory ?: function ($test) {
             return new atoum\configurator($test);
@@ -118,7 +118,7 @@ class runner extends atoum\script\configurable
         return $this->configuratorFactory;
     }
 
-    public function setDefaultReportFactory(\closure $factory = null)
+    public function setDefaultReportFactory(?\closure $factory = null)
     {
         $this->defaultReportFactory = $factory ?: function ($script) {
             $report = new atoum\reports\realtime\cli();
@@ -140,7 +140,7 @@ class runner extends atoum\script\configurable
         return $this->defaultReportFactory;
     }
 
-    public function setLooper(atoum\scripts\runner\looper $looper = null)
+    public function setLooper(?atoum\scripts\runner\looper $looper = null)
     {
         $this->looper = $looper ?: new atoum\scripts\runner\loopers\prompt($this->prompt, $this->outputWriter, $this->cli, $this->locale);
 

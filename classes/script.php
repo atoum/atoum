@@ -22,7 +22,7 @@ abstract class script
     private $doRun = true;
     private $help = [];
 
-    public function __construct($name, adapter $adapter = null)
+    public function __construct($name, ?adapter $adapter = null)
     {
         $this->name = (string) $name;
 
@@ -51,7 +51,7 @@ abstract class script
         return rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
 
-    public function setAdapter(adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();
 
@@ -63,7 +63,7 @@ abstract class script
         return $this->adapter;
     }
 
-    public function setLocale(locale $locale = null)
+    public function setLocale(?locale $locale = null)
     {
         $this->locale = $locale ?: new locale();
 
@@ -75,7 +75,7 @@ abstract class script
         return $this->locale;
     }
 
-    public function setArgumentsParser(script\arguments\parser $parser = null)
+    public function setArgumentsParser(?script\arguments\parser $parser = null)
     {
         $this->argumentsParser = $parser ?: new script\arguments\parser();
 
@@ -89,7 +89,7 @@ abstract class script
         return $this->argumentsParser;
     }
 
-    public function setCli(cli $cli = null)
+    public function setCli(?cli $cli = null)
     {
         $this->cli = $cli ?: new cli();
 
@@ -106,7 +106,7 @@ abstract class script
         return (count($this->argumentsParser->getValues()) > 0);
     }
 
-    public function setOutputWriter(writer $writer = null)
+    public function setOutputWriter(?writer $writer = null)
     {
         $this->outputWriter = $writer ?: new writers\std\out($this->cli);
 
@@ -118,7 +118,7 @@ abstract class script
         return $this->outputWriter;
     }
 
-    public function setInfoWriter(writer $writer = null)
+    public function setInfoWriter(?writer $writer = null)
     {
         if ($writer === null) {
             $writer = new writers\std\out($this->cli);
@@ -139,7 +139,7 @@ abstract class script
         return $this->infoWriter;
     }
 
-    public function setWarningWriter(writer $writer = null)
+    public function setWarningWriter(?writer $writer = null)
     {
         if ($writer === null) {
             $writer = new writers\std\err($this->cli);
@@ -161,7 +161,7 @@ abstract class script
         return $this->warningWriter;
     }
 
-    public function setErrorWriter(writer $writer = null)
+    public function setErrorWriter(?writer $writer = null)
     {
         if ($writer === null) {
             $writer = new writers\std\err($this->cli);
@@ -183,7 +183,7 @@ abstract class script
         return $this->errorWriter;
     }
 
-    public function setHelpWriter(writer $writer = null)
+    public function setHelpWriter(?writer $writer = null)
     {
         if ($writer === null) {
             $labelColorizer = new cli\colorizer('0;32');
@@ -216,7 +216,7 @@ abstract class script
         return $this->helpWriter;
     }
 
-    public function setPrompt(script\prompt $prompt = null)
+    public function setPrompt(?script\prompt $prompt = null)
     {
         if ($prompt === null) {
             $prompt = new script\prompt();

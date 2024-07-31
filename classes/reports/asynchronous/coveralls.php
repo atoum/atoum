@@ -21,7 +21,7 @@ class coveralls extends atoum\reports\asynchronous
     protected $serviceName;
     protected $serviceJobId;
 
-    public function __construct($sourceDir, $repositoryToken = null, atoum\adapter $adapter = null)
+    public function __construct($sourceDir, $repositoryToken = null, ?atoum\adapter $adapter = null)
     {
         parent::__construct();
 
@@ -39,7 +39,7 @@ class coveralls extends atoum\reports\asynchronous
         $this->sourceDir = new atoum\fs\path($sourceDir);
     }
 
-    public function setBranchFinder(\closure $finder = null)
+    public function setBranchFinder(?\closure $finder = null)
     {
         $adapter = $this->adapter;
 
@@ -79,7 +79,7 @@ class coveralls extends atoum\reports\asynchronous
         return $this->serviceJobId;
     }
 
-    public function addDefaultWriter(atoum\writers\http $writer = null)
+    public function addDefaultWriter(?atoum\writers\http $writer = null)
     {
         $writer = $writer ?: new atoum\writers\http($this->adapter);
         $writer

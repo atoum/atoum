@@ -82,7 +82,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
         return $this;
     }
 
-    public function setDecorator(adapter\calls\decorator $decorator = null)
+    public function setDecorator(?adapter\calls\decorator $decorator = null)
     {
         $this->decorator = $decorator ?: new adapter\calls\decorator();
 
@@ -117,7 +117,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
         return $this;
     }
 
-    public function toArray(adapter\call $call = null)
+    public function toArray(?adapter\call $call = null)
     {
         if ($call === null) {
             $calls = $this->getTimeline();

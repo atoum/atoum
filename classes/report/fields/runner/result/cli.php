@@ -63,7 +63,7 @@ class cli extends fields\runner\result
         return $string . PHP_EOL;
     }
 
-    public function setPrompt(prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null)
     {
         $this->prompt = $prompt ?: new prompt();
 
@@ -75,7 +75,7 @@ class cli extends fields\runner\result
         return $this->prompt;
     }
 
-    public function setSuccessColorizer(colorizer $colorizer = null)
+    public function setSuccessColorizer(?colorizer $colorizer = null)
     {
         $this->successColorizer = $colorizer ?: new colorizer();
 
@@ -87,7 +87,7 @@ class cli extends fields\runner\result
         return $this->successColorizer;
     }
 
-    public function setFailureColorizer(colorizer $colorizer = null)
+    public function setFailureColorizer(?colorizer $colorizer = null)
     {
         $this->failureColorizer = $colorizer ?: new colorizer();
 

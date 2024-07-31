@@ -12,7 +12,7 @@ class xunit extends atoum\reports\asynchronous
     protected $score = null;
     protected $assertions = [];
 
-    public function __construct(atoum\adapter $adapter = null)
+    public function __construct(?atoum\adapter $adapter = null)
     {
         parent::__construct();
 

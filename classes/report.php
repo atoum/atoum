@@ -30,7 +30,7 @@ class report implements observer
         return $string;
     }
 
-    public function setLocale(locale $locale = null)
+    public function setLocale(?locale $locale = null)
     {
         $this->locale = $locale ?: new locale();
 
@@ -42,7 +42,7 @@ class report implements observer
         return $this->locale;
     }
 
-    public function setAdapter(adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();
 

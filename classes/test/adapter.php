@@ -75,19 +75,19 @@ class adapter extends atoum\adapter
         return $this->invokers;
     }
 
-    public function setCalls(adapter\calls $calls = null)
+    public function setCalls(?adapter\calls $calls = null)
     {
         $this->calls = $calls ?: new adapter\calls();
 
         return $this->resetCalls();
     }
 
-    public function getCalls(adapter\call $call = null, $identical = false)
+    public function getCalls(?adapter\call $call = null, $identical = false)
     {
         return ($call === null ? $this->calls : $this->calls->get($call, $identical));
     }
 
-    public function getCallsNumber(adapter\call $call = null, $identical = false)
+    public function getCallsNumber(?adapter\call $call = null, $identical = false)
     {
         return count($this->getCalls($call, $identical));
     }
@@ -127,12 +127,12 @@ class adapter extends atoum\adapter
         return $this->calls->hasAfter($call, $position, $identical);
     }
 
-    public function getCallNumber(adapter\call $call = null, $identical = false)
+    public function getCallNumber(?adapter\call $call = null, $identical = false)
     {
         return count($this->getCalls($call, $identical));
     }
 
-    public function getTimeline(adapter\call $call = null, $identical = false)
+    public function getTimeline(?adapter\call $call = null, $identical = false)
     {
         return $this->calls->getTimeline($call, $identical);
     }
@@ -183,12 +183,12 @@ class adapter extends atoum\adapter
         }
     }
 
-    public static function setStorage(adapter\storage $storage = null)
+    public static function setStorage(?adapter\storage $storage = null)
     {
         self::$storage = $storage ?: new adapter\storage();
     }
 
-    protected function buildInvoker($functionName, \closure $factory = null)
+    protected function buildInvoker($functionName, ?\closure $factory = null)
     {
         if ($factory === null) {
             $factory = function ($functionName) {
@@ -199,7 +199,7 @@ class adapter extends atoum\adapter
         return $factory($functionName);
     }
 
-    protected function setInvoker($functionName, \closure $factory = null)
+    protected function setInvoker($functionName, ?\closure $factory = null)
     {
         $key = static::getKey($functionName);
 

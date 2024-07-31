@@ -16,7 +16,7 @@ class parser
     protected $errorOffset = null;
     protected $errorMessage = null;
 
-    public function __construct($namespace = null, atoum\adapter $adapter = null)
+    public function __construct($namespace = null, ?atoum\adapter $adapter = null)
     {
         $this
             ->setNamespace($namespace ?: self::defaultNamespace)
@@ -58,14 +58,14 @@ class parser
         return $this->checkString($this->getFileContents($path));
     }
 
-    public function parseString($string, atoum\template $root = null)
+    public function parseString($string, ?atoum\template $root = null)
     {
         $this->parse((string) $string, $root);
 
         return $root;
     }
 
-    public function parseFile($path, atoum\template $root = null)
+    public function parseFile($path, ?atoum\template $root = null)
     {
         $this->parse($this->getfileContents($path), $root);
 

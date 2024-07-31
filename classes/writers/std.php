@@ -11,7 +11,7 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
     protected $cli = null;
     protected $resource = null;
 
-    public function __construct(atoum\cli $cli = null, atoum\adapter $adapter = null)
+    public function __construct(?atoum\cli $cli = null, ?atoum\adapter $adapter = null)
     {
         parent::__construct($adapter);
 
@@ -25,7 +25,7 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
         }
     }
 
-    public function setCli(atoum\cli $cli = null)
+    public function setCli(?atoum\cli $cli = null)
     {
         $this->cli = $cli ?: new atoum\cli();
 

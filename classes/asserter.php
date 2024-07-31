@@ -11,7 +11,7 @@ abstract class asserter implements asserter\definition
     protected $generator = null;
     protected $test = null;
 
-    public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null, locale $locale = null)
+    public function __construct(?asserter\generator $generator = null, ?variable\analyzer $analyzer = null, ?locale $locale = null)
     {
         $this
             ->setGenerator($generator)
@@ -51,7 +51,7 @@ abstract class asserter implements asserter\definition
         return $this;
     }
 
-    public function setLocale(locale $locale = null)
+    public function setLocale(?locale $locale = null)
     {
         $this->locale = $locale ?: new locale();
 
@@ -63,7 +63,7 @@ abstract class asserter implements asserter\definition
         return $this->locale;
     }
 
-    public function setGenerator(asserter\generator $generator = null)
+    public function setGenerator(?asserter\generator $generator = null)
     {
         $this->generator = $generator ?: new asserter\generator();
 
@@ -75,7 +75,7 @@ abstract class asserter implements asserter\definition
         return $this->generator;
     }
 
-    public function setAnalyzer(variable\analyzer $analyzer = null)
+    public function setAnalyzer(?variable\analyzer $analyzer = null)
     {
         $this->analyzer = $analyzer ?: new variable\analyzer();
 

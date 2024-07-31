@@ -15,14 +15,14 @@ class stub extends scripts\runner
 
     protected $pharFactory = null;
 
-    public function __construct($name, atoum\adapter $adapter = null)
+    public function __construct($name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
         $this->setPharFactory();
     }
 
-    public function setPharFactory(\closure $factory = null)
+    public function setPharFactory(?\closure $factory = null)
     {
         $this->pharFactory = $factory ?: function ($path) {
             return new \phar($path);
@@ -327,7 +327,7 @@ class stub extends scripts\runner
         return $this->stopRun();
     }
 
-    public function enableVersion($versionName, \phar $phar = null)
+    public function enableVersion($versionName, ?\phar $phar = null)
     {
         if ($this->adapter->ini_get('phar.readonly') == true) {
             throw new exceptions\runtime('Unable to update the PHAR, phar.readonly is set, use \'-d phar.readonly=0\'');
@@ -354,7 +354,7 @@ class stub extends scripts\runner
         return $this->stopRun();
     }
 
-    public function deleteVersion($versionName, \phar $phar = null)
+    public function deleteVersion($versionName, ?\phar $phar = null)
     {
         if ($this->adapter->ini_get('phar.readonly') == true) {
             throw new exceptions\runtime('Unable to update the PHAR, phar.readonly is set, use \'-d phar.readonly=0\'');

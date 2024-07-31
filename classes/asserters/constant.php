@@ -13,7 +13,7 @@ class constant extends asserter
     protected $isSet = false;
     protected $value = null;
 
-    public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
+    public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
     {
         parent::__construct($generator, $analyzer, $locale);
 
@@ -36,7 +36,7 @@ class constant extends asserter
         }
     }
 
-    public function setDiff(tools\diffs\variable $diff = null)
+    public function setDiff(?tools\diffs\variable $diff = null)
     {
         $this->diff = $diff ?: new tools\diffs\variable();
 

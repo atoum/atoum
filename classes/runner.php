@@ -64,7 +64,7 @@ class runner implements observable
         $this->extensions = new aggregator();
     }
 
-    public function setAdapter(adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();
 
@@ -76,7 +76,7 @@ class runner implements observable
         return $this->adapter;
     }
 
-    public function setLocale(locale $locale = null)
+    public function setLocale(?locale $locale = null)
     {
         $this->locale = $locale ?: new locale();
 
@@ -88,7 +88,7 @@ class runner implements observable
         return $this->locale;
     }
 
-    public function setIncluder(includer $includer = null)
+    public function setIncluder(?includer $includer = null)
     {
         $this->includer = $includer ?: new includer();
 
@@ -100,7 +100,7 @@ class runner implements observable
         return $this->includer;
     }
 
-    public function setScore(runner\score $score = null)
+    public function setScore(?runner\score $score = null)
     {
         $this->score = $score ?: new runner\score();
 
@@ -112,7 +112,7 @@ class runner implements observable
         return $this->score;
     }
 
-    public function setTestGenerator(test\generator $generator = null)
+    public function setTestGenerator(?test\generator $generator = null)
     {
         $this->testGenerator = $generator ?: new test\generator();
 
@@ -124,7 +124,7 @@ class runner implements observable
         return $this->testGenerator;
     }
 
-    public function setTestDirectoryIterator(iterators\recursives\directory\factory $iterator = null)
+    public function setTestDirectoryIterator(?iterators\recursives\directory\factory $iterator = null)
     {
         $this->testDirectoryIterator = $iterator ?: new iterators\recursives\directory\factory();
 
@@ -136,7 +136,7 @@ class runner implements observable
         return $this->testDirectoryIterator;
     }
 
-    public function setGlobIteratorFactory(\closure $factory = null)
+    public function setGlobIteratorFactory(?\closure $factory = null)
     {
         $this->globIteratorFactory = $factory ?: function ($pattern) {
             return new \globIterator($pattern);
@@ -150,7 +150,7 @@ class runner implements observable
         return $this->globIteratorFactory;
     }
 
-    public function setReflectionClassFactory(\closure $factory = null)
+    public function setReflectionClassFactory(?\closure $factory = null)
     {
         $this->reflectionClassFactory = $factory ?: function ($class) {
             return new \reflectionClass($class);
@@ -289,7 +289,7 @@ class runner implements observable
         return $this->defaultReportTitle;
     }
 
-    public function setPhp(php $php = null)
+    public function setPhp(?php $php = null)
     {
         $this->php = $php ?: new php();
 
@@ -739,7 +739,7 @@ class runner implements observable
         return $this->removeObserver($report);
     }
 
-    public function removeReports(report $override = null)
+    public function removeReports(?report $override = null)
     {
         if ($override === null) {
             foreach ($this->reports as $report) {
@@ -818,7 +818,7 @@ class runner implements observable
         return $this;
     }
 
-    public function addExtension(extension $extension, extension\configuration $configuration = null)
+    public function addExtension(extension $extension, ?extension\configuration $configuration = null)
     {
         if ($this->extensions->contains($extension) === false) {
             $extension->setRunner($this);
