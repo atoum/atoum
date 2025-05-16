@@ -1,6 +1,6 @@
 # `dev-master`
 
-# 4.3.0 - unreleased
+# 4.3.0 - 2025-05-16
 
 * [#899](https://github.com/atoum/atoum/pull/899) Fix PHP 8.4 deprecations ([@cedric-anne])
 
