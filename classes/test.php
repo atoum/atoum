@@ -1096,14 +1096,14 @@ abstract class test implements observable, \countable
 
     public function addObserver(observer $observer)
     {
-        $this->observers->attach($observer);
+        $this->observers->offsetSet($observer);
 
         return $this;
     }
 
     public function removeObserver(observer $observer)
     {
-        $this->observers->detach($observer);
+        $this->observers->offsetUnset($observer);
 
         return $this;
     }
@@ -1977,7 +1977,7 @@ abstract class test implements observable, \countable
 
     public function removeExtension(extension $extension)
     {
-        $this->extensions->detach($extension);
+        $this->extensions->offsetUnset($extension);
 
         return $this->removeObserver($extension);
     }
@@ -1995,12 +1995,12 @@ abstract class test implements observable, \countable
 
     public function addExtension(extension $extension, ?extension\configuration $configuration = null)
     {
-        if ($this->extensions->contains($extension) === false) {
-            $this->extensions->detach($extension);
+        if ($this->extensions->offsetExists($extension) === false) {
+            $this->extensions->offsetUnset($extension);
             $this->removeObserver($extension);
         }
 
-        $this->extensions->attach($extension, $configuration);
+        $this->extensions->offsetSet($extension, $configuration);
 
         $extension->setTest($this);
 

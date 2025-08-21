@@ -15,14 +15,14 @@ class manager
 
     public function add(adapter\call $call)
     {
-        $this->calls->attach($call);
+        $this->calls->offsetSet($call);
 
         return $this;
     }
 
     public function remove(adapter\call $call)
     {
-        $this->calls->detach($call);
+        $this->calls->offsetUnset($call);
 
         return $this;
     }

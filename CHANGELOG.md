@@ -1,4 +1,6 @@
-# `dev-master`
+# `dev-main`
+
+* [#902](https://github.com/atoum/atoum/pull/902) Fix PHP 8.5 deprecations ([@cedric-anne])
 
 # 4.3.0 - 2025-05-16
 

@@ -22,7 +22,7 @@ class storage implements \countable, \iteratorAggregate
     public function add(adapter $adapter)
     {
         if ($this->contains($adapter) === false) {
-            $this->adapters->attach($adapter);
+            $this->adapters->offsetSet($adapter);
         }
 
         return $this;
@@ -30,7 +30,7 @@ class storage implements \countable, \iteratorAggregate
 
     public function contains(adapter $adapter)
     {
-        return $this->adapters->contains($adapter);
+        return $this->adapters->offsetExists($adapter);
     }
 
     public function reset()

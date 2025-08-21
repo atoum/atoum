@@ -58,7 +58,7 @@ class autoloader
             self::$registeredAutoloaders = new \splObjectStorage();
         }
 
-        self::$registeredAutoloaders->attach($this);
+        self::$registeredAutoloaders->offsetSet($this);
 
         return $this;
     }
@@ -69,7 +69,7 @@ class autoloader
             throw new \runtimeException('Unable to unregister');
         }
 
-        self::$registeredAutoloaders->detach($this);
+        self::$registeredAutoloaders->offsetUnset($this);
 
         return $this;
     }
