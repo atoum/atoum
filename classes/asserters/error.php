@@ -177,7 +177,7 @@ class error extends asserter
             case E_USER_NOTICE:
                 return 'E_USER_NOTICE';
 
-            case E_STRICT:
+            case 2048: // E_STRICT is deprecated since PHP 8.4
                 return 'E_STRICT';
 
             case E_RECOVERABLE_ERROR:
