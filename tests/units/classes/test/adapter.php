@@ -1,7 +1,6 @@
 <?php
 
-namespace
-{
+namespace {
     function dummy()
     {
     }
