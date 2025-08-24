@@ -24,7 +24,13 @@ class argument
         }
 
         if ($this->type !== null) {
-            $string = $this->type . ' ' . $string;
+            $type = $this->type;
+
+            if ($this->defaultValueIsSet === true && $this->defaultValue === null) {
+                $type = '?' . $type;
+            }
+
+            $string = $type . ' ' . $string;
         }
 
         if ($this->defaultValueIsSet === true) {
