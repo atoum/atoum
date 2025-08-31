@@ -10,6 +10,8 @@ class stream
     public const defaultProtocol = 'atoum';
     public const protocolSeparator = '://';
 
+    public $context;
+
     protected $streamController = null;
 
     protected static $adapter = null;

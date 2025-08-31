@@ -97,7 +97,7 @@ class controller extends atoum\test
             ->and($mockController->doesSomething = function () use (& $public) {
                 $this->public = $public = uniqid();
             })
-            ->and($mock->doesSomething())
+            ->and(@$mock->doesSomething())
             ->then
                 ->string($mock->public)->isEqualTo($public)
             ->if($mockController = new testedClass())
