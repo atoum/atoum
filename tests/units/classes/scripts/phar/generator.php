@@ -265,6 +265,7 @@ class generator extends atoum\test
                 $pharController->__construct = function () {
                 };
                 $pharController->setStub = function () {
+                    return true;
                 };
                 $pharController->setMetadata = function () {
                 };
@@ -365,6 +366,7 @@ class generator extends atoum\test
                 $pharController->__construct = function () {
                 };
                 $pharController->setStub = function () {
+                    return true;
                 };
                 $pharController->setMetadata = function () {
                 };
