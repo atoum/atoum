@@ -11,6 +11,9 @@ class tokenizer implements \iteratorAggregate
 
     private $tokens = null;
     private $currentIterator = null;
+    private $currentNamespace = null;
+    private $currentImportation = null;
+    private $currentFunction = null;
 
     public function __construct()
     {

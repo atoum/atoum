@@ -62,7 +62,7 @@ class error extends atoum\test
             ->string(atoum\asserters\error::getAsString(E_USER_ERROR))->isEqualTo('E_USER_ERROR')
             ->string(atoum\asserters\error::getAsString(E_USER_WARNING))->isEqualTo('E_USER_WARNING')
             ->string(atoum\asserters\error::getAsString(E_USER_NOTICE))->isEqualTo('E_USER_NOTICE')
-            ->string(atoum\asserters\error::getAsString(E_STRICT))->isEqualTo('E_STRICT')
+            ->string(atoum\asserters\error::getAsString(2048))->isEqualTo('E_STRICT')
             ->string(atoum\asserters\error::getAsString(E_RECOVERABLE_ERROR))->isEqualTo('E_RECOVERABLE_ERROR')
             ->string(atoum\asserters\error::getAsString(E_DEPRECATED))->isEqualTo('E_DEPRECATED')
             ->string(atoum\asserters\error::getAsString(E_USER_DEPRECATED))->isEqualTo('E_USER_DEPRECATED')

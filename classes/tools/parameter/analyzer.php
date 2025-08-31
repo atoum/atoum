@@ -37,7 +37,8 @@ class analyzer
             $names[] = 'null';
         }
 
-        $prefix = ($force_nullable || $parameter->allowsNull()) && !($parameterType instanceof \ReflectionUnionType) ? '?' : '';
+        $canBeNull = $force_nullable || $parameter->allowsNull() || ($parameter->isOptional() && !$parameter->isDefaultValueAvailable());
+        $prefix = $canBeNull && !($parameterType instanceof \ReflectionUnionType) ? '?' : '';
 
         return $prefix . implode('|', $names);
     }

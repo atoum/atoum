@@ -1,5 +1,7 @@
 # `dev-master`
 
+* [#903](https://github.com/atoum/atoum/pull/903) Fix some PHP deprecations ([@cedric-anne])
+
 # 4.3.0 - 2025-05-16
 
 * [#899](https://github.com/atoum/atoum/pull/899) Fix PHP 8.4 deprecations ([@cedric-anne])
