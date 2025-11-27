@@ -4,7 +4,7 @@ namespace atoum\atoum\adapter;
 
 interface definition
 {
-    public function __call($functionName, $arguments);
+    public function __call(string $functionName, array $arguments): mixed;
 
-    public function invoke($functionName, array $arguments = []);
+    public function invoke(string $functionName, array $arguments = []): mixed;
 }

@@ -29,7 +29,7 @@ class mysqlDateTime extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notMysqlDateTime)
                 ->mock($locale)->call('_')->withArguments('%s is not in format Y-m-d H:i:s', $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($value)->once

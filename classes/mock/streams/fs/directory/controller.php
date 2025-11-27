@@ -6,24 +6,24 @@ use atoum\atoum\mock\streams\fs;
 
 class controller extends fs\controller
 {
-    public function __construct($path)
+    public function __construct(string $path)
     {
         parent::__construct($path);
 
         $this->setPermissions('755');
     }
 
-    public function setPermissions($permissions)
+    public function setPermissions($permissions): static
     {
-        return parent::setPermissions(0400000 | octdec($permissions));
+        return parent::setPermissions(0400000 | octdec((string) $permissions));
     }
 
-    public function getContents()
+    public function getContents(): array
     {
         return [];
     }
 
-    public function mkdir($path, $mode, $options)
+    public function mkdir(string $path, int $mode, int $options): bool
     {
         if ($this->exists === true) {
             return false;
@@ -34,7 +34,7 @@ class controller extends fs\controller
         }
     }
 
-    public function rmdir($path, $options)
+    public function rmdir(string $path, int $options): bool
     {
         if ($this->exists === false || $this->checkIfWritable() === false) {
             return false;
@@ -45,12 +45,12 @@ class controller extends fs\controller
         }
     }
 
-    public function dir_opendir($path, $useSafeMode)
+    public function dir_opendir(string $path, bool $useSafeMode): bool
     {
         return $this->exists;
     }
 
-    public function dir_closedir()
+    public function dir_closedir(): bool
     {
         return $this->exists;
     }

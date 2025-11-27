@@ -116,7 +116,7 @@ namespace tests\units
             $this
                 ->mockGenerator->shuntParentClassCalls()
                 ->if($runner = new \mock\atoum\atoum\runner())
-                ->and($this->calling($runner)->run = new atoum\score())
+                ->and($this->calling($runner)->run = new atoum\runner\score())
                 ->and($task = new testedClass($runner))
                 ->then
                     ->object($task->execute())->isIdenticalTo($task)
@@ -161,7 +161,7 @@ namespace tests\units
                     ->object($task->execute())->isIdenticalTo($task)
                     ->mock($runner)
                         ->call('addReport')->twice()
-                ->if($score = new \mock\atoum\atoum\score())
+                ->if($score = new \mock\atoum\atoum\runner\score())
                 ->and($this->calling($runner)->run = $score)
                 ->and($this->calling($score)->getUncompletedMethodNumber = rand(1, PHP_INT_MAX))
                 ->then
@@ -210,7 +210,7 @@ namespace tests\units
             $this
                 ->mockGenerator->shuntParentClassCalls()
                 ->if($runner = new \mock\atoum\atoum\runner())
-                ->and($this->calling($runner)->run = new atoum\score())
+                ->and($this->calling($runner)->run = new atoum\runner\score())
                 ->and($task = new \mock\AtoumTask($runner))
                 ->and($this->calling($task)->configureDefaultReport = $report = new \mock\atoum\atoum\reports\realtime\phing())
                 ->and($this->calling($task)->configureCoverageTreemapField = $field = new atoum\report\fields\runner\coverage\treemap(uniqid(), uniqid()))

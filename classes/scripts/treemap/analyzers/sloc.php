@@ -6,17 +6,17 @@ use atoum\atoum\scripts\treemap\analyzer;
 
 class sloc implements analyzer
 {
-    public function getMetricName()
+    public function getMetricName(): string
     {
         return 'sloc';
     }
 
-    public function getMetricLabel()
+    public function getMetricLabel(): string
     {
         return 'Source Line Of Code';
     }
 
-    public function getMetricFromFile(\splFileInfo $file)
+    public function getMetricFromFile(\splFileInfo $file): int|float
     {
         $codeLines = 0;
         $blankLines = 0;

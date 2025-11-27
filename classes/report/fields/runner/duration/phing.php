@@ -6,7 +6,7 @@ use atoum\atoum\report\fields\runner\duration;
 
 class phing extends duration\cli
 {
-    public function __toString()
+    public function __toString(): string
     {
         return
             $this->prompt .

@@ -6,17 +6,17 @@ use atoum\atoum\scripts\treemap\analyzer;
 
 class token implements analyzer
 {
-    public function getMetricName()
+    public function getMetricName(): string
     {
         return 'token';
     }
 
-    public function getMetricLabel()
+    public function getMetricLabel(): string
     {
         return 'PHP tokens';
     }
 
-    public function getMetricFromFile(\splFileInfo $file)
+    public function getMetricFromFile(\splFileInfo $file): int|float
     {
         $tokenFilter = function ($token) {
             if (is_array($token) === true) {

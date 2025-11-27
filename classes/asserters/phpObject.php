@@ -6,7 +6,7 @@ use atoum\atoum\exceptions;
 
 class phpObject extends variable
 {
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'tostring':
@@ -22,7 +22,7 @@ class phpObject extends variable
         }
     }
 
-    public function setWith($value, $checkType = true)
+    public function setWith(mixed $value, bool $checkType = true): static
     {
         parent::setWith($value);
 
@@ -37,7 +37,7 @@ class phpObject extends variable
         return $this;
     }
 
-    public function isInstanceOf($value, $failMessage = null)
+    public function isInstanceOf(string|object $value, ?string $failMessage = null): static
     {
         try {
             self::check($value, __FUNCTION__);
@@ -52,7 +52,7 @@ class phpObject extends variable
         return $this;
     }
 
-    public function isNotInstanceOf($value, $failMessage = null)
+    public function isNotInstanceOf(string|object $value, ?string $failMessage = null): static
     {
         try {
             self::check($value, __FUNCTION__);
@@ -67,7 +67,7 @@ class phpObject extends variable
         return $this;
     }
 
-    public function hasSize($size, $failMessage = null)
+    public function hasSize(int $size, ?string $failMessage = null): static
     {
         if (count($this->valueIsSet()->value) == $size) {
             $this->pass();
@@ -78,7 +78,7 @@ class phpObject extends variable
         return $this;
     }
 
-    public function isCloneOf($object, $failMessage = null)
+    public function isCloneOf(object $object, ?string $failMessage = null): static
     {
         if ($failMessage === null) {
             $failMessage = $this->_('%s is not a clone of %s', $this, $this->getTypeOf($object));
@@ -87,7 +87,7 @@ class phpObject extends variable
         return $this->isEqualTo($object, $failMessage)->isNotIdenticalTo($object, $failMessage);
     }
 
-    public function isEmpty($failMessage = null)
+    public function isEmpty(?string $failMessage = null): static
     {
         if (count($this->valueIsSet()->value) == 0) {
             $this->pass();
@@ -98,32 +98,32 @@ class phpObject extends variable
         return $this;
     }
 
-    public function isTestedInstance($failMessage = null)
+    public function isTestedInstance(?string $failMessage = null): static
     {
         return $this->valueIsSet()->testedInstanceIsSet()->isIdenticalTo($this->test->testedInstance, $failMessage);
     }
 
-    public function isNotTestedInstance($failMessage = null)
+    public function isNotTestedInstance(?string $failMessage = null): static
     {
         return $this->valueIsSet()->testedInstanceIsSet()->isNotIdenticalTo($this->test->testedInstance, $failMessage);
     }
 
-    public function isInstanceOfTestedClass($failMessage = null)
+    public function isInstanceOfTestedClass(?string $failMessage = null): static
     {
         return $this->valueIsSet()->testedInstanceIsSet()->isInstanceOf($this->test->getTestedClassName(), $failMessage);
     }
 
-    public function toString()
+    public function toString(): castToString
     {
         return $this->generator->castToString($this->valueIsSet()->value);
     }
 
-    public function toArray()
+    public function toArray(): castToArray
     {
         return $this->generator->castToArray($this->valueIsSet()->value);
     }
 
-    protected function valueIsSet($message = 'Object is undefined')
+    protected function valueIsSet(string $message = 'Object is undefined'): static
     {
         if ($this->analyzer->isObject(parent::valueIsSet($message)->value) === false) {
             throw new exceptions\logic($message);
@@ -132,7 +132,7 @@ class phpObject extends variable
         return $this;
     }
 
-    protected function testedInstanceIsSet()
+    protected function testedInstanceIsSet(): static
     {
         if ($this->test === null || $this->test->testedInstance === null) {
             throw new exceptions\logic('Tested instance is undefined in the test');
@@ -141,7 +141,7 @@ class phpObject extends variable
         return $this;
     }
 
-    protected function check($value, $method)
+    protected function check(mixed $value, string $method): static
     {
         if ($this->analyzer->isObject($value) === false) {
             throw new exceptions\logic('Argument of ' . __CLASS__ . '::' . $method . '() must be a class instance');
@@ -150,7 +150,7 @@ class phpObject extends variable
         return $this;
     }
 
-    protected static function classExists($value)
+    protected static function classExists(mixed $value): bool
     {
         return (class_exists($value) === true || interface_exists($value) === true);
     }

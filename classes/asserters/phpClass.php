@@ -7,10 +7,10 @@ use atoum\atoum\exceptions;
 
 class phpClass extends atoum\asserter
 {
-    protected $class = null;
-    protected $reflectionClassInjector = null;
+    protected ?\reflectionClass $class = null;
+    protected ?\Closure $reflectionClassInjector = null;
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'isabstract':
@@ -23,7 +23,7 @@ class phpClass extends atoum\asserter
         }
     }
 
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         switch (strtolower($method)) {
             case 'extends':
@@ -37,12 +37,12 @@ class phpClass extends atoum\asserter
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->getClass();
     }
 
-    public function getReflectionClass($class)
+    public function getReflectionClass(string $class): \reflectionClass
     {
         if ($this->reflectionClassInjector === null) {
             $reflectionClass = new \reflectionClass($class);
@@ -57,7 +57,7 @@ class phpClass extends atoum\asserter
         return $reflectionClass;
     }
 
-    public function setReflectionClassInjector(\closure $reflectionClassInjector)
+    public function setReflectionClassInjector(\Closure $reflectionClassInjector): static
     {
         $closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
 
@@ -70,12 +70,12 @@ class phpClass extends atoum\asserter
         return $this;
     }
 
-    public function getClass()
+    public function getClass(): ?string
     {
         return ($this->class === null ? null : $this->class->getName());
     }
 
-    public function setWith($class)
+    public function setWith(mixed $class): static
     {
         parent::setWith($class);
 
@@ -90,7 +90,7 @@ class phpClass extends atoum\asserter
         return $this;
     }
 
-    public function hasParent($parent, $failMessage = null)
+    public function hasParent(string $parent, ?string $failMessage = null): static
     {
         $parentClass = $this->classIsSet()->class->getParentClass();
 
@@ -103,7 +103,7 @@ class phpClass extends atoum\asserter
         return $this;
     }
 
-    public function hasNoParent($failMessage = null)
+    public function hasNoParent(?string $failMessage = null): static
     {
         if (($parentClass = $this->classIsSet()->class->getParentClass()) === false) {
             $this->pass();
@@ -114,7 +114,7 @@ class phpClass extends atoum\asserter
         return $this;
     }
 
-    public function isSubClassOf($parent, $failMessage = null)
+    public function isSubClassOf(string $parent, ?string $failMessage = null): static
     {
         try {
             if ($this->classIsSet()->class->isSubClassOf($parent) == true) {
@@ -129,7 +129,7 @@ class phpClass extends atoum\asserter
         return $this;
     }
 
-    public function hasInterface($interface, $failMessage = null)
+    public function hasInterface(string $interface, ?string $failMessage = null): static
     {
         try {
             if ($this->classIsSet()->class->implementsInterface($interface) === true) {
@@ -144,7 +144,7 @@ class phpClass extends atoum\asserter
         return $this;
     }
 
-    public function isAbstract($failMessage = null)
+    public function isAbstract(?string $failMessage = null): static
     {
         if ($this->classIsSet()->class->isAbstract() === true) {
             $this->pass();
@@ -155,7 +155,7 @@ class phpClass extends atoum\asserter
         return $this;
     }
 
-    public function isFinal($failMessage = null)
+    public function isFinal(?string $failMessage = null): static
     {
         if ($this->classIsSet()->class->isFinal() === true) {
             $this->pass();
@@ -166,7 +166,7 @@ class phpClass extends atoum\asserter
         return $this;
     }
 
-    public function hasMethod($method, $failMessage = null)
+    public function hasMethod(string $method, ?string $failMessage = null): static
     {
         if ($this->classIsSet()->class->hasMethod($method) === true) {
             $this->pass();
@@ -177,7 +177,7 @@ class phpClass extends atoum\asserter
         return $this;
     }
 
-    public function hasConstant($constant, $failMessage = null)
+    public function hasConstant(string $constant, ?string $failMessage = null): static|constant
     {
         if ($this->classIsSet()->class->hasConstant($constant) === false) {
             $this->fail($failMessage ?: $this->_('%s::%s does not exist', $this, $constant));
@@ -190,7 +190,7 @@ class phpClass extends atoum\asserter
         }
     }
 
-    protected function classIsSet()
+    protected function classIsSet(): static
     {
         if ($this->class === null) {
             throw new exceptions\logic('Class is undefined');

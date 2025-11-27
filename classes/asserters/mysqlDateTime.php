@@ -6,7 +6,7 @@ class mysqlDateTime extends dateTime
 {
     public const mysqlDateTimeFormat = 'Y-m-d H:i:s';
 
-    public function setWith($value, $checkType = true)
+    public function setWith(mixed $value, bool $checkType = true): static
     {
         $phpDate = \dateTime::createFromFormat(self::mysqlDateTimeFormat, $value);
 
@@ -23,7 +23,7 @@ class mysqlDateTime extends dateTime
         return $this;
     }
 
-    public function getValue()
+    public function getValue(): mixed
     {
         $value = parent::getValue();
 

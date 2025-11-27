@@ -7,12 +7,12 @@ use atoum\atoum\php\tokenizer\iterator\value;
 
 class iterator extends value
 {
-    protected $key = null;
-    protected $size = 0;
-    protected $values = [];
-    protected $skipedValues = [];
+    protected ?int $key = null;
+    protected int $size = 0;
+    protected array $values = [];
+    protected array $skipedValues = [];
 
-    public function __toString()
+    public function __toString(): string
     {
         $key = $this->key();
 
@@ -26,7 +26,7 @@ class iterator extends value
     }
 
     #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return (current($this->values) !== false);
     }
@@ -44,12 +44,12 @@ class iterator extends value
     }
 
     #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): ?int
     {
         return $this->key < 0 || $this->key >= $this->size ? null : $this->key;
     }
 
-    public function prev($offset = 1)
+    public function prev(int $offset = 1): static
     {
         while (($valid = $this->valid()) === true && $offset > 0) {
             $currentValue = current($this->values);
@@ -80,7 +80,7 @@ class iterator extends value
     }
 
     #[\ReturnTypeWillChange]
-    public function next($offset = 1)
+    public function next($offset = 1): static
     {
         while (($valid = $this->valid()) === true && $offset > 0) {
             $currentValue = current($this->values);
@@ -140,7 +140,7 @@ class iterator extends value
         return $this;
     }
 
-    public function end()
+    public function end(): static
     {
         if ($this->size > 0) {
             end($this->values);
@@ -169,7 +169,7 @@ class iterator extends value
         return $this;
     }
 
-    public function append(value $value)
+    public function append(value $value): static
     {
         if ($value->parent !== null) {
             throw new exceptions\runtime('Unable to append value because it has already a parent');
@@ -209,7 +209,7 @@ class iterator extends value
         return $this->size;
     }
 
-    public function skipValue($value)
+    public function skipValue(mixed $value): static
     {
         if (in_array($value, $this->skipedValues) === false) {
             $this->skipedValues[] = $value;
@@ -218,12 +218,12 @@ class iterator extends value
         return $this;
     }
 
-    public function getSkipedValues()
+    public function getSkipedValues(): array
     {
         return $this->skipedValues;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->key = null;
         $this->size = 0;
@@ -234,12 +234,12 @@ class iterator extends value
         return $this;
     }
 
-    public function getValue()
+    public function getValue(): mixed
     {
         return (current($this->values) ?: null);
     }
 
-    public function seek($key)
+    public function seek(int $key): static
     {
         if ($key > count($this) / 2) {
             $this->end();
@@ -256,10 +256,10 @@ class iterator extends value
         return $this;
     }
 
-    public function findTag($tag)
+    public function findTag(int|string $tag): ?int
     {
         foreach ($this as $key => $token) {
-            if ($token->getTag() === $tag) {
+            if ($token->getTag() == $tag) {
                 return $key;
             }
         }
@@ -267,7 +267,7 @@ class iterator extends value
         return null;
     }
 
-    public function goToNextTagWhichIsNot(array $tags)
+    public function goToNextTagWhichIsNot(array $tags): static
     {
         $this->next();
 

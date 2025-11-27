@@ -20,6 +20,8 @@
 
 All these features are fully supported in the **mock generator**, ensuring your modern PHP code can be properly tested. See [PHP_MODERN_SUPPORT.md](PHP_MODERN_SUPPORT.md) for detailed documentation.
 
+> **Looking for annotations?** atoum now exposes native [test attributes](ATTRIBUTES.md). Legacy docblock annotations are still parsed for backward compatibility but emit deprecation notices and will be removed in a future major release.
+
 ## A simple, modern and intuitive unit testing framework for PHP!
 
 Just like SimpleTest or PHPUnit, *atoum* is a unit testing framework specific to the [PHP](http://www.php.net) language.

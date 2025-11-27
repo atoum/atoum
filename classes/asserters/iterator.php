@@ -4,7 +4,7 @@ namespace atoum\atoum\asserters;
 
 class iterator extends phpObject
 {
-    public function __get($asserter)
+    public function __get(string $asserter): mixed
     {
         switch (strtolower($asserter)) {
             case 'size':
@@ -21,7 +21,7 @@ class iterator extends phpObject
         }
     }
 
-    public function setWith($value, $checkType = true)
+    public function setWith(mixed $value, bool $checkType = true): static
     {
         parent::setWith($value, $checkType);
 
@@ -36,7 +36,7 @@ class iterator extends phpObject
         return $this;
     }
 
-    public function hasSize($size, $failMessage = null)
+    public function hasSize(int $size, ?string $failMessage = null): static
     {
         if (($actual = iterator_count($this->valueIsSet()->value)) == $size) {
             $this->pass();
@@ -47,7 +47,7 @@ class iterator extends phpObject
         return $this;
     }
 
-    public function isEmpty($failMessage = null)
+    public function isEmpty(?string $failMessage = null): static
     {
         if (($actual = iterator_count($this->valueIsSet()->value)) === 0) {
             $this->pass();
@@ -58,7 +58,7 @@ class iterator extends phpObject
         return $this;
     }
 
-    public function isNotEmpty($failMessage = null)
+    public function isNotEmpty(?string $failMessage = null): static
     {
         if (iterator_count($this->valueIsSet()->value) > 0) {
             $this->pass();
@@ -69,12 +69,12 @@ class iterator extends phpObject
         return $this;
     }
 
-    protected function size()
+    protected function size(): \atoum\atoum\asserters\integer
     {
         return $this->generator->__call('integer', [iterator_count($this->valueIsSet()->value)]);
     }
 
-    protected static function isIterator($value)
+    protected static function isIterator(mixed $value): bool
     {
         return ($value instanceof \iterator);
     }

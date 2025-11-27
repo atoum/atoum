@@ -48,7 +48,7 @@ class phpResource extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notAResource)
                 ->mock($locale)
                     ->call('_')
@@ -80,7 +80,7 @@ class phpResource extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isOfType('foo');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notAResource)
                 ->mock($locale)->call('_')->withArguments('%s is not of type %s', $asserter, 'foo')->once
         ;

@@ -8,19 +8,19 @@ use atoum\atoum\test;
 
 abstract class run extends report\field
 {
-    protected $testClass = null;
+    protected ?string $testClass = null;
 
     public function __construct()
     {
         parent::__construct([test::runStart]);
     }
 
-    public function getTestClass()
+    public function getTestClass(): ?string
     {
         return $this->testClass;
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

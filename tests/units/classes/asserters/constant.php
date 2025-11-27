@@ -126,7 +126,7 @@ class constant extends atoum\test
                 ->exception(function () use ($asserter, & $notEqualValue) {
                     $asserter->isEqualTo($notEqualValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isNotEqual . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($notEqualValue)->once
@@ -165,7 +165,7 @@ class constant extends atoum\test
                 ->exception(function () use ($asserter, & $notEqualValue) {
                     $asserter->isEqualTo($notEqualValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isNotEqual . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($notEqualValue)->once

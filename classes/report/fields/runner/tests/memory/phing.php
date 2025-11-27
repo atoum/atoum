@@ -6,7 +6,7 @@ use atoum\atoum\report;
 
 class phing extends report\fields\runner\tests\memory\cli
 {
-    public function __toString()
+    public function __toString(): string
     {
         $title = $this->locale->__('Total test memory usage', 'Total tests memory usage', $this->testNumber);
         $memory = ($this->value === null ? $this->locale->_('unknown') : $this->locale->_('%4.2f Mb', $this->value / 1048576));

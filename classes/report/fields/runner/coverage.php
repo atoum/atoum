@@ -12,10 +12,10 @@ use atoum\atoum\runner;
 
 abstract class coverage extends report\field
 {
-    protected $php = null;
-    protected $adapter = null;
-    protected $coverage = null;
-    protected $srcDirectories = [];
+    protected ?php $php = null;
+    protected ?adapter $adapter = null;
+    protected mixed $coverage = null;
+    protected array $srcDirectories = [];
 
     public function __construct()
     {
@@ -27,31 +27,31 @@ abstract class coverage extends report\field
         ;
     }
 
-    public function setPhp(?php $php = null)
+    public function setPhp(?php $php = null): static
     {
         $this->php = $php ?: new php();
 
         return $this;
     }
 
-    public function getPhp()
+    public function getPhp(): php
     {
         return $this->php;
     }
 
-    public function setAdapter(?adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new adapter();
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): adapter
     {
         return $this->adapter;
     }
 
-    public function addSrcDirectory($srcDirectory, ?\closure $filterClosure = null)
+    public function addSrcDirectory(string $srcDirectory, ?\Closure $filterClosure = null): static
     {
         $srcDirectory = (string) $srcDirectory;
 
@@ -64,17 +64,17 @@ abstract class coverage extends report\field
         return $this;
     }
 
-    public function getSrcDirectories()
+    public function getSrcDirectories(): array
     {
         return $this->srcDirectories;
     }
 
-    public function getSrcDirectoryIterators()
+    public function getSrcDirectoryIterators(): array
     {
         $iterators = [];
 
         foreach ($this->srcDirectories as $srcDirectory => $closures) {
-            $iterators[] = $iterator = new \recursiveIteratorIterator(new iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS | \filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
+            $iterators[] = $iterator = new \recursiveIteratorIterator(new iterators\filters\recursives\Closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS | \filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
 
             foreach ($closures as $closure) {
                 $iterator->addClosure($closure);
@@ -84,12 +84,12 @@ abstract class coverage extends report\field
         return $iterators;
     }
 
-    public function getCoverage()
+    public function getCoverage(): mixed
     {
         return $this->coverage;
     }
 
-    public function handleEvent($event, observable $observable)
+    public function handleEvent(string $event, observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

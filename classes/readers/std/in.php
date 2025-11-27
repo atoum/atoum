@@ -7,9 +7,9 @@ use atoum\atoum\reader;
 
 class in extends reader
 {
-    protected $resource = null;
+    protected mixed $resource = null;
 
-    public function read($length = null)
+    public function read(?int $length = null): string|false
     {
         $this->init();
 
@@ -17,7 +17,7 @@ class in extends reader
         return ($length === null ? $this->adapter->fgets($this->resource) : $this->adapter->fgets($this->resource, $length));
     }
 
-    protected function init()
+    protected function init(): static
     {
         if ($this->resource === null) {
             $resource = $this->adapter->fopen('php://stdin', 'r');

@@ -8,19 +8,19 @@ use atoum\atoum\runner;
 
 abstract class version extends report\field
 {
-    protected $version = null;
+    protected ?string $version = null;
 
     public function __construct()
     {
         parent::__construct([runner::runStart]);
     }
 
-    public function getVersion()
+    public function getVersion(): ?string
     {
         return $this->version;
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

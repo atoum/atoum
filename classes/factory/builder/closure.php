@@ -10,7 +10,7 @@ class closure implements factory\builder
     private $factory = null;
     private $allArgumentsAreOptional = true;
 
-    public function build(\reflectionClass $class, & $instance = null)
+    public function build(\reflectionClass $class, mixed &$instance = null): mixed
     {
         $this->factory = null;
 
@@ -63,12 +63,12 @@ class closure implements factory\builder
         return $this;
     }
 
-    public function get()
+    public function get(): mixed
     {
         return $this->factory;
     }
 
-    public function addToAssertionManager(test\assertion\manager $assertionManager, $factoryName, $defaultHandler)
+    public function addToAssertionManager(test\assertion\manager $assertionManager, string $factoryName, mixed $defaultHandler): static
     {
         if ($this->factory === null) {
             $assertionManager->setHandler($factoryName, $defaultHandler);

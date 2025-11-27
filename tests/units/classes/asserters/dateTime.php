@@ -52,7 +52,7 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notDatetime)
                 ->mock($locale)->call('_')->withArguments('%s is not an instance of \\dateTime', $asserter)->once
                 ->string($asserter->getValue())->isEqualTo($value)
@@ -83,14 +83,14 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasTimezone(new \DateTimezone('Europe/London'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badTimezone)
                 ->mock($locale)->call('_')->withArguments('Timezone is %s instead of %s', 'Europe/Paris', 'Europe/London')->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasTimezone(new \DateTimezone('Europe/London'), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -116,14 +116,14 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasYear(1981);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badYear)
                 ->mock($locale)->call('_')->withArguments('Year is %s instead of %s', 1976, 1981)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasYear(1981, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -150,14 +150,14 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasMonth(1);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badMonth)
                 ->mock($locale)->call('_')->withArguments('Month is %s instead of %02d', '09', 1)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasMonth(1, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -184,14 +184,14 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasDay(1);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badDay)
                 ->mock($locale)->call('_')->withArguments('Day is %s instead of %02d', '06', 1)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasDay(1, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -218,14 +218,14 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasDate(1980, 8, 14);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badDate)
                 ->mock($locale)->call('_')->withArguments('Date is %s instead of %s', '1976-10-06', '1980-08-14')->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasDate(1980, 8, 14, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -252,14 +252,14 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasHours(2);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badHours)
                 ->mock($locale)->call('_')->withArguments('Hours are %s instead of %02d', 1, 2)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasHours(2, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -286,14 +286,14 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasMinutes(1);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badMinutes)
                 ->mock($locale)->call('_')->withArguments('Minutes are %s instead of %02d', 2, 1)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasMinutes(1, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -320,14 +320,14 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasSeconds(1);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badSeconds)
                 ->mock($locale)->call('_')->withArguments('Seconds are %s instead of %02d', 3, 1)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasSeconds(1, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -354,14 +354,14 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasTime(4, 5, 6);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badTime)
                 ->mock($locale)->call('_')->withArguments('Time is %s instead of %s', '01:02:03', '04:05:06')->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasTime(4, 5, 6, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -388,14 +388,14 @@ class dateTime extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasDateAndTime(1900, 1, 1, 4, 5, 6);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasmessage($badDateAndTime)
                 ->mock($locale)->call('_')->withArguments('Datetime is %s instead of %s', '1981-02-13 01:02:03', '1900-01-01 04:05:06')->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasdateandtime(1900, 1, 1, 4, 5, 6, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasmessage($failMessage)
         ;
     }
@@ -412,7 +412,7 @@ class dateTime extends atoum\test
                 ->exception(function () use (& $value) {
                     $this->testedInstance->isImmutable();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notImmutable)
             ->if($this->testedInstance->setWith($value = new \dateTimeImmutable()))
             ->then

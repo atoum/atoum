@@ -4,32 +4,32 @@ namespace atoum\atoum;
 
 abstract class mailer
 {
-    protected $to = null;
-    protected $from = null;
-    protected $xMailer = null;
-    protected $replyTo = null;
-    protected $subject = null;
-    protected $contentType = null;
-    protected $adapter = null;
+    protected ?string $to = null;
+    protected ?string $from = null;
+    protected ?string $xMailer = null;
+    protected ?string $replyTo = null;
+    protected ?string $subject = null;
+    protected ?array $contentType = null;
+    protected ?adapter $adapter = null;
 
     public function __construct(?adapter $adapter = null)
     {
         $this->setAdapter($adapter ?: new adapter());
     }
 
-    public function setAdapter(adapter $adapter)
+    public function setAdapter(adapter $adapter): static
     {
         $this->adapter = $adapter;
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): adapter
     {
         return $this->adapter;
     }
 
-    public function addTo($to, $realName = null)
+    public function addTo(string $to, ?string $realName = null): static
     {
         if ($this->to !== null) {
             $this->to .= ',';
@@ -44,24 +44,24 @@ abstract class mailer
         return $this;
     }
 
-    public function getTo()
+    public function getTo(): ?string
     {
         return $this->to;
     }
 
-    public function setSubject($subject)
+    public function setSubject(string $subject): static
     {
         $this->subject = (string) $subject;
 
         return $this;
     }
 
-    public function getSubject()
+    public function getSubject(): ?string
     {
         return $this->subject;
     }
 
-    public function setFrom($from, $realName = null)
+    public function setFrom(string $from, ?string $realName = null): static
     {
         if ($realName === null) {
             $this->from = (string) $from;
@@ -72,12 +72,12 @@ abstract class mailer
         return $this;
     }
 
-    public function getFrom()
+    public function getFrom(): ?string
     {
         return $this->from;
     }
 
-    public function setReplyTo($replyTo, $realName = null)
+    public function setReplyTo(string $replyTo, ?string $realName = null): static
     {
         if ($realName === null) {
             $this->replyTo = (string) $replyTo;
@@ -88,34 +88,34 @@ abstract class mailer
         return $this;
     }
 
-    public function getReplyTo()
+    public function getReplyTo(): ?string
     {
         return $this->replyTo;
     }
 
-    public function setXMailer($mailer)
+    public function setXMailer(string $mailer): static
     {
         $this->xMailer = (string) $mailer;
 
         return $this;
     }
 
-    public function getXMailer()
+    public function getXMailer(): ?string
     {
         return $this->xMailer;
     }
 
-    public function setContentType($type = 'text/plain', $charset = 'utf-8')
+    public function setContentType(string $type = 'text/plain', string $charset = 'utf-8'): static
     {
         $this->contentType = [$type, $charset];
 
         return $this;
     }
 
-    public function getContentType()
+    public function getContentType(): ?array
     {
         return $this->contentType;
     }
 
-    abstract public function send($something);
+    abstract public function send(string $something): mixed;
 }

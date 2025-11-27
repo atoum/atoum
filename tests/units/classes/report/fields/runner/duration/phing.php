@@ -85,7 +85,7 @@ class phing extends atoum\test
             ->and($runner->getMockController()->getRunningDuration = $runningDuration = rand(0, PHP_INT_MAX))
             ->then
                 ->boolean($field->handleEvent(runner::runStop, $runner))->isTrue()
-                ->integer($field->getValue())->isEqualTo($runningDuration)
+                ->variable($field->getValue())->isEqualTo($runningDuration)
         ;
     }
 
@@ -167,7 +167,7 @@ class phing extends atoum\test
                     ->castToString($field)->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.')
                     ->mock($locale)
                         ->call('_')->withArguments('Running duration')->once()
-                        ->call('__')->withArguments('%4.2f second', '%4.2f seconds', $runningDuration)->once()
+                        ->call('__')->withAtLeastArguments(['%4.2f second', '%4.2f seconds'])->once()
                         ->call('_')->withArguments('%1$s: %2$s.')->once()
                     ->mock($titleColorizer)
                         ->call('colorize')->withArguments('Running duration')->once()

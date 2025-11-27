@@ -8,10 +8,10 @@ use atoum\atoum\report;
 
 class cli extends report\fields\runner\atoum\version
 {
-    protected $titlePrompt = null;
-    protected $titleColorizer = null;
-    protected $versionPrompt = null;
-    protected $versionColorizer = null;
+    protected ?prompt $titlePrompt = null;
+    protected ?colorizer $titleColorizer = null;
+    protected ?prompt $versionPrompt = null;
+    protected ?colorizer $versionColorizer = null;
 
     public function __construct()
     {
@@ -24,7 +24,7 @@ class cli extends report\fields\runner\atoum\version
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return
             $this->titlePrompt .
@@ -37,38 +37,38 @@ class cli extends report\fields\runner\atoum\version
         ;
     }
 
-    public function setTitlePrompt(?prompt $prompt = null)
+    public function setTitlePrompt(?prompt $prompt = null): static
     {
         $this->titlePrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getTitlePrompt()
+    public function getTitlePrompt(): prompt
     {
         return $this->titlePrompt;
     }
 
-    public function setTitleColorizer(?colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null): static
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getTitleColorizer()
+    public function getTitleColorizer(): colorizer
     {
         return $this->titleColorizer;
     }
 
-    public function setVersionColorizer(?colorizer $colorizer = null)
+    public function setVersionColorizer(?colorizer $colorizer = null): static
     {
         $this->versionColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getVersionColorizer()
+    public function getVersionColorizer(): colorizer
     {
         return $this->versionColorizer;
     }

@@ -11,17 +11,17 @@ class coverage extends runner
 {
     public const defaultReportFormat = 'xml';
 
-    protected $reportOutputPath;
-    protected $reportFormat;
+    protected ?string $reportOutputPath = null;
+    protected ?string $reportFormat = null;
 
-    public function __construct($name, ?atoum\adapter $adapter = null)
+    public function __construct(string $name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
         $this->setReportFormat();
     }
 
-    protected function doRun()
+    protected function doRun(): static
     {
         if (count($this->getReports()) === 0) {
             $this->addDefaultReport();
@@ -54,26 +54,26 @@ class coverage extends runner
         return parent::doRun();
     }
 
-    public function setReportFormat($format = null)
+    public function setReportFormat(?string $format = null): static
     {
         $this->reportFormat = $format ?: self::defaultReportFormat;
 
         return $this;
     }
 
-    public function getReportFormat()
+    public function getReportFormat(): string
     {
         return $this->reportFormat;
     }
 
-    public function setReportOutputPath($path)
+    public function setReportOutputPath(string $path): static
     {
         $this->reportOutputPath = $path;
 
         return $this;
     }
 
-    protected function reportOutputPathIsSet()
+    protected function reportOutputPathIsSet(): static
     {
         if ($this->reportOutputPath === null) {
             throw new exceptions\runtime('Coverage report output path is not set');
@@ -82,7 +82,7 @@ class coverage extends runner
         return $this;
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         return parent::setArgumentHandlers()
             ->addArgumentHandler(

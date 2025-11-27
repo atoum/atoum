@@ -4,7 +4,7 @@ namespace atoum\atoum\asserters;
 
 class hash extends phpString
 {
-    public function __get($asserter)
+    public function __get(string $asserter): mixed
     {
         switch (strtolower($asserter)) {
             case 'issha1':
@@ -18,27 +18,27 @@ class hash extends phpString
         }
     }
 
-    public function isSha1($failMessage = null)
+    public function isSha1(?string $failMessage = null): static
     {
         return $this->isHash(40, $failMessage);
     }
 
-    public function isSha256($failMessage = null)
+    public function isSha256(?string $failMessage = null): static
     {
         return $this->isHash(64, $failMessage);
     }
 
-    public function isSha512($failMessage = null)
+    public function isSha512(?string $failMessage = null): static
     {
         return $this->isHash(128, $failMessage);
     }
 
-    public function isMd5($failMessage = null)
+    public function isMd5(?string $failMessage = null): static
     {
         return $this->isHash(32, $failMessage);
     }
 
-    protected function isHash($length, $failMessage = null)
+    protected function isHash(int $length, ?string $failMessage = null): static
     {
         if (strlen($this->valueIsSet()->value) === $length) {
             $this->matches('/^[a-fA-F0-9]+$/', $failMessage ?: $this->_('%s does not match given pattern', $this));

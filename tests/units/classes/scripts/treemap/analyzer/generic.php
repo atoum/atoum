@@ -76,7 +76,7 @@ class generic extends atoum\test
             ->if($generic->setCallback(function () {
             }))
             ->then
-                ->variable($generic->getMetricFromFile(new \splFileInfo(__FILE__)))->isNull()
+                ->integer($generic->getMetricFromFile(new \splFileInfo(__FILE__)))->isZero()
         ;
     }
 }

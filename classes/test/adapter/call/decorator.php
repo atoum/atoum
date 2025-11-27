@@ -6,26 +6,26 @@ use atoum\atoum\test\adapter\call;
 
 class decorator
 {
-    protected $argumentsDecorator = null;
+    protected ?arguments\decorator $argumentsDecorator = null;
 
     public function __construct()
     {
         $this->setArgumentsDecorator();
     }
 
-    public function getArgumentsDecorator()
+    public function getArgumentsDecorator(): arguments\decorator
     {
         return $this->argumentsDecorator;
     }
 
-    public function setArgumentsDecorator(?arguments\decorator $decorator = null)
+    public function setArgumentsDecorator(?arguments\decorator $decorator = null): static
     {
         $this->argumentsDecorator = $decorator ?: new arguments\decorator();
 
         return $this;
     }
 
-    public function decorate(call $call)
+    public function decorate(call $call): string
     {
         $string = '';
 

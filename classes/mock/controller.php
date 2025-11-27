@@ -9,16 +9,16 @@ use atoum\atoum\test\adapter\call\decorators;
 
 class controller extends test\adapter
 {
-    protected $mockClass = null;
-    protected $mockMethods = [];
-    protected $iterator = null;
-    protected $autoBind = true;
+    protected ?string $mockClass = null;
+    protected array $mockMethods = [];
+    protected ?controller\iterator $iterator = null;
+    protected bool $autoBind = true;
 
-    protected static $linker = null;
-    protected static $controlNextNewMock = null;
-    protected static $autoBindForNewMock = true;
+    protected static ?controller\linker $linker = null;
+    protected static ?self $controlNextNewMock = null;
+    protected static bool $autoBindForNewMock = true;
 
-    private $disableMethodChecking = false;
+    private bool $disableMethodChecking = false;
 
     public function __construct()
     {
@@ -36,37 +36,35 @@ class controller extends test\adapter
         }
     }
 
-    public function __set($method, $mixed)
+    public function __set(string $method, mixed $mixed): void
     {
         $this->checkMethod($method);
 
-        return parent::__set($method, $mixed);
+        parent::__set($method, $mixed);
     }
 
-    public function __get($method)
+    public function __get(string $method): test\adapter\invoker
     {
         $this->checkMethod($method);
 
         return parent::__get($method);
     }
 
-    public function __isset($method)
+    public function __isset(string $method): bool
     {
         $this->checkMethod($method);
 
         return parent::__isset($method);
     }
 
-    public function __unset($method)
+    public function __unset(string $method): void
     {
         $this->checkMethod($method);
 
         parent::__unset($method);
-
-        return $this->setInvoker($method);
     }
 
-    public function setIterator(?controller\iterator $iterator = null)
+    public function setIterator(?controller\iterator $iterator = null): static
     {
         $this->iterator = $iterator ?: new controller\iterator();
 
@@ -75,29 +73,29 @@ class controller extends test\adapter
         return $this;
     }
 
-    public function getIterator()
+    public function getIterator(): controller\iterator
     {
         return $this->iterator;
     }
 
-    public function disableMethodChecking()
+    public function disableMethodChecking(): static
     {
         $this->disableMethodChecking = true;
 
         return $this;
     }
 
-    public function getMockClass()
+    public function getMockClass(): ?string
     {
         return $this->mockClass;
     }
 
-    public function getMethods()
+    public function getMethods(): array
     {
         return $this->mockMethods;
     }
 
-    public function methods(?\closure $filter = null)
+    public function methods(?\Closure $filter = null): controller\iterator
     {
         $this->iterator->resetFilters();
 
@@ -108,14 +106,14 @@ class controller extends test\adapter
         return $this->iterator;
     }
 
-    public function methodsMatching($regex)
+    public function methodsMatching(string $regex): controller\iterator
     {
         return $this->iterator->resetFilters()->addFilter(function ($name) use ($regex) {
             return preg_match($regex, $name);
         });
     }
 
-    public function getCalls(?test\adapter\call $call = null, $identical = false)
+    public function getCalls(?test\adapter\call $call = null, bool $identical = false): test\adapter\calls
     {
         if ($call !== null) {
             $this->checkMethod($call->getFunction());
@@ -124,7 +122,7 @@ class controller extends test\adapter
         return parent::getCalls($call, $identical);
     }
 
-    public function control(mock\aggregator $mock)
+    public function control(mock\aggregator $mock): static
     {
         $currentMockController = self::$linker->getController($mock);
 
@@ -157,14 +155,14 @@ class controller extends test\adapter
         ;
     }
 
-    public function controlNextNewMock()
+    public function controlNextNewMock(): static
     {
         self::$controlNextNewMock = $this;
 
         return $this;
     }
 
-    public function notControlNextNewMock()
+    public function notControlNextNewMock(): static
     {
         if (self::$controlNextNewMock === $this) {
             self::$controlNextNewMock = null;
@@ -173,7 +171,7 @@ class controller extends test\adapter
         return $this;
     }
 
-    public function enableAutoBind()
+    public function enableAutoBind(): static
     {
         $this->autoBind = true;
 
@@ -184,19 +182,19 @@ class controller extends test\adapter
         return $this;
     }
 
-    public function disableAutoBind()
+    public function disableAutoBind(): static
     {
         $this->autoBind = false;
 
         return $this->reset();
     }
 
-    public function autoBindIsEnabled()
+    public function autoBindIsEnabled(): bool
     {
         return ($this->autoBind === true);
     }
 
-    public function reset()
+    public function reset(): static
     {
         self::$linker->unlink($this);
 
@@ -206,12 +204,12 @@ class controller extends test\adapter
         return parent::reset();
     }
 
-    public function getMock()
+    public function getMock(): ?mock\aggregator
     {
         return self::$linker->getMock($this);
     }
 
-    public function invoke($method, array $arguments = [])
+    public function invoke(string $method, array $arguments = []): mixed
     {
         $this->checkMethod($method);
 
@@ -222,17 +220,17 @@ class controller extends test\adapter
         return parent::invoke($method, $arguments);
     }
 
-    public static function enableAutoBindForNewMock()
+    public static function enableAutoBindForNewMock(): void
     {
         self::$autoBindForNewMock = true;
     }
 
-    public static function disableAutoBindForNewMock()
+    public static function disableAutoBindForNewMock(): void
     {
         self::$autoBindForNewMock = false;
     }
 
-    public static function get($unset = true)
+    public static function get(bool $unset = true): ?self
     {
         $instance = self::$controlNextNewMock;
 
@@ -243,17 +241,17 @@ class controller extends test\adapter
         return $instance;
     }
 
-    public static function setLinker(?controller\linker $linker = null)
+    public static function setLinker(?controller\linker $linker = null): void
     {
         self::$linker = $linker ?: new controller\linker();
     }
 
-    public static function getForMock(aggregator $mock)
+    public static function getForMock(aggregator $mock): ?self
     {
         return self::$linker->getController($mock);
     }
 
-    protected function checkMethod($method)
+    protected function checkMethod(string $method): static
     {
         if ($this->mockClass !== null && $this->disableMethodChecking === false && in_array(strtolower($method), $this->mockMethods) === false) {
             if (in_array('__call', $this->mockMethods) === false) {
@@ -272,7 +270,7 @@ class controller extends test\adapter
         return $this;
     }
 
-    protected function buildInvoker($methodName, ?\closure $factory = null)
+    protected function buildInvoker(string $methodName, ?\Closure $factory = null): mock\controller\invoker
     {
         if ($factory === null) {
             $factory = function ($methodName, $mock) {
@@ -283,7 +281,7 @@ class controller extends test\adapter
         return $factory($methodName, $this->getMock());
     }
 
-    protected function setInvoker($methodName, ?\closure $factory = null)
+    protected function setInvoker(string $methodName, ?\Closure $factory = null): mock\controller\invoker
     {
         $invoker = parent::setInvoker($methodName, $factory);
 
@@ -300,7 +298,7 @@ class controller extends test\adapter
         return $invoker;
     }
 
-    protected function buildCall($function, array $arguments)
+    protected function buildCall(string $function, array $arguments): test\adapter\call
     {
         $call = parent::buildCall($function, $arguments);
 

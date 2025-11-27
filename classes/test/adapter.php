@@ -8,10 +8,10 @@ use atoum\atoum\test\adapter\invoker;
 
 class adapter extends atoum\adapter
 {
-    protected $calls = null;
-    protected $invokers = [];
+    protected ?adapter\calls $calls = null;
+    protected array $invokers = [];
 
-    private static $storage = null;
+    private static ?adapter\storage $storage = null;
 
     public function __construct()
     {
@@ -31,24 +31,22 @@ class adapter extends atoum\adapter
         }
     }
 
-    public function __set($functionName, $mixed)
+    public function __set(string $functionName, mixed $mixed): void
     {
         $this->{$functionName}->return = $mixed;
-
-        return $this;
     }
 
-    public function __get($functionName)
+    public function __get(string $functionName): adapter\invoker
     {
         return $this->setInvoker($functionName);
     }
 
-    public function __isset($functionName)
+    public function __isset(string $functionName): bool
     {
         return $this->nextCallIsOverloaded($functionName);
     }
 
-    public function __unset($functionName)
+    public function __unset(string $functionName): void
     {
         if (isset($this->{$functionName}) === true) {
             $functionName = static::getKey($functionName);
@@ -56,88 +54,86 @@ class adapter extends atoum\adapter
             unset($this->invokers[$functionName]);
             unset($this->calls[$functionName]);
         }
-
-        return $this;
     }
 
-    public function __sleep()
+    public function __sleep(): array
     {
         return [];
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->calls;
     }
 
-    public function getInvokers()
+    public function getInvokers(): array
     {
         return $this->invokers;
     }
 
-    public function setCalls(?adapter\calls $calls = null)
+    public function setCalls(?adapter\calls $calls = null): static
     {
         $this->calls = $calls ?: new adapter\calls();
 
         return $this->resetCalls();
     }
 
-    public function getCalls(?adapter\call $call = null, $identical = false)
+    public function getCalls(?adapter\call $call = null, bool $identical = false): adapter\calls
     {
         return ($call === null ? $this->calls : $this->calls->get($call, $identical));
     }
 
-    public function getCallsNumber(?adapter\call $call = null, $identical = false)
+    public function getCallsNumber(?adapter\call $call = null, bool $identical = false): int
     {
         return count($this->getCalls($call, $identical));
     }
 
-    public function getCallsEqualTo(adapter\call $call)
+    public function getCallsEqualTo(adapter\call $call): adapter\calls
     {
         return $this->calls->getEqualTo($call);
     }
 
-    public function getCallsNumberEqualTo(adapter\call $call)
+    public function getCallsNumberEqualTo(adapter\call $call): int
     {
         return count($this->calls->getEqualTo($call));
     }
 
-    public function getCallsIdenticalTo(adapter\call $call)
+    public function getCallsIdenticalTo(adapter\call $call): adapter\calls
     {
         return $this->calls->getIdenticalTo($call);
     }
 
-    public function getPreviousCalls(adapter\call $call, $position, $identical = false)
+    public function getPreviousCalls(adapter\call $call, int $position, bool $identical = false): adapter\calls
     {
         return $this->calls->getPrevious($call, $position, $identical);
     }
 
-    public function hasPreviousCalls(adapter\call $call, $position, $identical = false)
+    public function hasPreviousCalls(adapter\call $call, int $position, bool $identical = false): bool
     {
         return $this->calls->hasPrevious($call, $position, $identical);
     }
 
-    public function getAfterCalls(adapter\call $call, $position, $identical = false)
+    public function getAfterCalls(adapter\call $call, int $position, bool $identical = false): adapter\calls
     {
         return $this->calls->getAfter($call, $position, $identical);
     }
 
-    public function hasAfterCalls(adapter\call $call, $position, $identical = false)
+    public function hasAfterCalls(adapter\call $call, int $position, bool $identical = false): bool
     {
         return $this->calls->hasAfter($call, $position, $identical);
     }
 
-    public function getCallNumber(?adapter\call $call = null, $identical = false)
+    public function getCallNumber(?adapter\call $call = null, bool $identical = false): int
     {
         return count($this->getCalls($call, $identical));
     }
 
-    public function getTimeline(?adapter\call $call = null, $identical = false)
+    public function getTimeline(?adapter\call $call = null, bool $identical = false): array
     {
         return $this->calls->getTimeline($call, $identical);
     }
 
-    public function resetCalls($functionName = null)
+    public function resetCalls(?string $functionName = null): static
     {
         if ($functionName === null) {
             $this->calls->reset();
@@ -148,14 +144,14 @@ class adapter extends atoum\adapter
         return $this;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->invokers = [];
 
         return $this->resetCalls();
     }
 
-    public function addCall($functionName, array $arguments = [])
+    public function addCall(string $functionName, array $arguments = []): static
     {
         $unreferencedArguments = [];
 
@@ -168,7 +164,7 @@ class adapter extends atoum\adapter
         return $this;
     }
 
-    public function invoke($functionName, array $arguments = [])
+    public function invoke(string $functionName, array $arguments = []): mixed
     {
         if (self::isLanguageConstruct($functionName) || (function_exists($functionName) === true && is_callable($functionName) === false)) {
             throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not invokable by an adapter');
@@ -183,12 +179,12 @@ class adapter extends atoum\adapter
         }
     }
 
-    public static function setStorage(?adapter\storage $storage = null)
+    public static function setStorage(?adapter\storage $storage = null): void
     {
         self::$storage = $storage ?: new adapter\storage();
     }
 
-    protected function buildInvoker($functionName, ?\closure $factory = null)
+    protected function buildInvoker(string $functionName, ?\Closure $factory = null): adapter\invoker
     {
         if ($factory === null) {
             $factory = function ($functionName) {
@@ -199,7 +195,7 @@ class adapter extends atoum\adapter
         return $factory($functionName);
     }
 
-    protected function setInvoker($functionName, ?\closure $factory = null)
+    protected function setInvoker(string $functionName, ?\Closure $factory = null): adapter\invoker
     {
         $key = static::getKey($functionName);
 
@@ -210,29 +206,29 @@ class adapter extends atoum\adapter
         return $this->invokers[$key];
     }
 
-    protected function callIsOverloaded($functionName, $call)
+    protected function callIsOverloaded(string $functionName, int $call): bool
     {
         $functionName = static::getKey($functionName);
 
         return (isset($this->invokers[$functionName]) === true && $this->invokers[$functionName]->closureIsSetForCall($call) === true);
     }
 
-    protected function nextCallIsOverloaded($functionName)
+    protected function nextCallIsOverloaded(string $functionName): bool
     {
         return ($this->callIsOverloaded($functionName, $this->getCallNumber(new adapter\call($functionName)) + 1) === true);
     }
 
-    protected function buildCall($function, array $arguments)
+    protected function buildCall(string $function, array $arguments): adapter\call
     {
         return new adapter\call($function, $arguments);
     }
 
-    protected static function getKey($functionName)
+    protected static function getKey(string $functionName): string
     {
         return strtolower($functionName);
     }
 
-    protected static function isLanguageConstruct($functionName)
+    protected static function isLanguageConstruct(string $functionName): bool
     {
         switch (strtolower($functionName)) {
             case 'array':
@@ -257,7 +253,7 @@ class adapter extends atoum\adapter
         }
     }
 
-    protected static function getArgumentsFilter($arguments, $identicalArguments)
+    protected static function getArgumentsFilter(mixed $arguments, bool $identicalArguments): ?\Closure
     {
         $filter = null;
 

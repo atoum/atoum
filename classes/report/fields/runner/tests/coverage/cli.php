@@ -8,13 +8,13 @@ use atoum\atoum\report;
 
 class cli extends report\fields\runner\tests\coverage
 {
-    protected $titlePrompt = null;
-    protected $classPrompt = null;
-    protected $methodPrompt = null;
-    protected $titleColorizer = null;
-    protected $coverageColorizer = null;
-    protected $hideClassesCoverageDetails = false;
-    protected $hideMethodsCoverageDetails = false;
+    protected ?prompt $titlePrompt = null;
+    protected ?prompt $classPrompt = null;
+    protected ?prompt $methodPrompt = null;
+    protected ?colorizer $titleColorizer = null;
+    protected ?colorizer $coverageColorizer = null;
+    protected bool $hideClassesCoverageDetails = false;
+    protected bool $hideMethodsCoverageDetails = false;
 
     public function __construct()
     {
@@ -29,7 +29,7 @@ class cli extends report\fields\runner\tests\coverage
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -111,74 +111,74 @@ class cli extends report\fields\runner\tests\coverage
         return $string;
     }
 
-    public function setTitlePrompt(?prompt $prompt = null)
+    public function setTitlePrompt(?prompt $prompt = null): static
     {
         $this->titlePrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getTitlePrompt()
+    public function getTitlePrompt(): prompt
     {
         return $this->titlePrompt;
     }
 
-    public function setClassPrompt(?prompt $prompt = null)
+    public function setClassPrompt(?prompt $prompt = null): static
     {
         $this->classPrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getClassPrompt()
+    public function getClassPrompt(): prompt
     {
         return $this->classPrompt;
     }
 
-    public function setMethodPrompt(?prompt $prompt = null)
+    public function setMethodPrompt(?prompt $prompt = null): static
     {
         $this->methodPrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getMethodPrompt()
+    public function getMethodPrompt(): prompt
     {
         return $this->methodPrompt;
     }
 
-    public function setTitleColorizer(?colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null): static
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getTitleColorizer()
+    public function getTitleColorizer(): colorizer
     {
         return $this->titleColorizer;
     }
 
-    public function setCoverageColorizer(?colorizer $colorizer = null)
+    public function setCoverageColorizer(?colorizer $colorizer = null): static
     {
         $this->coverageColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getCoverageColorizer()
+    public function getCoverageColorizer(): colorizer
     {
         return $this->coverageColorizer;
     }
 
-    public function hideClassesCoverageDetails()
+    public function hideClassesCoverageDetails(): static
     {
         $this->hideClassesCoverageDetails = true;
 
         return $this;
     }
 
-    public function hideMethodsCoverageDetails()
+    public function hideMethodsCoverageDetails(): static
     {
         $this->hideMethodsCoverageDetails = true;
 

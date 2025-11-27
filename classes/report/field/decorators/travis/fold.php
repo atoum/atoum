@@ -7,16 +7,16 @@ use atoum\atoum\report\field\decorator;
 
 class fold extends decorator
 {
-    private $slug;
+    private string $slug;
 
-    public function __construct(field $field, $slug)
+    public function __construct(field $field, string $slug)
     {
         parent::__construct($field);
 
         $this->slug = $slug;
     }
 
-    public function decorate($string)
+    public function decorate(string $string): string
     {
         if ($string == '') {
             return (string) $string;

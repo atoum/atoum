@@ -6,7 +6,7 @@ use atoum\atoum\writers;
 
 class out extends writers\std
 {
-    protected function init()
+    protected function init(): static
     {
         if ($this->resource === null) {
             $resource = $this->adapter->fopen('php://stdout', 'w');

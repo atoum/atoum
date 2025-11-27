@@ -9,10 +9,10 @@ use atoum\atoum\report\fields;
 
 class cli extends fields\runner\result
 {
-    protected $observable = null;
-    protected $prompt = null;
-    protected $successColorizer = null;
-    protected $failureColorizer = null;
+    protected mixed $observable = null;
+    protected ?prompt $prompt = null;
+    protected ?colorizer $successColorizer = null;
+    protected ?colorizer $failureColorizer = null;
 
     public function __construct()
     {
@@ -25,7 +25,7 @@ class cli extends fields\runner\result
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = $this->prompt;
 
@@ -63,43 +63,43 @@ class cli extends fields\runner\result
         return $string . PHP_EOL;
     }
 
-    public function setPrompt(?prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null): static
     {
         $this->prompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getPrompt()
+    public function getPrompt(): prompt
     {
         return $this->prompt;
     }
 
-    public function setSuccessColorizer(?colorizer $colorizer = null)
+    public function setSuccessColorizer(?colorizer $colorizer = null): static
     {
         $this->successColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getSuccessColorizer()
+    public function getSuccessColorizer(): colorizer
     {
         return $this->successColorizer;
     }
 
-    public function setFailureColorizer(?colorizer $colorizer = null)
+    public function setFailureColorizer(?colorizer $colorizer = null): static
     {
         $this->failureColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getFailureColorizer()
+    public function getFailureColorizer(): colorizer
     {
         return $this->failureColorizer;
     }
 
-    public function handleEvent($event, observable $observable)
+    public function handleEvent(string $event, observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

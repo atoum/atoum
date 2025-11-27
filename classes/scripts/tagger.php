@@ -8,16 +8,16 @@ use atoum\atoum\scripts;
 
 class tagger extends atoum\script
 {
-    protected $engine = null;
+    protected ?tagger\engine $engine = null;
 
-    public function __construct($name, ?atoum\adapter $adapter = null)
+    public function __construct(string $name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
         $this->setEngine();
     }
 
-    public function setEngine(?tagger\engine $engine = null)
+    public function setEngine(?tagger\engine $engine = null): static
     {
         $this->engine = $engine ?: new scripts\tagger\engine();
 
@@ -26,12 +26,12 @@ class tagger extends atoum\script
         return $this;
     }
 
-    public function getEngine()
+    public function getEngine(): ?tagger\engine
     {
         return $this->engine;
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         if ($this->engine !== null) {
             $engine = $this->engine;
@@ -103,7 +103,7 @@ class tagger extends atoum\script
         return $this;
     }
 
-    protected function doRun()
+    protected function doRun(): static
     {
         $this->engine->tagVersion();
 

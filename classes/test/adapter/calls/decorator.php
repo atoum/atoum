@@ -6,7 +6,7 @@ use atoum\atoum\test\adapter\calls;
 
 class decorator
 {
-    public function decorate(calls $calls)
+    public function decorate(calls $calls): string
     {
         $string = '';
 

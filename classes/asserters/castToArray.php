@@ -8,7 +8,7 @@ use atoum\atoum\tools;
 
 class castToArray extends phpArray
 {
-    protected $adapter = null;
+    protected ?atoum\adapter $adapter = null;
 
     public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null, ?atoum\adapter $adapter = null)
     {
@@ -17,24 +17,24 @@ class castToArray extends phpArray
         $this->setAdapter($adapter);
     }
 
-    public function setAdapter(?atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): atoum\adapter
     {
         return $this->adapter;
     }
 
-    public function setWith($value, $checkType = false)
+    public function setWith(mixed $value, bool $checkType = false): static
     {
         parent::setWith($value, false);
 
         $fail = false;
-        $this->adapter->set_error_handler(function () use (& $fail) {
+        $this->adapter->set_error_handler(function () use (&$fail) {
             $fail = true;
         });
 

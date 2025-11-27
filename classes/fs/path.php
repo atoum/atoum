@@ -6,11 +6,11 @@ use atoum\atoum\fs\path\exception;
 
 class path
 {
-    protected $drive = '';
-    protected $components = '';
-    protected $directorySeparator = DIRECTORY_SEPARATOR;
+    protected ?string $drive = '';
+    protected string $components = '';
+    protected string $directorySeparator = DIRECTORY_SEPARATOR;
 
-    public function __construct($value, $directorySeparator = null)
+    public function __construct(string $value, ?string $directorySeparator = null)
     {
         $this
             ->setDriveAndComponents($value)
@@ -18,7 +18,7 @@ class path
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $components = $this->components;
 
@@ -29,12 +29,12 @@ class path
         return $this->drive . $components;
     }
 
-    public function getDirectorySeparator()
+    public function getDirectorySeparator(): string
     {
         return $this->directorySeparator;
     }
 
-    public function relativizeFrom(self $reference)
+    public function relativizeFrom(self $reference): static
     {
         $this->resolve();
 
@@ -70,12 +70,12 @@ class path
         return $this;
     }
 
-    public function exists()
+    public function exists(): bool
     {
         return (file_exists((string) $this) === true);
     }
 
-    public function resolve()
+    public function resolve(): static
     {
         if ($this->isAbsolute() === false) {
             $this->absolutize();
@@ -120,17 +120,17 @@ class path
         return ($this->isSubPathOf($path) === false);
     }
 
-    public function isRoot()
+    public function isRoot(): bool
     {
         return static::pathIsRoot($this->getResolvedPath()->components);
     }
 
-    public function isAbsolute()
+    public function isAbsolute(): bool
     {
         return static::pathIsAbsolute($this->components);
     }
 
-    public function absolutize()
+    public function absolutize(): static
     {
         if ($this->isAbsolute() === false) {
             $this->setDriveAndComponents(getcwd() . DIRECTORY_SEPARATOR . $this->components);
@@ -139,7 +139,7 @@ class path
         return $this;
     }
 
-    public function getRealPath()
+    public function getRealPath(): self
     {
         $absolutePath = $this->getAbsolutePath();
 
@@ -161,7 +161,7 @@ class path
         return $absolutePath->setDriveAndComponents($realPath . $files);
     }
 
-    public function getParentDirectoryPath()
+    public function getParentDirectoryPath(): self
     {
         $parentDirectory = clone $this;
         $parentDirectory->components = self::getComponents(dirname($parentDirectory->components));
@@ -191,7 +191,7 @@ class path
         return $clone->relativizeFrom($reference);
     }
 
-    public function getResolvedPath()
+    public function getResolvedPath(): self
     {
         $clone = clone $this;
 
@@ -205,7 +205,7 @@ class path
         return $clone->absolutize();
     }
 
-    public function createParentDirectory()
+    public function createParentDirectory(): static
     {
         $parentDirectory = $this->getParentDirectoryPath();
 
@@ -225,7 +225,7 @@ class path
         return $this;
     }
 
-    protected function setDriveAndComponents($value)
+    protected function setDriveAndComponents(string $value): static
     {
         $drive = null;
 

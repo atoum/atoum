@@ -118,18 +118,23 @@ class report extends atoum\test
                 $observable = new \mock\atoum\atoum\observable(),
                 $event = uniqid()
             )
-            ->then
-                ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
+            ->when(function () use ($event, $observable) {
+                $this->testedInstance->handleEvent($event, $observable);
+            })
             ->given($field = new \mock\atoum\atoum\report\field())
             ->if($this->testedInstance->addField($field))
+            ->when(function () use ($event, $observable) {
+                $this->testedInstance->handleEvent($event, $observable);
+            })
             ->then
-                ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
                 ->mock($field)
                     ->call('handleEvent')->withArguments($event, $observable)->once
             ->given($otherField = new \mock\atoum\atoum\report\field())
             ->if($this->testedInstance->addField($otherField))
+            ->when(function () use ($event, $observable) {
+                $this->testedInstance->handleEvent($event, $observable);
+            })
             ->then
-                ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
                 ->mock($field)
                     ->call('handleEvent')->withArguments($event, $observable)->twice
                 ->mock($otherField)

@@ -8,19 +8,19 @@ use atoum\atoum\runner;
 
 abstract class coverage extends report\field
 {
-    protected $coverage = null;
+    protected mixed $coverage = null;
 
     public function __construct()
     {
         parent::__construct([runner::runStop]);
     }
 
-    public function getCoverage()
+    public function getCoverage(): mixed
     {
         return $this->coverage;
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

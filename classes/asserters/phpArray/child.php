@@ -7,7 +7,7 @@ use atoum\atoum\exceptions;
 
 class child extends asserters\phpArray
 {
-    private $parent;
+    private ?asserters\phpArray $parent = null;
 
     public function __construct(?asserters\phpArray $parent = null)
     {
@@ -16,144 +16,186 @@ class child extends asserters\phpArray
         $this->setWithParent($parent);
     }
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         return $this->parentIsSet()->parent->__get($property);
     }
 
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         return $this->parentIsSet()->parent->__call($method, $arguments);
     }
 
-    public function __invoke(\closure $assertions)
+    public function __invoke(\Closure $assertions): static
     {
         $assertions($this->parent->phpArray($this->value));
 
         return $this;
     }
 
-    public function setWithParent(asserters\phpArray $parent)
+    public function setWithParent(asserters\phpArray $parent): static
     {
         $this->parent = $parent;
 
         return $this;
     }
 
-    public function hasSize($size, $failMessage = null)
+    public function hasSize(int $size, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->hasSize($size, $failMessage);
+        $this->parentIsSet()->parent->hasSize($size, $failMessage);
+
+        return $this;
     }
 
-    public function isEmpty($failMessage = null)
+    public function isEmpty(?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->isEmpty($failMessage);
+        $this->parentIsSet()->parent->isEmpty($failMessage);
+
+        return $this;
     }
 
-    public function isNotEmpty($failMessage = null)
+    public function isNotEmpty(?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->isNotEmpty($failMessage);
+        $this->parentIsSet()->parent->isNotEmpty($failMessage);
+
+        return $this;
     }
 
-    public function strictlyContains($value, $failMessage = null)
+    public function strictlyContains(mixed $value, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->strictlyContains($value, $failMessage);
+        $this->parentIsSet()->parent->strictlyContains($value, $failMessage);
+
+        return $this;
     }
 
-    public function contains($value, $failMessage = null)
+    public function contains(mixed $value, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->contains($value, $failMessage);
+        $this->parentIsSet()->parent->contains($value, $failMessage);
+
+        return $this;
     }
 
-    public function strictlyNotContains($value, $failMessage = null)
+    public function strictlyNotContains(mixed $value, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->strictlyNotContains($value, $failMessage);
+        $this->parentIsSet()->parent->strictlyNotContains($value, $failMessage);
+
+        return $this;
     }
 
-    public function notContains($value, $failMessage = null)
+    public function notContains(mixed $value, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->notContains($value, $failMessage);
+        $this->parentIsSet()->parent->notContains($value, $failMessage);
+
+        return $this;
     }
 
-    public function hasKeys(array $keys, $failMessage = null)
+    public function hasKeys(array $keys, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->hasKeys($keys, $failMessage);
+        $this->parentIsSet()->parent->hasKeys($keys, $failMessage);
+
+        return $this;
     }
 
-    public function notHasKeys(array $keys, $failMessage = null)
+    public function notHasKeys(array $keys, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->notHasKeys($keys, $failMessage);
+        $this->parentIsSet()->parent->notHasKeys($keys, $failMessage);
+
+        return $this;
     }
 
-    public function hasKey($key, $failMessage = null)
+    public function hasKey(mixed $key, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->hasKey($key, $failMessage);
+        $this->parentIsSet()->parent->hasKey($key, $failMessage);
+
+        return $this;
     }
 
-    public function notHasKey($key, $failMessage = null)
+    public function notHasKey(mixed $key, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->notHasKey($key, $failMessage);
+        $this->parentIsSet()->parent->notHasKey($key, $failMessage);
+
+        return $this;
     }
 
-    public function containsValues(array $values, $failMessage = null)
+    public function containsValues(array $values, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->containsValues($values, $failMessage);
+        $this->parentIsSet()->parent->containsValues($values, $failMessage);
+
+        return $this;
     }
 
-    public function strictlyContainsValues(array $values, $failMessage = null)
+    public function strictlyContainsValues(array $values, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->strictlyContainsValues($values, $failMessage);
+        $this->parentIsSet()->parent->strictlyContainsValues($values, $failMessage);
+
+        return $this;
     }
 
-    public function notContainsValues(array $values, $failMessage = null)
+    public function notContainsValues(array $values, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->notContainsValues($values, $failMessage);
+        $this->parentIsSet()->parent->notContainsValues($values, $failMessage);
+
+        return $this;
     }
 
-    public function strictlyNotContainsValues(array $values, $failMessage = null)
+    public function strictlyNotContainsValues(array $values, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->strictlyNotContainsValues($values, $failMessage);
+        $this->parentIsSet()->parent->strictlyNotContainsValues($values, $failMessage);
+
+        return $this;
     }
 
-    public function isEqualTo($value, $failMessage = null)
+    public function isEqualTo(mixed $value, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->isEqualTo($value, $failMessage);
+        $this->parentIsSet()->parent->isEqualTo($value, $failMessage);
+
+        return $this;
     }
 
-    public function isNotEqualTo($value, $failMessage = null)
+    public function isNotEqualTo(mixed $value, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->isNotEqualTo($value, $failMessage);
+        $this->parentIsSet()->parent->isNotEqualTo($value, $failMessage);
+
+        return $this;
     }
 
-    public function isIdenticalTo($value, $failMessage = null)
+    public function isIdenticalTo(mixed $value, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->isIdenticalTo($value, $failMessage);
+        $this->parentIsSet()->parent->isIdenticalTo($value, $failMessage);
+
+        return $this;
     }
 
-    public function isNotIdenticalTo($value, $failMessage = null)
+    public function isNotIdenticalTo(mixed $value, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->isNotIdenticalTo($value, $failMessage);
+        $this->parentIsSet()->parent->isNotIdenticalTo($value, $failMessage);
+
+        return $this;
     }
 
-    public function isReferenceTo(& $reference, $failMessage = null)
+    public function isReferenceTo(mixed &$reference, ?string $failMessage = null): static
     {
-        return $this->parentIsSet()->parent->isReferenceTo($reference, $failMessage);
+        $this->parentIsSet()->parent->isReferenceTo($reference, $failMessage);
+
+        return $this;
     }
 
-    protected function containsValue($value, $failMessage, $strict)
+    protected function containsValue(mixed $value, ?string $failMessage, bool $strict): static
     {
-        return $this->parentIsSet()->parent->containsValue($value, $failMessage, $strict);
+        $this->parentIsSet()->parent->containsValue($value, $failMessage, $strict);
+
+        return $this;
     }
 
     #[\ReturnTypeWillChange]
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): static
     {
         $asserter = new self($this);
 
         return $asserter->setWith($this->valueIsSet()->value[$key]);
     }
 
-    protected function parentIsSet()
+    protected function parentIsSet(): static
     {
         if ($this->parent === null) {
             throw new exceptions\logic('Parent array asserter is undefined');

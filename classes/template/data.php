@@ -6,38 +6,38 @@ use atoum\atoum;
 
 class data
 {
-    protected $parent = null;
-    protected $rank = null;
-    protected $data = null;
+    protected ?atoum\template $parent = null;
+    protected ?int $rank = null;
+    protected ?string $data = null;
 
-    public function __construct($data = null)
+    public function __construct(mixed $data = null)
     {
         $this->setData($data);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getData();
     }
 
-    public function resetData()
+    public function resetData(): static
     {
         $this->data = null;
 
         return $this;
     }
 
-    public function getData()
+    public function getData(): string
     {
         return ($this->data === null ? '' : $this->data);
     }
 
-    public function setData($data)
+    public function setData(mixed $data): static
     {
         return $this->resetData()->addData($data);
     }
 
-    public function addData($data)
+    public function addData(mixed $data): static
     {
         $data = (string) $data;
 
@@ -48,19 +48,19 @@ class data
         return $this;
     }
 
-    public function setParent(atoum\template $parent)
+    public function setParent(atoum\template $parent): static
     {
         $parent->addChild($this);
 
         return $this;
     }
 
-    public function getParent()
+    public function getParent(): ?atoum\template
     {
         return $this->parent;
     }
 
-    public function getRoot()
+    public function getRoot(): self|atoum\template
     {
         $root = $this;
 
@@ -71,17 +71,17 @@ class data
         return $root;
     }
 
-    public function isRoot()
+    public function isRoot(): bool
     {
         return ($this->parent === null);
     }
 
-    public function parentIsSet()
+    public function parentIsSet(): bool
     {
         return ($this->parent !== null);
     }
 
-    public function unsetParent()
+    public function unsetParent(): static
     {
         if ($this->parentIsSet() === true) {
             $this->parent->deleteChild($this);
@@ -90,12 +90,12 @@ class data
         return $this;
     }
 
-    public function build()
+    public function build(): static
     {
         return $this;
     }
 
-    public function addToParent()
+    public function addToParent(): static
     {
         if ($this->build()->parentIsSet() === true) {
             $this->parent->addData($this);
@@ -104,37 +104,37 @@ class data
         return $this;
     }
 
-    public function getTag()
+    public function getTag(): ?string
     {
         return null;
     }
 
-    public function getId()
+    public function getId(): ?string
     {
         return null;
     }
 
-    public function getByTag($tag)
+    public function getByTag(string $tag): iterator
     {
-        return [];
+        return new iterator();
     }
 
-    public function getById($id, $fromRoot = true)
+    public function getById(string $id, bool $fromRoot = true): ?atoum\template
     {
         return null;
     }
 
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return false;
     }
 
-    public function getChild($rank)
+    public function getChild(int $rank): ?self
     {
         return null;
     }
 
-    public function getChildren()
+    public function getChildren(): array
     {
         return [];
     }

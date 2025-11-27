@@ -7,7 +7,7 @@ use atoum\atoum\test;
 
 class adapter extends test\adapter
 {
-    protected function setInvoker($functionName, ?\closure $factory = null)
+    protected function setInvoker(string $functionName, ?\Closure $factory = null): test\adapter\invoker
     {
         if ($factory === null) {
             $factory = function ($functionName) {

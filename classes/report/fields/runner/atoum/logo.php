@@ -4,7 +4,7 @@ namespace atoum\atoum\report\fields\runner\atoum;
 
 class logo extends cli
 {
-    public function __toString()
+    public function __toString(): string
     {
         return "
               \033[48;5;16m  \033[0m   \033[0m                             \033[0m \033[48;5;16m  \033[0m

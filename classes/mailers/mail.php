@@ -9,7 +9,7 @@ class mail extends atoum\mailer
 {
     public const eol = "\r\n";
 
-    public function send($something)
+    public function send(string $something): static
     {
         if ($this->to === null) {
             throw new exceptions\runtime('To is undefined');

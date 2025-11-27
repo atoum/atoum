@@ -6,11 +6,11 @@ use atoum\atoum\scripts\treemap\analyzer;
 
 class generic implements analyzer
 {
-    protected $metricName = '';
-    protected $metricLabel = '';
-    protected $callback = null;
+    protected string $metricName = '';
+    protected string $metricLabel = '';
+    protected ?\Closure $callback = null;
 
-    public function __construct($metricName, $metricLabel = null, $callback = null)
+    public function __construct(string $metricName, ?string $metricLabel = null, ?\Closure $callback = null)
     {
         $this
             ->setCallback($callback)
@@ -19,7 +19,7 @@ class generic implements analyzer
         ;
     }
 
-    public function setCallback(?\closure $callback = null)
+    public function setCallback(?\Closure $callback = null): static
     {
         $this->callback = $callback ?: function () {
             return 0;
@@ -28,37 +28,39 @@ class generic implements analyzer
         return $this;
     }
 
-    public function getCallback()
+    public function getCallback(): \Closure
     {
         return $this->callback;
     }
 
-    public function setMetricName($metricName)
+    public function setMetricName(string $metricName): static
     {
         $this->metricName = (string) $metricName;
 
         return $this->setMetricLabel(ucfirst($this->metricName));
     }
 
-    public function getMetricName()
+    public function getMetricName(): string
     {
         return $this->metricName;
     }
 
-    public function setMetricLabel($metricLabel = null)
+    public function setMetricLabel(?string $metricLabel = null): static
     {
         $this->metricLabel = ($metricLabel ? (string) $metricLabel : ucfirst($this->metricName));
 
         return $this;
     }
 
-    public function getMetricLabel()
+    public function getMetricLabel(): string
     {
         return $this->metricLabel;
     }
 
-    public function getMetricFromFile(\splFileInfo $file)
+    public function getMetricFromFile(\splFileInfo $file): int|float
     {
-        return call_user_func_array($this->callback, [$file]);
+        $result = call_user_func_array($this->callback, [$file]);
+
+        return is_numeric($result) ? $result : 0;
     }
 }

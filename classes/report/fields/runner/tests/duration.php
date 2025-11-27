@@ -8,25 +8,25 @@ use atoum\atoum\runner;
 
 abstract class duration extends report\field
 {
-    protected $value = null;
-    protected $testNumber = null;
+    protected mixed $value = null;
+    protected ?int $testNumber = null;
 
     public function __construct()
     {
         parent::__construct([runner::runStop]);
     }
 
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
 
-    public function getTestNumber()
+    public function getTestNumber(): ?int
     {
         return $this->testNumber;
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

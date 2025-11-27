@@ -7,38 +7,38 @@ use atoum\atoum\tools;
 
 class variable extends tools\diff
 {
-    protected $analyzer = null;
+    protected ?tools\variable\analyzer $analyzer = null;
 
-    public function __construct($expected = null, $actual = null)
+    public function __construct(mixed $expected = null, mixed $actual = null)
     {
         $this->setAnalyzer();
 
         parent::__construct($expected, $actual);
     }
 
-    public function setAnalyzer(?tools\variable\analyzer $analyzer = null)
+    public function setAnalyzer(?tools\variable\analyzer $analyzer = null): static
     {
         $this->analyzer = $analyzer ?: new tools\variable\analyzer();
 
         return $this;
     }
 
-    public function getAnalyzer()
+    public function getAnalyzer(): tools\variable\analyzer
     {
         return $this->analyzer;
     }
 
-    public function setExpected($mixed)
+    public function setExpected(mixed $mixed): static
     {
         return parent::setExpected($this->analyzer->dump($mixed));
     }
 
-    public function setActual($mixed)
+    public function setActual(mixed $mixed): static
     {
         return parent::setActual($this->analyzer->dump($mixed));
     }
 
-    public function make($expected = null, $actual = null)
+    public function make(mixed $expected = null, mixed $actual = null): array
     {
         if ($expected !== null) {
             $this->setExpected($expected);

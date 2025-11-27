@@ -44,36 +44,29 @@ namespace atoum\atoum\mock\atoum\atoum
 namespace atoum\atoum\tests\units
 {
     use atoum\atoum;
+    use atoum\atoum\attributes as Attributes;
     use atoum\atoum\mock;
 
     require_once __DIR__ . '/../runner.php';
 
-    /**
-     * @ignore on
-     * @tags empty fake dummy
-     * @maxChildrenNumber 666
-     */
+    #[Attributes\Ignore]
+    #[Attributes\Tags('empty', 'fake', 'dummy')]
+    #[Attributes\MaxChildrenNumber(666)]
     class emptyTest extends atoum\test
     {
     }
 
-    /**
-     * @ignore on
-     */
+    #[Attributes\Ignore]
     class notEmptyTest extends atoum\test
     {
-        /**
-        @tags test method one method
-        */
+        #[Attributes\Tags('test', 'method', 'one', 'method')]
         public function testMethod1()
         {
         }
 
-        /**
-         * @extensions mbstring socket
-         * @ignore off
-         * @tags test method two
-        */
+        #[Attributes\Extensions('mbstring', 'socket')]
+        #[Attributes\Ignore(false)]
+        #[Attributes\Tags('test', 'method', 'two')]
         public function testMethod2()
         {
         }
@@ -83,41 +76,42 @@ namespace atoum\atoum\tests\units
         }
     }
 
-    /**
-     * @ignore on
-     * @tags first
-     */
+    #[Attributes\Ignore]
+    #[Attributes\Tags('first')]
     class inheritedTagsTest extends atoum\test
     {
-        /**
-         * @tags second third
-         */
+        #[Attributes\Tags('second', 'third')]
         public function testMethod1()
         {
         }
 
-        /**
-         * @tags first second third
-         */
+        #[Attributes\Tags('first', 'second', 'third')]
         public function testMethod2()
         {
         }
     }
 
-    /**
-     * @ignore on
-     */
+    #[Attributes\Ignore]
+    #[Attributes\TestMethodPrefix('#^testMethod[0-9]+$#i')]
     class dataProviderTest extends atoum\test
     {
-        public function testMethod1(\stdClass $a)
+        public function testMethod1(\SplFileInfo $fileInfo)
         {
         }
 
-        public function testMethod2(\SplFileInfo $a)
+        public function testMethod2(\SplFileInfo $fileInfo)
         {
         }
 
-        public function testMethod3($a)
+        public function testMethod3($data)
+        {
+        }
+
+        public function aDataProvider()
+        {
+        }
+
+        public function bDataProvider()
         {
         }
     }
@@ -132,9 +126,7 @@ namespace atoum\atoum\tests\units
         }
     }
 
-    /**
-     * @ignore on
-     */
+    #[Attributes\Ignore]
     class withStatic extends atoum\test
     {
         public function __construct()
@@ -145,26 +137,20 @@ namespace atoum\atoum\tests\units
         }
     }
 
-    /**
-     * @ignore on
-     * @os Foo
-     */
+    #[Attributes\Ignore]
+    #[Attributes\Os('Foo')]
     class osRestricted extends atoum\test
     {
         public function testMethod1()
         {
         }
 
-        /**
-         * @os bar
-         */
+        #[Attributes\Os('bar')]
         public function testMethod2()
         {
         }
 
-        /**
-         * @os !foo
-         */
+        #[Attributes\Os('!foo')]
         public function testMethod3()
         {
         }
@@ -948,6 +934,84 @@ namespace atoum\atoum\tests\units
             ;
         }
 
+        public function testClassLevelAttributesAreApplied()
+        {
+            $classShortName = 'AttrClass' . str_replace('.', '_', uniqid('', true));
+            $namespace = __NAMESPACE__;
+
+            eval(
+                'namespace ' . $namespace . ';'
+                . ' use atoum\\atoum\\attributes as Attributes;'
+                . ' #[Attributes\\Php("8.1")]'
+                . ' #[Attributes\\Ignore(false)]'
+                . ' #[Attributes\\Tags("alpha", "beta")]'
+                . ' #[Attributes\\TestNamespace("custom\\\\space")]'
+                . ' #[Attributes\\TestMethodPrefix("spec")]'
+                . ' #[Attributes\\MaxChildrenNumber(42)]'
+                . ' #[Attributes\\Engine("inline")]'
+                . ' #[Attributes\\Extensions("soap", "xml")]'
+                . ' #[Attributes\\Os("linux", "!windows")]'
+                . ' #[Attributes\\HasNotVoidMethods]'
+                . ' class ' . $classShortName . ' extends \\atoum\\atoum\\test {'
+                . '     public function specExample() {}'
+                . ' }'
+            );
+
+            $className = __NAMESPACE__ . '\\' . $classShortName;
+            $test = new $className();
+
+            $this
+                ->array($test->getClassPhpVersions())->isEqualTo(['8.1' => '>='])
+                ->boolean($test->isIgnored())->isFalse()
+                ->array($test->getTags())->isEqualTo(['alpha', 'beta'])
+                ->string($test->getTestNamespace())->isEqualTo('custom\\space')
+                ->string($test->getTestMethodPrefix())->isEqualTo('spec')
+                ->integer($test->getMaxChildrenNumber())->isEqualTo(42)
+                ->string($test->getClassEngine())->isEqualTo('inline')
+                ->array($test->getMandatoryClassExtensions())->isEqualTo(['soap', 'xml'])
+                ->array($test->getClassSupportedOs())->isEqualTo(['linux', '!windows'])
+                ->array($test->getTestMethods())->isEqualTo(['specExample'])
+                ->boolean($test->methodIsNotVoid('specExample'))->isTrue()
+            ;
+        }
+
+        public function testMethodLevelAttributesAreApplied()
+        {
+            $classShortName = 'AttrMethodClass' . str_replace('.', '_', uniqid('', true));
+            $namespace = __NAMESPACE__;
+
+            eval(
+                'namespace ' . $namespace . ';'
+                . ' use atoum\\atoum\\attributes as Attributes;'
+                . ' class ' . $classShortName . ' extends \\atoum\\atoum\\test {'
+                . '     #[Attributes\\Php("8.2")]'
+                . '     #[Attributes\\Ignore(true)]'
+                . '     #[Attributes\\Tags("unit", "fast")]'
+                . '     #[Attributes\\DataProvider("provideData")]'
+                . '     #[Attributes\\Engine("inline")]'
+                . '     #[Attributes\\IsNotVoid]'
+                . '     #[Attributes\\Extensions("curl")]'
+                . '     #[Attributes\\Os("linux")]'
+                . '     public function testSomething() {}'
+                . '     public function provideData() { return []; }'
+                . ' }'
+            );
+
+            $className = __NAMESPACE__ . '\\' . $classShortName;
+            $test = new $className();
+
+            $this
+                ->array($test->getMethodPhpVersions('testSomething'))->isEqualTo(['8.2' => '>='])
+                ->boolean($test->methodIsIgnored('testSomething'))->isTrue()
+                ->array($test->getMethodTags('testSomething'))->isEqualTo(['unit', 'fast'])
+                ->array($test->getDataProviders())->isEqualTo(['testSomething' => 'provideData'])
+                ->string($test->getMethodEngine('testSomething'))->isEqualTo('inline')
+                ->boolean($test->methodIsNotVoid('testSomething'))->isTrue()
+                ->array($test->getMandatoryMethodExtensions('testSomething'))->isEqualTo(['curl'])
+                ->array($test->getMethodSupportedOs('testSomething'))->isEqualTo(['linux'])
+            ;
+        }
+
         public function testRun()
         {
             $this
@@ -1395,7 +1459,10 @@ namespace atoum\atoum\tests\units
                     ->mock($mock)
                         ->call('__construct')->withArguments($firstArgument, $secondArgument)->once
 
-                ->given($arguments = [uniqid(), rand(0, PHP_INT_MAX), $controller = new mock\controller()])
+                ->given(
+                    $arguments = [uniqid(), rand(0, PHP_INT_MAX)],
+                    $controller = new mock\controller()
+                )
                 ->then
                     ->object($mock = $test->newMockInstance(atoum\dummy::class, null, null, $arguments))
                         ->isInstanceOf(\mock\atoum\atoum\dummy::class)
@@ -1440,6 +1507,122 @@ namespace atoum\atoum\tests\units
                     ->array($test->getMethodSupportedOs('testMethod2'))->isEqualTo(['foo', 'bar'])
                     ->array($test->getMethodSupportedOs('testMethod3'))->isEqualTo(['!foo'])
             ;
+        }
+
+        public function testOsAttributeAllowsCurrentPlatform()
+        {
+            $test = new currentOsAttributeTest();
+
+            $test->ignore(false);
+            $test->getScore()->reset();
+            $test->runTestMethod('testRunsOnCurrentOs');
+
+            $this
+                ->integer($test->getScore()->getPassNumber())->isGreaterThan(0)
+                ->array($test->getScore()->getSkippedMethods())->isEmpty();
+        }
+
+        public function testExtensionsAttributeAllowsWhenLoaded()
+        {
+            $test = new coreExtensionAttributeTest();
+
+            $test->ignore(false);
+            $test->getScore()->reset();
+            $test->runTestMethod('testRunsWithCoreExtension');
+
+            $this
+                ->integer($test->getScore()->getPassNumber())->isGreaterThan(0)
+                ->array($test->getScore()->getSkippedMethods())->isEmpty();
+        }
+
+        public function testOsAttributeSkipsWhenNotSupported()
+        {
+            $test = new nonMatchingOsAttributeTest();
+
+            $test->ignore(false);
+            $test->getScore()->reset();
+            $test->runTestMethod('testIsSkippedOnCurrentOs');
+
+            $this
+                ->integer($test->getScore()->getPassNumber())->isEqualTo(0)
+                ->array($test->getScore()->getSkippedMethods())->isNotEmpty();
+        }
+
+        public function testExtensionsAttributeSkipsWhenMissing()
+        {
+            $test = new missingExtensionAttributeTest();
+
+            $test->ignore(false);
+            $test->getScore()->reset();
+            $test->runTestMethod('testIsSkippedWhenExtensionMissing');
+
+            $this
+                ->integer($test->getScore()->getPassNumber())->isEqualTo(0)
+                ->array($test->getScore()->getSkippedMethods())->isNotEmpty();
+        }
+    }
+
+    #[Attributes\Ignore]
+    #[Attributes\Os(PHP_OS)]
+    class currentOsAttributeTest extends atoum\test
+    {
+        public function __construct()
+        {
+            $this->setTestedClassName(\atoum\atoum\test::class);
+            parent::__construct();
+        }
+
+        public function testRunsOnCurrentOs()
+        {
+            $this->boolean(true)->isTrue();
+        }
+    }
+
+    #[Attributes\Ignore]
+    #[Attributes\Os('NonMatching_OS_For_Test')]
+    class nonMatchingOsAttributeTest extends atoum\test
+    {
+        public function __construct()
+        {
+            $this->setTestedClassName(\atoum\atoum\test::class);
+            parent::__construct();
+        }
+
+        public function testIsSkippedOnCurrentOs()
+        {
+            $this->boolean(true)->isTrue();
+        }
+    }
+
+    #[Attributes\Ignore]
+    #[Attributes\Extensions('Core')]
+    class coreExtensionAttributeTest extends atoum\test
+    {
+        public function __construct()
+        {
+            $this->setTestedClassName(\atoum\atoum\test::class);
+            parent::__construct();
+        }
+
+        public function testRunsWithCoreExtension()
+        {
+            $this->boolean(true)->isTrue();
+        }
+    }
+
+    #[Attributes\Ignore]
+    #[Attributes\Extensions('nonexistent_ext_for_atoum_test')]
+    class missingExtensionAttributeTest extends atoum\test
+    {
+        public function __construct()
+        {
+            $this->setTestedClassName(\atoum\atoum\test::class);
+            parent::__construct();
+        }
+
+        public function testIsSkippedWhenExtensionMissing()
+        {
+            $this->boolean(true)->isTrue();
         }
     }
 }

@@ -14,14 +14,14 @@ class coveralls extends atoum\reports\asynchronous
     public const defaultCoverallsApiMethod = 'POST';
     public const defaultCoverallsApiParameter = 'json';
 
-    protected $sourceDir = null;
-    protected $repositoryToken = null;
+    protected mixed $sourceDir = null;
+    protected mixed $repositoryToken = null;
     protected $score = null;
-    protected $branchFinder;
-    protected $serviceName;
-    protected $serviceJobId;
+    protected \Closure $branchFinder;
+    protected string $serviceName;
+    protected mixed $serviceJobId = null;
 
-    public function __construct($sourceDir, $repositoryToken = null, ?atoum\adapter $adapter = null)
+    public function __construct(string $sourceDir, mixed $repositoryToken = null, ?atoum\adapter $adapter = null)
     {
         parent::__construct();
 
@@ -39,7 +39,7 @@ class coveralls extends atoum\reports\asynchronous
         $this->sourceDir = new atoum\fs\path($sourceDir);
     }
 
-    public function setBranchFinder(?\closure $finder = null)
+    public function setBranchFinder(?\Closure $finder = null): static
     {
         $adapter = $this->adapter;
 
@@ -50,36 +50,36 @@ class coveralls extends atoum\reports\asynchronous
         return $this;
     }
 
-    public function getBranchFinder()
+    public function getBranchFinder(): \Closure
     {
         return $this->branchFinder;
     }
 
-    public function setServiceName($name = null)
+    public function setServiceName(?string $name = null): static
     {
         $this->serviceName = $name ?: static::defaultServiceName;
 
         return $this;
     }
 
-    public function getServiceName()
+    public function getServiceName(): string
     {
         return $this->serviceName;
     }
 
-    public function setServiceJobId($id = null)
+    public function setServiceJobId(mixed $id = null): static
     {
         $this->serviceJobId = $id;
 
         return $this;
     }
 
-    public function getServiceJobId()
+    public function getServiceJobId(): mixed
     {
         return $this->serviceJobId;
     }
 
-    public function addDefaultWriter(?atoum\writers\http $writer = null)
+    public function addDefaultWriter(?atoum\writers\http $writer = null): static
     {
         $writer = $writer ?: new atoum\writers\http($this->adapter);
         $writer
@@ -92,23 +92,25 @@ class coveralls extends atoum\reports\asynchronous
         return parent::addWriter($writer);
     }
 
-    public function getSourceDir()
+    public function getSourceDir(): mixed
     {
         return $this->sourceDir;
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable)
     {
         $this->score = ($event !== atoum\runner::runStop ? null : $observable->getScore());
 
         try {
-            return parent::handleEvent($event, $observable);
+            parent::handleEvent($event, $observable);
         } catch (atoum\writers\http\exception $exception) {
-            return $this;
+            // ignore to allow fluent interface even on failure
         }
+
+        return $this;
     }
 
-    public function build($event)
+    public function build(string $event): static
     {
         if ($event === atoum\runner::runStop) {
             $coverage = $this->makeRootElement($this->score->getCoverage());
@@ -118,7 +120,7 @@ class coveralls extends atoum\reports\asynchronous
         return $this;
     }
 
-    protected function makeRootElement(score\coverage $coverage)
+    protected function makeRootElement(score\coverage $coverage): array
     {
         $root = [
             'service_name' => $this->serviceName,
@@ -136,7 +138,7 @@ class coveralls extends atoum\reports\asynchronous
         return $root;
     }
 
-    protected function makeGitElement()
+    protected function makeGitElement(): array
     {
         $head = $this->adapter->exec('git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'');
         $infos = ['head' => json_decode($head)];
@@ -149,7 +151,7 @@ class coveralls extends atoum\reports\asynchronous
         return $infos;
     }
 
-    protected function makeSourceElement(score\coverage $coverage)
+    protected function makeSourceElement(score\coverage $coverage): array
     {
         $sources = [];
 
@@ -167,7 +169,7 @@ class coveralls extends atoum\reports\asynchronous
         return $sources;
     }
 
-    protected function makeCoverageElement(array $coverage)
+    protected function makeCoverageElement(array $coverage): array
     {
         $cover = [];
 

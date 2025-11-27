@@ -7,14 +7,14 @@ use atoum\atoum\php\tokenizer\iterators;
 
 class phpArgument extends tokenizer\iterator
 {
-    protected $defaultValue = null;
+    protected ?iterators\phpDefaultValue $defaultValue = null;
 
-    public function getDefaultValue()
+    public function getDefaultValue(): ?iterators\phpDefaultValue
     {
         return $this->defaultValue;
     }
 
-    public function appendDefaultValue(iterators\phpDefaultValue $phpDefaultValue)
+    public function appendDefaultValue(iterators\phpDefaultValue $phpDefaultValue): static
     {
         $this->defaultValue = $phpDefaultValue;
 

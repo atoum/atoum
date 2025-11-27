@@ -9,8 +9,8 @@ use atoum\atoum\test;
 
 class tap extends report\fields\event
 {
-    protected $testPoint = 0;
-    protected $testLine = '';
+    protected int $testPoint = 0;
+    protected string $testLine = '';
 
     public function __construct()
     {
@@ -29,12 +29,12 @@ class tap extends report\fields\event
         );
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->testLine;
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable): bool
     {
         $eventHandled = parent::handleEvent($event, $observable);
 
@@ -108,7 +108,7 @@ class tap extends report\fields\event
         return $eventHandled;
     }
 
-    private function renderErrors(atoum\observable $observable, $class, $method)
+    private function renderErrors(atoum\observable $observable, string $class, string $method): string
     {
         $errors = '';
 

@@ -8,12 +8,12 @@ use atoum\atoum\test\adapter;
 
 class call
 {
-    protected $function = null;
-    protected $arguments = null;
-    protected $decorator = null;
-    protected $verify = null;
+    protected ?string $function = null;
+    protected ?array $arguments = null;
+    protected ?adapter\call\decorator $decorator = null;
+    protected ?\Closure $verify = null;
 
-    public function __construct($function = null, ?array $arguments = null, ?adapter\call\decorator $decorator = null)
+    public function __construct(?string $function = null, ?array $arguments = null, ?adapter\call\decorator $decorator = null)
     {
         if ($function !== null) {
             $this->setFunction($function);
@@ -24,17 +24,17 @@ class call
         $this->setDecorator($decorator);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->decorator->decorate($this);
     }
 
-    public function getFunction()
+    public function getFunction(): ?string
     {
         return $this->function;
     }
 
-    public function setFunction($function)
+    public function setFunction(string $function): static
     {
         $function = (string) $function;
 
@@ -47,7 +47,7 @@ class call
         return $this;
     }
 
-    public function copy(self $call)
+    public function copy(self $call): static
     {
         $this->function = $call->function;
         $this->arguments = $call->arguments;
@@ -56,26 +56,26 @@ class call
         return $this;
     }
 
-    public function getArguments()
+    public function getArguments(): ?array
     {
         return $this->arguments;
     }
 
-    public function setArguments(array $arguments)
+    public function setArguments(array $arguments): static
     {
         $this->arguments = $arguments;
 
         return $this;
     }
 
-    public function unsetArguments()
+    public function unsetArguments(): static
     {
         $this->arguments = null;
 
         return $this;
     }
 
-    public function getVerify()
+    public function getVerify(): ?\Closure
     {
         return $this->verify;
     }
@@ -87,21 +87,21 @@ class call
         return $this;
     }
 
-    public function unsetVerify()
+    public function unsetVerify(): static
     {
         $this->verify = null;
 
         return $this;
     }
 
-    public function setDecorator(?adapter\call\decorator $decorator = null)
+    public function setDecorator(?adapter\call\decorator $decorator = null): static
     {
         $this->decorator = $decorator ?: new adapter\call\decorator();
 
         return $this;
     }
 
-    public function getDecorator()
+    public function getDecorator(): adapter\call\decorator
     {
         return $this->decorator;
     }

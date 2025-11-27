@@ -4,39 +4,39 @@ namespace atoum\atoum;
 
 class score
 {
-    protected $passNumber = 0;
-    protected $failAssertions = [];
-    protected $exceptions = [];
-    protected $runtimeExceptions = [];
-    protected $errors = [];
-    protected $outputs = [];
-    protected $durations = [];
-    protected $memoryUsages = [];
-    protected $voidMethods = [];
-    protected $uncompletedMethods = [];
-    protected $skippedMethods = [];
-    protected $coverage = null;
+    protected int $passNumber = 0;
+    protected array $failAssertions = [];
+    protected array $exceptions = [];
+    protected array $runtimeExceptions = [];
+    protected array $errors = [];
+    protected array $outputs = [];
+    protected array $durations = [];
+    protected array $memoryUsages = [];
+    protected array $voidMethods = [];
+    protected array $uncompletedMethods = [];
+    protected array $skippedMethods = [];
+    protected ?score\coverage $coverage = null;
 
-    private static $failId = 0;
+    private static int $failId = 0;
 
     public function __construct(?score\coverage $coverage = null)
     {
         $this->setCoverage($coverage);
     }
 
-    public function setCoverage(?score\coverage $coverage = null)
+    public function setCoverage(?score\coverage $coverage = null): static
     {
         $this->coverage = $coverage ?: new score\coverage();
 
         return $this;
     }
 
-    public function getCoverage()
+    public function getCoverage(): score\coverage
     {
         return $this->coverage;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->passNumber = 0;
         $this->failAssertions = [];
@@ -52,77 +52,77 @@ class score
         return $this;
     }
 
-    public function getAssertionNumber()
+    public function getAssertionNumber(): int
     {
         return ($this->passNumber + count($this->failAssertions));
     }
 
-    public function getPassNumber()
+    public function getPassNumber(): int
     {
         return $this->passNumber;
     }
 
-    public function getRuntimeExceptions()
+    public function getRuntimeExceptions(): array
     {
         return $this->runtimeExceptions;
     }
 
-    public function getVoidMethods()
+    public function getVoidMethods(): array
     {
         return $this->voidMethods;
     }
 
-    public function getLastVoidMethod()
+    public function getLastVoidMethod(): ?array
     {
         return end($this->voidMethods) ?: null;
     }
 
-    public function getVoidMethodNumber()
+    public function getVoidMethodNumber(): int
     {
         return count($this->voidMethods);
     }
 
-    public function getUncompletedMethods()
+    public function getUncompletedMethods(): array
     {
         return $this->uncompletedMethods;
     }
 
-    public function getUncompletedMethodNumber()
+    public function getUncompletedMethodNumber(): int
     {
         return count($this->uncompletedMethods);
     }
 
-    public function getLastUncompleteMethod()
+    public function getLastUncompleteMethod(): ?array
     {
         return end($this->uncompletedMethods) ?: null;
     }
 
-    public function getSkippedMethods()
+    public function getSkippedMethods(): array
     {
         return $this->skippedMethods;
     }
 
-    public function getLastSkippedMethod()
+    public function getLastSkippedMethod(): ?array
     {
         return end($this->skippedMethods) ?: null;
     }
 
-    public function getSkippedMethodNumber()
+    public function getSkippedMethodNumber(): int
     {
         return count($this->skippedMethods);
     }
 
-    public function getOutputs()
+    public function getOutputs(): array
     {
         return array_values($this->outputs);
     }
 
-    public function getOutputNumber()
+    public function getOutputNumber(): int
     {
         return count($this->outputs);
     }
 
-    public function getTotalDuration()
+    public function getTotalDuration(): float
     {
         $total = 0.0;
 
@@ -133,43 +133,43 @@ class score
         return $total;
     }
 
-    public function getDurations()
+    public function getDurations(): array
     {
         return array_values($this->durations);
     }
 
-    public function getDurationNumber()
+    public function getDurationNumber(): int
     {
         return count($this->durations);
     }
 
-    public function getTotalMemoryUsage()
+    public function getTotalMemoryUsage(): int
     {
-        $total = 0.0;
+        $total = 0;
 
         foreach ($this->memoryUsages as $memoryUsage) {
-            $total += $memoryUsage['value'];
+            $total += (int) $memoryUsage['value'];
         }
 
         return $total;
     }
 
-    public function getMemoryUsages()
+    public function getMemoryUsages(): array
     {
         return array_values($this->memoryUsages);
     }
 
-    public function getMemoryUsageNumber()
+    public function getMemoryUsageNumber(): int
     {
         return count($this->memoryUsages);
     }
 
-    public function getFailAssertions()
+    public function getFailAssertions(): array
     {
         return self::sort(self::cleanAssertions($this->failAssertions));
     }
 
-    public function getLastFailAssertion()
+    public function getLastFailAssertion(): ?array
     {
         $lastFailAssertion = end($this->failAssertions) ?: null;
 
@@ -180,79 +180,79 @@ class score
         return $lastFailAssertion;
     }
 
-    public function getFailNumber()
+    public function getFailNumber(): int
     {
         return count($this->getFailAssertions());
     }
 
-    public function getErrors()
+    public function getErrors(): array
     {
         return self::sort($this->errors);
     }
 
-    public function getErrorNumber()
+    public function getErrorNumber(): int
     {
         return count($this->errors);
     }
 
-    public function getExceptions()
+    public function getExceptions(): array
     {
         return self::sort($this->exceptions);
     }
 
-    public function getExceptionNumber()
+    public function getExceptionNumber(): int
     {
         return count($this->exceptions);
     }
 
-    public function getRuntimeExceptionNumber()
+    public function getRuntimeExceptionNumber(): int
     {
         return count($this->runtimeExceptions);
     }
 
-    public function getMethodsWithFail()
+    public function getMethodsWithFail(): array
     {
         return self::getMethods($this->getFailAssertions());
     }
 
-    public function getMethodsWithError()
+    public function getMethodsWithError(): array
     {
         return self::getMethods($this->getErrors());
     }
 
-    public function getMethodsWithException()
+    public function getMethodsWithException(): array
     {
         return self::getMethods($this->getExceptions());
     }
 
-    public function getMethodsNotCompleted()
+    public function getMethodsNotCompleted(): array
     {
         return self::getMethods($this->getUncompletedMethods());
     }
 
-    public function addPass()
+    public function addPass(): static
     {
         $this->passNumber++;
 
         return $this;
     }
 
-    public function getLastErroredMethod()
+    public function getLastErroredMethod(): ?array
     {
         return end($this->errors) ?: null;
     }
 
-    public function getLastException()
+    public function getLastException(): ?array
     {
         return end($this->exceptions) ?: null;
     }
 
-    public function getLastRuntimeException()
+    public function getLastRuntimeException(): ?exceptions\runtime
     {
         return end($this->runtimeExceptions) ?: null;
     }
 
-    public function addFail($file, $class, $method, $line, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
+    public function addFail(string $file, string $class, ?string $method, ?int $line, string $asserter, string $reason, ?string $case = null, mixed $dataSetKey = null, ?string $dataSetProvider = null): int
     {
         $this->failAssertions[] = [
             'id' => ++self::$failId,
@@ -270,7 +270,7 @@ class score
         return self::$failId;
     }
 
-    public function addException($file, $class, $method, $line, \exception $exception, $case = null, $dataSetKey = null, $dataSetProvider = null)
+    public function addException(string $file, string $class, string $method, int|string $line, \exception $exception, ?string $case = null, mixed $dataSetKey = null, ?string $dataSetProvider = null): static
     {
         $this->exceptions[] = [
             'case' => $case,
@@ -279,21 +279,21 @@ class score
             'class' => $class,
             'method' => $method,
             'file' => $file,
-            'line' => $line,
+            'line' => is_numeric($line) ? (int) $line : $line,
             'value' => (string) $exception
         ];
 
         return $this;
     }
 
-    public function addRuntimeException($file, $class, $method, exceptions\runtime $exception)
+    public function addRuntimeException(string $file, string $class, string $method, exceptions\runtime $exception): static
     {
         $this->runtimeExceptions[] = $exception;
 
         return $this;
     }
 
-    public function addError($file, $class, $method, $line, $type, $message, $errorFile = null, $errorLine = null, $case = null, $dataSetKey = null, $dataSetProvider = null)
+    public function addError(string $file, string $class, ?string $method, int $line, int|string $type, string $message, ?string $errorFile = null, ?int $errorLine = null, ?string $case = null, mixed $dataSetKey = null, ?string $dataSetProvider = null): static
     {
         $this->errors[] = [
             'case' => $case,
@@ -312,7 +312,7 @@ class score
         return $this;
     }
 
-    public function addOutput($file, $class, $method, $output)
+    public function addOutput(string $file, string $class, string $method, string $output): static
     {
         if ($output != '') {
             $this->outputs[] = [
@@ -325,7 +325,7 @@ class score
         return $this;
     }
 
-    public function addDuration($file, $class, $method, $duration)
+    public function addDuration(string $file, string $class, string $method, float $duration): static
     {
         if ($duration > 0) {
             $this->durations[] = [
@@ -339,7 +339,7 @@ class score
         return $this;
     }
 
-    public function addMemoryUsage($file, $class, $method, $memoryUsage)
+    public function addMemoryUsage(string $file, string $class, string $method, int $memoryUsage): static
     {
         if ($memoryUsage > 0) {
             $this->memoryUsages[] = [
@@ -352,7 +352,7 @@ class score
         return $this;
     }
 
-    public function addVoidMethod($file, $class, $method)
+    public function addVoidMethod(string $file, string $class, string $method): static
     {
         $this->voidMethods[] = [
             'file' => $file,
@@ -363,7 +363,7 @@ class score
         return $this;
     }
 
-    public function addUncompletedMethod($file, $class, $method, $exitCode, $output)
+    public function addUncompletedMethod(string $file, string $class, string $method, mixed $exitCode, string $output): static
     {
         $this->uncompletedMethods[] = [
             'file' => $file,
@@ -376,7 +376,7 @@ class score
         return $this;
     }
 
-    public function addSkippedMethod($file, $class, $method, $line, $message)
+    public function addSkippedMethod(?string $file, string $class, string $method, ?int $line, string $message): static
     {
         $this->skippedMethods[] = [
             'file' => $file,
@@ -389,7 +389,7 @@ class score
         return $this;
     }
 
-    public function merge(self $score)
+    public function merge(self $score): static
     {
         $this->passNumber += $score->getPassNumber();
         $this->failAssertions = array_merge($this->failAssertions, $score->failAssertions);
@@ -407,7 +407,7 @@ class score
         return $this;
     }
 
-    public function errorExists($message = null, $type = null, $messageIsPattern = false)
+    public function errorExists(?string $message = null, ?int $type = null, bool $messageIsPattern = false): ?int
     {
         $messageIsNull = $message === null;
         $typeIsNull = $type === null;
@@ -424,7 +424,7 @@ class score
         return null;
     }
 
-    public function deleteError($key)
+    public function deleteError(int $key): static
     {
         if (isset($this->errors[$key]) === false) {
             throw new exceptions\logic\invalidArgument('Error key \'' . $key . '\' does not exist');
@@ -435,7 +435,7 @@ class score
         return $this;
     }
 
-    public function failExists(asserter\exception $exception)
+    public function failExists(asserter\exception $exception): bool
     {
         $id = $exception->getCode();
 
@@ -444,7 +444,7 @@ class score
         })) > 0);
     }
 
-    private static function getMethods(array $array)
+    private static function getMethods(array $array): array
     {
         $methods = [];
 
@@ -457,19 +457,19 @@ class score
         return $methods;
     }
 
-    private static function cleanAssertions(array $assertions)
+    private static function cleanAssertions(array $assertions): array
     {
         return array_map([__CLASS__, 'cleanAssertion'], array_values($assertions));
     }
 
-    private static function cleanAssertion(array $assertion)
+    private static function cleanAssertion(array $assertion): array
     {
         unset($assertion['id']);
 
         return $assertion;
     }
 
-    private static function sort(array $array)
+    private static function sort(array $array): array
     {
         usort(
             $array,

@@ -107,7 +107,7 @@ class cli extends atoum\test
                 ->boolean($field->handleEvent(atoum\runner::runStop, $test))->isFalse()
                 ->variable($field->getValue())->isNull()
                 ->boolean($field->handleEvent(atoum\test::runStop, $test))->isTrue()
-                ->integer($field->getValue())->isEqualTo($runningDuration)
+                ->float($field->getValue())->isEqualTo((float) $runningDuration)
         ;
     }
 

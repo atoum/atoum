@@ -28,7 +28,7 @@ class pusher extends script\configurable
     protected $tagMinorVersion = false;
     protected $tagBetaVersion = false;
 
-    public function __construct($name, ?atoum\adapter $adapter = null)
+    public function __construct(string $name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
@@ -41,19 +41,19 @@ class pusher extends script\configurable
         ;
     }
 
-    public function setRemote($remote = null)
+    public function setRemote(?string $remote = null): static
     {
         $this->remote = $remote ?: self::defaultRemote;
 
         return $this;
     }
 
-    public function getRemote()
+    public function getRemote(): mixed
     {
         return $this->remote;
     }
 
-    public function setTagFile($tagFile = null)
+    public function setTagFile(?string $tagFile = null): static
     {
         if ($tagFile !== null) {
             $tagFile = (string) $tagFile;
@@ -66,7 +66,7 @@ class pusher extends script\configurable
         return $this;
     }
 
-    public function getTagFile()
+    public function getTagFile(): mixed
     {
         return $this->tagFile;
     }
@@ -78,19 +78,19 @@ class pusher extends script\configurable
         return $this;
     }
 
-    public function getTaggerEngine()
+    public function getTaggerEngine(): mixed
     {
         return $this->taggerEngine;
     }
 
-    public function setWorkingDirectory($workingDirectory = null)
+    public function setWorkingDirectory(?string $workingDirectory = null): static
     {
         $this->workingDirectory = $workingDirectory ?: $this->adapter->getcwd();
 
         return $this;
     }
 
-    public function getWorkingDirectory()
+    public function getWorkingDirectory(): mixed
     {
         return $this->workingDirectory;
     }
@@ -102,7 +102,7 @@ class pusher extends script\configurable
         return $this;
     }
 
-    public function getGit()
+    public function getGit(): mixed
     {
         return $this->git;
     }
@@ -114,7 +114,7 @@ class pusher extends script\configurable
         return $this;
     }
 
-    public function getForceMode()
+    public function getForceMode(): mixed
     {
         return $this->forceMode;
     }
@@ -142,7 +142,7 @@ class pusher extends script\configurable
         $this->tagBetaVersion = true;
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         parent::setArgumentHandlers()
             ->addArgumentHandler(
@@ -213,7 +213,7 @@ class pusher extends script\configurable
         return $this;
     }
 
-    protected function doRun()
+    protected function doRun(): static
     {
         try {
             $tag = @file_get_contents($this->tagFile);

@@ -7,7 +7,7 @@ use atoum\atoum\report\fields\runner\result;
 
 abstract class notifier extends result
 {
-    protected $adapter = null;
+    protected ?atoum\adapter $adapter = null;
 
     public function __construct(?atoum\adapter $adapter = null)
     {
@@ -16,14 +16,14 @@ abstract class notifier extends result
         $this->setAdapter($adapter);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = $this->notify();
 
         return $string == '' ? '' : trim($string) . PHP_EOL;
     }
 
-    public function notify()
+    public function notify(): string
     {
         if ($this->success === true) {
             $title = 'Success!';
@@ -53,27 +53,29 @@ abstract class notifier extends result
         return $this->send($title, $message, $this->success);
     }
 
-    public function setAdapter(?atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): atoum\adapter
     {
         return $this->adapter;
     }
 
-    public function send($title, $message, $success)
+    public function send(string $title, string $message, mixed $success): string
     {
-        return $this->adapter->system(sprintf(
+        $result = $this->adapter->system(sprintf(
             $this->getCommand(),
             escapeshellarg($title),
             escapeshellarg($message),
             escapeshellarg($success)
         ));
+
+        return (string) $result;
     }
 
-    abstract protected function getCommand();
+    abstract protected function getCommand(): string;
 }

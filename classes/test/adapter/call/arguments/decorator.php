@@ -4,7 +4,7 @@ namespace atoum\atoum\test\adapter\call\arguments;
 
 class decorator
 {
-    public function decorate(?array $arguments = null)
+    public function decorate(?array $arguments = null): string
     {
         $string = '';
 

@@ -6,7 +6,7 @@ use atoum\atoum\report;
 
 class phing extends report\fields\test\memory\cli
 {
-    public function __toString()
+    public function __toString(): string
     {
         return $this->prompt .
             sprintf(

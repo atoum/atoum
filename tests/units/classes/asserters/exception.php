@@ -68,7 +68,7 @@ namespace atoum\atoum\tests\units\asserters
                         $line = __LINE__;
                         $this->testedInstance->setWith($value = uniqid());
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($notAnException)
                     ->mock($locale)->call('_')->withArguments('%s is not an exception', $type)->once
                     ->mock($analyzer)->call('getTypeOf')->withArguments($value)->once
@@ -110,14 +110,14 @@ namespace atoum\atoum\tests\units\asserters
                     ->exception(function () {
                         $this->testedInstance->isInstanceOf(atoum\exceptions\runtime::class);
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($isNotAnInstance)
                     ->mock($locale)->call('_')->withArguments('%s is not an instance of %s', $this->testedInstance)->once
 
                     ->exception(function () use (& $failMessage) {
                         $this->testedInstance->isInstanceOf(atoum\exceptions\runtime::class, $failMessage = uniqid());
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($failMessage)
 
                 ->if($this->testedInstance->setWith(new \exception()))
@@ -148,14 +148,14 @@ namespace atoum\atoum\tests\units\asserters
                     ->exception(function () use (& $badCode) {
                         $this->testedInstance->hasCode($badCode = 1);
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($hasNotCode)
                     ->mock($locale)->call('_')->withArguments('code is %s instead of %s', $code, $badCode)->once
 
                     ->exception(function () use (& $failMessage) {
                         $this->testedInstance->hasCode(rand(1, PHP_INT_MAX), $failMessage = uniqid());
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($failMessage)
             ;
         }
@@ -190,21 +190,21 @@ namespace atoum\atoum\tests\units\asserters
                     ->exception(function () {
                         $this->testedInstance->hasDefaultCode();
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($hasNotDefaultCode)
                     ->mock($locale)->call('_')->withArguments('code is %s instead of 0', $code)->once
 
                     ->exception(function () {
                         $this->testedInstance->hasDefaultCode;
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($hasNotDefaultCode)
                     ->mock($locale)->call('_')->withArguments('code is %s instead of 0', $code)->twice
 
                     ->exception(function () use (& $failMessage) {
                         $this->testedInstance->hasDefaultCode($failMessage = uniqid());
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($failMessage)
             ;
         }
@@ -229,14 +229,14 @@ namespace atoum\atoum\tests\units\asserters
                     ->exception(function () use (& $badMessage) {
                         $this->testedInstance->hasMessage($badMessage = uniqid());
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($hasNotMessage)
                     ->mock($locale)->call('_')->withArguments('message \'%s\' is not identical to \'%s\'', $message, $badMessage)->once
 
                     ->exception(function () use (& $failMessage) {
                         $this->testedInstance->hasMessage(uniqid(), $failMessage = uniqid());
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($failMessage)
             ;
         }
@@ -262,27 +262,27 @@ namespace atoum\atoum\tests\units\asserters
                     ->exception(function () {
                         $this->testedInstance->hasNestedException();
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($hasNoNestedException)
                     ->mock($locale)->call('_')->withArguments('exception does not contain any nested exception')->once
 
                     ->exception(function () {
                         $this->testedInstance->hasNestedException;
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($hasNoNestedException)
                     ->mock($locale)->call('_')->withArguments('exception does not contain any nested exception')->twice
 
                     ->exception(function () use (& $failMessage) {
                         $this->testedInstance->hasNestedException(null, $failMessage = uniqid());
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($failMessage)
 
                     ->exception(function () {
                         $this->testedInstance->hasNestedException(new \exception());
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($hasNoNestedException)
                     ->mock($locale)->call('_')->withArguments('exception does not contain this nested exception')->once
 
@@ -295,7 +295,7 @@ namespace atoum\atoum\tests\units\asserters
                     ->exception(function () {
                         $this->testedInstance->hasNestedException(new \exception());
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($hasNoNestedException)
                     ->mock($locale)->call('_')->withArguments('exception does not contain this nested exception')->twice
             ;

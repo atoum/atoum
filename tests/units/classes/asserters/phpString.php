@@ -74,7 +74,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notString)
                 ->mock($locale)->call('_')->withArguments('%s is not a string', $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($value)->once
@@ -118,7 +118,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $secondString) {
                     $asserter->isEqualTo($secondString = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEqual . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('strings are not equal')->once
                 ->mock($diff)
@@ -128,7 +128,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $secondString, & $failMessage) {
                     $asserter->isEqualTo($secondString = uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage . PHP_EOL . $diffValue)
                 ->mock($diff)
                     ->call('setExpected')->withArguments($secondString)->once
@@ -161,7 +161,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $path) {
                     $asserter->isEqualToContentsOfFile($path = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($unableToGetContents)
                 ->mock($locale)->call('_')->withArguments('Unable to get contents of file %s', $path)->once
 
@@ -174,7 +174,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, $path) {
                     $asserter->isEqualToContentsOfFile($path);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEqual . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('string is not equal to contents of file %s', $path)->once
                 ->mock($diff)
@@ -184,7 +184,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isEqualToContentsOfFile(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage . PHP_EOL . $diffValue)
 
             ->if($this->function->file_get_contents = $firstString)
@@ -216,7 +216,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEmpty . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('string is not empty')->once
                 ->mock($diff)
@@ -226,7 +226,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEmpty . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('string is not empty')->twice
                 ->mock($diff)
@@ -236,7 +236,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isEmpty($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage . PHP_EOL . $diffValue)
 
             ->if($asserter->setWith(''))
@@ -266,21 +266,21 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotEmpty();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isEmpty)
                 ->mock($locale)->call('_')->withArguments('string is empty')->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isNotEmpty;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isEmpty)
                 ->mock($locale)->call('_')->withArguments('string is empty')->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNotEmpty($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith(uniqid()))
@@ -310,14 +310,14 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $requiredLength) {
                     $asserter->hasLength($requiredLength = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($hasNotLength)
                 ->mock($locale)->call('_')->withArguments('length of %s is not %d', $asserter, $requiredLength)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasLength(rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith($string = uniqid()))
@@ -347,14 +347,14 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $requiredLength) {
                     $asserter->hasLengthGreaterThan($requiredLength = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($lengthNotGreater)
                 ->mock($locale)->call('_')->withArguments('length of %s is not greater than %d', $asserter, $requiredLength)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasLengthGreaterThan(rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith($string = uniqid()))
@@ -384,14 +384,14 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $requiredLength) {
                     $asserter->hasLengthLessThan($requiredLength = 10);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($lengthNotLess)
                 ->mock($locale)->call('_')->withArguments('length of %s is not less than %d', $asserter, $requiredLength)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasLengthLessThan(10, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith($string = uniqid()))
@@ -421,14 +421,14 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->contains($fragment = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notContains)
                 ->mock($locale)->call('_')->withArguments('%s does not contain %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->contains(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith(uniqid() . $string . uniqid()))
@@ -438,7 +438,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, $string, & $fragment) {
                     $asserter->contains($fragment = strtoupper($string));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notContains)
                 ->mock($locale)->call('_')->withArguments('%s does not contain %s', $asserter, $fragment)->once
         ;
@@ -465,14 +465,14 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->notContains($fragment = 'Agent');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($contains)
                 ->mock($locale)->call('_')->withArguments('%s contains %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notContains('Agent', $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notContains('agent'))->isIdenticalTo($asserter)
@@ -501,34 +501,34 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith($fragment = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notStartWith)
                 ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->startWith(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith($fragment = 'free');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notStartWith)
                 ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith($fragment = 'Free' . uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notStartWith)
                 ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith('field');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notStartWith)
                 ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $analyzer->getTypeOf('field'))->once
 
@@ -557,14 +557,14 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->notStartWith($fragment = 'FreeA');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($startWith)
                 ->mock($locale)->call('_')->withArguments('%s start with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notStartWith('FreeAgent ', $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notStartWith('free'))->isIdenticalTo($asserter)
@@ -593,27 +593,27 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->endWith($fragment = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEndWith)
                 ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->endWith(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->endWith('FIELd');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEndWith)
                 ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $analyzer->getTypeOf('FIELd'))->once
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->endWith($fragment = uniqid() . ' field');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEndWith)
                 ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
@@ -642,14 +642,14 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->notEndWith($fragment = ' the field');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($endWith)
                 ->mock($locale)->call('_')->withArguments('%s end with %s', $asserter, $analyzer->getTypeOf($fragment))->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notEndWith(' the field', $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notEndWith(' THE FIELD'))->isIdenticalTo($asserter)
@@ -694,7 +694,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, $failMessage) {
                     $asserter->match('/' . uniqid('bar', true) . '/', $failMessage);
                 })
-                ->isInstanceOf(atoum\asserter\exception::class)
+                ->isInstanceOf(\Throwable::class)
                 ->hasMessage($failMessage)
         ;
     }
@@ -709,7 +709,7 @@ class phpString extends atoum\test
                 ->exception(function () use ($asserter, $failMessage) {
                     $asserter->notMatches('/foo/', $failMessage);
                 })
-                ->isInstanceOf(atoum\asserter\exception::class)
+                ->isInstanceOf(\Throwable::class)
                 ->hasMessage($failMessage)
         ;
     }

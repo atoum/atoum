@@ -46,7 +46,7 @@ class runner extends atoum\script\configurable
         ;
     }
 
-    public function setInfoWriter(?atoum\writer $writer = null)
+    public function setInfoWriter(?atoum\writer $writer = null): static
     {
         parent::setInfoWriter($writer);
 
@@ -57,7 +57,7 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function setWarningWriter(?atoum\writer $writer = null)
+    public function setWarningWriter(?atoum\writer $writer = null): static
     {
         if ($writer === null) {
             $writer = new writers\std\err();
@@ -73,7 +73,7 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function setErrorWriter(?atoum\writer $writer = null)
+    public function setErrorWriter(?atoum\writer $writer = null): static
     {
         parent::setErrorWriter($writer);
 
@@ -92,7 +92,7 @@ class runner extends atoum\script\configurable
         return atoum\directory . '/resources';
     }
 
-    public function setRunner(?atoum\runner $runner = null)
+    public function setRunner(?atoum\runner $runner = null): static
     {
         $this->runner = $runner ?: new atoum\runner();
 
@@ -104,7 +104,7 @@ class runner extends atoum\script\configurable
         return $this->runner;
     }
 
-    public function setConfiguratorFactory(?\closure $factory = null)
+    public function setConfiguratorFactory(?\Closure $factory = null): static
     {
         $this->configuratorFactory = $factory ?: function ($test) {
             return new atoum\configurator($test);
@@ -118,7 +118,7 @@ class runner extends atoum\script\configurable
         return $this->configuratorFactory;
     }
 
-    public function setDefaultReportFactory(?\closure $factory = null)
+    public function setDefaultReportFactory(?\Closure $factory = null): static
     {
         $this->defaultReportFactory = $factory ?: function ($script) {
             $report = new atoum\reports\realtime\cli();
@@ -140,7 +140,7 @@ class runner extends atoum\script\configurable
         return $this->defaultReportFactory;
     }
 
-    public function setLooper(?atoum\scripts\runner\looper $looper = null)
+    public function setLooper(?atoum\scripts\runner\looper $looper = null): static
     {
         $this->looper = $looper ?: new atoum\scripts\runner\loopers\prompt($this->prompt, $this->outputWriter, $this->cli, $this->locale);
 
@@ -157,7 +157,7 @@ class runner extends atoum\script\configurable
         return (isset($_SERVER['argv']) === false || isset($_SERVER['argv'][0]) === false || $this->adapter->realpath($_SERVER['argv'][0]) !== $this->getName());
     }
 
-    public function setScoreFile($path)
+    public function setScoreFile(string $path): static
     {
         $this->scoreFile = (string) $path;
 
@@ -174,7 +174,7 @@ class runner extends atoum\script\configurable
         return $this->arguments;
     }
 
-    public function setArguments(array $arguments)
+    public function setArguments(array $arguments): static
     {
         $this->arguments = $arguments;
 
@@ -198,7 +198,7 @@ class runner extends atoum\script\configurable
         return $this->defaultArguments;
     }
 
-    public function run(array $arguments = [])
+    public function run(array $arguments = []): static
     {
         # Default bootstrap file MUST be included here because some arguments on the command line can include some tests which depends of this file.
         # So, this file must be included BEFORE argument parsing which is done in script::run().
@@ -231,7 +231,7 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function useConfigFile($path)
+    public function useConfigFile(string $path): static
     {
         $script = call_user_func($this->configuratorFactory, $this);
         $runner = $this->runner;
@@ -241,7 +241,7 @@ class runner extends atoum\script\configurable
         });
     }
 
-    public function useConfigurationCallable(\closure $callback)
+    public function useConfigurationCallable(\Closure $callback)
     {
         $script = call_user_func($this->configuratorFactory, $this);
         $runner = $this->runner;
@@ -358,7 +358,7 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function setReport(atoum\report $report)
+    public function setReport(atoum\report $report): static
     {
         $this->runner->setReport($report);
 
@@ -370,21 +370,21 @@ class runner extends atoum\script\configurable
         return $this->runner->getReports();
     }
 
-    public function setPhpPath($phpPath)
+    public function setPhpPath(string $phpPath): static
     {
         $this->runner->setPhpPath($phpPath);
 
         return $this;
     }
 
-    public function setDefaultReportTitle($reportTitle)
+    public function setDefaultReportTitle(string $reportTitle): static
     {
         $this->runner->setDefaultReportTitle($reportTitle);
 
         return $this;
     }
 
-    public function setMaxChildrenNumber($childrenNumber)
+    public function setMaxChildrenNumber(int $childrenNumber): static
     {
         $this->runner->setMaxChildrenNumber($childrenNumber);
 
@@ -532,14 +532,14 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function setBootstrapFile($bootstrapFile)
+    public function setBootstrapFile(string $bootstrapFile): static
     {
         $this->runner->setBootstrapFile($bootstrapFile);
 
         return $this;
     }
 
-    public function setAutoloaderFile($autoloaderFile)
+    public function setAutoloaderFile(string $autoloaderFile): static
     {
         $this->runner->setAutoloaderFile($autoloaderFile);
 
@@ -553,7 +553,7 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function setXdebugConfig($xdebugConfig)
+    public function setXdebugConfig(string $xdebugConfig): static
     {
         $this->runner->setXdebugConfig($xdebugConfig);
 
@@ -628,7 +628,7 @@ class runner extends atoum\script\configurable
         return $this->stopRun();
     }
 
-    public function setDefaultBootstrapFiles($startDirectory = null)
+    public function setDefaultBootstrapFiles(?string $startDirectory = null): static
     {
         foreach (self::getSubDirectoryPath($startDirectory ?: $this->getDirectory()) as $directory) {
             $defaultBootstrapFile = $directory . static::defaultBootstrapFile;
@@ -643,7 +643,7 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    public function setDefaultAutoloaderFiles($startDirectory = null)
+    public function setDefaultAutoloaderFiles(?string $startDirectory = null): static
     {
         foreach (self::getSubDirectoryPath($startDirectory ?: $this->getDirectory()) as $directory) {
             $defaultAutoloaderFile = $directory . static::defaultAutoloaderFile;
@@ -750,7 +750,7 @@ class runner extends atoum\script\configurable
         static::$configurationCallables[] = $callable;
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         parent::setArgumentHandlers()
             ->addArgumentHandler(
@@ -1204,7 +1204,7 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    protected function doRun()
+    protected function doRun(): static
     {
         parent::doRun();
 
@@ -1358,14 +1358,14 @@ class runner extends atoum\script\configurable
         return $this;
     }
 
-    protected function writeHelpUsage()
+    protected function writeHelpUsage(): static
     {
         $this->writeHelp($this->locale->_('Usage: %s [path/to/test/file] [options]', $this->getName()) . PHP_EOL);
 
         return $this;
     }
 
-    protected function parseArguments(array $arguments)
+    protected function parseArguments(array $arguments): static
     {
         $configTestPaths = $this->runner->getTestPaths();
 

@@ -8,9 +8,9 @@ use atoum\atoum\report;
 
 class cli extends report\fields\runner\atoum\path
 {
-    protected $prompt = null;
-    protected $titleColorizer = null;
-    protected $pathColorizer = null;
+    protected ?prompt $prompt = null;
+    protected ?colorizer $titleColorizer = null;
+    protected ?colorizer $pathColorizer = null;
 
     public function __construct()
     {
@@ -23,7 +23,7 @@ class cli extends report\fields\runner\atoum\path
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return
             $this->prompt .
@@ -36,38 +36,38 @@ class cli extends report\fields\runner\atoum\path
         ;
     }
 
-    public function setPrompt(?prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null): static
     {
         $this->prompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getPrompt()
+    public function getPrompt(): prompt
     {
         return $this->prompt;
     }
 
-    public function setTitleColorizer(?colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null): static
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getTitleColorizer()
+    public function getTitleColorizer(): colorizer
     {
         return $this->titleColorizer;
     }
 
-    public function setPathColorizer(?colorizer $colorizer = null)
+    public function setPathColorizer(?colorizer $colorizer = null): static
     {
         $this->pathColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getPathColorizer()
+    public function getPathColorizer(): colorizer
     {
         return $this->pathColorizer;
     }

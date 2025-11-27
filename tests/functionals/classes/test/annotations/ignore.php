@@ -3,35 +3,26 @@
 namespace atoum\atoum\tests\functionals\test\annotations;
 
 use atoum\atoum;
+use atoum\atoum\attributes as Attributes;
 
 require_once __DIR__ . '/../../../runner.php';
 
-/**
- * @tags issue issue-684
- */
+#[Attributes\Tags('issue', 'issue-684')]
 class ignore extends atoum\tests\functionals\test\functional
 {
-    /**
-     * @ignore
-     */
+    #[Attributes\Ignore]
     public function testShouldBeIgnoredWithOnlyIgnoreAnnotation()
     {
         throw new atoum\exceptions\runtime('This test should be ignored');
     }
 
-    /**
-     * @ignore
-     * Ignore <- starting a comment with "Ignore" should not cause any problem
-     */
+    #[Attributes\Ignore]
     public function testShouldBeIgnoredWithCommentStartingWithIgnoreWord()
     {
         throw new atoum\exceptions\runtime('This test should be ignored');
     }
 
-    /**
-     * @ignore
-     * Comment starting with anything else than "ignore" "Ignore" should not cause any problem
-     */
+    #[Attributes\Ignore]
     public function testShouldAlsoBeIgnored()
     {
         throw new atoum\exceptions\runtime('This test should be ignored');

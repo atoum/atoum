@@ -12,7 +12,10 @@ class clover extends atoum\test
 {
     public function beforeTestMethod($method)
     {
-        $this->extension('libxml')->isLoaded();
+        $this
+            ->extension('libxml')->isLoaded()
+            ->extension('dom')->isLoaded()
+        ;
     }
 
     public function testClass()
@@ -41,6 +44,7 @@ class clover extends atoum\test
                 ->object($report->getAdapter())->isInstanceOf(atoum\adapter::class)
                 ->array($report->getFields())->isEmpty()
                 ->adapter($adapter)->call('extension_loaded')->withArguments('libxml')->once()
+                ->adapter($adapter)->call('extension_loaded')->withArguments('dom')->once()
             ->if($adapter->extension_loaded = false)
             ->then
                 ->exception(function () use ($adapter) {
@@ -48,6 +52,15 @@ class clover extends atoum\test
                 })
                     ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('libxml PHP extension is mandatory for clover report')
+            ->if($adapter->extension_loaded = function (string $extension): bool {
+                return $extension !== 'dom';
+            })
+            ->then
+                ->exception(function () use ($adapter) {
+                    new testedClass($adapter);
+                })
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
+                    ->hasMessage('dom PHP extension is mandatory for clover report')
         ;
     }
 

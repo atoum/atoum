@@ -8,68 +8,68 @@ use atoum\atoum\runner;
 
 abstract class result extends report\field
 {
-    protected $success = false;
-    protected $testNumber = null;
-    protected $testMethodNumber = null;
-    protected $assertionNumber = null;
-    protected $failNumber = null;
-    protected $errorNumber = null;
-    protected $exceptionNumber = null;
-    protected $voidMethodNumber = null;
-    protected $uncompletedMethodNumber = null;
-    protected $skippedMethodNumber = null;
+    protected bool $success = false;
+    protected ?int $testNumber = null;
+    protected ?int $testMethodNumber = null;
+    protected ?int $assertionNumber = null;
+    protected ?int $failNumber = null;
+    protected ?int $errorNumber = null;
+    protected ?int $exceptionNumber = null;
+    protected ?int $voidMethodNumber = null;
+    protected ?int $uncompletedMethodNumber = null;
+    protected ?int $skippedMethodNumber = null;
 
     public function __construct()
     {
         parent::__construct([runner::runStop]);
     }
 
-    public function getTestNumber()
+    public function getTestNumber(): ?int
     {
         return $this->testNumber;
     }
 
-    public function getTestMethodNumber()
+    public function getTestMethodNumber(): ?int
     {
         return $this->testMethodNumber;
     }
 
-    public function getAssertionNumber()
+    public function getAssertionNumber(): ?int
     {
         return $this->assertionNumber;
     }
 
-    public function getFailNumber()
+    public function getFailNumber(): ?int
     {
         return $this->failNumber;
     }
 
-    public function getErrorNumber()
+    public function getErrorNumber(): ?int
     {
         return $this->errorNumber;
     }
 
-    public function getExceptionNumber()
+    public function getExceptionNumber(): ?int
     {
         return $this->exceptionNumber;
     }
 
-    public function getVoidMethodNumber()
+    public function getVoidMethodNumber(): ?int
     {
         return $this->voidMethodNumber;
     }
 
-    public function getUncompletedMethodNumber()
+    public function getUncompletedMethodNumber(): ?int
     {
         return $this->uncompletedMethodNumber;
     }
 
-    public function getSkippedMethodNumber()
+    public function getSkippedMethodNumber(): ?int
     {
         return $this->skippedMethodNumber;
     }
 
-    public function handleEvent($event, observable $observable)
+    public function handleEvent(string $event, observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

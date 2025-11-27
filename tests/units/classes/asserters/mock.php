@@ -92,7 +92,7 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter, & $mock) {
                     $asserter->setWith($mock = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notMock)
                 ->mock($locale)->call('_')->withArguments('%s is not a mock', $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($mock)->once
@@ -124,21 +124,21 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->wasCalled();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($wasNotCalled)
                 ->mock($locale)->call('_')->withArguments('%s is not called', $mockClass)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->wasCalled;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($wasNotCalled)
                 ->mock($locale)->call('_')->withArguments('%s is not called', $mockClass)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->wasCalled($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($this->calling($controller)->getCallsNumber = rand(1, PHP_INT_MAX))
@@ -170,21 +170,21 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->wasNotCalled();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($wasCalled)
                 ->mock($locale)->call('_')->withArguments('%s is called', $mockClass)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->wasNotCalled;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($wasCalled)
                 ->mock($locale)->call('_')->withArguments('%s is called', $mockClass)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->wasNotCalled($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($this->calling($controller)->getCallsNumber = 0)
@@ -592,27 +592,27 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->never();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 0)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->once($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter) {
                     $asserter->never;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 0)->twice
 
                 ->exception(function () use ($asserter) {
                     $asserter->nEVER;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 0)->thrice
 
@@ -682,27 +682,27 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->once();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 1)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->once($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter) {
                     $asserter->once;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 1)->twice
 
                 ->exception(function () use ($asserter) {
                     $asserter->oNCE;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 1)->thrice
 
@@ -711,27 +711,27 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->once();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 1)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->once($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter) {
                     $asserter->once;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 1)->twice
 
                 ->exception(function () use ($asserter) {
                     $asserter->oNCE;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 1)->thrice
 
@@ -801,27 +801,27 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->twice();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 2)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->twice($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter) {
                     $asserter->twice;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 2)->twice
 
                 ->exception(function () use ($asserter) {
                     $asserter->tWiCE;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 2)->thrice
 
@@ -830,27 +830,27 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->twice();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 2)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->twice($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter) {
                     $asserter->twice;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 2)->twice
 
                 ->exception(function () use ($asserter) {
                     $asserter->tWICE;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 2)->thrice
 
@@ -859,27 +859,27 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->twice();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, 1, 2)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->twice($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter) {
                     $asserter->twice;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, 1, 2)->twice
 
                 ->exception(function () use ($asserter) {
                     $asserter->tWICE;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, 1, 2)->thrice
 
@@ -949,27 +949,27 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->thrice();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 3)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->thrice($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter) {
                     $asserter->thrice;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 3)->twice
 
                 ->exception(function () use ($asserter) {
                     $asserter->tHRICE;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, 3)->thrice
 
@@ -978,27 +978,27 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->thrice();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 3)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->thrice($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter) {
                     $asserter->thrice;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 3)->twice
 
                 ->exception(function () use ($asserter) {
                     $asserter->tHRICe;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 3)->thrice
 
@@ -1007,27 +1007,27 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->thrice();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 3)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->thrice($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter) {
                     $asserter->thrice;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 3)->twice
 
                 ->exception(function () use ($asserter) {
                     $asserter->tHRICe;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $number, $callAsString, $number, 3)->thrice
 
@@ -1097,28 +1097,28 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->atLeastOnce();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('_')->withArguments('%s is called 0 time', $callAsString)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->atLeastOnce;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('_')->withArguments('%s is called 0 time', $callAsString)->twice
 
                 ->exception(function () use ($asserter) {
                     $asserter->atLEASToNCE;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('_')->withArguments('%s is called 0 time', $callAsString)->thrice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->atLeastOnce($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($this->calling($calls)->count = rand(1, PHP_INT_MAX))
@@ -1163,14 +1163,14 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter, & $callNumber) {
                     $asserter->exactly($callNumber = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, $callNumber)->once
 
                 ->exception(function () use ($asserter, & $callNumber, & $failMessage) {
                     $asserter->exactly($callNumber = rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($this->testedInstance->exactly(0))->isTestedInstance
@@ -1185,14 +1185,14 @@ class mock extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->exactly(0);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualToAsString)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->exactly(0, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($this->testedInstance->exactly($count))->isTestedInstance

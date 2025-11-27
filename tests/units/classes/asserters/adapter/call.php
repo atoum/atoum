@@ -60,7 +60,7 @@ class call extends atoum
                 ->exception(function () use ($asserter, & $callNumber) {
                     $asserter->{$callNumber = rand(1, PHP_INT_MAX)};
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, $callNumber)->once
 
@@ -74,7 +74,7 @@ class call extends atoum
                 ->exception(function () use ($asserter) {
                     $asserter->{0};
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualToAsString)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->once
 
@@ -127,14 +127,14 @@ class call extends atoum
                 ->exception(function () use ($asserter, & $callNumber) {
                     $asserter->exactly($callNumber = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', 0, $callAsString, 0, $callNumber)->once
 
                 ->exception(function () use ($asserter, & $callNumber, & $failMessage) {
                     $asserter->exactly($callNumber = rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($this->testedInstance->exactly(0))->isTestedInstance
@@ -149,14 +149,14 @@ class call extends atoum
                 ->exception(function () use ($asserter) {
                     $asserter->exactly(0);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notCalled . PHP_EOL . $callsEqualToAsString)
                 ->mock($locale)->call('__')->withArguments('%s is called %d time instead of %d', '%s is called %d times instead of %d', $count, $callAsString, $count, 0)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->exactly(0, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if(

@@ -9,10 +9,10 @@ use atoum\atoum\reports;
 
 class http extends atoum\writer implements writers\asynchronous
 {
-    protected $url = null;
-    protected $method = null;
-    protected $parameter = null;
-    protected $headers = [];
+    protected ?string $url = null;
+    protected ?string $method = null;
+    protected ?string $parameter = null;
+    protected array $headers = [];
 
     public function __construct(?atoum\adapter $adapter = null)
     {
@@ -21,65 +21,65 @@ class http extends atoum\writer implements writers\asynchronous
         $this->setMethod();
     }
 
-    public function writeAsynchronousReport(reports\asynchronous $report)
+    public function writeAsynchronousReport(reports\asynchronous $report): static
     {
         return $this->write((string) $report);
     }
 
-    public function clear()
+    public function clear(): static
     {
         return $this;
     }
 
-    public function addHeader($name, $value)
+    public function addHeader(string $name, string $value): static
     {
         $this->headers[$name] = $value;
 
         return $this;
     }
 
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
 
-    public function setMethod($method = null)
+    public function setMethod(?string $method = null): static
     {
         $this->method = $method ?: 'GET';
 
         return $this;
     }
 
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
 
-    public function setParameter($parameter = null)
+    public function setParameter(?string $parameter = null): static
     {
         $this->parameter = $parameter;
 
         return $this;
     }
 
-    public function getParameter()
+    public function getParameter(): ?string
     {
         return $this->parameter;
     }
 
-    public function setUrl($url)
+    public function setUrl(string $url): static
     {
         $this->url = $url;
 
         return $this;
     }
 
-    public function getUrl()
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    protected function doWrite($string)
+    protected function doWrite(string $string): void
     {
         if ($this->url === null) {
             throw new exceptions\runtime('No URL set for HTTP writer');
@@ -102,7 +102,5 @@ class http extends atoum\writer implements writers\asynchronous
         if (@$this->adapter->file_get_contents($this->url, false, $context) === false) {
             throw new atoum\writers\http\exception('Unable to write coverage report to ' . $this->url);
         }
-
-        return $this;
     }
 }

@@ -4,7 +4,7 @@ namespace atoum\atoum\asserters;
 
 class castToString extends phpString
 {
-    public function setWith($value, $charlist = null, $checkType = true)
+    public function setWith(mixed $value, ?string $charlist = null, bool $checkType = true): static
     {
         parent::setWith($value, $charlist, false);
 
@@ -21,7 +21,7 @@ class castToString extends phpString
         return $this;
     }
 
-    protected static function isObject($value)
+    protected static function isObject(mixed $value): bool
     {
         return (is_object($value) === true);
     }

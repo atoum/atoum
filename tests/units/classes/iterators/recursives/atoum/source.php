@@ -26,7 +26,7 @@ class source extends atoum\test
             ->and($iterator = new iterators\recursives\atoum\source($sourceDirectory))
             ->then
                 ->string($iterator->getSourceDirectory())->isEqualTo($sourceDirectory)
-                ->variable($iterator->getPharDirectory())->isNull()
+                ->string($iterator->getPharDirectory())->isEmpty()
                 ->object($iterator->getInnerIterator())->isInstanceOf(\recursiveIteratorIterator::class)
             ->if($iterator = new iterators\recursives\atoum\source($sourceDirectory, $pharDirectory = uniqid()))
             ->then

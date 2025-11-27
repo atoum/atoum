@@ -4,7 +4,7 @@ namespace atoum\atoum\asserters;
 
 class phpFloat extends integer
 {
-    public function setWith($value)
+    public function setWith(mixed $value): static
     {
         variable::setWith($value);
 
@@ -17,7 +17,7 @@ class phpFloat extends integer
         return $this;
     }
 
-    public function isNearlyEqualTo($value, $epsilon = null, $failMessage = null)
+    public function isNearlyEqualTo(float $value, ?float $epsilon = null, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value !== $value) {
             // see http://www.floating-point-gui.de/errors/comparison/ for more informations
@@ -46,7 +46,7 @@ class phpFloat extends integer
         return $this;
     }
 
-    public function isZero($failMessage = null)
+    public function isZero(?string $failMessage = null): static
     {
         return $this->isEqualTo(0.0, $failMessage);
     }

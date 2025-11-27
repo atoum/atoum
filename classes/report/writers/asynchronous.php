@@ -6,5 +6,5 @@ use atoum\atoum\reports;
 
 interface asynchronous
 {
-    public function writeAsynchronousReport(reports\asynchronous $report);
+    public function writeAsynchronousReport(reports\asynchronous $report): static;
 }

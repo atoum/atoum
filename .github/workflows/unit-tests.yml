@@ -15,14 +15,14 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
-        php-version: [ '8.0', '8.1', '8.2', '8.3', '8.4' ]
+        php-version: [ '8.1', '8.2', '8.3', '8.4',  '8.5' ]
         experimental: [ false ]
         include:
           - {os: 'ubuntu-latest', php-version: '8.5', experimental: true}
       fail-fast: false
 
     env:
-      coverage: ${{ (matrix.os == 'ubuntu-latest' && matrix.php-version == '8.0') && 'xdebug' || 'none' }}
+      coverage: ${{ (matrix.os == 'ubuntu-latest' && matrix.php-version == '8.1') && 'xdebug' || 'none' }}
       copy: ${{ matrix.os == 'windows-latest' && 'copy' || 'cp' }}
 
     name: PHP ${{ matrix.php-version }} on ${{ matrix.os }}

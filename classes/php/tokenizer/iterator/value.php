@@ -6,9 +6,9 @@ use atoum\atoum\exceptions;
 
 abstract class value implements \iterator, \countable
 {
-    protected $parent = null;
+    protected ?self $parent = null;
 
-    public function setParent(self $parent)
+    public function setParent(self $parent): static
     {
         if ($this->parent !== null) {
             throw new exceptions\runtime('Parent is already set');
@@ -19,12 +19,12 @@ abstract class value implements \iterator, \countable
         return $this;
     }
 
-    public function getParent()
+    public function getParent(): ?self
     {
         return $this->parent;
     }
 
-    public function getRoot()
+    public function getRoot(): ?self
     {
         $root = null;
 
@@ -39,10 +39,10 @@ abstract class value implements \iterator, \countable
         return $root;
     }
 
-    abstract public function __toString();
-    abstract public function prev();
-    abstract public function end();
-    abstract public function append(self $value);
-    abstract public function getValue();
-    abstract public function seek($key);
+    abstract public function __toString(): string;
+    abstract public function prev(): mixed;
+    abstract public function end(): static;
+    abstract public function append(self $value): static;
+    abstract public function getValue(): mixed;
+    abstract public function seek(int $key): static;
 }

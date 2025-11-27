@@ -6,8 +6,8 @@ use atoum\atoum\mock;
 
 interface aggregator
 {
-    public function getMockController();
-    public function setMockController(mock\controller $mockController);
-    public function resetMockController();
-    public static function getMockedMethods();
+    public function getMockController(): mock\controller;
+    public function setMockController(mock\controller $mockController): static;
+    public function resetMockController(): static;
+    public static function getMockedMethods(): array;
 }

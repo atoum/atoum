@@ -7,7 +7,7 @@ use atoum\atoum\test\adapter\call\decorators;
 
 class mock extends adapter
 {
-    public function setWith($mock)
+    public function setWith(mixed $mock): static
     {
         if ($mock instanceof atoum\mock\aggregator === false) {
             $this->fail($this->_('%s is not a mock', $this->getTypeOf($mock)));
@@ -20,12 +20,12 @@ class mock extends adapter
         return $this;
     }
 
-    public function receive($function)
+    public function receive(string $function): static
     {
         return $this->call($function);
     }
 
-    public function wasCalled($failMessage = null)
+    public function wasCalled(?string $failMessage = null): static
     {
         if ($this->adapterIsSet()->adapter->getCallsNumber() > 0) {
             $this->pass();
@@ -36,7 +36,7 @@ class mock extends adapter
         return $this;
     }
 
-    public function wasNotCalled($failMessage = null)
+    public function wasNotCalled(?string $failMessage = null): static
     {
         if ($this->adapterIsSet()->adapter->getCallsNumber() <= 0) {
             $this->pass();
@@ -47,7 +47,7 @@ class mock extends adapter
         return $this;
     }
 
-    protected function adapterIsSet()
+    protected function adapterIsSet(): static
     {
         try {
             return parent::adapterIsSet();
@@ -56,7 +56,7 @@ class mock extends adapter
         }
     }
 
-    protected function callIsSet()
+    protected function callIsSet(): static
     {
         try {
             return parent::callIsSet();

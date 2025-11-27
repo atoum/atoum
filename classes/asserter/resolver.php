@@ -9,12 +9,12 @@ class resolver
     public const defaultBaseClass = 'atoum\atoum\asserter';
     public const defaultNamespace = 'atoum\atoum\asserters';
 
-    protected $baseClass = '';
-    protected $namespaces = [];
-    private $analyzer;
-    private $resolved = [];
+    protected string $baseClass = '';
+    protected array $namespaces = [];
+    private ?analyzer $analyzer = null;
+    private array $resolved = [];
 
-    public function __construct($baseClass = null, $namespace = null, ?analyzer $analyzer = null)
+    public function __construct(?string $baseClass = null, ?string $namespace = null, ?analyzer $analyzer = null)
     {
         $this
             ->setBaseClass($baseClass ?: static::defaultBaseClass)
@@ -23,43 +23,43 @@ class resolver
         ;
     }
 
-    public function setAnalyzer(?analyzer $analyzer = null)
+    public function setAnalyzer(?analyzer $analyzer = null): static
     {
         $this->analyzer = $analyzer ?: new analyzer();
 
         return $this;
     }
 
-    public function getAnalyzer()
+    public function getAnalyzer(): analyzer
     {
         return $this->analyzer;
     }
 
-    public function setBaseClass($baseClass)
+    public function setBaseClass(string $baseClass): static
     {
         $this->baseClass = trim($baseClass, '\\');
 
         return $this;
     }
 
-    public function getBaseClass()
+    public function getBaseClass(): string
     {
         return $this->baseClass;
     }
 
-    public function addNamespace($namespace)
+    public function addNamespace(string $namespace): static
     {
         $this->namespaces[] = trim($namespace, '\\');
 
         return $this;
     }
 
-    public function getNamespaces()
+    public function getNamespaces(): array
     {
         return $this->namespaces;
     }
 
-    public function resolve($asserter)
+    public function resolve(string $asserter): ?string
     {
         if (isset($this->resolved[$asserter])) {
             return $this->resolved[$asserter];

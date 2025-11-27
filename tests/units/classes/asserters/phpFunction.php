@@ -107,7 +107,7 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->once();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
 
             ->if(
                 $this->testedInstance->setWithTest($this),
@@ -149,7 +149,7 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->once();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
 
             ->given(
                 $test = new \mock\atoum\atoum\test(),
@@ -164,7 +164,7 @@ class phpFunction extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->once();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
 
             ->if(
                 eval('\\' . $this->getTestedClassNamespace() . '\foo(1, 2);'),

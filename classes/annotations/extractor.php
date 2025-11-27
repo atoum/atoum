@@ -4,9 +4,9 @@ namespace atoum\atoum\annotations;
 
 class extractor
 {
-    protected $handlers = [];
+    protected array $handlers = [];
 
-    public function extract($comments)
+    public function extract(string $comments): static
     {
         $comments = trim((string) $comments);
 
@@ -56,14 +56,14 @@ class extractor
         return $this;
     }
 
-    public function setHandler($annotation, \closure $handler)
+    public function setHandler(string $annotation, \Closure $handler): static
     {
         $this->handlers[$annotation] = $handler;
 
         return $this;
     }
 
-    public function unsetHandler($annotation)
+    public function unsetHandler(string $annotation): static
     {
         if (isset($this->handlers[$annotation]) === true) {
             unset($this->handlers[$annotation]);
@@ -72,19 +72,19 @@ class extractor
         return $this;
     }
 
-    public function getHandlers()
+    public function getHandlers(): array
     {
         return $this->handlers;
     }
 
-    public function resetHandlers()
+    public function resetHandlers(): static
     {
         $this->handlers = [];
 
         return $this;
     }
 
-    public static function toBoolean($value)
+    public static function toBoolean(mixed $value): bool
     {
         switch (strtolower((string) $value)) {
             case 'on':
@@ -97,7 +97,7 @@ class extractor
         }
     }
 
-    public static function toArray($value)
+    public static function toArray(mixed $value): array
     {
         return array_values(array_unique(preg_split('/\s+/', $value)));
     }

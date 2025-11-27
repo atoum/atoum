@@ -7,7 +7,7 @@ use atoum\atoum\asserters\adapter\exceptions;
 
 class adapter extends call
 {
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'withanyarguments':
@@ -19,47 +19,47 @@ class adapter extends call
         }
     }
 
-    public function call($function)
+    public function call(string $function): static
     {
         return $this->setFunction($function);
     }
 
-    public function withArguments(...$arguments)
+    public function withArguments(mixed ...$arguments): static
     {
         return $this->setArguments($arguments);
     }
 
-    public function withIdenticalArguments(...$arguments)
+    public function withIdenticalArguments(mixed ...$arguments): static
     {
         return $this->setIdenticalArguments($arguments);
     }
 
-    public function withAtLeastArguments(array $arguments)
+    public function withAtLeastArguments(array $arguments): static
     {
         return $this->setArguments($arguments);
     }
 
-    public function withAtLeastIdenticalArguments(array $arguments)
+    public function withAtLeastIdenticalArguments(array $arguments): static
     {
         return $this->setIdenticalArguments($arguments);
     }
 
-    public function withAnyArguments()
+    public function withAnyArguments(): static
     {
         return $this->unsetArguments();
     }
 
-    public function withoutAnyArgument()
+    public function withoutAnyArgument(): static
     {
         return $this->withAtLeastArguments([]);
     }
 
-    public function verify(callable $verify)
+    public function verify(callable $verify): static
     {
         return $this->setVerify($verify);
     }
 
-    protected function adapterIsSet()
+    protected function adapterIsSet(): static
     {
         try {
             return parent::adapterIsSet();
@@ -68,7 +68,7 @@ class adapter extends call
         }
     }
 
-    protected function callIsSet()
+    protected function callIsSet(): static
     {
         try {
             return parent::callIsSet();

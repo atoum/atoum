@@ -7,5 +7,5 @@ use atoum\atoum\report;
 
 abstract class runner extends report\field
 {
-    abstract public function setWithRunner(atoum\runner $runner, $event = null);
+    abstract public function setWithRunner(atoum\runner $runner, ?string $event = null): static;
 }

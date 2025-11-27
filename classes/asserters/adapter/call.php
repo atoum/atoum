@@ -25,7 +25,7 @@ abstract class call extends atoum\asserter
         $this->setCall();
     }
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         if (is_numeric($property) === true) {
             return $this->exactly($property);
@@ -68,7 +68,7 @@ abstract class call extends atoum\asserter
         return $this;
     }
 
-    public function getCall()
+    public function getCall(): mixed
     {
         return clone $this->call;
     }
@@ -78,17 +78,17 @@ abstract class call extends atoum\asserter
         return $this->removeFromManager();
     }
 
-    public function getLastAssertionFile()
+    public function getLastAssertionFile(): mixed
     {
         return $this->trace['file'];
     }
 
-    public function getLastAssertionLine()
+    public function getLastAssertionLine(): mixed
     {
         return $this->trace['line'];
     }
 
-    public function reset()
+    public function reset(): static
     {
         if ($this->adapter !== null) {
             $this->adapter->resetCalls();
@@ -97,14 +97,14 @@ abstract class call extends atoum\asserter
         return $this;
     }
 
-    public function setWithTest(test $test)
+    public function setWithTest(test $test): static
     {
         $this->setManager($test->getAsserterCallManager());
 
         return parent::setWithTest($test);
     }
 
-    public function setWith($adapter)
+    public function setWith(mixed $adapter): static
     {
         $this->adapter = $adapter;
 
@@ -117,7 +117,7 @@ abstract class call extends atoum\asserter
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): mixed
     {
         return $this->adapter;
     }
@@ -133,7 +133,7 @@ abstract class call extends atoum\asserter
         return $this;
     }
 
-    public function getBefore()
+    public function getBefore(): mixed
     {
         return $this->beforeCalls;
     }
@@ -149,7 +149,7 @@ abstract class call extends atoum\asserter
         return $this;
     }
 
-    public function getAfter()
+    public function getAfter(): mixed
     {
         return $this->afterCalls;
     }
@@ -230,12 +230,12 @@ abstract class call extends atoum\asserter
         return $this->exactly(0, $failMessage);
     }
 
-    public function getFunction()
+    public function getFunction(): mixed
     {
         return $this->call->getFunction();
     }
 
-    public function getArguments()
+    public function getArguments(): mixed
     {
         return $this->adapterIsSet()->call->getArguments();
     }

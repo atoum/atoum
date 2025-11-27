@@ -4,12 +4,12 @@ namespace atoum\atoum\tools;
 
 class diff
 {
-    protected $expected = null;
-    protected $actual = null;
-    protected $diff = null;
-    protected $decorator = null;
+    protected ?string $expected = null;
+    protected ?string $actual = null;
+    protected ?array $diff = null;
+    protected ?diff\decorator $decorator = null;
 
-    public function __construct($expected = null, $actual = null)
+    public function __construct(mixed $expected = null, mixed $actual = null)
     {
         $this->setDecorator();
 
@@ -22,30 +22,30 @@ class diff
         }
     }
 
-    public function __invoke($expected = null, $actual = null)
+    public function __invoke(mixed $expected = null, mixed $actual = null): static
     {
         $this->make($expected, $actual);
 
         return $this;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->decorator->decorate($this);
     }
 
-    public function setDecorator(?diff\decorator $decorator = null)
+    public function setDecorator(?diff\decorator $decorator = null): static
     {
         $this->decorator = $decorator ?: new diff\decorator();
         return $this;
     }
 
-    public function getDecorator()
+    public function getDecorator(): diff\decorator
     {
         return $this->decorator;
     }
 
-    public function setExpected($mixed)
+    public function setExpected(mixed $mixed): static
     {
         $this->expected = (string) $mixed;
         $this->diff = null;
@@ -53,12 +53,12 @@ class diff
         return $this;
     }
 
-    public function getExpected()
+    public function getExpected(): ?string
     {
         return $this->expected;
     }
 
-    public function setActual($mixed)
+    public function setActual(mixed $mixed): static
     {
         $this->actual = (string) $mixed;
         $this->diff = null;
@@ -66,12 +66,12 @@ class diff
         return $this;
     }
 
-    public function getActual()
+    public function getActual(): ?string
     {
         return $this->actual;
     }
 
-    public function make($expected = null, $actual = null)
+    public function make(mixed $expected = null, mixed $actual = null): array
     {
         if ($expected !== null) {
             $this->setExpected($expected);
@@ -88,7 +88,7 @@ class diff
         return $this->diff;
     }
 
-    protected function diff($old, $new)
+    protected function diff(array $old, array $new): array
     {
         $diff = [];
 
@@ -124,7 +124,7 @@ class diff
         return $diff;
     }
 
-    protected static function split($value)
+    protected static function split(?string $value): array
     {
         return explode(PHP_EOL, $value ?? '');
     }

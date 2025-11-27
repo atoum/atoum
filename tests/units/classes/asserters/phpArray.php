@@ -159,7 +159,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notAnArray)
                 ->mock($locale)->call('_')->withArguments('%s is not an array', $type)->once
 
@@ -173,8 +173,8 @@ class phpArray extends atoum\test
             ->if($asserter->object)
             ->then
                 ->variable($innerAsserter = $asserter->getInnerAsserter())->isNotNull()
-                ->object($objectAsserter = $asserter->setWith($object = new \mock\phpObject()))->isIdenticalTo($innerAsserter)
-                ->object($objectAsserter->getValue())->isIdenticalTo($object)
+                ->object($asserter->setWith($object = new \mock\phpObject()))->isIdenticalTo($asserter)
+                ->object($innerAsserter->getValue())->isIdenticalTo($object)
                 ->variable($asserter->getValue())->isNull()
                 ->boolean($asserter->wasSet())->isFalse()
                 ->boolean($asserter->isSetByReference())->isFalse()
@@ -208,7 +208,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter[2];
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notAnArray)
                 ->mock($locale)->call('_')->withArguments('Value %s at key %s is not an array', $type, 2)->once
 
@@ -250,7 +250,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->object[2][4];
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($unknownKey)
                 ->mock($locale)->call('_')->withArguments('%s has no key %s', $innerArrayType, $keyType)->once
         ;
@@ -330,14 +330,14 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $size) {
                     $asserter->hasSize($size = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badSize)
                 ->mock($locale)->call('_')->withArguments('%s has size %d, expected size %d', $asserter, 0, $size)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasSize(rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->hasSize(0))->isIdenticalTo($asserter)
@@ -363,7 +363,7 @@ class phpArray extends atoum\test
                 ->object($childAsserter = $asserter->child[0](function ($child) {
                     $child->hasSize(5);
                 }))->isInstanceOf(atoum\asserters\phpArray\child::class)
-                ->object($childAsserter->hasSize(1))->isIdenticalTo($asserter)
+                ->object($childAsserter->hasSize(1))->isIdenticalTo($childAsserter)
 
             ->given($asserter = $this->newTestedInstance)
             ->if($asserter->setWith([[range(1, 5), range(1, 3)]]))
@@ -371,7 +371,7 @@ class phpArray extends atoum\test
                 ->object($childAsserter = $asserter->child[0][1](function ($child) {
                     $child->hasSize(3);
                 }))->isInstanceOf(atoum\asserters\phpArray\child::class)
-                ->object($childAsserter->hasSize(1))->isIdenticalTo($asserter)
+                ->object($childAsserter->hasSize(1))->isIdenticalTo($childAsserter)
         ;
     }
 
@@ -398,21 +398,21 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEmpty)
                 ->mock($locale)->call('_')->withArguments('%s is not empty', $asserter)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEmpty)
                 ->mock($locale)->call('_')->withArguments('%s is not empty', $asserter)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isEmpty($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith([]))
@@ -445,21 +445,21 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotEmpty();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isEmpty)
                 ->mock($locale)->call('_')->withArguments('%s is empty', $asserter)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isNotEmpty;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isEmpty)
                 ->mock($locale)->call('_')->withArguments('%s is empty', $asserter)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNotEmpty($failMessage = uniqid());
                 })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($failMessage)
 
                 ->if($asserter->setWith([uniqid()]))
@@ -499,7 +499,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $key) {
                     $asserter->atKey($key = rand(5, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($unknownKey)
                 ->mock($locale)->call('_')->withArguments('%s has no key %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($key)->once
@@ -507,7 +507,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->atKey(rand(5, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -536,7 +536,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $unknownValue) {
                     $asserter->contains($unknownValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notInArray)
                 ->mock($locale)->call('_')->withArguments('%s does not contain %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($unknownValue)->once
@@ -544,7 +544,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->contains(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->contains($data))->isIdenticalTo($asserter)
@@ -559,7 +559,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, $data) {
                     $asserter->atKey(0)->contains($data);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notInArrayAtKey)
 
                 ->object($asserter->contains($data))->isIdenticalTo($asserter)
@@ -568,7 +568,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->atKey(0)->contains(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -597,7 +597,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->strictlyContains('1');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notInArray)
                 ->mock($locale)->call('_')->withArguments('%s does not strictly contain %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments('1')->once
@@ -605,7 +605,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->strictlyContains('1', $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->strictlyContains(1))->isIdenticalTo($asserter)
@@ -617,7 +617,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->atKey(0)->strictlyContains(2);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notInArray)
                 ->mock($locale)->call('_')->withArguments('%s does not strictly contain %s at key %s', $asserter, $notInArrayType, $keyType)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(2)->once
@@ -625,7 +625,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->atKey(0)->strictlyContains(2, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -657,7 +657,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, $isInArray) {
                     $asserter->notContains($isInArray);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($inArray)
                 ->mock($locale)->call('_')->withArguments('%s contains %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($isInArray)->once
@@ -665,7 +665,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, $isInArray, & $failMessage) {
                     $asserter->notContains($isInArray, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->atKey(0)->notContains($inArray))->isIdenticalTo($asserter)
@@ -683,7 +683,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, $isInArray) {
                     $asserter->atKey(2)->notContains($isInArray);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($inArray)
                 ->mock($locale)->call('_')->withArguments('%s contains %s at key %s', $asserter, $isInArrayType, $keyType)->once
                 ->mock($analyzer)
@@ -694,7 +694,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, $isInArray, & $failMessage) {
                     $asserter->atKey(2)->notContains($isInArray, $failMessage = 'FAIL');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -723,7 +723,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->strictlyNotContains(1);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($strictlyNotInArray)
                 ->mock($locale)->call('_')->withArguments('%s strictly contains %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(1)->once
@@ -731,7 +731,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->strictlyNotContains(1, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->strictlyNotContains('1'))->isIdenticalTo($asserter)
@@ -747,7 +747,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->atKey(0)->strictlyNotContains(1);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($strictlyNotInArray)
                 ->mock($locale)->call('_')->withArguments('%s strictly contains %s at key %s', $asserter, $strictlyNotInArrayType, $keyType)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(0)->once
@@ -778,7 +778,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->containsValues([6]);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notContainsValues)
                 ->mock($locale)->call('_')->withArguments('%s does not contain values %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments([6])->once
@@ -786,7 +786,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->containsValues([6], $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->containsValues([1]))->isIdenticalTo($asserter)
@@ -820,7 +820,7 @@ class phpArray extends atoum\test
                     ->exception(function () use ($asserter) {
                         $asserter->strictlyContainsValues([1, '5']);
                     })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($strictlyNotContainsValues)
                 ->mock($locale)->call('_')->withArguments('%s does not contain strictly values %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(['5'])->once
@@ -828,7 +828,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->strictlyContainsValues(['5'], $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->strictlyContainsValues([1]))->isIdenticalTo($asserter)
@@ -863,7 +863,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->notContainsValues([1, 6]);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($containsValues)
                 ->mock($locale)->call('_')->withArguments('%s contains values %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments([1])->once
@@ -871,7 +871,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notContainsValues([1, 6], $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notContainsValues([6]))->isIdenticalTo($asserter)
@@ -907,7 +907,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->strictlyNotContainsValues([1, '2', '4']);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($containsStrictlyValues)
                 ->mock($locale)->call('_')->withArguments('%s contains strictly values %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments([1])->once
@@ -915,7 +915,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->strictlyNotContainsValues([1], $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->strictlyNotContainsValues(['1']))->isIdenticalTo($asserter)
@@ -951,7 +951,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $key) {
                     $asserter->hasKey($key = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notHasKey)
                 ->mock($locale)->call('_')->withArguments('%s has no key %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($key)->once
@@ -959,7 +959,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $key, & $failMessage) {
                     $asserter->hasKey($key = rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith([uniqid(), uniqid(), uniqid(), uniqid(), uniqid(), '5' => uniqid()]))
@@ -1003,7 +1003,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->notHasKey(0);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($hasKey)
                 ->mock($locale)->call('_')->withArguments('%s has key %s', $asserter, $keyType)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(0)->once
@@ -1011,7 +1011,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->notHasKey('0');
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($hasKey)
                 ->mock($locale)->call('_')->withArguments('%s has key %s', $asserter, $keyType)->twice
                 ->mock($analyzer)->call('getTypeOf')->withIdenticalArguments('0')->once
@@ -1047,7 +1047,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->notHasKeys([0, 'premier', '2']);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($hasKeys)
                 ->mock($locale)->call('_')->withArguments('%s has keys %s', $asserter, $keysType)->once
                 ->mock($analyzer)->call('getTypeOf')->withIdenticalArguments([0 => 0, 2 => '2'])->once
@@ -1055,7 +1055,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notHasKeys([0, 'premier', 2], $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notHasKeys([5, '6']))->isIdenticalTo($asserter)
@@ -1086,7 +1086,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasKeys([0, 1, 2]);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notHasKeys)
                 ->mock($locale)->call('_')->withArguments('%s has no keys %s', $asserter, $keysType)->once
                 ->mock($analyzer)->call('getTypeOf')->withIdenticalArguments([0, 1, 2])->once
@@ -1094,7 +1094,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasKeys([0], $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith([uniqid(), uniqid(), uniqid(), uniqid(), uniqid()]))
@@ -1102,7 +1102,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasKeys([0, 'first', 2, 'second']);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notHasKeys)
                 ->mock($locale)->call('_')->withArguments('%s has no keys %s', $asserter, $keysType)->twice
                 ->mock($analyzer)->call('getTypeOf')->withIdenticalArguments([1 => 'first', 3 => 'second'])->once
@@ -1214,7 +1214,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $notEqualValue) {
                     $asserter->isEqualTo($notEqualValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($notEqualValue)->once
@@ -1231,7 +1231,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $notEqualValue) {
                     $asserter->isEqualTo($notEqualValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->twice
                 ->mock($analyzer)->call('getTypeOf')->withArguments($notEqualValue)->once
@@ -1280,7 +1280,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotEqualTo([]);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments([])->once
@@ -1292,7 +1292,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, $array) {
                     $asserter->isNotEqualTo($array);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is equal to %s', $asserter, $type)->twice
                 ->mock($analyzer)->call('getTypeOf')->withArguments($array)->once
@@ -1309,7 +1309,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, $array) {
                     $asserter->isNotEqualTo($array);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is equal to %s', $asserter, $type)->thrice
                 ->mock($analyzer)->call('getTypeOf')->withArguments($array)->twice
@@ -1360,7 +1360,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $notIdenticalValue) {
                     $asserter->isIdenticalTo($notIdenticalValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not identical to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($notIdenticalValue)->once
@@ -1377,7 +1377,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, & $notIdenticalValue) {
                     $asserter->isIdenticalTo($notIdenticalValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not identical to %s', $asserter, $type)->twice
                 ->mock($analyzer)->call('getTypeOf')->withArguments($notIdenticalValue)->once
@@ -1425,7 +1425,7 @@ class phpArray extends atoum\test
                 ->exception(function () use ($asserter, $array) {
                     $asserter->isNotIdenticalTo($array);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is identical to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($array)->once

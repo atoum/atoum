@@ -2,8 +2,7 @@
 
 namespace atoum\atoum\tests\units;
 
-use atoum\atoum
-;
+use atoum\atoum;
 
 if (defined('atoum\scripts\runner') === false) {
     define('atoum\scripts\runner', __FILE__);

@@ -13,7 +13,7 @@ class svn extends builder\vcs
         parent::__construct($adapter);
     }
 
-    public function getNextRevisions()
+    public function getNextRevisions(): array
     {
         if ($this->repositoryUrl === null) {
             throw new exceptions\runtime('Unable to get logs, repository url is undefined');
@@ -36,7 +36,7 @@ class svn extends builder\vcs
         return $nextRevisions;
     }
 
-    public function exportRepository()
+    public function exportRepository(): static
     {
         if ($this->repositoryUrl === null) {
             throw new exceptions\runtime('Unable to export repository, repository url is undefined');

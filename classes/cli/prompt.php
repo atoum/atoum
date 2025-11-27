@@ -4,10 +4,10 @@ namespace atoum\atoum\cli;
 
 class prompt
 {
-    protected $value = '';
-    protected $colorizer = null;
+    protected string $value = '';
+    protected ?colorizer $colorizer = null;
 
-    public function __construct($value = '', ?colorizer $colorizer = null)
+    public function __construct(string $value = '', ?colorizer $colorizer = null)
     {
         if ($colorizer === null) {
             $colorizer = new colorizer();
@@ -19,31 +19,31 @@ class prompt
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->colorizer->colorize($this->value);
     }
 
-    public function setValue($value)
+    public function setValue(string $value): static
     {
         $this->value = (string) $value;
 
         return $this;
     }
 
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
 
-    public function setColorizer(colorizer $colorizer)
+    public function setColorizer(colorizer $colorizer): static
     {
         $this->colorizer = $colorizer;
 
         return $this;
     }
 
-    public function getColorizer()
+    public function getColorizer(): colorizer
     {
         return $this->colorizer;
     }

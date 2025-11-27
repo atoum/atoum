@@ -10,7 +10,7 @@ use atoum\atoum\reports\realtime;
 
 class cli extends realtime
 {
-    protected $runnerTestsCoverageField = false;
+    protected mixed $runnerTestsCoverageField = false;
 
     public function __construct()
     {
@@ -223,14 +223,14 @@ class cli extends realtime
         $this->addField($testMemoryField);
     }
 
-    public function hideClassesCoverageDetails()
+    public function hideClassesCoverageDetails(): static
     {
         $this->runnerTestsCoverageField->hideClassesCoverageDetails();
 
         return $this;
     }
 
-    public function hideMethodsCoverageDetails()
+    public function hideMethodsCoverageDetails(): static
     {
         $this->runnerTestsCoverageField->hideMethodsCoverageDetails();
 

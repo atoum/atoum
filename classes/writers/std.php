@@ -8,8 +8,8 @@ use atoum\atoum\reports;
 
 abstract class std extends atoum\writer implements writers\realtime, writers\asynchronous
 {
-    protected $cli = null;
-    protected $resource = null;
+    protected ?atoum\cli $cli = null;
+    protected mixed $resource = null;
 
     public function __construct(?atoum\cli $cli = null, ?atoum\adapter $adapter = null)
     {
@@ -25,39 +25,39 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
         }
     }
 
-    public function setCli(?atoum\cli $cli = null)
+    public function setCli(?atoum\cli $cli = null): static
     {
         $this->cli = $cli ?: new atoum\cli();
 
         return $this;
     }
 
-    public function getCli()
+    public function getCli(): atoum\cli
     {
         return $this->cli;
     }
 
-    public function clear()
+    public function clear(): static
     {
-        return $this->doWrite($this->cli->isTerminal() === false ? PHP_EOL : "\033[1K\r");
-    }
-
-    public function writeRealtimeReport(reports\realtime $report, $event)
-    {
-        return $this->write((string) $report);
-    }
-
-    public function writeAsynchronousReport(reports\asynchronous $report)
-    {
-        return $this->write((string) $report);
-    }
-
-    protected function doWrite($something)
-    {
-        $this->init()->adapter->fwrite($this->resource, $something);
+        $this->doWrite($this->cli->isTerminal() === false ? PHP_EOL : "\033[1K\r");
 
         return $this;
     }
 
-    abstract protected function init();
+    public function writeRealtimeReport(reports\realtime $report, string $event): static
+    {
+        return $this->write((string) $report);
+    }
+
+    public function writeAsynchronousReport(reports\asynchronous $report): static
+    {
+        return $this->write((string) $report);
+    }
+
+    protected function doWrite(string $something): void
+    {
+        $this->init()->adapter->fwrite($this->resource, $something);
+    }
+
+    abstract protected function init(): static;
 }

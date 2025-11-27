@@ -8,10 +8,10 @@ use atoum\atoum\test;
 
 class error extends asserter
 {
-    protected $score = null;
-    protected $message = null;
-    protected $type = null;
-    protected $messageIsPattern = false;
+    protected ?test\score $score = null;
+    protected ?string $message = null;
+    protected ?int $type = null;
+    protected bool $messageIsPattern = false;
 
     public function __construct(?asserter\generator $generator = null, ?test\score $score = null, ?atoum\locale $locale = null)
     {
@@ -20,7 +20,7 @@ class error extends asserter
         $this->setScore($score);
     }
 
-    public function __get($asserter)
+    public function __get(string $asserter): mixed
     {
         switch (strtolower($asserter)) {
             case 'exists':
@@ -34,44 +34,46 @@ class error extends asserter
         }
     }
 
-    public function setWithTest(test $test)
+    public function setWithTest(test $test): static
     {
         $this->setScore($test->getScore());
 
         return parent::setWithTest($test);
     }
 
-    public function setWith($message = null, $type = null)
+    public function setWith(mixed $message = null, ?int $type = null): static
     {
+        $message = $message === null || is_string($message) ? $message : (string) $message;
+
         return $this
             ->withType($type)
             ->withMessage($message)
         ;
     }
 
-    public function setScore(?test\score $score = null)
+    public function setScore(?test\score $score = null): static
     {
         $this->score = $score ?: new test\score();
 
         return $this;
     }
 
-    public function getScore()
+    public function getScore(): test\score
     {
         return $this->score;
     }
 
-    public function getMessage()
+    public function getMessage(): ?string
     {
         return $this->message;
     }
 
-    public function getType()
+    public function getType(): ?int
     {
         return $this->type;
     }
 
-    public function exists()
+    public function exists(): static
     {
         $key = $this->score->errorExists($this->message, $this->type, $this->messageIsPattern);
 
@@ -85,7 +87,7 @@ class error extends asserter
         return $this;
     }
 
-    public function notExists()
+    public function notExists(): static
     {
         $key = $this->getScore()->errorExists($this->message, $this->type, $this->messageIsPattern);
 
@@ -98,26 +100,26 @@ class error extends asserter
         return $this;
     }
 
-    public function withType($type)
+    public function withType(?int $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function withAnyType()
+    public function withAnyType(): static
     {
         $this->type = null;
 
         return $this;
     }
 
-    public function messageIsPattern()
+    public function messageIsPattern(): bool
     {
         return $this->messageIsPattern;
     }
 
-    public function withMessage($message)
+    public function withMessage(?string $message): static
     {
         $this->message = $message;
         $this->messageIsPattern = false;
@@ -125,7 +127,7 @@ class error extends asserter
         return $this;
     }
 
-    public function withPattern($pattern)
+    public function withPattern(?string $pattern): static
     {
         $this->message = $pattern;
         $this->messageIsPattern = true;
@@ -133,7 +135,7 @@ class error extends asserter
         return $this;
     }
 
-    public function withAnyMessage()
+    public function withAnyMessage(): static
     {
         $this->message = null;
         $this->messageIsPattern = false;
@@ -141,8 +143,24 @@ class error extends asserter
         return $this;
     }
 
-    public static function getAsString($errorType)
+    public static function getAsString(mixed $errorType): string
     {
+        if ($errorType === null) {
+            return 'UNKNOWN';
+        }
+
+        if (!is_int($errorType)) {
+            if (is_string($errorType) && strtolower($errorType) === 'unknown error') {
+                return 'UNKNOWN';
+            }
+
+            if (is_numeric($errorType)) {
+                $errorType = (int) $errorType;
+            } else {
+                return (string) $errorType;
+            }
+        }
+
         switch ($errorType) {
             case E_ERROR:
                 return 'E_ERROR';
@@ -197,7 +215,7 @@ class error extends asserter
         }
     }
 
-    private function getFailMessage($negative = false)
+    private function getFailMessage(bool $negative = false): string
     {
         $verb = $negative ? 'does not exist' : 'exists';
 

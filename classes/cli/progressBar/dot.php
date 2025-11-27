@@ -7,16 +7,16 @@ class dot
     public const width = 60;
     public const defaultCounterFormat = '[%s/%s]';
 
-    protected $refresh = null;
-    protected $iterations = 0;
-    protected $currentIteration = 0;
+    protected ?string $refresh = null;
+    protected int $iterations = 0;
+    protected int $currentIteration = 0;
 
-    public function __construct($iterations = 0)
+    public function __construct(int $iterations = 0)
     {
         $this->iterations = $iterations;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->refresh = null;
         $this->currentIteration = 0;
@@ -24,14 +24,14 @@ class dot
         return $this;
     }
 
-    public function setIterations($iterations)
+    public function setIterations(int $iterations): static
     {
         $this->reset()->iterations = (int) $iterations;
 
         return $this;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -56,14 +56,14 @@ class dot
         return $string;
     }
 
-    public function refresh($value)
+    public function refresh(string $value): static
     {
         $this->refresh .= $value;
 
         return $this;
     }
 
-    private static function formatCounter($iterations, $currentIteration)
+    private static function formatCounter(int $iterations, int $currentIteration): string
     {
         return sprintf(sprintf(self::defaultCounterFormat, '%' . strlen($iterations) . 'd', '%d'), $currentIteration, $iterations);
     }

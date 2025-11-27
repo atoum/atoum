@@ -6,7 +6,8 @@ use atoum\atoum\iterators\filters\recursives;
 
 class source extends recursives\dot
 {
-    public function accept()
+    #[\ReturnTypeWillChange]
+    public function accept(): bool
     {
         switch ($this->getInnerIterator()->current()->getBasename()) {
             case 'GPATH':

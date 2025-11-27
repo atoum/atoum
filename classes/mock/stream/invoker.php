@@ -6,14 +6,14 @@ use atoum\atoum\test\adapter;
 
 class invoker extends adapter\invoker
 {
-    protected $methodName = '';
+    protected string $methodName = '';
 
-    public function __construct($methodName)
+    public function __construct(string $methodName)
     {
         $this->methodName = strtolower($methodName);
     }
 
-    public function getMethodName()
+    public function getMethodName(): string
     {
         return $this->methodName;
     }

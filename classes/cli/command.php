@@ -6,19 +6,19 @@ use atoum\atoum;
 
 class command
 {
-    protected $adapter = null;
-    protected $binaryPath = '';
-    protected $options = [];
-    protected $arguments = [];
-    protected $env = [];
+    protected ?atoum\adapter $adapter = null;
+    protected string $binaryPath = '';
+    protected array $options = [];
+    protected array $arguments = [];
+    protected array $env = [];
 
-    private $processus = null;
-    private $streams = [];
-    private $stdOut = '';
-    private $stdErr = '';
-    private $exitCode = null;
+    private mixed $processus = null;
+    private array $streams = [];
+    private string $stdOut = '';
+    private string $stdErr = '';
+    private ?int $exitCode = null;
 
-    public function __construct($binaryPath = null, ?atoum\adapter $adapter = null)
+    public function __construct(?string $binaryPath = null, ?atoum\adapter $adapter = null)
     {
         $this
             ->setAdapter($adapter)
@@ -26,7 +26,7 @@ class command
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $command = '';
 
@@ -61,33 +61,29 @@ class command
         return $command;
     }
 
-    public function __set($envVariable, $value)
+    public function __set(string $envVariable, mixed $value): void
     {
         $this->env[$envVariable] = $value;
-
-        return $this;
     }
 
-    public function __get($envVariable)
+    public function __get(string $envVariable): mixed
     {
         return (isset($this->{$envVariable}) === false ? null : $this->env[$envVariable]);
     }
 
-    public function __isset($envVariable)
+    public function __isset(string $envVariable): bool
     {
         return (isset($this->env[$envVariable]) === true);
     }
 
-    public function __unset($envVariable)
+    public function __unset(string $envVariable): void
     {
         if (isset($this->{$envVariable}) === true) {
             unset($this->env[$envVariable]);
         }
-
-        return $this;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->options = [];
         $this->arguments = [];
@@ -98,38 +94,38 @@ class command
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): atoum\adapter
     {
         return $this->adapter;
     }
 
-    public function setAdapter(?atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 
         return $this;
     }
 
-    public function getBinaryPath()
+    public function getBinaryPath(): string
     {
         return $this->binaryPath;
     }
 
-    public function setBinaryPath($binaryPath = null)
+    public function setBinaryPath(?string $binaryPath = null): static
     {
         $this->binaryPath = (string) $binaryPath;
 
         return $this;
     }
 
-    public function addOption($option, $value = null)
+    public function addOption(string $option, ?string $value = null): static
     {
         $this->options[$option] = $value ?: null;
 
         return $this;
     }
 
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -141,12 +137,12 @@ class command
         return $this;
     }
 
-    public function getArguments()
+    public function getArguments(): array
     {
         return $this->arguments;
     }
 
-    public function isRunning()
+    public function isRunning(): bool
     {
         $isRunning = false;
 
@@ -167,7 +163,7 @@ class command
 
                 $this->streams = [];
 
-                $this->exitCode = $processusStatus['exitcode'];
+                $this->exitCode = is_int($processusStatus['exitcode']) ? $processusStatus['exitcode'] : (int) $processusStatus['exitcode'];
 
                 $this->adapter->proc_close($this->processus);
                 $this->processus = null;
@@ -177,17 +173,17 @@ class command
         return $isRunning;
     }
 
-    public function getStdout()
+    public function getStdout(): string
     {
         return $this->stdOut;
     }
 
-    public function getStderr()
+    public function getStderr(): string
     {
         return $this->stdErr;
     }
 
-    public function getExitCode()
+    public function getExitCode(): ?int
     {
         while ($this->isRunning() === true);
 

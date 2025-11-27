@@ -166,7 +166,7 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter, & $notEqualValue) {
                     $asserter->isEqualTo($notEqualValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
                 ->mock($diff)
@@ -203,7 +203,7 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter, $value) {
                     $asserter->isNotEqualTo($value);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is equal to %s', $asserter, $type)->once
         ;
@@ -239,7 +239,7 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter, $value, & $notIdenticalValue) {
                     $asserter->isIdenticalTo($notIdenticalValue = (string) $value);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not identical to %s', $asserter, $type)->once
                 ->mock($diff)
@@ -249,7 +249,7 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter, $value, & $notIdenticalValue) {
                     $asserter->isIdenticalTo($notIdenticalValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not identical to %s', $asserter, $type)->twice
                 ->mock($diff)
@@ -287,7 +287,7 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter, $value) {
                     $asserter->isNotIdenticalTo($value);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is identical to %s', $asserter, $type)->once
         ;
@@ -327,18 +327,18 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNull();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not null', $asserter)->once
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNull($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
                 ->exception(function () use ($asserter) {
                     $asserter->isNull;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not null', $asserter)->twice
 
@@ -351,18 +351,18 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNull();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not null', $asserter)->thrice()
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNull($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
                 ->exception(function () use ($asserter) {
                     $asserter->isNull;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not null', $asserter)->exactly(4)
 
@@ -375,18 +375,18 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNull();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not null', $asserter)->exactly(5)
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNull($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
                 ->exception(function () use ($asserter) {
                     $asserter->isNull;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not null', $asserter)->exactly(6)
 
@@ -399,18 +399,18 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNull();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not null', $asserter)->exactly(7)
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNull($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
                 ->exception(function () use ($asserter) {
                     $asserter->isNull;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not null', $asserter)->exactly(8)
         ;
@@ -450,19 +450,19 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotNull();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is null', $asserter)->once
                 ->exception(function () use ($asserter) {
                     $asserter->isNotNull;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is null', $asserter)->twice
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNotNull($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -505,7 +505,7 @@ class variable extends atoum\test
                     $notReference = uniqid();
                     $asserter->isReferenceTo($notReference);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not a reference to %s', $asserter, $type)->once
 
@@ -520,7 +520,7 @@ class variable extends atoum\test
                     $notReference = new \exception();
                     $asserter->isReferenceTo($notReference);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not a reference to %s', $asserter, $type)->twice
 
@@ -528,7 +528,7 @@ class variable extends atoum\test
                     $notReference = new \exception();
                     $asserter->isReferenceTo($notReference, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -566,21 +566,21 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotFalse();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is false', $asserter)->atLeastOnce()
 
                 ->exception(function () use ($asserter) {
                     $asserter->isNotFalse;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is false', $asserter)->atLeastOnce()
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNotFalse($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -618,21 +618,21 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotTrue();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is true', $asserter)->atLeastOnce()
 
                 ->exception(function () use ($asserter) {
                     $asserter->isNotTrue;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is true', $asserter)->atLeastOnce()
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNotTrue($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -671,21 +671,21 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isCallable();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not callable', $asserter)->atLeastOnce()
 
                 ->exception(function () use ($asserter) {
                     $asserter->isCallable;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is not callable', $asserter)->atLeastOnce()
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isCallable($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -723,21 +723,21 @@ class variable extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotCallable();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is callable', $asserter)->atLeastOnce()
 
                 ->exception(function () use ($asserter) {
                     $asserter->isNotCallable;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is callable', $asserter)->atLeastOnce()
 
                 ->exception(function () use ($asserter, & $message) {
                     $asserter->isNotCallable($message = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($message)
         ;
     }

@@ -6,61 +6,61 @@ use atoum\atoum\test\assertion;
 
 class manager
 {
-    protected $aliaser = null;
-    protected $propertyHandlers = [];
-    protected $methodHandlers = [];
-    protected $defaultHandler = null;
+    protected ?assertion\aliaser $aliaser = null;
+    protected array $propertyHandlers = [];
+    protected array $methodHandlers = [];
+    protected ?\Closure $defaultHandler = null;
 
     public function __construct(?assertion\aliaser $aliaser = null)
     {
         $this->setAliaser($aliaser);
     }
 
-    public function __set($event, $handler)
+    public function __set(string $event, \Closure $handler): void
     {
-        return $this->setHandler($event, $handler);
+        $this->setHandler($event, $handler);
     }
 
-    public function __get($event)
+    public function __get(string $event): mixed
     {
         return $this->invokePropertyHandler($event);
     }
 
-    public function __call($event, array $arguments)
+    public function __call(string $event, array $arguments): mixed
     {
         return $this->invokeMethodHandler($event, $arguments);
     }
 
-    public function setAliaser(?assertion\aliaser $aliaser = null)
+    public function setAliaser(?assertion\aliaser $aliaser = null): static
     {
         $this->aliaser = $aliaser ?: new assertion\aliaser();
 
         return $this;
     }
 
-    public function getAliaser()
+    public function getAliaser(): assertion\aliaser
     {
         return $this->aliaser;
     }
 
-    public function setAlias($alias, $keyword)
+    public function setAlias(string $alias, string $keyword): static
     {
         $this->aliaser->aliasKeyword($keyword, $alias);
 
         return $this;
     }
 
-    public function setMethodHandler($event, \closure $handler)
+    public function setMethodHandler(string $event, \Closure $handler): static
     {
         return $this->setHandlerIn($this->methodHandlers, $event, $handler);
     }
 
-    public function setPropertyHandler($event, \closure $handler)
+    public function setPropertyHandler(string $event, \Closure $handler): static
     {
         return $this->setHandlerIn($this->propertyHandlers, $event, $handler);
     }
 
-    public function setHandler($event, \closure $handler)
+    public function setHandler(string $event, \Closure $handler): static
     {
         return $this
             ->setPropertyHandler($event, $handler)
@@ -68,14 +68,14 @@ class manager
         ;
     }
 
-    public function setDefaultHandler(\closure $handler)
+    public function setDefaultHandler(\Closure $handler): static
     {
         $this->defaultHandler = $handler;
 
         return $this;
     }
 
-    public function invokePropertyHandler($event)
+    public function invokePropertyHandler(string $event): mixed
     {
         return $this->invokeHandlerFrom($this->propertyHandlers, $event);
     }
@@ -85,7 +85,7 @@ class manager
         return $this->invokeHandlerFrom($this->methodHandlers, $event, $arguments);
     }
 
-    private function setHandlerIn(array & $handlers, $event, \closure $handler)
+    private function setHandlerIn(array & $handlers, $event, \Closure $handler)
     {
         $handlers[strtolower($event)] = $handler;
 

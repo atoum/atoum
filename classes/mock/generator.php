@@ -450,6 +450,18 @@ class generator
                     $mockedMethods .= "\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 
                     if ($this->isVoid($method) === false) {
+                        // If invoke() returns null but the return type is non-nullable, use default value
+                        if ($this->hasReturnType($method) === true) {
+                            $returnType = $this->getReflectionType($method);
+                            if ($returnType !== null && $returnType->allowsNull() === false) {
+                                $defaultValue = $this->getDefaultReturnValue($returnType, $method, $class);
+                                if ($defaultValue !== '') {
+                                    $mockedMethods .= "\t\t" . 'if ($return === null) {' . PHP_EOL;
+                                    $mockedMethods .= "\t\t\t" . 'return ' . $defaultValue . ';' . PHP_EOL;
+                                    $mockedMethods .= "\t\t" . '}' . PHP_EOL;
+                                }
+                            }
+                        }
                         $mockedMethods .= "\t\t" . 'return $return;' . PHP_EOL;
                     }
                 } else {
@@ -458,6 +470,18 @@ class generator
                     $mockedMethods .= "\t\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 
                     if ($this->isVoid($method) === false) {
+                        // If invoke() returns null but the return type is non-nullable, use default value
+                        if ($this->hasReturnType($method) === true) {
+                            $returnType = $this->getReflectionType($method);
+                            if ($returnType !== null && $returnType->allowsNull() === false) {
+                                $defaultValue = $this->getDefaultReturnValue($returnType, $method, $class);
+                                if ($defaultValue !== '') {
+                                    $mockedMethods .= "\t\t\t" . 'if ($return === null) {' . PHP_EOL;
+                                    $mockedMethods .= "\t\t\t\t" . 'return ' . $defaultValue . ';' . PHP_EOL;
+                                    $mockedMethods .= "\t\t\t" . '}' . PHP_EOL;
+                                }
+                            }
+                        }
                         $mockedMethods .= "\t\t\t" . 'return $return;' . PHP_EOL;
                     }
 
@@ -481,7 +505,6 @@ class generator
                         if ($this->hasReturnType($method) === true && $this->isVoid($method) === false) {
                             $returnType = $this->getReflectionType($method);
                             $returnTypeName = $this->getReflectionTypeName($returnType);
-                            $allowsNull = $returnType->allowsNull();
 
                             switch (true) {
                                 case $returnTypeName === 'self':
@@ -492,33 +515,11 @@ class generator
                                     $mockedMethods .= "\t\t\t" . 'return $this;' . PHP_EOL;
                                     break;
 
-                                case $returnTypeName === 'bool':
-                                    $mockedMethods .= "\t\t\t" . 'return false;' . PHP_EOL;
-                                    break;
-
-                                case $returnTypeName === 'int':
-                                    $mockedMethods .= "\t\t\t" . 'return 0;' . PHP_EOL;
-                                    break;
-
-                                case $returnTypeName === 'float':
-                                    $mockedMethods .= "\t\t\t" . 'return 0.0;' . PHP_EOL;
-                                    break;
-
-                                case $returnTypeName === 'string':
-                                    $mockedMethods .= "\t\t\t" . 'return \'\';' . PHP_EOL;
-                                    break;
-
-                                case $returnTypeName === 'array':
-                                    $mockedMethods .= "\t\t\t" . 'return [];' . PHP_EOL;
-                                    break;
-
-                                case $returnTypeName === 'mixed':
-                                case $allowsNull:
-                                    $mockedMethods .= "\t\t\t" . 'return null;' . PHP_EOL;
-                                    break;
-
                                 default:
-                                    $mockedMethods .= "\t\t\t" . 'return null;' . PHP_EOL;
+                                    $defaultValue = $this->getDefaultReturnValue($returnType, $method, $class);
+                                    if ($defaultValue !== '') {
+                                        $mockedMethods .= "\t\t\t" . 'return ' . $defaultValue . ';' . PHP_EOL;
+                                    }
                             }
                         }
                     }
@@ -637,7 +638,10 @@ class generator
                                 break;
 
                             default:
-                                $methodCode .= "\t\t\t\t" . 'return null;' . PHP_EOL;
+                                $defaultValue = $this->getDefaultReturnValue($returnType, $method, $class);
+                                if ($defaultValue !== '') {
+                                    $methodCode .= "\t\t\t\t" . 'return ' . $defaultValue . ';' . PHP_EOL;
+                                }
                         }
                     }
 
@@ -650,6 +654,18 @@ class generator
                         $methodCode .= "\t\t" . '$return = $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 
                         if ($this->isVoid($method) === false) {
+                            // If invoke() returns null but the return type is non-nullable, use default value
+                            if ($this->hasReturnType($method) === true) {
+                                $returnType = $this->getReflectionType($method);
+                                if ($returnType !== null && $returnType->allowsNull() === false) {
+                                    $defaultValue = $this->getDefaultReturnValue($returnType, $method, $class);
+                                    if ($defaultValue !== '') {
+                                        $methodCode .= "\t\t" . 'if ($return === null) {' . PHP_EOL;
+                                        $methodCode .= "\t\t\t" . 'return ' . $defaultValue . ';' . PHP_EOL;
+                                        $methodCode .= "\t\t" . '}' . PHP_EOL;
+                                    }
+                                }
+                            }
                             $methodCode .= "\t\t" . 'return $return;' . PHP_EOL;
                         }
                     }
@@ -657,12 +673,24 @@ class generator
                     break;
 
                 case $method->isStatic() === true:
-                    $methodCode = "\t" . 'public static function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . PHP_EOL;
+                    $methodCode = "\t" . 'public static function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . $this->getReturnType($method) . PHP_EOL;
                     $methodCode .= "\t" . '{' . PHP_EOL;
                     $methodCode .= "\t\t" . '$arguments = array_merge(array(' . implode(', ', $parameters) . '), array_slice(func_get_args(), ' . count($parameters) . ', -1));' . PHP_EOL;
 
                     if ($this->isVoid($method) === false) {
-                        $methodCode .= "\t\t" . 'return call_user_func_array(array(\'parent\', \'' . $methodName . '\'), $arguments);' . PHP_EOL;
+                        if ($class->getParentClass() !== false) {
+                            $methodCode .= "\t\treturn call_user_func_array([parent::class, '" . $methodName . "'], $arguments);" . PHP_EOL;
+                        } elseif ($this->hasReturnType($method) === true) {
+                            $returnType = $this->getReflectionType($method);
+                            if ($returnType !== null) {
+                                $defaultValue = $this->getDefaultReturnValue($returnType, $method, $class, true);
+                                if ($defaultValue !== '') {
+                                    $methodCode .= "\t\treturn " . $defaultValue . ';' . PHP_EOL;
+                                }
+                            }
+                        }
+                    } elseif ($class->getParentClass() !== false) {
+                        $methodCode .= "\t\tcall_user_func_array([parent::class, '" . $methodName . "'], $arguments);" . PHP_EOL;
                     }
 
                     $methodCode .= "\t" . '}' . PHP_EOL;
@@ -749,7 +777,7 @@ class generator
                     // These types cannot be marked as nullable
                     return ': ' . $returnTypeName;
 
-                // PHP 8.2+: Standalone null, true, false types
+                    // PHP 8.2+: Standalone null, true, false types
                 case 'null':
                 case 'true':
                 case 'false':
@@ -825,7 +853,124 @@ class generator
 
     protected function isVoid(\reflectionMethod $method): bool
     {
-        return $this->hasReturnType($method) ? $this->getReflectionTypeName($this->getReflectionType($method)) === 'void' : false;
+        if (!$this->hasReturnType($method)) {
+            return false;
+        }
+        
+        $returnTypeName = $this->getReflectionTypeName($this->getReflectionType($method));
+        return $returnTypeName === 'void' || $returnTypeName === 'never';
+    }
+
+    /**
+     * Generate a default return value for a given return type.
+     * Returns appropriate default values for non-nullable types to avoid type errors.
+     */
+    protected function getDefaultReturnValue(\ReflectionType $returnType, \reflectionMethod $method, \reflectionClass $class, bool $isStatic = false): string
+    {
+        $isNullable = $returnType->allowsNull();
+
+        // If nullable, return null
+        if ($isNullable) {
+            return 'null';
+        }
+
+        // Handle union types - find first non-nullable type
+        if ($returnType instanceof \ReflectionUnionType) {
+            $types = $returnType->getTypes();
+            foreach ($types as $type) {
+                if ($type->allowsNull() === false) {
+                    return $this->getDefaultReturnValueForType($type, $method, $class, $isStatic);
+                }
+            }
+            // If all types are nullable, return null
+            return 'null';
+        }
+
+        // Handle intersection types
+        if (class_exists(\ReflectionIntersectionType::class) && $returnType instanceof \ReflectionIntersectionType) {
+            $types = $returnType->getTypes();
+            if (count($types) > 0) {
+                // For intersection types, use the first type
+                return $this->getDefaultReturnValueForType($types[0], $method, $class, $isStatic);
+            }
+        }
+
+        return $this->getDefaultReturnValueForType($returnType, $method, $class, $isStatic);
+    }
+
+    /**
+     * Get default return value for a specific ReflectionNamedType.
+     */
+    protected function getDefaultReturnValueForType(\ReflectionType $type, \reflectionMethod $method, \reflectionClass $class, bool $isStatic = false): string
+    {
+        if (!($type instanceof \ReflectionNamedType)) {
+            return 'null';
+        }
+
+        $typeName = $type->getName();
+
+        // Handle special cases: self, static, parent
+        switch ($typeName) {
+            case 'self':
+                return $isStatic ? 'new self()' : '$this';
+            case 'static':
+                return $isStatic ? 'new static()' : '$this';
+            case 'parent':
+                if ($isStatic) {
+                    return $class->getParentClass() ? 'new parent()' : 'new static()';
+                }
+                return '$this';
+        }
+
+        // Handle built-in types
+        if ($type->isBuiltin()) {
+            switch ($typeName) {
+                case 'array':
+                    return '[]';
+                case 'int':
+                    return '0';
+                case 'float':
+                    return '0.0';
+                case 'string':
+                    return "''";
+                case 'bool':
+                    return 'false';
+                case 'callable':
+                    return 'function() {}';
+                case 'iterable':
+                    return '[]';
+                case 'object':
+                    return 'new \stdClass()';
+                case 'mixed':
+                    return 'null';
+                case 'void':
+                case 'never':
+                    return '';
+                case 'null':
+                    return 'null';
+                case 'true':
+                    return 'true';
+                case 'false':
+                    return 'false';
+                default:
+                    return 'null';
+            }
+        }
+
+        // For class/interface types
+        try {
+            $reflectionClass = new \ReflectionClass($typeName);
+            if ($reflectionClass->isInstantiable()) {
+                $constructor = $reflectionClass->getConstructor();
+                if ($constructor === null || $constructor->getNumberOfRequiredParameters() === 0) {
+                    return 'new \\' . $typeName . '()';
+                }
+            }
+        } catch (\ReflectionException $e) {
+            // Ignore
+        }
+
+        return 'null';
     }
 
     protected static function isDefaultParameterNull(\ReflectionParameter $parameter)
@@ -1125,13 +1270,13 @@ class generator
                 if (version_compare(PHP_VERSION, '8.4.0', '>=')) {
                     $reflector = $parameter->getDeclaringFunction()->getDeclaringClass();
                     $property = $reflector->getProperty($parameter->getName());
-                    
+
                     if ($property->isReadOnly()) {
                         // Skip readonly promoted properties in PHP 8.4+ (handled elsewhere)
                         continue;
                     }
                 }
-                
+
                 $propertiesCode .= $this->generatePromotedProperty($parameter);
             }
         }
@@ -1271,11 +1416,11 @@ class generator
         // PHP 8.0+: Named types
         if ($type instanceof \ReflectionNamedType) {
             $typeName = $type->getName();
-            
+
             // Handle special keywords: self, parent, static
             if ($method !== null) {
                 $declaringClass = $method->getDeclaringClass();
-                
+
                 if ($typeName === 'self') {
                     $typeName = $declaringClass->getName();
                 } elseif ($typeName === 'parent') {
@@ -1287,15 +1432,15 @@ class generator
                     return $nullable . $typeName;
                 }
             }
-            
+
             $nullable = $type->allowsNull() && $typeName !== 'mixed' && $typeName !== 'null' ? '?' : '';
-            
+
             // Handle special keyword types: self, parent, static
             // These must NEVER have a backslash prefix
             if (in_array($typeName, ['self', 'parent', 'static'])) {
                 return $nullable . $typeName;
             }
-            
+
             return $nullable . (!$type->isBuiltin() ? '\\' : '') . $typeName;
         }
 
@@ -1353,7 +1498,7 @@ class generator
             return true;
         }
         // Private read can't have more restrictive write visibility
-        
+
         return false;
     }
 

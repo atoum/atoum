@@ -8,9 +8,9 @@ use atoum\atoum\report\fields\runner\duration;
 
 class cli extends duration
 {
-    protected $prompt = null;
-    protected $titleColorizer = null;
-    protected $durationColorizer = null;
+    protected ?prompt $prompt = null;
+    protected ?colorizer $titleColorizer = null;
+    protected ?colorizer $durationColorizer = null;
 
     public function __construct()
     {
@@ -23,7 +23,7 @@ class cli extends duration
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->prompt .
             sprintf(
@@ -35,38 +35,38 @@ class cli extends duration
         ;
     }
 
-    public function setPrompt(?prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null): static
     {
         $this->prompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getPrompt()
+    public function getPrompt(): prompt
     {
         return $this->prompt;
     }
 
-    public function setTitleColorizer(?colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null): static
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getTitleColorizer()
+    public function getTitleColorizer(): colorizer
     {
         return $this->titleColorizer;
     }
 
-    public function setDurationColorizer(?colorizer $colorizer = null)
+    public function setDurationColorizer(?colorizer $colorizer = null): static
     {
         $this->durationColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getDurationColorizer()
+    public function getDurationColorizer(): colorizer
     {
         return $this->durationColorizer;
     }

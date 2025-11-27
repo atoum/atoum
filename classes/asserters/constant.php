@@ -9,9 +9,9 @@ use atoum\atoum\tools;
 
 class constant extends asserter
 {
-    protected $diff = null;
-    protected $isSet = false;
-    protected $value = null;
+    protected ?tools\diffs\variable $diff = null;
+    protected bool $isSet = false;
+    protected mixed $value = null;
 
     public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
     {
@@ -20,12 +20,12 @@ class constant extends asserter
         $this->setDiff();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getTypeOf($this->value);
     }
 
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         switch (strtolower($method)) {
             case 'equalto':
@@ -36,24 +36,24 @@ class constant extends asserter
         }
     }
 
-    public function setDiff(?tools\diffs\variable $diff = null)
+    public function setDiff(?tools\diffs\variable $diff = null): static
     {
         $this->diff = $diff ?: new tools\diffs\variable();
 
         return $this;
     }
 
-    public function getDiff()
+    public function getDiff(): tools\diffs\variable
     {
         return $this->diff;
     }
 
-    public function wasSet()
+    public function wasSet(): bool
     {
         return ($this->isSet === true);
     }
 
-    public function setWith($value)
+    public function setWith(mixed $value): static
     {
         parent::setWith($value);
 
@@ -63,7 +63,7 @@ class constant extends asserter
         return $this;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->value = null;
         $this->isSet = false;
@@ -71,12 +71,12 @@ class constant extends asserter
         return parent::reset();
     }
 
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
 
-    public function isEqualTo($value, $failMessage = null)
+    public function isEqualTo(mixed $value, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value === $value) {
             $this->pass();
@@ -87,7 +87,7 @@ class constant extends asserter
         return $this;
     }
 
-    protected function valueIsSet($message = 'Value is undefined')
+    protected function valueIsSet(string $message = 'Value is undefined'): static
     {
         if ($this->isSet === false) {
             throw new exceptions\logic($message);

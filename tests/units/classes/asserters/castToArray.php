@@ -62,7 +62,7 @@ class castToArray extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notAnObject)
                     ->string($asserter->getValue())->isEqualTo($value)
                 ->mock($locale)->call('_')->withArguments('%s could not be converted to array', $type)->once

@@ -12,28 +12,28 @@ class stream
 
     public $context;
 
-    protected $streamController = null;
+    protected ?stream\controller $streamController = null;
 
-    protected static $adapter = null;
-    protected static $streams = [];
-    protected static $protocols = [];
+    protected static ?adapter $adapter = null;
+    protected static array $streams = [];
+    protected static array $protocols = [];
 
-    public function __call($method, array $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         return call_user_func_array([$this->setControllerForMethod($method, $arguments)->streamController, $method], $arguments);
     }
 
-    public static function getAdapter()
+    public static function getAdapter(): adapter
     {
         return (static::$adapter = static::$adapter ?: new adapter());
     }
 
-    public static function setAdapter(adapter $adapter)
+    public static function setAdapter(adapter $adapter): void
     {
         static::$adapter = $adapter;
     }
 
-    public static function get($name = null)
+    public static function get(?string $name = null): stream\controller
     {
         $name = static::setDirectorySeparator($name ?: uniqid());
 
@@ -57,12 +57,12 @@ class stream
         return $stream;
     }
 
-    public static function getSubStream(stream\controller $controller, $stream = null)
+    public static function getSubStream(stream\controller $controller, ?string $stream = null): stream\controller
     {
         return static::get($controller . DIRECTORY_SEPARATOR . static::setDirectorySeparator($stream ?: uniqid()));
     }
 
-    public static function getProtocol($stream)
+    public static function getProtocol(string $stream): ?string
     {
         $scheme = null;
 
@@ -82,7 +82,7 @@ class stream
         return substr($stream, 0, strlen($stream) - strlen($path)) . $path;
     }
 
-    protected function setControllerForMethod($method, array $arguments)
+    protected function setControllerForMethod(string $method, array $arguments): static
     {
         switch (strtolower($method)) {
             case 'dir_opendir':
@@ -101,7 +101,7 @@ class stream
         return $this;
     }
 
-    protected static function getController($stream)
+    protected static function getController(string $stream): stream\controller
     {
         return new stream\controller($stream);
     }

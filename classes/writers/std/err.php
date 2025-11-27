@@ -6,7 +6,7 @@ use atoum\atoum\writers;
 
 class err extends writers\std
 {
-    protected function init()
+    protected function init(): static
     {
         if ($this->resource === null) {
             $resource = $this->adapter->fopen('php://stderr', 'w');

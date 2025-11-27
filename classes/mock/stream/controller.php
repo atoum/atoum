@@ -7,21 +7,21 @@ use atoum\atoum\test;
 
 class controller extends test\adapter
 {
-    protected $path = '';
+    protected string $path = '';
 
-    public function __construct($path)
+    public function __construct(string $path)
     {
         parent::__construct();
 
         $this->path = (string) $path;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getPath();
     }
 
-    public function __get($method)
+    public function __get(string $method): invoker
     {
         $method = static::mapMethod($method);
 
@@ -30,7 +30,7 @@ class controller extends test\adapter
         });
     }
 
-    public function __set($method, $value)
+    public function __set(string $method, mixed $value): void
     {
         switch (strtolower($method)) {
             case 'file_get_contents':
@@ -43,14 +43,14 @@ class controller extends test\adapter
                     $this->fread[2] = '';
                     $this->fclose = true;
                 }
-                return $this;
+                break;
 
             case 'file_put_contents':
                 $this->stat = ['mode' => 33188];
                 $this->fopen = true;
                 $this->fwrite = $value;
                 $this->fclose = true;
-                return $this;
+                break;
 
             default:
                 $method = static::mapMethod($method);
@@ -70,16 +70,16 @@ class controller extends test\adapter
                         break;
                 }
 
-                return parent::__set($method, $value);
+                parent::__set($method, $value);
         }
     }
 
-    public function __isset($method)
+    public function __isset(string $method): bool
     {
         return parent::__isset(static::mapMethod($method));
     }
 
-    public function duplicate()
+    public function duplicate(): static
     {
         $controller = clone $this;
 
@@ -90,24 +90,24 @@ class controller extends test\adapter
         return $controller;
     }
 
-    public function setPath($path)
+    public function setPath(string $path): static
     {
         $this->path = $path;
 
         return $this;
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
 
-    public function getBasename()
+    public function getBasename(): string
     {
         return basename($this->path);
     }
 
-    public function invoke($method, array $arguments = [])
+    public function invoke(string $method, array $arguments = []): mixed
     {
         $method = static::mapMethod($method);
 
@@ -118,7 +118,7 @@ class controller extends test\adapter
         return ($this->nextCallIsOverloaded($method) === false ? null : parent::invoke($method, $arguments));
     }
 
-    protected static function mapMethod($method)
+    protected static function mapMethod(string $method): string
     {
         $method = strtolower($method);
 

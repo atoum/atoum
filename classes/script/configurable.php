@@ -10,8 +10,8 @@ abstract class configurable extends atoum\script
 {
     public const defaultConfigFile = '.config.php';
 
-    protected $includer = null;
-    protected $configFiles = [];
+    protected ?atoum\includer $includer = null;
+    protected array $configFiles = [];
 
     public function __construct($name, ?atoum\adapter $adapter = null)
     {
@@ -20,29 +20,29 @@ abstract class configurable extends atoum\script
         $this->setIncluder();
     }
 
-    public function setIncluder(?atoum\includer $includer = null)
+    public function setIncluder(?atoum\includer $includer = null): static
     {
         $this->includer = $includer ?: new atoum\includer();
 
         return $this;
     }
 
-    public function getIncluder()
+    public function getIncluder(): atoum\includer
     {
         return $this->includer;
     }
 
-    public function getConfigFiles()
+    public function getConfigFiles(): array
     {
         return $this->configFiles;
     }
 
-    public function useConfigFile($path)
+    public function useConfigFile(string $path): static
     {
         return $this->includeConfigFile($path);
     }
 
-    public function useDefaultConfigFiles($startDirectory = null)
+    public function useDefaultConfigFiles(?string $startDirectory = null): static
     {
         if ($startDirectory === null) {
             $startDirectory = $this->getDirectory();
@@ -73,14 +73,14 @@ abstract class configurable extends atoum\script
         return $this;
     }
 
-    public function run(array $arguments = [])
+    public function run(array $arguments = []): static
     {
         $this->useDefaultConfigFiles();
 
         return parent::run($arguments);
     }
 
-    public static function getSubDirectoryPath($directory, $directorySeparator = null)
+    public static function getSubDirectoryPath(string $directory, ?string $directorySeparator = null): array
     {
         $directorySeparator = $directorySeparator ?: DIRECTORY_SEPARATOR;
 
@@ -105,7 +105,7 @@ abstract class configurable extends atoum\script
         return $paths;
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         parent::setArgumentHandlers()
             ->addArgumentHandler(
@@ -144,7 +144,7 @@ abstract class configurable extends atoum\script
         return $this;
     }
 
-    protected function includeConfigFile($path, ?\closure $callback = null)
+    protected function includeConfigFile(string $path, ?\Closure $callback = null): static
     {
         if ($callback === null) {
             $script = $this;

@@ -21,43 +21,43 @@ class treemap extends atoum\script\configurable
     protected $analyzers = [];
     protected $categorizers = [];
 
-    public function __construct($name, ?atoum\adapter $adapter = null)
+    public function __construct(string $name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
         $this->setIncluder();
     }
 
-    public function getProjectName()
+    public function getProjectName(): mixed
     {
         return $this->projectName;
     }
 
-    public function setProjectName($projectName)
+    public function setProjectName(mixed $projectName): static
     {
         $this->projectName = $projectName;
 
         return $this;
     }
 
-    public function getProjectUrl()
+    public function getProjectUrl(): mixed
     {
         return $this->projectUrl;
     }
 
-    public function setProjectUrl($projectUrl)
+    public function setProjectUrl(mixed $projectUrl): static
     {
         $this->projectUrl = $projectUrl;
 
         return $this;
     }
 
-    public function getCodeUrl()
+    public function getCodeUrl(): mixed
     {
         return $this->codeUrl;
     }
 
-    public function setCodeUrl($codeUrl)
+    public function setCodeUrl(mixed $codeUrl): static
     {
         $this->codeUrl = $codeUrl;
 
@@ -73,31 +73,31 @@ class treemap extends atoum\script\configurable
         return $this;
     }
 
-    public function getDirectories()
+    public function getDirectories(): mixed
     {
         return $this->directories;
     }
 
-    public function setHtmlDirectory($path = null)
+    public function setHtmlDirectory(?string $path = null): static
     {
         $this->htmlDirectory = $path;
 
         return $this;
     }
 
-    public function getHtmlDirectory()
+    public function getHtmlDirectory(): mixed
     {
         return $this->htmlDirectory;
     }
 
-    public function setOutputDirectory($directory)
+    public function setOutputDirectory(mixed $directory): static
     {
         $this->outputDirectory = $directory;
 
         return $this;
     }
 
-    public function getOutputDirectory()
+    public function getOutputDirectory(): mixed
     {
         return $this->outputDirectory;
     }
@@ -111,7 +111,7 @@ class treemap extends atoum\script\configurable
         return $this->onlyJsonFile;
     }
 
-    public function getAnalyzers()
+    public function getAnalyzers(): mixed
     {
         return $this->analyzers;
     }
@@ -123,7 +123,7 @@ class treemap extends atoum\script\configurable
         return $this;
     }
 
-    public function getCategorizers()
+    public function getCategorizers(): mixed
     {
         return $this->categorizers;
     }
@@ -135,7 +135,7 @@ class treemap extends atoum\script\configurable
         return $this;
     }
 
-    public function useConfigFile($path)
+    public function useConfigFile(string $path): static
     {
         $script = $this;
 
@@ -144,7 +144,7 @@ class treemap extends atoum\script\configurable
         });
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         return parent::setArgumentHandlers()
             ->addArgumentHandler(
@@ -272,7 +272,7 @@ class treemap extends atoum\script\configurable
         ;
     }
 
-    protected function doRun()
+    protected function doRun(): static
     {
         if ($this->projectName === null) {
             throw new exceptions\runtime($this->locale->_('Project name is undefined'));

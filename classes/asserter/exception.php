@@ -6,7 +6,7 @@ use atoum\atoum;
 
 class exception extends \runtimeException
 {
-    public function __construct(atoum\asserter $asserter, $message)
+    public function __construct(atoum\asserter $asserter, string $message)
     {
         $code = 0;
 

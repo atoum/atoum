@@ -10,10 +10,10 @@ use atoum\atoum\tools\diffs;
 
 class variable extends asserter
 {
-    protected $diff = null;
-    protected $isSet = false;
-    protected $value = null;
-    protected $isSetByReference = false;
+    protected ?diffs\variable $diff = null;
+    protected bool $isSet = false;
+    protected mixed $value = null;
+    protected bool $isSetByReference = false;
 
     public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
     {
@@ -22,12 +22,12 @@ class variable extends asserter
         $this->setDiff();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getTypeOf($this->value);
     }
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'isnull':
@@ -43,7 +43,7 @@ class variable extends asserter
         }
     }
 
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         $assertion = null;
 
@@ -71,24 +71,24 @@ class variable extends asserter
         return call_user_func_array([$this, $assertion], $arguments);
     }
 
-    public function setDiff(?diffs\variable $diff = null)
+    public function setDiff(?diffs\variable $diff = null): static
     {
         $this->diff = $diff ?: new diffs\variable();
 
         return $this;
     }
 
-    public function getDiff()
+    public function getDiff(): diffs\variable
     {
         return $this->diff;
     }
 
-    public function wasSet()
+    public function wasSet(): bool
     {
         return ($this->isSet === true);
     }
 
-    public function setWith($value)
+    public function setWith(mixed $value): static
     {
         parent::setWith($value);
 
@@ -99,18 +99,18 @@ class variable extends asserter
         return $this;
     }
 
-    public function setByReferenceWith(& $value)
+    public function setByReferenceWith(mixed &$value): static
     {
         $this->reset();
 
-        $this->value = & $value;
+        $this->value = &$value;
         $this->isSet = true;
         $this->isSetByReference = true;
 
         return $this;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->value = null;
         $this->isSet = false;
@@ -119,17 +119,17 @@ class variable extends asserter
         return $this;
     }
 
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
 
-    public function isSetByReference()
+    public function isSetByReference(): bool
     {
         return ($this->isSet === true && $this->isSetByReference === true);
     }
 
-    public function isEqualTo($value, $failMessage = null)
+    public function isEqualTo(mixed $value, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value == $value) {
             $this->pass();
@@ -140,7 +140,7 @@ class variable extends asserter
         return $this;
     }
 
-    public function isNotEqualTo($value, $failMessage = null)
+    public function isNotEqualTo(mixed $value, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value != $value) {
             $this->pass();
@@ -151,7 +151,7 @@ class variable extends asserter
         return $this;
     }
 
-    public function isIdenticalTo($value, $failMessage = null)
+    public function isIdenticalTo(mixed $value, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value === $value) {
             $this->pass();
@@ -162,7 +162,7 @@ class variable extends asserter
         return $this;
     }
 
-    public function isNotIdenticalTo($value, $failMessage = null)
+    public function isNotIdenticalTo(mixed $value, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value !== $value) {
             $this->pass();
@@ -173,7 +173,7 @@ class variable extends asserter
         return $this;
     }
 
-    public function isNull($failMessage = null)
+    public function isNull(?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value === null) {
             $this->pass();
@@ -184,7 +184,7 @@ class variable extends asserter
         return $this;
     }
 
-    public function isNotNull($failMessage = null)
+    public function isNotNull(?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value !== null) {
             $this->pass();
@@ -195,7 +195,7 @@ class variable extends asserter
         return $this;
     }
 
-    public function isReferenceTo(& $reference, $failMessage = null)
+    public function isReferenceTo(mixed &$reference, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->isSetByReference() === false) {
             throw new exceptions\logic('Value is not set by reference');
@@ -223,17 +223,17 @@ class variable extends asserter
         return $this;
     }
 
-    public function isNotFalse($failMessage = null)
+    public function isNotFalse(?string $failMessage = null): static
     {
         return $this->isNotIdenticalTo(false, $failMessage ?: $this->_('%s is false', $this));
     }
 
-    public function isNotTrue($failMessage = null)
+    public function isNotTrue(?string $failMessage = null): static
     {
         return $this->isNotIdenticalTo(true, $failMessage ?: $this->_('%s is true', $this));
     }
 
-    public function isCallable($failMessage = null)
+    public function isCallable(?string $failMessage = null): static
     {
         if (is_callable($this->valueIsSet()->value) === true) {
             $this->pass();
@@ -244,7 +244,7 @@ class variable extends asserter
         return $this;
     }
 
-    public function isNotCallable($failMessage = null)
+    public function isNotCallable(?string $failMessage = null): static
     {
         if (is_callable($this->valueIsSet()->value) === false) {
             $this->pass();
@@ -255,7 +255,7 @@ class variable extends asserter
         return $this;
     }
 
-    protected function valueIsSet($message = 'Value is undefined')
+    protected function valueIsSet(string $message = 'Value is undefined'): static
     {
         if ($this->isSet === false) {
             throw new exceptions\logic($message);
@@ -264,7 +264,7 @@ class variable extends asserter
         return $this;
     }
 
-    protected function diff($expected)
+    protected function diff(mixed $expected): diffs\variable
     {
         return $this->diff->setExpected($expected)->setActual($this->value);
     }

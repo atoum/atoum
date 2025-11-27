@@ -6,9 +6,9 @@ use atoum\atoum\report;
 
 class phing extends report\fields\runner\tests\coverage\cli
 {
-    protected $showMissingCodeCoverage = true;
+    protected bool $showMissingCodeCoverage = true;
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -86,21 +86,21 @@ class phing extends report\fields\runner\tests\coverage\cli
         return $string;
     }
 
-    public function showMissingCodeCoverage()
+    public function showMissingCodeCoverage(): static
     {
         $this->showMissingCodeCoverage = true;
 
         return $this;
     }
 
-    public function hideMissingCodeCoverage()
+    public function hideMissingCodeCoverage(): static
     {
         $this->showMissingCodeCoverage = false;
 
         return $this;
     }
 
-    public function missingCodeCoverageIsShowed()
+    public function missingCodeCoverageIsShowed(): bool
     {
         return $this->showMissingCodeCoverage;
     }

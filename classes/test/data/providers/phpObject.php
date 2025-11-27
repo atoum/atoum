@@ -10,12 +10,12 @@ class phpObject implements provider
 {
     protected $class;
 
-    public function __invoke()
+    public function __invoke(): mixed
     {
         return $this->generate();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return __CLASS__ . '<' . $this->class . '>';
     }
@@ -41,7 +41,7 @@ class phpObject implements provider
         return $this;
     }
 
-    public function generate()
+    public function generate(): mixed
     {
         if (static::canInstanciateClass($this->classIsSet()->class)) {
             $className = $this->class;

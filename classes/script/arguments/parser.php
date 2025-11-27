@@ -7,18 +7,18 @@ use atoum\atoum\exceptions;
 
 class parser implements \iteratorAggregate
 {
-    protected $values = [];
-    protected $handlers = [];
-    protected $defaultHandler = null;
-    protected $priorities = [];
-    protected $superglobals = null;
+    protected array $values = [];
+    protected array $handlers = [];
+    protected ?\Closure $defaultHandler = null;
+    protected array $priorities = [];
+    protected ?atoum\superglobals $superglobals = null;
 
     public function __construct(?atoum\superglobals $superglobals = null)
     {
         $this->setSuperglobals($superglobals ?: new atoum\superglobals());
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -33,37 +33,37 @@ class parser implements \iteratorAggregate
         return $string;
     }
 
-    public function setSuperglobals(atoum\superglobals $superglobals)
+    public function setSuperglobals(atoum\superglobals $superglobals): static
     {
         $this->superglobals = $superglobals;
 
         return $this;
     }
 
-    public function getSuperglobals()
+    public function getSuperglobals(): atoum\superglobals
     {
         return $this->superglobals;
     }
 
-    public function resetValues()
+    public function resetValues(): static
     {
         $this->values = [];
 
         return $this;
     }
 
-    public function getHandlers()
+    public function getHandlers(): array
     {
         return $this->handlers;
     }
 
-    public function getPriorities()
+    public function getPriorities(): array
     {
         return $this->priorities;
     }
 
     #[\ReturnTypeWillChange]
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \arrayIterator($this->getValues());
     }
@@ -110,7 +110,7 @@ class parser implements \iteratorAggregate
         return (count($this->values) > 0);
     }
 
-    public function addHandler(\closure $handler, array $arguments, $priority = 0)
+    public function addHandler(\Closure $handler, array $arguments, $priority = 0)
     {
         $invoke = new \reflectionMethod($handler, '__invoke');
 
@@ -130,7 +130,7 @@ class parser implements \iteratorAggregate
         return $this;
     }
 
-    public function setDefaultHandler(\closure $handler)
+    public function setDefaultHandler(\Closure $handler): static
     {
         $reflectedHandler = new \reflectionFunction($handler);
 
@@ -143,7 +143,7 @@ class parser implements \iteratorAggregate
         return $this;
     }
 
-    public function getDefaultHandler()
+    public function getDefaultHandler(): ?\Closure
     {
         return $this->defaultHandler;
     }
@@ -157,7 +157,7 @@ class parser implements \iteratorAggregate
         return $this;
     }
 
-    public function argumentIsHandled($argument)
+    public function argumentIsHandled(string $argument): bool
     {
         return (isset($this->handlers[$argument]) === true || $this->defaultHandler !== null);
     }

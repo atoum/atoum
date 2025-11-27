@@ -8,9 +8,9 @@ use atoum\atoum\test;
 
 class stream extends atoum\asserter
 {
-    protected $streamController = null;
+    protected ?atoum\mock\stream\controller $streamController = null;
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'isread':
@@ -21,7 +21,7 @@ class stream extends atoum\asserter
         }
     }
 
-    public function setWith($stream)
+    public function setWith(mixed $stream): static
     {
         parent::setWith($stream);
 
@@ -30,12 +30,12 @@ class stream extends atoum\asserter
         return $this;
     }
 
-    public function getStreamController()
+    public function getStreamController(): ?atoum\mock\stream\controller
     {
         return $this->streamController;
     }
 
-    public function isRead($failMessage = null)
+    public function isRead(?string $failMessage = null): static
     {
         if (count($this->streamIsSet()->streamController->getCalls(new test\adapter\call('stream_read'))) > 0) {
             $this->pass();
@@ -46,7 +46,7 @@ class stream extends atoum\asserter
         return $this;
     }
 
-    public function isWritten($failMessage = null)
+    public function isWritten(?string $failMessage = null): static
     {
         if (count($this->streamIsSet()->streamController->getCalls(new test\adapter\call('stream_write'))) > 0) {
             $this->pass();
@@ -57,7 +57,7 @@ class stream extends atoum\asserter
         return $this;
     }
 
-    protected function streamIsSet()
+    protected function streamIsSet(): static
     {
         if ($this->streamController === null) {
             throw new exceptions\logic('Stream is undefined');

@@ -9,7 +9,7 @@ use atoum\atoum\test;
 
 class phpFunction extends adapter\call
 {
-    public function setWithTest(test $test)
+    public function setWithTest(test $test): static
     {
         parent::setWithTest($test);
 
@@ -22,39 +22,43 @@ class phpFunction extends adapter\call
         return $this;
     }
 
-    public function setWith($function)
+    public function setWith(mixed $function): static
     {
         return parent::setWith(clone php\mocker::getAdapter())->setFunction($function);
     }
 
-    public function wasCalled()
+    public function wasCalled(): static
     {
         return $this->unsetArguments();
     }
 
-    public function wasCalledWithArguments(...$arguments)
+    public function wasCalledWithArguments(mixed ...$arguments): static
     {
         return $this->setArguments($arguments);
     }
 
-    public function wasCalledWithIdenticalArguments(...$arguments)
+    public function wasCalledWithIdenticalArguments(mixed ...$arguments): static
     {
         return $this->setIdenticalArguments($arguments);
     }
 
-    public function wasCalledWithAnyArguments()
+    public function wasCalledWithAnyArguments(): static
     {
         return $this->unsetArguments();
     }
 
-    public function wasCalledWithoutAnyArgument()
+    public function wasCalledWithoutAnyArgument(): static
     {
         return $this->setArguments([]);
     }
 
-    protected function setFunction($function)
+    protected function setFunction($function): static
     {
-        if ($this->test !== null) {
+        if ($function !== null) {
+            $function = (string) $function;
+        }
+
+        if ($this->test !== null && $function !== null) {
             $lastNamespaceSeparator = strrpos($function, '\\');
 
             if ($lastNamespaceSeparator !== false) {
@@ -67,7 +71,7 @@ class phpFunction extends adapter\call
         return parent::setFunction($function);
     }
 
-    protected function adapterIsSet()
+    protected function adapterIsSet(): static
     {
         try {
             return parent::adapterIsSet();
@@ -76,7 +80,7 @@ class phpFunction extends adapter\call
         }
     }
 
-    protected function callIsSet()
+    protected function callIsSet(): static
     {
         try {
             return parent::callIsSet();

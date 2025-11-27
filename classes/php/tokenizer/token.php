@@ -6,12 +6,12 @@ use atoum\atoum\exceptions;
 
 class token extends iterator\value
 {
-    protected $key = 0;
-    protected $tag = '';
-    protected $string = null;
-    protected $line = null;
+    protected ?int $key = 0;
+    protected int|string $tag = '';
+    protected ?string $string = null;
+    protected ?int $line = null;
 
-    public function __construct($tag, $string = null, $line = null, ?iterator\value $parent = null)
+    public function __construct(int|string $tag, ?string $string = null, ?int $line = null, ?iterator\value $parent = null)
     {
         $this->tag = $tag;
         $this->string = $string;
@@ -22,7 +22,7 @@ class token extends iterator\value
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string) ($this->string ?: $this->tag);
     }
@@ -33,17 +33,17 @@ class token extends iterator\value
         return 1;
     }
 
-    public function getTag()
+    public function getTag(): int|string
     {
         return $this->tag;
     }
 
-    public function getString()
+    public function getString(): ?string
     {
         return $this->string;
     }
 
-    public function getLine()
+    public function getLine(): ?int
     {
         return $this->line;
     }
@@ -68,7 +68,7 @@ class token extends iterator\value
         return $this;
     }
 
-    public function end()
+    public function end(): static
     {
         $this->key = 0;
 
@@ -91,7 +91,7 @@ class token extends iterator\value
         return $this;
     }
 
-    public function prev()
+    public function prev(): static
     {
         if ($this->valid() === true) {
             $this->key = null;
@@ -100,12 +100,12 @@ class token extends iterator\value
         return $this;
     }
 
-    public function append(iterator\value $value)
+    public function append(iterator\value $value): static
     {
         throw new exceptions\logic(__METHOD__ . '() is unavailable');
     }
 
-    public function seek($key)
+    public function seek(int $key): static
     {
         if ($key != 0) {
             $this->key = null;
@@ -116,12 +116,12 @@ class token extends iterator\value
         return $this;
     }
 
-    public function getParent()
+    public function getParent(): ?iterator\value
     {
         return $this->parent;
     }
 
-    public function getValue()
+    public function getValue(): ?string
     {
         return $this->getString();
     }

@@ -3,6 +3,7 @@
 namespace atoum\atoum\tests\functionals\mock;
 
 use atoum\atoum;
+use atoum\atoum\attributes as Attributes;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -26,7 +27,7 @@ class timeTravel
 
 class controller extends atoum\tests\functionals\test\functional
 {
-    /** @tags issue issue-229 mock */
+    #[Attributes\Tags('issue', 'issue-229', 'mock')]
     public function testCloneMock()
     {
         $this
@@ -46,7 +47,7 @@ class controller extends atoum\tests\functionals\test\functional
         ;
     }
 
-    /** @tags issue issue-229 mock */
+    #[Attributes\Tags('issue', 'issue-229', 'mock')]
     public function testClonedMockShouldBeEqual()
     {
         $this

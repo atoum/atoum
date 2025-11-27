@@ -4,44 +4,40 @@ namespace atoum\atoum;
 
 class template extends template\data
 {
-    protected $children = [];
+    protected array $children = [];
 
-    public function __set($tag, $data)
+    public function __set(string $tag, mixed $data): void
     {
         foreach ($this->getByTag($tag) as $child) {
             $child->setData($data);
         }
-
-        return $this;
     }
 
-    public function __get($tag)
+    public function __get(string $tag): template\iterator
     {
         return $this->getByTag($tag);
     }
 
-    public function __unset($tag)
+    public function __unset(string $tag): void
     {
         foreach ($this->getByTag($tag) as $child) {
             $child->resetData();
         }
-
-        return $this;
     }
 
-    public function __isset($tag)
+    public function __isset(string $tag): bool
     {
         return (count($this->getByTag($tag)) > 0);
     }
 
-    public function getByTag($tag)
+    public function getByTag(string $tag): template\iterator
     {
         $iterator = new template\iterator();
 
         return $iterator->addTag($tag, $this);
     }
 
-    public function getById($id, $fromRoot = true)
+    public function getById(string $id, bool $fromRoot = true): ?self
     {
         $root = $fromRoot === false ? $this : $this->getRoot();
 
@@ -60,17 +56,17 @@ class template extends template\data
         }
     }
 
-    public function getChild($rank)
+    public function getChild(int $rank): ?template\data
     {
         return (isset($this->children[$rank]) === false ? null : $this->children[$rank]);
     }
 
-    public function getChildren()
+    public function getChildren(): array
     {
         return array_values($this->children);
     }
 
-    public function setWith($mixed)
+    public function setWith(iterable $mixed): static
     {
         foreach ($mixed as $tag => $value) {
             $this->{$tag} = $value;
@@ -79,7 +75,7 @@ class template extends template\data
         return $this;
     }
 
-    public function resetChildrenData()
+    public function resetChildrenData(): static
     {
         foreach ($this->children as $child) {
             $child->resetData();
@@ -88,7 +84,7 @@ class template extends template\data
         return $this;
     }
 
-    public function build($mixed = [])
+    public function build(iterable $mixed = []): static
     {
         foreach ($this->setWith($mixed)->children as $child) {
             $this->addData($child->getData());
@@ -97,24 +93,24 @@ class template extends template\data
         return parent::build();
     }
 
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return (count($this->children) > 0);
     }
 
-    public function isChild(template\data $child)
+    public function isChild(template\data $child): bool
     {
         return ($child->parent === $this);
     }
 
-    public function addToParent($mixed = [])
+    public function addToParent(iterable $mixed = []): static
     {
         $this->setWith($mixed);
 
         return parent::addToParent();
     }
 
-    public function addChild(template\data $child)
+    public function addChild(template\data $child): static
     {
         if ($this->isChild($child) === false) {
             $id = $child->getId();
@@ -135,7 +131,7 @@ class template extends template\data
         return $this;
     }
 
-    public function deleteChild(template\data $child)
+    public function deleteChild(template\data $child): static
     {
         if ($this->isChild($child) === true) {
             unset($this->children[$child->rank]);
@@ -146,16 +142,18 @@ class template extends template\data
         return $this;
     }
 
-    public function idExists($id)
+    public function idExists(string $id): bool
     {
         return ($this->getById($id) !== null);
     }
 
-    public function setAttribute($name, $value)
+    public function setAttribute(string $name, mixed $value): static
     {
+        return $this;
     }
 
-    public function unsetAttribute($name)
+    public function unsetAttribute(string $name): static
     {
+        return $this;
     }
 }

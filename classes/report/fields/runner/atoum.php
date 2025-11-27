@@ -9,31 +9,31 @@ use atoum\atoum\runner;
 
 abstract class atoum extends report\field
 {
-    protected $author = null;
-    protected $path = null;
-    protected $version = null;
+    protected mixed $author = null;
+    protected mixed $path = null;
+    protected mixed $version = null;
 
     public function __construct()
     {
         parent::__construct([runner::runStart]);
     }
 
-    public function getAuthor()
+    public function getAuthor(): mixed
     {
         return $this->author;
     }
 
-    public function getVersion()
+    public function getVersion(): mixed
     {
         return $this->version;
     }
 
-    public function getPath()
+    public function getPath(): mixed
     {
         return $this->path;
     }
 
-    public function handleEvent($event, \atoum\atoum\observable $observable)
+    public function handleEvent(string $event, \atoum\atoum\observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

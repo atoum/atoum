@@ -12,19 +12,19 @@ class generator extends atoum\script
 {
     public const phar = 'atoum.phar';
 
-    protected $originDirectory = null;
-    protected $destinationDirectory = null;
-    protected $stubFile = null;
-    protected $pharFactory = null;
+    protected ?string $originDirectory = null;
+    protected ?string $destinationDirectory = null;
+    protected ?string $stubFile = null;
+    protected ?\Closure $pharFactory = null;
 
-    public function __construct($name, ?atoum\adapter $adapter = null)
+    public function __construct(string $name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
         $this->setPharFactory();
     }
 
-    public function setPharFactory(?\closure $factory = null)
+    public function setPharFactory(?\Closure $factory = null): static
     {
         $this->pharFactory = $factory ?: function ($path) {
             return new \phar($path);
@@ -33,12 +33,12 @@ class generator extends atoum\script
         return $this;
     }
 
-    public function getPharFactory()
+    public function getPharFactory(): \Closure
     {
         return $this->pharFactory;
     }
 
-    public function setOriginDirectory($directory)
+    public function setOriginDirectory(string $directory): static
     {
         $originDirectory = $this->cleanPath($directory);
 
@@ -55,12 +55,12 @@ class generator extends atoum\script
         return $this;
     }
 
-    public function getOriginDirectory()
+    public function getOriginDirectory(): ?string
     {
         return $this->originDirectory;
     }
 
-    public function setDestinationDirectory($directory)
+    public function setDestinationDirectory(string $directory): static
     {
         $destinationDirectory = $this->cleanPath($directory);
 
@@ -77,7 +77,7 @@ class generator extends atoum\script
         return $this;
     }
 
-    public function setStubFile($stubFile)
+    public function setStubFile(string $stubFile): static
     {
         $stubFile = $this->cleanPath($stubFile);
 
@@ -94,17 +94,17 @@ class generator extends atoum\script
         return $this;
     }
 
-    public function getDestinationDirectory()
+    public function getDestinationDirectory(): ?string
     {
         return $this->destinationDirectory;
     }
 
-    public function getStubFile()
+    public function getStubFile(): ?string
     {
         return $this->stubFile;
     }
 
-    protected function doRun()
+    protected function doRun(): static
     {
         if ($this->originDirectory === null) {
             throw new exceptions\runtime($this->locale->_('Origin directory must be defined', $this->originDirectory));
@@ -174,7 +174,7 @@ class generator extends atoum\script
         return $this;
     }
 
-    protected function cleanPath($path)
+    protected function cleanPath(string $path): string
     {
         $path = $this->adapter->realpath((string) $path);
 
@@ -187,7 +187,7 @@ class generator extends atoum\script
         return $path;
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         return $this
             ->addArgumentHandler(

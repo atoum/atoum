@@ -7,12 +7,12 @@ use atoum\atoum\writer;
 
 class colorizer implements writer\decorator
 {
-    protected $cli = null;
-    protected $pattern = null;
-    protected $foreground = null;
-    protected $background = null;
+    protected ?atoum\cli $cli = null;
+    protected ?string $pattern = null;
+    protected ?string $foreground = null;
+    protected ?string $background = null;
 
-    public function __construct($foreground = null, $background = null, ?atoum\cli $cli = null)
+    public function __construct(?string $foreground = null, ?string $background = null, ?atoum\cli $cli = null)
     {
         if ($foreground !== null) {
             $this->setForeground($foreground);
@@ -25,56 +25,60 @@ class colorizer implements writer\decorator
         $this->setCli($cli);
     }
 
-    public function setCli(?atoum\cli $cli = null)
+    public function setCli(?atoum\cli $cli = null): static
     {
         $this->cli = $cli ?: new atoum\cli();
 
         return $this;
     }
 
-    public function getCli()
+    public function getCli(): atoum\cli
     {
         return $this->cli;
     }
 
-    public function setPattern($pattern)
+    public function setPattern(string $pattern): static
     {
         $this->pattern = $pattern;
 
         return $this;
     }
 
-    public function getPattern()
+    public function getPattern(): ?string
     {
         return $this->pattern;
     }
 
-    public function setForeground($foreground)
+    public function setForeground(string $foreground): static
     {
         $this->foreground = (string) $foreground;
 
         return $this;
     }
 
-    public function getForeground()
+    public function getForeground(): ?string
     {
         return $this->foreground;
     }
 
-    public function setBackground($background)
+    public function setBackground(string $background): static
     {
         $this->background = (string) $background;
 
         return $this;
     }
 
-    public function getBackground()
+    public function getBackground(): ?string
     {
         return $this->background;
     }
 
-    public function colorize($string)
+    public function colorize(?string $string): string
     {
+        if ($string === null) {
+            return '';
+        }
+
         if ($this->cli->isTerminal() === true && ($this->foreground !== null || $this->background !== null)) {
             $pattern = $this->pattern ?: '/^(.*)$/';
 
@@ -98,7 +102,7 @@ class colorizer implements writer\decorator
         return $string;
     }
 
-    public function decorate($string)
+    public function decorate(string $string): string
     {
         return $this->colorize($string);
     }

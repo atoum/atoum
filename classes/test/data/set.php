@@ -4,26 +4,26 @@ namespace atoum\atoum\test\data;
 
 class set extends provider\aggregator
 {
-    protected $provider;
-    protected $size;
+    protected provider $provider;
+    protected int $size;
 
-    public function __construct(provider $provider, $size = null)
+    public function __construct(provider $provider, ?int $size = null)
     {
         $this->provider = $provider;
         $this->size = $size ?: 1;
     }
 
-    public function __invoke()
+    public function __invoke(): array
     {
         return $this->generate();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->provider->__toString();
     }
 
-    public function generate()
+    public function generate(): array
     {
         $provider = $this->provider;
 
@@ -35,7 +35,7 @@ class set extends provider\aggregator
         );
     }
 
-    public function count()
+    public function count(): int
     {
         return $this->size;
     }

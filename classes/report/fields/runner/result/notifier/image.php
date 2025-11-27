@@ -7,11 +7,11 @@ use atoum\atoum\report\fields\runner\result\notifier;
 
 abstract class image extends notifier
 {
-    protected $directory = null;
-    protected $successImage = null;
-    protected $failureImage = null;
+    protected mixed $directory = null;
+    protected mixed $successImage = null;
+    protected mixed $failureImage = null;
 
-    public function __toString()
+    public function __toString(): string
     {
         try {
             return parent::__toString();
@@ -20,31 +20,31 @@ abstract class image extends notifier
         }
     }
 
-    public function setSuccessImage($path)
+    public function setSuccessImage(string $path): static
     {
         $this->successImage = $path;
 
         return $this;
     }
 
-    public function getSuccessImage()
+    public function getSuccessImage(): mixed
     {
         return $this->successImage;
     }
 
-    public function setFailureImage($path)
+    public function setFailureImage(string $path): static
     {
         $this->failureImage = $path;
 
         return $this;
     }
 
-    public function getFailureImage()
+    public function getFailureImage(): mixed
     {
         return $this->failureImage;
     }
 
-    public function getImage($success)
+    public function getImage(bool $success): string
     {
         $image = $success ? $this->getSuccessImage() : $this->getFailureImage();
 
@@ -55,7 +55,7 @@ abstract class image extends notifier
         return $image;
     }
 
-    public function send($title, $message, $success)
+    public function send(string $title, string $message, mixed $success): string
     {
         return parent::send($title, $message, $this->getImage($success));
     }

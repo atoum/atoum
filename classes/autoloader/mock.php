@@ -7,8 +7,8 @@ use atoum\atoum\exceptions;
 
 class mock
 {
-    protected $mockGenerator;
-    protected $adapter;
+    protected ?atoum\mock\generator $mockGenerator = null;
+    protected ?atoum\adapter $adapter = null;
 
     public function __construct(?atoum\mock\generator $generator = null, ?atoum\adapter $adapter = null)
     {
@@ -18,31 +18,31 @@ class mock
         ;
     }
 
-    public function setMockGenerator(?atoum\mock\generator $generator = null)
+    public function setMockGenerator(?atoum\mock\generator $generator = null): static
     {
         $this->mockGenerator = $generator ?: new atoum\mock\generator();
 
         return $this;
     }
 
-    public function getMockGenerator()
+    public function getMockGenerator(): atoum\mock\generator
     {
         return $this->mockGenerator;
     }
 
-    public function setAdapter(?atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): atoum\adapter
     {
         return $this->adapter;
     }
 
-    public function register()
+    public function register(): static
     {
         if ($this->adapter->spl_autoload_register([$this, 'requireClass'], true, true) === false) {
             throw new exceptions\runtime('Unable to register mock autoloader');
@@ -51,7 +51,7 @@ class mock
         return $this;
     }
 
-    public function unregister()
+    public function unregister(): static
     {
         if ($this->adapter->spl_autoload_unregister([$this, 'requireClass']) === false) {
             throw new exceptions\runtime('Unable to unregister mock autoloader');
@@ -60,7 +60,7 @@ class mock
         return $this;
     }
 
-    public function requireClass($class)
+    public function requireClass(string $class): static
     {
         $mockNamespace = ltrim($this->mockGenerator->getDefaultNamespace(), '\\');
         $mockNamespacePattern = '/^\\\?' . preg_quote($mockNamespace) . '\\\/i';

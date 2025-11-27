@@ -6,9 +6,9 @@ use atoum\atoum\exceptions;
 
 class exception extends phpObject
 {
-    protected static $lastValue = null;
+    protected static ?\throwable $lastValue = null;
 
-    public function __get($asserter)
+    public function __get(string $asserter): mixed
     {
         switch (strtolower($asserter)) {
             case 'hasdefaultcode':
@@ -23,11 +23,11 @@ class exception extends phpObject
         }
     }
 
-    public function setWith($value, $checkType = true)
+    public function setWith(mixed $value, bool $checkType = true): static
     {
         $exception = $value;
 
-        if ($exception instanceof \closure) {
+        if ($exception instanceof \Closure) {
             $exception = null;
 
             try {
@@ -51,7 +51,7 @@ class exception extends phpObject
         return $this;
     }
 
-    public function isInstanceOf($value, $failMessage = null)
+    public function isInstanceOf(string|object $value, ?string $failMessage = null): static
     {
         try {
             $this->check($value, __FUNCTION__);
@@ -64,7 +64,7 @@ class exception extends phpObject
         return parent::isInstanceOf($value, $failMessage);
     }
 
-    public function hasDefaultCode($failMessage = null)
+    public function hasDefaultCode(?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->getCode() === 0) {
             $this->pass();
@@ -75,7 +75,7 @@ class exception extends phpObject
         return $this;
     }
 
-    public function hasCode($code, $failMessage = null)
+    public function hasCode(int|string $code, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->getCode() === $code) {
             $this->pass();
@@ -86,7 +86,7 @@ class exception extends phpObject
         return $this;
     }
 
-    public function hasMessage($message, $failMessage = null)
+    public function hasMessage(string $message, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->getMessage() == (string) $message) {
             $this->pass();
@@ -97,7 +97,7 @@ class exception extends phpObject
         return $this;
     }
 
-    public function hasNestedException(?\exception $exception = null, $failMessage = null)
+    public function hasNestedException(?\exception $exception = null, ?string $failMessage = null): static
     {
         $nestedException = $this->valueIsSet()->value->getPrevious();
 
@@ -110,22 +110,22 @@ class exception extends phpObject
         return $this;
     }
 
-    public static function getLastValue()
+    public static function getLastValue(): ?\throwable
     {
         return static::$lastValue;
     }
 
-    protected function valueIsSet($message = 'Exception is undefined')
+    protected function valueIsSet(string $message = 'Exception is undefined'): static
     {
         return parent::valueIsSet($message);
     }
 
-    protected function getMessageAsserter()
+    protected function getMessageAsserter(): phpString
     {
         return $this->generator->__call('phpString', [$this->valueIsSet()->value->getMessage()]);
     }
 
-    protected function check($value, $method)
+    protected function check(mixed $value, string $method): static
     {
         if (self::isThrowable($value) === false) {
             throw new exceptions\logic\invalidArgument('Argument of ' . __CLASS__ . '::' . $method . '() must be an exception instance');
@@ -134,12 +134,12 @@ class exception extends phpObject
         return $this;
     }
 
-    private static function isThrowable($value)
+    private static function isThrowable(mixed $value): bool
     {
         return $value instanceof \throwable;
     }
 
-    private static function isThrowableClass($value)
+    private static function isThrowableClass(mixed $value): bool
     {
         return strtolower(ltrim($value, '\\')) === 'throwable' || is_subclass_of($value, 'throwable');
     }

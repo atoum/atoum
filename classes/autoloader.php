@@ -8,19 +8,19 @@ class autoloader
     public const defaultFileSuffix = '.php';
     public const defaultCacheFileName = '%s.atoum.cache';
 
-    protected $version = null;
-    protected $classes = [];
-    protected $directories = [];
-    protected $classAliases = [];
-    protected $namespaceAliases = [];
-    protected $cacheFileInstance = null;
+    protected ?int $version = null;
+    protected array $classes = [];
+    protected array $directories = [];
+    protected array $classAliases = [];
+    protected array $namespaceAliases = [];
+    protected ?string $cacheFileInstance = null;
 
-    protected static $autoloader = null;
+    protected static ?self $autoloader = null;
 
-    private $cacheUsed = false;
+    private bool $cacheUsed = false;
 
-    private static $cacheFile = null;
-    private static $registeredAutoloaders = null;
+    private static ?string $cacheFile = null;
+    private static ?\splObjectStorage $registeredAutoloaders = null;
 
     public function __construct(array $namespaces = [], array $namespaceAliases = [], $classAliases = [])
     {
@@ -48,7 +48,7 @@ class autoloader
         }
     }
 
-    public function register($prepend = false)
+    public function register(bool $prepend = false): static
     {
         if (spl_autoload_register([$this, 'requireClass'], true, $prepend) === false) {
             throw new \runtimeException('Unable to register autoloader \'' . get_class($this) . '\'');
@@ -63,7 +63,7 @@ class autoloader
         return $this;
     }
 
-    public function unregister()
+    public function unregister(): static
     {
         if (spl_autoload_unregister([$this, 'requireClass']) === false) {
             throw new \runtimeException('Unable to unregister');
@@ -74,7 +74,7 @@ class autoloader
         return $this;
     }
 
-    public function addDirectory($namespace, $directory, $suffix = self::defaultFileSuffix)
+    public function addDirectory(string $namespace, string $directory, string $suffix = self::defaultFileSuffix): static
     {
         $namespace = strtolower(trim($namespace, '\\') . '\\');
         $directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -88,7 +88,7 @@ class autoloader
         return $this;
     }
 
-    public function directoryIsSet($namespace, $directory)
+    public function directoryIsSet(string $namespace, string $directory): bool
     {
         if (isset($this->directories[$namespace]) === true) {
             foreach ($this->directories[$namespace] as $directoryData) {
@@ -101,17 +101,17 @@ class autoloader
         return false;
     }
 
-    public function getDirectories()
+    public function getDirectories(): array
     {
         return $this->directories;
     }
 
-    public function getClasses()
+    public function getClasses(): array
     {
         return $this->classes;
     }
 
-    public function setClasses(array $classes)
+    public function setClasses(array $classes): static
     {
         $this->classes = $classes;
 
@@ -142,7 +142,7 @@ class autoloader
         return $this->classAliases;
     }
 
-    public function getPath($class)
+    public function getPath(string $class): ?string
     {
         $this->readCache();
 
@@ -180,7 +180,7 @@ class autoloader
         return $path;
     }
 
-    public function requireClass($class)
+    public function requireClass(string $class): void
     {
         $class = strtolower($class);
 
@@ -215,19 +215,19 @@ class autoloader
         }
     }
 
-    public function setCacheFileForInstance($cacheFile)
+    public function setCacheFileForInstance(string $cacheFile): static
     {
         $this->cacheFileInstance = $cacheFile;
 
         return $this;
     }
 
-    public function getCacheFileForInstance()
+    public function getCacheFileForInstance(): string
     {
         return ($this->cacheFileInstance ?: static::getCacheFile());
     }
 
-    public static function set()
+    public static function set(): static
     {
         if (static::$autoloader === null) {
             static::$autoloader = new static();
@@ -237,22 +237,22 @@ class autoloader
         return static::$autoloader;
     }
 
-    public static function get()
+    public static function get(): static
     {
         return static::set();
     }
 
-    public static function setCacheFile($cacheFile)
+    public static function setCacheFile(string $cacheFile): void
     {
         self::$cacheFile = $cacheFile;
     }
 
-    public static function getCacheFile()
+    public static function getCacheFile(): string
     {
         return (self::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . sprintf(static::defaultCacheFileName, md5(__FILE__)));
     }
 
-    public static function getRegisteredAutoloaders()
+    public static function getRegisteredAutoloaders(): array
     {
         $registeredAutoloaders = [];
 

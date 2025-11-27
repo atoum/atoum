@@ -6,13 +6,13 @@ use atoum\atoum\exceptions;
 
 class phpArray extends variable implements \arrayAccess
 {
-    private $key = null;
-    private $innerAsserter = null;
-    private $innerAsserterUsed = false;
-    private $innerValue = null;
-    private $innerValueIsSet = false;
+    private mixed $key = null;
+    private ?variable $innerAsserter = null;
+    private bool $innerAsserterUsed = false;
+    private mixed $innerValue = null;
+    private bool $innerValueIsSet = false;
 
-    public function __get($asserter)
+    public function __get(string $asserter): mixed
     {
         switch (strtolower($asserter)) {
             case 'keys':
@@ -57,7 +57,7 @@ class phpArray extends variable implements \arrayAccess
         }
     }
 
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         if ($this->innerAsserterCanUse($method) === false) {
             return parent::__call($method, $arguments);
@@ -66,22 +66,22 @@ class phpArray extends variable implements \arrayAccess
         }
     }
 
-    public function getKey()
+    public function getKey(): mixed
     {
         return $this->key;
     }
 
-    public function getInnerAsserter()
+    public function getInnerAsserter(): ?variable
     {
         return $this->innerAsserter;
     }
 
-    public function getInnerValue()
+    public function getInnerValue(): mixed
     {
         return $this->innerValue;
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->key = null;
 
@@ -89,7 +89,7 @@ class phpArray extends variable implements \arrayAccess
     }
 
     #[\ReturnTypeWillChange]
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): static
     {
         if ($this->innerAsserter === null) {
             if ($this->analyzer->isArray($this->hasKey($key)->value[$key]) === true) {
@@ -110,33 +110,35 @@ class phpArray extends variable implements \arrayAccess
     }
 
     #[\ReturnTypeWillChange]
-    public function offsetSet($key, $value)
+    public function offsetSet(mixed $key, mixed $value): void
     {
         throw new exceptions\logic('Tested array is read only');
     }
 
     #[\ReturnTypeWillChange]
-    public function offsetUnset($key)
+    public function offsetUnset(mixed $key): void
     {
         throw new exceptions\logic('Array is read only');
     }
 
     #[\ReturnTypeWillChange]
-    public function offsetExists($key)
+    public function offsetExists(mixed $key): bool
     {
         $value = ($this->innerAsserter === null ? $this->value : $this->innerValue);
 
         return ($value !== null && array_key_exists($key, $value) === true);
     }
 
-    public function setWith($value, $checkType = true)
+    public function setWith(mixed $value, bool $checkType = true): static
     {
         $innerAsserter = $this->innerAsserter;
 
         if ($innerAsserter !== null) {
             $this->reset();
 
-            return $innerAsserter->setWith($value);
+            $innerAsserter->setWith($value);
+
+            return $this;
         } else {
             parent::setWith($value);
 
@@ -150,7 +152,7 @@ class phpArray extends variable implements \arrayAccess
         }
     }
 
-    public function setByReferenceWith(& $value)
+    public function setByReferenceWith(mixed &$value): static
     {
         if ($this->innerAsserter !== null) {
             return $this->innerAsserter->setByReferenceWith($value);
@@ -167,7 +169,7 @@ class phpArray extends variable implements \arrayAccess
         }
     }
 
-    public function hasSize($size, $failMessage = null)
+    public function hasSize(int $size, ?string $failMessage = null): static
     {
         if (count($this->valueIsSet()->value) == $size) {
             $this->pass();
@@ -178,7 +180,7 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    public function isEmpty($failMessage = null)
+    public function isEmpty(?string $failMessage = null): static
     {
         if (count($this->valueIsSet()->value) == 0) {
             $this->pass();
@@ -189,7 +191,7 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    public function isNotEmpty($failMessage = null)
+    public function isNotEmpty(?string $failMessage = null): static
     {
         if (count($this->valueIsSet()->value) > 0) {
             $this->pass();
@@ -200,34 +202,34 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    public function strictlyContains($value, $failMessage = null)
+    public function strictlyContains(mixed $value, ?string $failMessage = null): static
     {
         return $this->containsValue($value, $failMessage, true);
     }
 
-    public function contains($value, $failMessage = null)
+    public function contains(mixed $value, ?string $failMessage = null): static
     {
         return $this->containsValue($value, $failMessage, false);
     }
 
-    public function strictlyNotContains($value, $failMessage = null)
+    public function strictlyNotContains(mixed $value, ?string $failMessage = null): static
     {
         return $this->notContainsValue($value, $failMessage, true);
     }
 
-    public function notContains($value, $failMessage = null)
+    public function notContains(mixed $value, ?string $failMessage = null): static
     {
         return $this->notContainsValue($value, $failMessage, false);
     }
 
-    public function atKey($key, $failMessage = null)
+    public function atKey(mixed $key, ?string $failMessage = null): static
     {
         $this->hasKey($key, $failMessage)->key = $key;
 
         return $this;
     }
 
-    public function hasKeys(array $keys, $failMessage = null)
+    public function hasKeys(array $keys, ?string $failMessage = null): static
     {
         if (count($undefinedKeys = array_diff($keys, array_keys($this->valueIsSet()->value))) <= 0) {
             $this->pass();
@@ -238,7 +240,7 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    public function notHasKeys(array $keys, $failMessage = null)
+    public function notHasKeys(array $keys, ?string $failMessage = null): static
     {
         $this->valueIsSet();
 
@@ -251,7 +253,7 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    public function hasKey($key, $failMessage = null)
+    public function hasKey(mixed $key, ?string $failMessage = null): static
     {
         if (array_key_exists($key, $this->valueIsSet()->value)) {
             $this->pass();
@@ -262,7 +264,7 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    public function notHasKey($key, $failMessage = null)
+    public function notHasKey(mixed $key, ?string $failMessage = null): static
     {
         if (array_key_exists($key, $this->valueIsSet()->value) === false) {
             $this->pass();
@@ -273,52 +275,52 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    public function containsValues(array $values, $failMessage = null)
+    public function containsValues(array $values, ?string $failMessage = null): static
     {
         return $this->intersect($values, $failMessage, false);
     }
 
-    public function strictlyContainsValues(array $values, $failMessage = null)
+    public function strictlyContainsValues(array $values, ?string $failMessage = null): static
     {
         return $this->intersect($values, $failMessage, true);
     }
 
-    public function notContainsValues(array $values, $failMessage = null)
+    public function notContainsValues(array $values, ?string $failMessage = null): static
     {
         return $this->notIntersect($values, $failMessage, false);
     }
 
-    public function strictlyNotContainsValues(array $values, $failMessage = null)
+    public function strictlyNotContainsValues(array $values, ?string $failMessage = null): static
     {
         return $this->notIntersect($values, $failMessage, true);
     }
 
-    public function isEqualTo($value, $failMessage = null)
+    public function isEqualTo(mixed $value, ?string $failMessage = null): static
     {
         return $this->callAssertion(__FUNCTION__, [$value, $failMessage]);
     }
 
-    public function isNotEqualTo($value, $failMessage = null)
+    public function isNotEqualTo(mixed $value, ?string $failMessage = null): static
     {
         return $this->callAssertion(__FUNCTION__, [$value, $failMessage]);
     }
 
-    public function isIdenticalTo($value, $failMessage = null)
+    public function isIdenticalTo(mixed $value, ?string $failMessage = null): static
     {
         return $this->callAssertion(__FUNCTION__, [$value, $failMessage]);
     }
 
-    public function isNotIdenticalTo($value, $failMessage = null)
+    public function isNotIdenticalTo(mixed $value, ?string $failMessage = null): static
     {
         return $this->callAssertion(__FUNCTION__, [$value, $failMessage]);
     }
 
-    public function isReferenceTo(& $reference, $failMessage = null)
+    public function isReferenceTo(mixed &$reference, ?string $failMessage = null): static
     {
-        return $this->callAssertion(__FUNCTION__, [& $reference, $failMessage]);
+        return $this->callAssertion(__FUNCTION__, [&$reference, $failMessage]);
     }
 
-    protected function containsValue($value, $failMessage, $strict)
+    protected function containsValue(mixed $value, ?string $failMessage, bool $strict): static
     {
         if (in_array($value, $this->valueIsSet()->value, $strict) === true) {
             if ($this->key === null) {
@@ -365,7 +367,7 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    protected function notContainsValue($value, $failMessage, $strict)
+    protected function notContainsValue(mixed $value, ?string $failMessage, bool $strict): static
     {
         if (in_array($value, $this->valueIsSet()->value, $strict) === false) {
             $this->pass();
@@ -412,7 +414,7 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    protected function intersect(array $values, $failMessage, $strict)
+    protected function intersect(array $values, ?string $failMessage, bool $strict): static
     {
         $unknownValues = $this->valueIsSet()->getDifference($values, $strict);
 
@@ -433,7 +435,7 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    protected function notIntersect(array $values, $failMessage, $strict)
+    protected function notIntersect(array $values, ?string $failMessage, bool $strict): static
     {
         $knownValues = $this->valueIsSet()->getIntersection($values, $strict);
 
@@ -454,17 +456,17 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    protected function getIntersection(array $values, $strict)
+    protected function getIntersection(array $values, bool $strict): array
     {
         return $this->getValues($values, true, $strict);
     }
 
-    protected function getDifference(array $values, $strict)
+    protected function getDifference(array $values, bool $strict): array
     {
         return $this->getValues($values, false, $strict);
     }
 
-    protected function getValues(array $values, $equal, $strict)
+    protected function getValues(array $values, bool $equal, bool $strict): array
     {
         return array_values(
             array_filter(
@@ -476,27 +478,27 @@ class phpArray extends variable implements \arrayAccess
         );
     }
 
-    protected function valueIsSet($message = 'Array is undefined')
+    protected function valueIsSet(string $message = 'Array is undefined'): static
     {
         return parent::valueIsSet($message);
     }
 
-    protected function getKeysAsserter()
+    protected function getKeysAsserter(): self
     {
         return $this->generator->__call('phpArray', [array_keys($this->valueIsSet()->value)]);
     }
 
-    protected function getValuesAsserter()
+    protected function getValuesAsserter(): self
     {
         return $this->generator->__call('phpArray', [array_values($this->valueIsSet()->value)]);
     }
 
-    protected function getSizeAsserter()
+    protected function getSizeAsserter(): \atoum\atoum\asserters\integer
     {
         return $this->generator->__call('integer', [count($this->valueIsSet()->value)]);
     }
 
-    protected function callAssertion($method, array $arguments)
+    protected function callAssertion(string $method, array $arguments): static
     {
         if ($this->innerAsserterCanUse($method) === false) {
             call_user_func_array([parent::class, $method], $arguments);
@@ -507,12 +509,12 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    protected function innerAsserterCanUse($method)
+    protected function innerAsserterCanUse(string $method): bool
     {
         return ($this->innerAsserter !== null && $this->innerValueIsSet === true && method_exists($this->innerAsserter, $method) === true);
     }
 
-    protected function callInnerAsserterMethod($method, $arguments)
+    protected function callInnerAsserterMethod(string $method, array $arguments): static
     {
         call_user_func_array([$this->innerAsserter->setWith($this->innerValue), $method], $arguments);
 
@@ -521,7 +523,7 @@ class phpArray extends variable implements \arrayAccess
         return $this;
     }
 
-    protected function resetInnerAsserter()
+    protected function resetInnerAsserter(): static
     {
         $this->innerAsserter = null;
         $this->innerValue = null;

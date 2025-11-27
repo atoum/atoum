@@ -15,17 +15,17 @@ class html extends report\fields\runner\coverage\cli
 {
     public const htmlExtensionFile = '.html';
 
-    protected $urlPrompt = null;
-    protected $urlColorizer = null;
-    protected $rootUrl = '';
-    protected $projectName = '';
-    protected $templatesDirectory = null;
-    protected $destinationDirectory = null;
-    protected $templateParser = null;
-    protected $reflectionClassInjector = null;
-    protected $bootstrapFile = null;
+    protected ?prompt $urlPrompt = null;
+    protected ?colorizer $urlColorizer = null;
+    protected string $rootUrl = '';
+    protected string $projectName = '';
+    protected ?string $templatesDirectory = null;
+    protected ?string $destinationDirectory = null;
+    protected ?template\parser $templateParser = null;
+    protected ?\Closure $reflectionClassInjector = null;
+    protected mixed $bootstrapFile = null;
 
-    public function __construct($projectName, $destinationDirectory)
+    public function __construct(string $projectName, string $destinationDirectory)
     {
         parent::__construct();
 
@@ -40,7 +40,7 @@ class html extends report\fields\runner\coverage\cli
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -240,7 +240,7 @@ class html extends report\fields\runner\coverage\cli
         return parent::__toString() . $string;
     }
 
-    public function setReflectionClassInjector(\closure $reflectionClassInjector)
+    public function setReflectionClassInjector(\Closure $reflectionClassInjector): static
     {
         $closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
 
@@ -253,7 +253,7 @@ class html extends report\fields\runner\coverage\cli
         return $this;
     }
 
-    public function getReflectionClass($class)
+    public function getReflectionClass(string $class): \reflectionClass
     {
         if ($this->reflectionClassInjector === null) {
             $reflectionClass = new \reflectionClass($class);
@@ -268,96 +268,96 @@ class html extends report\fields\runner\coverage\cli
         return $reflectionClass;
     }
 
-    public function setProjectName($projectName)
+    public function setProjectName(string $projectName): static
     {
         $this->projectName = (string) $projectName;
 
         return $this;
     }
 
-    public function getProjectName()
+    public function getProjectName(): string
     {
         return $this->projectName;
     }
 
-    public function setDestinationDirectory($path)
+    public function setDestinationDirectory(string $path): static
     {
         $this->destinationDirectory = (string) $path;
 
         return $this;
     }
 
-    public function getDestinationDirectory()
+    public function getDestinationDirectory(): ?string
     {
         return $this->destinationDirectory;
     }
 
-    public function setUrlPrompt(?prompt $prompt = null)
+    public function setUrlPrompt(?prompt $prompt = null): static
     {
         $this->urlPrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getUrlPrompt()
+    public function getUrlPrompt(): prompt
     {
         return $this->urlPrompt;
     }
 
-    public function setUrlColorizer(?colorizer $colorizer = null)
+    public function setUrlColorizer(?colorizer $colorizer = null): static
     {
         $this->urlColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getUrlColorizer()
+    public function getUrlColorizer(): colorizer
     {
         return $this->urlColorizer;
     }
 
-    public function setTemplatesDirectory($path = null)
+    public function setTemplatesDirectory(?string $path = null): static
     {
         $this->templatesDirectory = ($path !== null ? (string) $path : atoum\directory . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'coverage');
 
         return $this;
     }
 
-    public function getTemplatesDirectory()
+    public function getTemplatesDirectory(): ?string
     {
         return $this->templatesDirectory;
     }
 
-    public function setTemplateParser(?template\parser $parser = null)
+    public function setTemplateParser(?template\parser $parser = null): static
     {
         $this->templateParser = $parser ?: new template\parser();
 
         return $this;
     }
 
-    public function getTemplateParser()
+    public function getTemplateParser(): template\parser
     {
         return $this->templateParser;
     }
 
-    public function setRootUrl($rootUrl)
+    public function setRootUrl(string $rootUrl): static
     {
         $this->rootUrl = (string) $rootUrl;
 
         return $this;
     }
 
-    public function getRootUrl()
+    public function getRootUrl(): string
     {
         return $this->rootUrl;
     }
 
-    public function getDestinationDirectoryIterator()
+    public function getDestinationDirectoryIterator(): \recursiveIteratorIterator
     {
         return new \recursiveIteratorIterator(new \recursiveDirectoryIterator($this->destinationDirectory, \filesystemIterator::KEY_AS_PATHNAME | \filesystemIterator::CURRENT_AS_FILEINFO | \filesystemIterator::SKIP_DOTS), \recursiveIteratorIterator::CHILD_FIRST);
     }
 
-    public function cleanDestinationDirectory()
+    public function cleanDestinationDirectory(): static
     {
         try {
             foreach ($this->getDestinationDirectoryIterator() as $inode) {

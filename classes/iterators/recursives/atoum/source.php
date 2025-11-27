@@ -6,37 +6,37 @@ use atoum\atoum\iterators;
 
 class source implements \outerIterator
 {
-    protected $pharDirectory = '';
-    protected $sourceDirectory = '';
-    protected $innerIterator = null;
+    protected string $pharDirectory = '';
+    protected string $sourceDirectory = '';
+    protected ?\recursiveIteratorIterator $innerIterator = null;
 
-    public function __construct($sourceDirectory, $pharDirectory = null)
+    public function __construct(string $sourceDirectory, ?string $pharDirectory = null)
     {
         $this->sourceDirectory = (string) $sourceDirectory;
-        $this->pharDirectory = $pharDirectory === null ? null : (string) $pharDirectory;
+        $this->pharDirectory = $pharDirectory === null ? '' : (string) $pharDirectory;
         $this->innerIterator = new \recursiveIteratorIterator(new iterators\filters\recursives\atoum\source($this->sourceDirectory));
 
         $this->innerIterator->rewind();
     }
 
-    public function getSourceDirectory()
+    public function getSourceDirectory(): string
     {
         return $this->sourceDirectory;
     }
 
-    public function getPharDirectory()
+    public function getPharDirectory(): string
     {
         return $this->pharDirectory;
     }
 
     #[\ReturnTypeWillChange]
-    public function getInnerIterator()
+    public function getInnerIterator(): \recursiveIteratorIterator
     {
         return $this->innerIterator;
     }
 
     #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): ?string
     {
         $current = $this->innerIterator->current();
 
@@ -44,9 +44,9 @@ class source implements \outerIterator
     }
 
     #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): mixed
     {
-        if ($this->pharDirectory === null) {
+        if ($this->pharDirectory === '') {
             return $this->innerIterator->key();
         }
 
@@ -56,19 +56,19 @@ class source implements \outerIterator
     }
 
     #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
-        return $this->innerIterator->next();
+        $this->innerIterator->next();
     }
 
     #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
-        return $this->innerIterator->rewind();
+        $this->innerIterator->rewind();
     }
 
     #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return $this->innerIterator->valid();
     }

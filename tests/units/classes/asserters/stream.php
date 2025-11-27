@@ -70,14 +70,14 @@ class stream extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isRead();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($streamNotRead)
                 ->mock($locale)->call('_')->withArguments('stream %s is not read', $streamController)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isRead($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->when(function () use ($streamName) {
@@ -111,14 +111,14 @@ class stream extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isWritten();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($streamNotWritten)
                 ->mock($locale)->call('_')->withArguments('stream %s is not written', $streamController)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isWritten($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->when(function () use ($streamName, $contents) {
@@ -136,14 +136,14 @@ class stream extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isWritten();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($streamNotWritten)
                 ->mock($locale)->call('_')->withArguments('stream %s is not written', $streamController)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isWritten($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->when(function () use ($streamController, $contents) {

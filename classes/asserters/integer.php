@@ -4,7 +4,7 @@ namespace atoum\atoum\asserters;
 
 class integer extends variable
 {
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         $assertion = null;
 
@@ -32,7 +32,7 @@ class integer extends variable
         return call_user_func_array([$this, $assertion], $arguments);
     }
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'iszero':
@@ -43,7 +43,7 @@ class integer extends variable
         }
     }
 
-    public function setWith($value)
+    public function setWith(mixed $value): static
     {
         parent::setWith($value);
 
@@ -56,12 +56,12 @@ class integer extends variable
         return $this;
     }
 
-    public function isZero($failMessage = null)
+    public function isZero(?string $failMessage = null): static
     {
         return $this->isEqualTo(0, $failMessage);
     }
 
-    public function isGreaterThan($value, $failMessage = null)
+    public function isGreaterThan(int|float $value, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value > $value) {
             $this->pass();
@@ -72,7 +72,7 @@ class integer extends variable
         return $this;
     }
 
-    public function isGreaterThanOrEqualTo($value, $failMessage = null)
+    public function isGreaterThanOrEqualTo(int|float $value, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value >= $value) {
             $this->pass();
@@ -83,7 +83,7 @@ class integer extends variable
         return $this;
     }
 
-    public function isLessThan($value, $failMessage = null)
+    public function isLessThan(int|float $value, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value < $value) {
             $this->pass();
@@ -94,7 +94,7 @@ class integer extends variable
         return $this;
     }
 
-    public function isLessThanOrEqualTo($value, $failMessage = null)
+    public function isLessThanOrEqualTo(int|float $value, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value <= $value) {
             $this->pass();

@@ -8,36 +8,34 @@ use atoum\atoum\test\exceptions;
 
 class funktion extends mocker
 {
-    public function __construct($defaultNamespace = '')
+    public function __construct(string $defaultNamespace = '')
     {
         parent::__construct($defaultNamespace);
 
         $this->setReflectedFunctionFactory();
     }
 
-    public function __get($functionName)
+    public function __get(string $functionName): mixed
     {
         return $this->getAdapter()->{$this->generateIfNotExists($functionName)};
     }
 
-    public function __set($functionName, $mixed)
+    public function __set(string $functionName, mixed $mixed): void
     {
         $this->getAdapter()->{$this->generateIfNotExists($functionName)} = $mixed;
-
-        return $this;
     }
 
-    public function __isset($functionName)
+    public function __isset(string $functionName): bool
     {
         return $this->functionExists($this->getFqdn($functionName));
     }
 
-    public function __unset($functionName)
+    public function __unset(string $functionName): void
     {
         $this->setDefaultBehavior($this->getFqdn($functionName));
     }
 
-    public function setReflectedFunctionFactory(?\closure $factory = null)
+    public function setReflectedFunctionFactory(?\Closure $factory = null): static
     {
         $this->reflectedFunctionFactory = $factory ?: function ($functionName) {
             return new \reflectionFunction($functionName);
@@ -46,12 +44,12 @@ class funktion extends mocker
         return $this;
     }
 
-    public function useClassNamespace($className)
+    public function useClassNamespace(string $className): static
     {
         return $this->setDefaultNamespace(substr($className, 0, strrpos($className, '\\')));
     }
 
-    public function generate($functionName)
+    public function generate(string $functionName): static
     {
         $fqdn = $this->getFqdn($functionName);
 
@@ -73,26 +71,30 @@ class funktion extends mocker
         return $this->setDefaultBehavior($fqdn);
     }
 
-    public function resetCalls($functionName = null)
+    public function resetCalls(?string $functionName = null): static
     {
         static::$adapter->resetCalls($this->getFqdn($functionName));
 
         return $this;
     }
 
-    public function addToTest(atoum\test $test)
+    public function addToTest(atoum\test $test): static
     {
         $test->setPhpFunctionMocker($this);
 
         return $this;
     }
 
-    protected function getFqdn($functionName)
+    protected function getFqdn(?string $functionName): string
     {
+        if ($functionName === null) {
+            return $this->defaultNamespace;
+        }
+
         return $this->defaultNamespace . $functionName;
     }
 
-    protected function generateIfNotExists($functionName)
+    protected function generateIfNotExists(string $functionName): string
     {
         if (isset($this->{$functionName}) === false) {
             $this->generate($functionName);

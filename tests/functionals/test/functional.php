@@ -6,12 +6,12 @@ use atoum\atoum;
 
 class functional extends atoum\test
 {
-    public function getTestNamespace()
+    public function getTestNamespace(): string
     {
         return '#(?:^|\\\)tests?\\\functionals?\\\#i';
     }
 
-    public function getTestedClassName()
+    public function getTestedClassName(): ?string
     {
         return \stdClass::class;
     }

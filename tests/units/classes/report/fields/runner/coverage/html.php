@@ -55,23 +55,23 @@ class html extends atoum\test
             ->and($coverageController->count = rand(1, PHP_INT_MAX))
             ->and(
                 $coverageController->getClasses = [
-                    $className = uniqid() => $classFile = uniqid()
+                    $className = 'class_' . uniqid() => $classFile = uniqid()
                 ]
             )
             ->and(
                 $coverageController->getMethods = [
                     $className => [
-                        $method1Name = uniqid() => [
+                        $method1Name = 'method_' . uniqid() => [
                             5 => 1,
                             6 => 1,
                             7 => -1,
                             8 => 1,
                             9 => -2
                         ],
-                        $method3Name = uniqid() => [
+                        $method3Name = 'method_' . uniqid() => [
                             10 => -2
                         ],
-                        $method4Name = uniqid() => [
+                        $method4Name = 'method_' . uniqid() => [
                             11 => 1,
                             12 => -2
                         ]
@@ -94,7 +94,12 @@ class html extends atoum\test
             ->and($indexTemplateController = $indexTemplate->getMockController())
             ->and($indexTemplateController->__set = function () {
             })
-            ->and($indexTemplateController->build = $buildOfIndexTemplate = uniqid())
+            ->and($buildOfIndexTemplate = uniqid())
+            ->and($indexTemplateController->build = function (iterable $mixed = []) use ($indexTemplate, $buildOfIndexTemplate) {
+                $indexTemplate->setData($buildOfIndexTemplate);
+
+                return $indexTemplate;
+            })
             ->and($methodTemplate = new \mock\atoum\atoum\template())
             ->and($methodTemplateController = $methodTemplate->getMockController())
             ->and($methodTemplateController->__set = function () {
@@ -156,7 +161,7 @@ class html extends atoum\test
             ->and($reflectedMethod2Controller = new mock\controller())
             ->and($reflectedMethod2Controller->__construct = function () {
             })
-            ->and($reflectedMethod2Controller->getName = $method2Name = uniqid())
+            ->and($reflectedMethod2Controller->getName = $method2Name = 'method_' . uniqid())
             ->and($reflectedMethod2Controller->isAbstract = false)
             ->and($reflectedMethod2Controller->getDeclaringClass = $otherReflectedClass)
             ->and($reflectedMethod2Controller->getStartLine = 5)

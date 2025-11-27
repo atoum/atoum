@@ -6,28 +6,28 @@ use atoum\atoum\asserter;
 
 class aliaser implements \arrayAccess
 {
-    protected $resolver = null;
-    protected $aliases = [];
+    protected ?asserter\resolver $resolver = null;
+    protected array $aliases = [];
 
-    private $context = null;
-    private $keyword = null;
+    private mixed $context = null;
+    private ?string $keyword = null;
 
     public function __construct(?asserter\resolver $resolver = null)
     {
         $this->setResolver($resolver);
     }
 
-    public function __set($alias, $keyword)
+    public function __set(string $alias, string $keyword): void
     {
-        return $this->aliasKeyword($keyword, $alias);
+        $this->aliasKeyword($keyword, $alias);
     }
 
-    public function __get($alias)
+    public function __get(string $alias): ?string
     {
         return $this->resolveAlias($alias);
     }
 
-    public function __unset($alias)
+    public function __unset(string $alias): void
     {
         $contextKey = $this->getContextKey($this->context);
 
@@ -40,7 +40,7 @@ class aliaser implements \arrayAccess
         }
     }
 
-    public function __isset($alias)
+    public function __isset(string $alias): bool
     {
         $contextKey = $this->getContextKey($this->context);
 
@@ -49,6 +49,8 @@ class aliaser implements \arrayAccess
 
             return (isset($this->aliases[$contextKey][$aliasKey]) === true);
         }
+
+        return false;
     }
 
     #[\ReturnTypeWillChange]
@@ -85,14 +87,14 @@ class aliaser implements \arrayAccess
         return (isset($this->aliases[$this->getContextKey($context)]) === true);
     }
 
-    public function setResolver(?asserter\resolver $resolver = null)
+    public function setResolver(?asserter\resolver $resolver = null): static
     {
         $this->resolver = $resolver ?: new asserter\resolver();
 
         return $this;
     }
 
-    public function getResolver()
+    public function getResolver(): asserter\resolver
     {
         return $this->resolver;
     }
@@ -120,14 +122,14 @@ class aliaser implements \arrayAccess
         return $this;
     }
 
-    public function aliasKeyword($keyword, $alias, $context = null)
+    public function aliasKeyword(string $keyword, string $alias, mixed $context = null): static
     {
         $this->aliases[$this->getContextKey($context)][$this->getAliasKey($alias)] = $keyword;
 
         return $this;
     }
 
-    public function resolveAlias($alias, $context = null)
+    public function resolveAlias(string $alias, mixed $context = null): ?string
     {
         $aliasKey = $this->getAliasKey($alias);
         $contextKey = $this->getContextKey($context);

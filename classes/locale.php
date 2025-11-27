@@ -4,43 +4,43 @@ namespace atoum\atoum;
 
 class locale
 {
-    protected $value = null;
+    protected ?string $value = null;
 
-    public function __construct($value = null)
+    public function __construct(?string $value = null)
     {
         if ($value !== null) {
             $this->set($value);
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return ($this->value === null ? 'unknown' : $this->value);
     }
 
-    public function set($value)
+    public function set(string $value): static
     {
         $this->value = (string) $value;
 
         return $this;
     }
 
-    public function get()
+    public function get(): ?string
     {
         return $this->value;
     }
 
-    public function _($string, ...$arguments)
+    public function _(string $string, mixed ...$arguments): string
     {
         return self::format($string, $arguments);
     }
 
-    public function __($singular, $plural, $quantity, ...$arguments)
+    public function __(string $singular, string $plural, int|float|null $quantity, mixed ...$arguments): string
     {
-        return self::format($quantity <= 1 ? $singular : $plural, $arguments);
+        return self::format(($quantity ?? 0) <= 1 ? $singular : $plural, $arguments);
     }
 
-    private static function format($string, $arguments)
+    private static function format(string $string, array $arguments): string
     {
         if (count($arguments) > 0) {
             $string = vsprintf($string, $arguments);

@@ -7,13 +7,13 @@ use atoum\atoum\php\tokenizer\token;
 
 class tokenizer implements \iteratorAggregate
 {
-    protected $iterator = null;
+    protected ?iterators\phpScript $iterator = null;
 
-    private $tokens = null;
-    private $currentIterator = null;
-    private $currentNamespace = null;
-    private $currentImportation = null;
-    private $currentFunction = null;
+    private ?\arrayIterator $tokens = null;
+    private mixed $currentIterator = null;
+    private iterators\phpNamespace|iterators\phpConstant|null $currentNamespace = null;
+    private ?iterators\phpImportation $currentImportation = null;
+    private ?iterators\phpFunction $currentFunction = null;
 
     public function __construct()
     {
@@ -26,14 +26,14 @@ class tokenizer implements \iteratorAggregate
         return $this->iterator;
     }
 
-    public function resetIterator()
+    public function resetIterator(): static
     {
         $this->iterator = new iterators\phpScript();
 
         return $this;
     }
 
-    public function tokenize($string)
+    public function tokenize(string $string): static
     {
         $this->currentIterator = $this->iterator;
 
@@ -66,7 +66,7 @@ class tokenizer implements \iteratorAggregate
         return $this;
     }
 
-    private function appendImportation()
+    private function appendImportation(): array|string|null
     {
         $this->currentIterator->appendImportation($this->currentImportation = new iterators\phpImportation());
         $this->currentIterator = $this->currentImportation;
@@ -94,7 +94,7 @@ class tokenizer implements \iteratorAggregate
         return $this->tokens->valid() === false ? null : $this->tokens->current();
     }
 
-    private function appendNamespace()
+    private function appendNamespace(): array|string|null
     {
         $inNamespace = true;
 
@@ -163,7 +163,7 @@ class tokenizer implements \iteratorAggregate
         return $this->tokens->valid() === false ? null : $this->tokens->current();
     }
 
-    private function appendFunction()
+    private function appendFunction(): array|string|null
     {
         $inFunction = true;
 
@@ -193,7 +193,7 @@ class tokenizer implements \iteratorAggregate
         return $this->tokens->valid() === false ? null : $this->tokens->current();
     }
 
-    private function appendConstant()
+    private function appendConstant(): array|string|null
     {
         $this->currentIterator->appendConstant($this->currentNamespace = new iterators\phpConstant());
         $this->currentIterator = $this->currentNamespace;
@@ -221,7 +221,7 @@ class tokenizer implements \iteratorAggregate
         return $this->tokens->valid() === false ? null : $this->tokens->current();
     }
 
-    private function nextTokenIs($tokenName, array $skipedTags = [T_WHITESPACE, T_COMMENT, T_INLINE_HTML])
+    private function nextTokenIs(int $tokenName, array $skipedTags = [T_WHITESPACE, T_COMMENT, T_INLINE_HTML]): bool
     {
         $key = $this->tokens->key() + 1;
 

@@ -3,6 +3,7 @@
 namespace atoum\atoum\tests\functionals;
 
 use atoum\atoum;
+use atoum\atoum\attributes as Attributes;
 
 require_once __DIR__ . '/../runner.php';
 
@@ -28,7 +29,7 @@ class test extends atoum\tests\functionals\test\functional
         echo __METHOD__;
     }
 
-    /** @tags issue issue-820 */
+    #[Attributes\Tags('issue', 'issue-820')]
     public function testOutputFromBeforeAndAfterTestMethod()
     {
         $this->boolean(true)->isTrue();

@@ -6,21 +6,21 @@ abstract class script
 {
     public const padding = '   ';
 
-    protected $name = '';
-    protected $locale = null;
-    protected $adapter = null;
-    protected $prompt = null;
-    protected $cli = null;
-    protected $verbosityLevel = 0;
-    protected $outputWriter = null;
-    protected $infoWriter = null;
-    protected $warningWriter = null;
-    protected $errorWriter = null;
-    protected $helpWriter = null;
-    protected $argumentsParser = null;
+    protected string $name = '';
+    protected ?locale $locale = null;
+    protected ?adapter $adapter = null;
+    protected ?script\prompt $prompt = null;
+    protected ?cli $cli = null;
+    protected int $verbosityLevel = 0;
+    protected ?writer $outputWriter = null;
+    protected ?writer $infoWriter = null;
+    protected ?writer $warningWriter = null;
+    protected ?writer $errorWriter = null;
+    protected ?writer $helpWriter = null;
+    protected ?script\arguments\parser $argumentsParser = null;
 
-    private $doRun = true;
-    private $help = [];
+    private bool $doRun = true;
+    private array $help = [];
 
     public function __construct($name, ?adapter $adapter = null)
     {
@@ -44,38 +44,38 @@ abstract class script
         }
     }
 
-    public function getDirectory()
+    public function getDirectory(): string
     {
         $directory = $this->adapter->getcwd();
 
         return rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
 
-    public function setAdapter(?adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new adapter();
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): adapter
     {
         return $this->adapter;
     }
 
-    public function setLocale(?locale $locale = null)
+    public function setLocale(?locale $locale = null): static
     {
         $this->locale = $locale ?: new locale();
 
         return $this;
     }
 
-    public function getLocale()
+    public function getLocale(): locale
     {
         return $this->locale;
     }
 
-    public function setArgumentsParser(?script\arguments\parser $parser = null)
+    public function setArgumentsParser(?script\arguments\parser $parser = null): static
     {
         $this->argumentsParser = $parser ?: new script\arguments\parser();
 
@@ -84,41 +84,41 @@ abstract class script
         return $this;
     }
 
-    public function getArgumentsParser()
+    public function getArgumentsParser(): script\arguments\parser
     {
         return $this->argumentsParser;
     }
 
-    public function setCli(?cli $cli = null)
+    public function setCli(?cli $cli = null): static
     {
         $this->cli = $cli ?: new cli();
 
         return $this;
     }
 
-    public function getCli()
+    public function getCli(): cli
     {
         return $this->cli;
     }
 
-    public function hasArguments()
+    public function hasArguments(): bool
     {
         return (count($this->argumentsParser->getValues()) > 0);
     }
 
-    public function setOutputWriter(?writer $writer = null)
+    public function setOutputWriter(?writer $writer = null): static
     {
         $this->outputWriter = $writer ?: new writers\std\out($this->cli);
 
         return $this;
     }
 
-    public function getOutputWriter()
+    public function getOutputWriter(): writer
     {
         return $this->outputWriter;
     }
 
-    public function setInfoWriter(?writer $writer = null)
+    public function setInfoWriter(?writer $writer = null): static
     {
         if ($writer === null) {
             $writer = new writers\std\out($this->cli);
@@ -134,12 +134,12 @@ abstract class script
         return $this;
     }
 
-    public function getInfoWriter()
+    public function getInfoWriter(): writer
     {
         return $this->infoWriter;
     }
 
-    public function setWarningWriter(?writer $writer = null)
+    public function setWarningWriter(?writer $writer = null): static
     {
         if ($writer === null) {
             $writer = new writers\std\err($this->cli);
@@ -156,12 +156,12 @@ abstract class script
         return $this;
     }
 
-    public function getWarningWriter()
+    public function getWarningWriter(): writer
     {
         return $this->warningWriter;
     }
 
-    public function setErrorWriter(?writer $writer = null)
+    public function setErrorWriter(?writer $writer = null): static
     {
         if ($writer === null) {
             $writer = new writers\std\err($this->cli);
@@ -178,12 +178,12 @@ abstract class script
         return $this;
     }
 
-    public function getErrorWriter()
+    public function getErrorWriter(): writer
     {
         return $this->errorWriter;
     }
 
-    public function setHelpWriter(?writer $writer = null)
+    public function setHelpWriter(?writer $writer = null): static
     {
         if ($writer === null) {
             $labelColorizer = new cli\colorizer('0;32');
@@ -211,12 +211,12 @@ abstract class script
         return $this;
     }
 
-    public function getHelpWriter()
+    public function getHelpWriter(): writer
     {
         return $this->helpWriter;
     }
 
-    public function setPrompt(?script\prompt $prompt = null)
+    public function setPrompt(?script\prompt $prompt = null): static
     {
         if ($prompt === null) {
             $prompt = new script\prompt();
@@ -227,22 +227,22 @@ abstract class script
         return $this;
     }
 
-    public function getPrompt()
+    public function getPrompt(): script\prompt
     {
         return $this->prompt;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getHelp()
+    public function getHelp(): array
     {
         return $this->help;
     }
 
-    public function help()
+    public function help(): static
     {
         return $this
             ->writeHelpUsage()
@@ -251,7 +251,7 @@ abstract class script
         ;
     }
 
-    public function addArgumentHandler(\closure $handler, array $arguments, $values = null, $help = null, $priority = 0)
+    public function addArgumentHandler(\Closure $handler, array $arguments, mixed $values = null, mixed $help = null, int $priority = 0): static
     {
         if ($help !== null) {
             $this->help[] = [$arguments, $values, $help];
@@ -262,14 +262,14 @@ abstract class script
         return $this;
     }
 
-    public function setDefaultArgumentHandler(\closure $handler)
+    public function setDefaultArgumentHandler(\Closure $handler): static
     {
         $this->argumentsParser->setDefaultHandler($handler);
 
         return $this;
     }
 
-    public function run(array $arguments = [])
+    public function run(array $arguments = []): static
     {
         $this->adapter->ini_set('log_errors_max_len', 0);
         $this->adapter->ini_set('log_errors', 'Off');
@@ -284,33 +284,33 @@ abstract class script
         return $this;
     }
 
-    public function prompt($message)
+    public function prompt(string $message): string
     {
         return trim($this->prompt->ask(rtrim($message)));
     }
 
-    public function writeLabel($label, $value, $level = 0)
+    public function writeLabel(string $label, string $value, int $level = 0): static
     {
         static::writeLabelWithWriter($label, $value, $level, $this->helpWriter);
 
         return $this;
     }
 
-    public function writeLabels(array $labels, $level = 1)
+    public function writeLabels(array $labels, int $level = 1): static
     {
         static::writeLabelsWithWriter($labels, $level, $this->helpWriter);
 
         return $this;
     }
 
-    public function clearMessage()
+    public function clearMessage(): static
     {
         $this->outputWriter->clear();
 
         return $this;
     }
 
-    public function writeMessage($message)
+    public function writeMessage(string $message): static
     {
         $this->outputWriter
             ->removeDecorators()
@@ -320,35 +320,35 @@ abstract class script
         return $this;
     }
 
-    public function writeInfo($info)
+    public function writeInfo(string $info): static
     {
         $this->infoWriter->write($info);
 
         return $this;
     }
 
-    public function writeHelp($message)
+    public function writeHelp(string $message): static
     {
         $this->helpWriter->write($message);
 
         return $this;
     }
 
-    public function writeWarning($warning)
+    public function writeWarning(string $warning): static
     {
         $this->warningWriter->write($warning);
 
         return $this;
     }
 
-    public function writeError($message)
+    public function writeError(string $message): static
     {
         $this->errorWriter->write($message);
 
         return $this;
     }
 
-    public function verbose($message, $verbosityLevel = 1)
+    public function verbose(string $message, int $verbosityLevel = 1): static
     {
         if ($verbosityLevel > 0 && $this->verbosityLevel >= $verbosityLevel) {
             $this->writeInfo($message);
@@ -357,14 +357,14 @@ abstract class script
         return $this;
     }
 
-    public function increaseVerbosityLevel()
+    public function increaseVerbosityLevel(): static
     {
         $this->verbosityLevel++;
 
         return $this;
     }
 
-    public function decreaseVerbosityLevel()
+    public function decreaseVerbosityLevel(): static
     {
         if ($this->verbosityLevel > 0) {
             $this->verbosityLevel--;
@@ -373,19 +373,19 @@ abstract class script
         return $this;
     }
 
-    public function getVerbosityLevel()
+    public function getVerbosityLevel(): int
     {
         return $this->verbosityLevel;
     }
 
-    public function resetVerbosityLevel()
+    public function resetVerbosityLevel(): static
     {
         $this->verbosityLevel = 0;
 
         return $this;
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         $this->argumentsParser->resetHandlers();
 
@@ -394,19 +394,19 @@ abstract class script
         return $this;
     }
 
-    protected function canRun()
+    protected function canRun(): bool
     {
         return ($this->doRun === true);
     }
 
-    protected function stopRun()
+    protected function stopRun(): static
     {
         $this->doRun = false;
 
         return $this;
     }
 
-    protected function writeHelpUsage()
+    protected function writeHelpUsage(): static
     {
         if ($this->help) {
             $this->writeHelp($this->locale->_('Usage: %s [options]', $this->getName()));
@@ -415,7 +415,7 @@ abstract class script
         return $this;
     }
 
-    protected function writeHelpOptions()
+    protected function writeHelpOptions(): static
     {
         if ($this->help) {
             $arguments = [];
@@ -438,24 +438,24 @@ abstract class script
         return $this;
     }
 
-    protected function parseArguments(array $arguments)
+    protected function parseArguments(array $arguments): static
     {
         $this->argumentsParser->parse($this, $arguments);
 
         return $this;
     }
 
-    protected function doRun()
+    protected function doRun(): static
     {
         return $this;
     }
 
-    protected static function writeLabelWithWriter($label, $value, $level, writer $writer)
+    protected static function writeLabelWithWriter(string $label, string $value, int $level, writer $writer): writer
     {
         return $writer->write('  ' . $label . '  ' . trim($value));
     }
 
-    protected static function writeLabelsWithWriter($labels, $level, writer $writer)
+    protected static function writeLabelsWithWriter(array $labels, int $level, writer $writer): writer
     {
         $maxLength = 0;
 

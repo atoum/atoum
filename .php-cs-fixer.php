@@ -8,6 +8,7 @@ $finder = CS\Finder::create()
         ->name('*.php')
         ->name('*.php.dist')
         ->notPath('resources/templates')
+        ->notPath('tests/units/php84/fixtures')
         ->in(__DIR__)
 ;
 

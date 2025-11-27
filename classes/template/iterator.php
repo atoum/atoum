@@ -8,7 +8,7 @@ class iterator implements \iterator, \countable
 {
     protected $tags = [];
 
-    public function addTag($tag, atoum\template $template)
+    public function addTag(string $tag, atoum\template $template): self
     {
         $children = $template->getChildren();
 
@@ -96,7 +96,7 @@ class iterator implements \iterator, \countable
     }
 
     #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return count($this->tags);
     }

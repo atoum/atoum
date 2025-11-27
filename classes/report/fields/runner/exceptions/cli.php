@@ -8,12 +8,12 @@ use atoum\atoum\report;
 
 class cli extends report\fields\runner\exceptions
 {
-    protected $titlePrompt = null;
-    protected $titleColorizer = null;
-    protected $methodPrompt = null;
-    protected $methodColorizer = null;
-    protected $exceptionPrompt = null;
-    protected $exceptionColorizer = null;
+    protected ?prompt $titlePrompt = null;
+    protected ?colorizer $titleColorizer = null;
+    protected ?prompt $methodPrompt = null;
+    protected ?colorizer $methodColorizer = null;
+    protected ?prompt $exceptionPrompt = null;
+    protected ?colorizer $exceptionColorizer = null;
 
     public function __construct()
     {
@@ -29,7 +29,7 @@ class cli extends report\fields\runner\exceptions
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -85,89 +85,89 @@ class cli extends report\fields\runner\exceptions
         return $string;
     }
 
-    public function setTitlePrompt(?prompt $prompt = null)
+    public function setTitlePrompt(?prompt $prompt = null): static
     {
         $this->titlePrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getTitlePrompt()
+    public function getTitlePrompt(): prompt
     {
         return $this->titlePrompt;
     }
 
-    public function setTitleColorizer(?colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null): static
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getTitleColorizer()
+    public function getTitleColorizer(): colorizer
     {
         return $this->titleColorizer;
     }
 
-    public function setMethodPrompt(?prompt $prompt = null)
+    public function setMethodPrompt(?prompt $prompt = null): static
     {
         $this->methodPrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getMethodPrompt()
+    public function getMethodPrompt(): prompt
     {
         return $this->methodPrompt;
     }
 
-    public function setMethodColorizer(?colorizer $colorizer = null)
+    public function setMethodColorizer(?colorizer $colorizer = null): static
     {
         $this->methodColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getMethodColorizer()
+    public function getMethodColorizer(): colorizer
     {
         return $this->methodColorizer;
     }
 
-    public function setExceptionPrompt(?prompt $prompt = null)
+    public function setExceptionPrompt(?prompt $prompt = null): static
     {
         $this->exceptionPrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getExceptionPrompt()
+    public function getExceptionPrompt(): prompt
     {
         return $this->exceptionPrompt;
     }
 
-    public function setExceptionColorizer(?colorizer $colorizer = null)
+    public function setExceptionColorizer(?colorizer $colorizer = null): static
     {
         $this->exceptionColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getExceptionColorizer()
+    public function getExceptionColorizer(): colorizer
     {
         return $this->exceptionColorizer;
     }
 
-    private function colorizeTitle($title)
+    private function colorizeTitle(string $title): string
     {
         return $this->titleColorizer === null ? $title : $this->titleColorizer->colorize($title);
     }
 
-    private function colorizeMethod($method)
+    private function colorizeMethod(string $method): string
     {
         return $this->methodColorizer === null ? $method : $this->methodColorizer->colorize($method);
     }
 
-    private function colorizeException($exception)
+    private function colorizeException(string $exception): string
     {
         return $this->exceptionColorizer === null ? $exception : $this->exceptionColorizer->colorize($exception);
     }

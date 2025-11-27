@@ -6,13 +6,13 @@ use atoum\atoum\iterators\filters;
 
 class factory
 {
-    protected $dotFilterFactory = null;
-    protected $iteratorFactory = null;
-    protected $acceptDots = false;
-    protected $extensionFilterFactory = null;
-    protected $acceptedExtensions = ['php'];
+    protected ?\Closure $dotFilterFactory = null;
+    protected ?\Closure $iteratorFactory = null;
+    protected bool $acceptDots = false;
+    protected ?\Closure $extensionFilterFactory = null;
+    protected array $acceptedExtensions = ['php'];
 
-    public function __construct(?\closure $iteratorFactory = null, ?\closure $dotFilterFactory = null, ?\closure $extensionFilterFactory = null)
+    public function __construct(?\Closure $iteratorFactory = null, ?\Closure $dotFilterFactory = null, ?\Closure $extensionFilterFactory = null)
     {
         $this
             ->setIteratorFactory($iteratorFactory)
@@ -21,7 +21,7 @@ class factory
         ;
     }
 
-    public function setIteratorFactory(?\closure $factory = null)
+    public function setIteratorFactory(?\Closure $factory = null): static
     {
         $this->iteratorFactory = $factory ?: function ($path) {
             return new \recursiveDirectoryIterator($path);
@@ -30,12 +30,12 @@ class factory
         return $this;
     }
 
-    public function getIteratorFactory()
+    public function getIteratorFactory(): \Closure
     {
         return $this->iteratorFactory;
     }
 
-    public function setDotFilterFactory(?\closure $factory = null)
+    public function setDotFilterFactory(?\Closure $factory = null): static
     {
         $this->dotFilterFactory = $factory ?: function ($iterator) {
             return new filters\recursives\dot($iterator);
@@ -44,12 +44,12 @@ class factory
         return $this;
     }
 
-    public function getDotFilterFactory()
+    public function getDotFilterFactory(): \Closure
     {
         return $this->dotFilterFactory;
     }
 
-    public function setExtensionFilterFactory(?\closure $factory = null)
+    public function setExtensionFilterFactory(?\Closure $factory = null): static
     {
         $this->extensionFilterFactory = $factory ?: function ($iterator, $extensions) {
             return new filters\recursives\extension($iterator, $extensions);
@@ -58,12 +58,12 @@ class factory
         return $this;
     }
 
-    public function getExtensionFilterFactory()
+    public function getExtensionFilterFactory(): \Closure
     {
         return $this->extensionFilterFactory;
     }
 
-    public function getIterator($path)
+    public function getIterator(string $path): \Iterator
     {
         $iterator = call_user_func($this->iteratorFactory, $path);
 
@@ -78,31 +78,31 @@ class factory
         return $iterator;
     }
 
-    public function dotsAreAccepted()
+    public function dotsAreAccepted(): bool
     {
         return $this->acceptDots;
     }
 
-    public function acceptDots()
+    public function acceptDots(): static
     {
         $this->acceptDots = true;
 
         return $this;
     }
 
-    public function refuseDots()
+    public function refuseDots(): static
     {
         $this->acceptDots = false;
 
         return $this;
     }
 
-    public function getAcceptedExtensions()
+    public function getAcceptedExtensions(): array
     {
         return $this->acceptedExtensions;
     }
 
-    public function acceptExtensions(array $extensions)
+    public function acceptExtensions(array $extensions): static
     {
         $this->acceptedExtensions = [];
 
@@ -113,12 +113,12 @@ class factory
         return $this;
     }
 
-    public function acceptAllExtensions()
+    public function acceptAllExtensions(): static
     {
         return $this->acceptExtensions([]);
     }
 
-    public function refuseExtension($extension)
+    public function refuseExtension(string $extension): static
     {
         $key = array_search(self::cleanExtension($extension), $this->acceptedExtensions);
 
@@ -131,7 +131,7 @@ class factory
         return $this;
     }
 
-    protected static function cleanExtension($extension)
+    protected static function cleanExtension(string $extension): string
     {
         return trim($extension, '.');
     }

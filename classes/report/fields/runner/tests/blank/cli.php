@@ -8,10 +8,10 @@ use atoum\atoum\report;
 
 class cli extends report\fields\runner\tests\blank
 {
-    protected $titlePrompt = null;
-    protected $titleColorizer = null;
-    protected $methodPrompt = null;
-    protected $methodColorizer = null;
+    protected ?prompt $titlePrompt = null;
+    protected ?colorizer $titleColorizer = null;
+    protected ?prompt $methodPrompt = null;
+    protected ?colorizer $methodColorizer = null;
 
     public function __construct()
     {
@@ -25,7 +25,7 @@ class cli extends report\fields\runner\tests\blank
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -53,50 +53,50 @@ class cli extends report\fields\runner\tests\blank
         return $string;
     }
 
-    public function setTitlePrompt(?prompt $prompt = null)
+    public function setTitlePrompt(?prompt $prompt = null): static
     {
         $this->titlePrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getTitlePrompt()
+    public function getTitlePrompt(): prompt
     {
         return $this->titlePrompt;
     }
 
-    public function setTitleColorizer(?colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null): static
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getTitleColorizer()
+    public function getTitleColorizer(): colorizer
     {
         return $this->titleColorizer;
     }
 
-    public function setMethodPrompt(?prompt $prompt = null)
+    public function setMethodPrompt(?prompt $prompt = null): static
     {
         $this->methodPrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getMethodPrompt()
+    public function getMethodPrompt(): prompt
     {
         return $this->methodPrompt;
     }
 
-    public function setMethodColorizer(?colorizer $colorizer = null)
+    public function setMethodColorizer(?colorizer $colorizer = null): static
     {
         $this->methodColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getMethodColorizer()
+    public function getMethodColorizer(): colorizer
     {
         return $this->methodColorizer;
     }

@@ -13,16 +13,16 @@ class stub extends scripts\runner
     public const updateUrl = 'http://downloads.atoum.org/update.php?version=%s';
     public const githubUpdateUrl = 'https://api.github.com/repos/atoum/atoum/releases';
 
-    protected $pharFactory = null;
+    protected ?\Closure $pharFactory = null;
 
-    public function __construct($name, ?atoum\adapter $adapter = null)
+    public function __construct(string $name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
         $this->setPharFactory();
     }
 
-    public function setPharFactory(?\closure $factory = null)
+    public function setPharFactory(?\Closure $factory = null): static
     {
         $this->pharFactory = $factory ?: function ($path) {
             return new \phar($path);
@@ -31,12 +31,12 @@ class stub extends scripts\runner
         return $this;
     }
 
-    public function getPharFactory()
+    public function getPharFactory(): \Closure
     {
         return $this->pharFactory;
     }
 
-    public function listScripts()
+    public function listScripts(): static
     {
         $this->writeMessage($this->locale->_('Available scripts are:') . PHP_EOL);
         $this->writeMessage(self::padding . 'builder' . PHP_EOL);
@@ -69,7 +69,7 @@ class stub extends scripts\runner
         return $this->stopRun();
     }
 
-    public function signature()
+    public function signature(): static
     {
         $phar = call_user_func($this->pharFactory, $this->getName());
 
@@ -140,7 +140,7 @@ class stub extends scripts\runner
         return $this->stopRun();
     }
 
-    public function useDefaultConfigFiles($startDirectory = null)
+    public function useDefaultConfigFiles(?string $startDirectory = null): static
     {
         if ($startDirectory === null) {
             $startDirectory = dirname($this->getName());
@@ -399,7 +399,7 @@ class stub extends scripts\runner
         return 'phar://' . $this->getName() . '/' . $versions['current'] . '/resources';
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         return
             parent::setArgumentHandlers()

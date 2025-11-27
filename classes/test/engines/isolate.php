@@ -7,21 +7,22 @@ use atoum\atoum\test\engines;
 
 class isolate extends engines\concurrent
 {
-    protected $score = null;
+    protected ?atoum\score $score = null;
 
     public function __construct(?atoum\score $score = null)
     {
-        parent::__construct($score);
+        parent::__construct();
+        $this->setScore($score);
     }
 
-    public function setScore(?atoum\score $score = null)
+    public function setScore(?atoum\score $score = null): static
     {
         $this->score = $score ?: new atoum\score();
 
         return $this;
     }
 
-    public function run(atoum\test $test)
+    public function run(atoum\test $test): static
     {
         parent::run($test);
 
@@ -34,7 +35,7 @@ class isolate extends engines\concurrent
         return $this;
     }
 
-    public function getScore()
+    public function getScore(): ?atoum\score
     {
         return $this->score;
     }

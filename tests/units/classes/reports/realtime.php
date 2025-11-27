@@ -50,14 +50,14 @@ class realtime extends atoum\test
                 $this->testedInstance->addWriter($writer),
                 $event = uniqid()
             )
+            ->when(function () use (&$event, &$observable) { $this->testedInstance->handleEvent($event, $observable); })
             ->then
-                ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
                 ->mock($writer)
                     ->call('writeRealtimeReport')->withArguments($this->testedInstance, $event)->once
                     ->call('reset')->never
             ->if($event = atoum\runner::runStop)
+            ->when(function () use (&$event, &$observable) { $this->testedInstance->handleEvent($event, $observable); })
             ->then
-                ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
                 ->mock($writer)
                     ->call('writeRealtimeReport')->withArguments($this->testedInstance, $event)->once
                     ->call('reset')->once
@@ -66,14 +66,14 @@ class realtime extends atoum\test
                 $this->testedInstance->addWriter($otherWriter),
                 $event = uniqid()
             )
+            ->when(function () use (&$event, &$observable) { $this->testedInstance->handleEvent($event, $observable); })
             ->then
-                ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
                 ->mock($otherWriter)
                     ->call('writeRealtimeReport')->withArguments($this->testedInstance, $event)->once
                     ->call('reset')->never
             ->if($event = atoum\runner::runStop)
+            ->when(function () use (&$event, &$observable) { $this->testedInstance->handleEvent($event, $observable); })
             ->then
-                ->object($this->testedInstance->handleEvent($event, $observable))->isTestedInstance
                 ->mock($writer)
                     ->call('writeRealtimeReport')->withArguments($this->testedInstance, $event)->twice
                     ->call('reset')->twice

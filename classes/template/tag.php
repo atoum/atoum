@@ -7,12 +7,12 @@ use atoum\atoum\exceptions;
 
 class tag extends atoum\template
 {
-    private $tag = '';
-    private $id = null;
-    private $line = null;
-    private $offset = null;
+    private string $tag = '';
+    private ?string $id = null;
+    private ?int $line = null;
+    private ?int $offset = null;
 
-    public function __construct($tag, $data = null, $line = null, $offset = null)
+    public function __construct(string $tag, mixed $data = null, ?int $line = null, ?int $offset = null)
     {
         $tag = (string) $tag;
 
@@ -43,22 +43,22 @@ class tag extends atoum\template
         $this->offset = $offset;
     }
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function getTag()
+    public function getTag(): string
     {
         return $this->tag;
     }
 
-    public function getLine()
+    public function getLine(): ?int
     {
         return $this->line;
     }
 
-    public function getOffset()
+    public function getOffset(): ?int
     {
         return $this->offset;
     }
@@ -90,7 +90,7 @@ class tag extends atoum\template
         return $this;
     }
 
-    public function setAttribute($name, $value)
+    public function setAttribute(string $name, mixed $value): static
     {
         switch (true) {
             case $name == 'id':
@@ -104,7 +104,7 @@ class tag extends atoum\template
         return $this;
     }
 
-    public function unsetAttribute($name)
+    public function unsetAttribute(string $name): static
     {
         switch ($name) {
             case 'id':

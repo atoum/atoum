@@ -8,49 +8,49 @@ use atoum\atoum\iterators;
 
 class compiler extends atoum\script
 {
-    protected $compile = true;
-    protected $srcDirectory = null;
-    protected $destinationDirectory = null;
-    protected $destinationFile = null;
-    protected $bootstrapFile = null;
+    protected bool $compile = true;
+    protected ?string $srcDirectory = null;
+    protected ?string $destinationDirectory = null;
+    protected ?string $destinationFile = null;
+    protected ?string $bootstrapFile = null;
 
-    public function setSrcDirectory($directory)
+    public function setSrcDirectory(string $directory): static
     {
         $this->srcDirectory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         return $this;
     }
 
-    public function getSrcDirectory()
+    public function getSrcDirectory(): ?string
     {
         return $this->srcDirectory;
     }
 
-    public function setDestinationFile($file)
+    public function setDestinationFile(string $file): static
     {
         $this->destinationFile = $file;
 
         return $this;
     }
 
-    public function getDestinationDirectory()
+    public function getDestinationDirectory(): ?string
     {
         return $this->destinationDirectory;
     }
 
-    public function setBootstrapFile($bootstrapFile)
+    public function setBootstrapFile(string $bootstrapFile): static
     {
         $this->bootstrapFile = $bootstrapFile;
 
         return $this;
     }
 
-    public function getBootstrapFile()
+    public function getBootstrapFile(): ?string
     {
         return $this->bootstrapFile;
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         return $this
             ->addArgumentHandler(
@@ -104,7 +104,7 @@ class compiler extends atoum\script
         ;
     }
 
-    protected function doRun()
+    protected function doRun(): static
     {
         $data = [];
 

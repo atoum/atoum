@@ -6,19 +6,19 @@ use atoum\atoum\exceptions;
 
 class method
 {
-    protected $returnReference = false;
-    protected $name = '';
-    protected $isConstructor = false;
-    protected $arguments = [];
+    protected bool $returnReference = false;
+    protected string $name = '';
+    protected bool $isConstructor = false;
+    protected array $arguments = [];
 
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
 
         $this->isConstructor = ($name == __FUNCTION__);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = 'public function ';
 
@@ -31,22 +31,22 @@ class method
         return $string;
     }
 
-    public function getArguments()
+    public function getArguments(): array
     {
         return $this->arguments;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function isConstructor()
+    public function isConstructor(): bool
     {
         return $this->isConstructor;
     }
 
-    public function returnReference()
+    public function returnReference(): static
     {
         if ($this->isConstructor === true) {
             throw new exceptions\logic('Constructor can not return a reference');
@@ -57,14 +57,14 @@ class method
         return $this;
     }
 
-    public function addArgument(method\argument $argument)
+    public function addArgument(method\argument $argument): static
     {
         $this->arguments[] = $argument;
 
         return $this;
     }
 
-    public function getArgumentsAsString()
+    public function getArgumentsAsString(): string
     {
         $arguments = $this->arguments;
 
@@ -75,7 +75,7 @@ class method
         return implode(', ', $arguments);
     }
 
-    public static function get($name)
+    public static function get(string $name): static
     {
         return new static($name);
     }

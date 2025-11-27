@@ -106,8 +106,8 @@ class cli extends atoum\test
                 ->variable($field->getValue())->isNull()
                 ->variable($field->getTestNumber())->isNull()
                 ->boolean($field->handleEvent(atoum\runner::runStop, $runner))->isTrue()
-                ->integer($field->getValue())->isEqualTo($totalMemoryUsage)
-                ->integer($field->getTestNumber())->isEqualTo($testNumber)
+                ->variable($field->getValue())->isEqualTo($totalMemoryUsage)
+                ->variable($field->getTestNumber())->isEqualTo($testNumber)
         ;
     }
 

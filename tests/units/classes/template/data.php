@@ -167,7 +167,8 @@ class data extends atoum\test
         $this
             ->if($data = new template\data())
             ->then
-                ->array($data->getByTag(uniqid()))->isEmpty()
+                ->object($iterator = $data->getByTag(uniqid()))->isInstanceOf(template\iterator::class)
+                ->array(iterator_to_array($iterator))->isEmpty()
         ;
     }
 

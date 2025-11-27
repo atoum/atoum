@@ -4,8 +4,8 @@ namespace atoum\atoum;
 
 class configurator
 {
-    protected $script = null;
-    protected $methods = [];
+    protected ?scripts\runner $script = null;
+    protected array $methods = [];
 
     public function __construct(scripts\runner $script)
     {
@@ -20,7 +20,7 @@ class configurator
         }
     }
 
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         $keyMethod = strtolower($method);
 
@@ -43,7 +43,7 @@ class configurator
         }
     }
 
-    public function getScript()
+    public function getScript(): scripts\runner
     {
         return $this->script;
     }

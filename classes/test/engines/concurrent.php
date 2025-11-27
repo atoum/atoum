@@ -8,10 +8,10 @@ use atoum\atoum\test;
 
 class concurrent extends test\engine
 {
-    protected $scoreFactory = null;
-    protected $php = null;
-    protected $test = null;
-    protected $method = '';
+    protected ?\Closure $scoreFactory = null;
+    protected ?atoum\php $php = null;
+    protected ?atoum\test $test = null;
+    protected string $method = '';
 
     public function __construct()
     {
@@ -21,7 +21,7 @@ class concurrent extends test\engine
         ;
     }
 
-    public function setScoreFactory(?\closure $factory = null)
+    public function setScoreFactory(?\Closure $factory = null): static
     {
         $this->scoreFactory = $factory ?: function () {
             return new atoum\score();
@@ -30,29 +30,29 @@ class concurrent extends test\engine
         return $this;
     }
 
-    public function getScoreFactory()
+    public function getScoreFactory(): \Closure
     {
         return $this->scoreFactory;
     }
 
-    public function setPhp(?atoum\php $php = null)
+    public function setPhp(?atoum\php $php = null): static
     {
         $this->php = $php ?: new atoum\php();
 
         return $this;
     }
 
-    public function getPhp()
+    public function getPhp(): atoum\php
     {
         return $this->php;
     }
 
-    public function isAsynchronous()
+    public function isAsynchronous(): bool
     {
         return true;
     }
 
-    public function run(atoum\test $test)
+    public function run(atoum\test $test): static
     {
         $currentTestMethod = $test->getCurrentMethod();
 
@@ -185,7 +185,7 @@ class concurrent extends test\engine
         return $this;
     }
 
-    public function getScore()
+    public function getScore(): ?atoum\score
     {
         $score = null;
 
@@ -202,10 +202,10 @@ class concurrent extends test\engine
 
             if ($stdErr !== '') {
                 if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($stdErr), $errors, PREG_SET_ORDER) === 0) {
-                    $score->addError($this->test->getPath(), $this->test->getClass(), $this->method, null, 'UNKNOWN', $stdErr);
+                    $score->addError($this->test->getPath(), $this->test->getClass(), $this->method, 0, 'UNKNOWN', $stdErr);
                 } else {
                     foreach ($errors as $error) {
-                        $score->addError($this->test->getPath(), $this->test->getClass(), $this->method, null, $error[1], $error[2], $error[3], $error[4]);
+                        $score->addError($this->test->getPath(), $this->test->getClass(), $this->method, 0, $error[1], $error[2], $error[3], $error[4]);
                     }
                 }
             }

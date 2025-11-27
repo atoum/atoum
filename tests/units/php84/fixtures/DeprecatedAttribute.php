@@ -1,5 +1,7 @@
 <?php
 
+/* @php-cs-fixer-ignore-file */
+
 namespace atoum\atoum\tests\units\php84\fixtures;
 
 /**

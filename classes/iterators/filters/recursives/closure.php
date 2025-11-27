@@ -4,9 +4,9 @@ namespace atoum\atoum\iterators\filters\recursives;
 
 class closure extends \recursiveFilterIterator
 {
-    protected $closures = [];
+    protected array $closures = [];
 
-    public function __construct(\recursiveIterator $iterator, $closure = null)
+    public function __construct(\recursiveIterator $iterator, \Closure|array|null $closure = null)
     {
         parent::__construct($iterator);
 
@@ -17,20 +17,20 @@ class closure extends \recursiveFilterIterator
         }
     }
 
-    public function addClosure(\closure $closure)
+    public function addClosure(\Closure $closure): static
     {
         $this->closures[] = $closure;
 
         return $this;
     }
 
-    public function getClosures()
+    public function getClosures(): array
     {
         return $this->closures;
     }
 
     #[\ReturnTypeWillChange]
-    public function accept()
+    public function accept(): bool
     {
         foreach ($this->closures as $closure) {
             if ($closure($this->current(), $this->key(), $this->getInnerIterator()) === false) {
@@ -42,7 +42,7 @@ class closure extends \recursiveFilterIterator
     }
 
     #[\ReturnTypeWillChange]
-    public function getChildren()
+    public function getChildren(): static
     {
         return new static(
             $this->getInnerIterator()->getChildren(),

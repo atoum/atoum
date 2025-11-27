@@ -6,7 +6,7 @@ use atoum\atoum\test\adapter;
 
 class storage implements \countable, \iteratorAggregate
 {
-    protected $adapters = null;
+    protected ?\splObjectStorage $adapters = null;
 
     public function __construct()
     {
@@ -19,7 +19,7 @@ class storage implements \countable, \iteratorAggregate
         return count($this->adapters);
     }
 
-    public function add(adapter $adapter)
+    public function add(adapter $adapter): static
     {
         if ($this->contains($adapter) === false) {
             $this->adapters->offsetSet($adapter);
@@ -28,12 +28,12 @@ class storage implements \countable, \iteratorAggregate
         return $this;
     }
 
-    public function contains(adapter $adapter)
+    public function contains(adapter $adapter): bool
     {
         return $this->adapters->offsetExists($adapter);
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->adapters = new \splObjectStorage();
 
@@ -52,7 +52,7 @@ class storage implements \countable, \iteratorAggregate
         return new \arrayIterator($adapters);
     }
 
-    public function resetCalls()
+    public function resetCalls(): static
     {
         foreach ($this->adapters as $adapter) {
             $adapter->resetCalls();

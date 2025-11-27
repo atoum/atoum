@@ -8,9 +8,9 @@ use atoum\atoum\asserter\definition;
 
 class asserterProxy implements definition, ArrayAccess
 {
-    private $parent;
+    private atoum\asserters\generator $parent;
 
-    private $proxiedAsserter;
+    private definition $proxiedAsserter;
 
     public function __construct(atoum\asserters\generator $parent, definition $proxiedAsserter)
     {
@@ -18,7 +18,7 @@ class asserterProxy implements definition, ArrayAccess
         $this->proxiedAsserter = $proxiedAsserter;
     }
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'yields':
@@ -29,12 +29,12 @@ class asserterProxy implements definition, ArrayAccess
         }
     }
 
-    protected function proxyfyAsserter(definition $asserter)
+    protected function proxyfyAsserter(definition $asserter): self
     {
         return new self($this->parent, $asserter);
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): mixed
     {
         $return = call_user_func_array([$this->proxiedAsserter, $name], $arguments);
 
@@ -45,29 +45,37 @@ class asserterProxy implements definition, ArrayAccess
         return $return;
     }
 
-    public function setLocale(?atoum\locale $locale = null)
+    public function setLocale(?atoum\locale $locale = null): static
     {
         return $this->proxiedAsserter->setLocale($locale);
     }
 
-    public function setGenerator(?atoum\asserter\generator $generator = null)
+    public function setGenerator(?atoum\asserter\generator $generator = null): static
     {
-        return $this->setGenerator($generator);
+        $this->proxiedAsserter->setGenerator($generator);
+
+        return $this;
     }
 
-    public function setWithTest(atoum\test $test)
+    public function setWithTest(atoum\test $test): static
     {
-        return $this->setWithTest($test);
+        $this->proxiedAsserter->setWithTest($test);
+
+        return $this;
     }
 
-    public function setWith($mixed)
+    public function setWith(mixed $mixed): static
     {
-        return $this->setWith($mixed);
+        $this->proxiedAsserter->setWith($mixed);
+
+        return $this;
     }
 
-    public function setWithArguments(array $arguments)
+    public function setWithArguments(array $arguments): static
     {
-        return $this->setWithArguments($arguments);
+        $this->proxiedAsserter->setWithArguments($arguments);
+
+        return $this;
     }
 
     protected function checkIfProxySupportsArrayAccess()
@@ -78,30 +86,36 @@ class asserterProxy implements definition, ArrayAccess
     }
 
     #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         $this->checkIfProxySupportsArrayAccess();
-        return $this->proxyfyAsserter($this->proxiedAsserter->offsetExists($offset));
+
+        return $this->proxiedAsserter->offsetExists($offset);
     }
 
     #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         $this->checkIfProxySupportsArrayAccess();
-        return $this->proxyfyAsserter($this->proxiedAsserter->offsetGet($offset));
+
+        $value = $this->proxiedAsserter->offsetGet($offset);
+
+        return $value instanceof definition ? $this->proxyfyAsserter($value) : $value;
     }
 
     #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->checkIfProxySupportsArrayAccess();
-        $this->proxyfyAsserter($this->proxiedAsserter->offsetSet($offset, $value));
+
+        $this->proxiedAsserter->offsetSet($offset, $value);
     }
 
     #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         $this->checkIfProxySupportsArrayAccess();
-        $this->proxyfyAsserter($this->proxiedAsserter->offsetUnset($offset));
+
+        $this->proxiedAsserter->offsetUnset($offset);
     }
 }

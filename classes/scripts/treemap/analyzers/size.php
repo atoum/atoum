@@ -6,17 +6,17 @@ use atoum\atoum\scripts\treemap\analyzer;
 
 class size implements analyzer
 {
-    public function getMetricName()
+    public function getMetricName(): string
     {
         return 'size';
     }
 
-    public function getMetricLabel()
+    public function getMetricLabel(): string
     {
         return 'Size';
     }
 
-    public function getMetricFromFile(\splFileInfo $file)
+    public function getMetricFromFile(\splFileInfo $file): int|float
     {
         return $file->getSize();
     }

@@ -6,28 +6,28 @@ use atoum\atoum\asserters\adapter;
 
 class manager
 {
-    protected $calls = null;
+    protected ?\splObjectStorage $calls = null;
 
     public function __construct()
     {
         $this->calls = new \splObjectStorage();
     }
 
-    public function add(adapter\call $call)
+    public function add(adapter\call $call): static
     {
         $this->calls->offsetSet($call);
 
         return $this;
     }
 
-    public function remove(adapter\call $call)
+    public function remove(adapter\call $call): static
     {
         $this->calls->offsetUnset($call);
 
         return $this;
     }
 
-    public function check()
+    public function check(): static
     {
         if (count($this->calls) > 0) {
             $this->calls->rewind();

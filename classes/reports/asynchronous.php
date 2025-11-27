@@ -7,15 +7,15 @@ use atoum\atoum\report;
 
 abstract class asynchronous extends atoum\report
 {
-    protected $string = '';
-    protected $fail = false;
+    protected string $string = '';
+    protected bool $fail = false;
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->string;
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable)
     {
         switch ($event) {
             case atoum\test::fail:
@@ -26,7 +26,8 @@ abstract class asynchronous extends atoum\report
                 break;
         }
 
-        parent::handleEvent($event, $observable)->build($event);
+        parent::handleEvent($event, $observable);
+        $this->build($event);
 
         if ($event === atoum\runner::runStop) {
             if ($this->title !== null) {
@@ -41,12 +42,12 @@ abstract class asynchronous extends atoum\report
         return $this;
     }
 
-    public function addWriter(report\writers\asynchronous $writer)
+    public function addWriter(report\writers\asynchronous $writer): static
     {
         return $this->doAddWriter($writer);
     }
 
-    protected function build($event)
+    protected function build(string $event): static
     {
         foreach ($this->lastSetFields as $field) {
             $this->string .= (string) $field;

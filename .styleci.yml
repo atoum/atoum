@@ -1,0 +1,11 @@
+preset: psr12
+risky: true
+
+finder:
+  not-path:
+    - resources/templates
+    - tests/units/php84/fixtures
+
+enabled:
+  short_array_syntax: true
+  concat_with_spaces: true

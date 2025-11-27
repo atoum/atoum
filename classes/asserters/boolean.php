@@ -4,7 +4,7 @@ namespace atoum\atoum\asserters;
 
 class boolean extends variable
 {
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'isfalse':
@@ -16,7 +16,7 @@ class boolean extends variable
         }
     }
 
-    public function setWith($value)
+    public function setWith(mixed $value): static
     {
         parent::setWith($value);
 
@@ -29,12 +29,12 @@ class boolean extends variable
         return $this;
     }
 
-    public function isTrue($failMessage = null)
+    public function isTrue(?string $failMessage = null): static
     {
         return $this->isEqualTo(true, $failMessage ?: $this->_('%s is not true', $this));
     }
 
-    public function isFalse($failMessage = null)
+    public function isFalse(?string $failMessage = null): static
     {
         return $this->isEqualTo(false, $failMessage ?: $this->_('%s is not false', $this));
     }

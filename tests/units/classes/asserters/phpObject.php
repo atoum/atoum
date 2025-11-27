@@ -48,7 +48,7 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isNotAnObject)
                 ->mock($locale)->call('_')->withArguments('%s is not an object', $asserter)->once
                 ->string($asserter->getValue())->isEqualTo($value)
@@ -77,12 +77,12 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->hasSize(0);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d, expected size %d'), $asserter, count($this), 0))
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasSize(0, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
                 ->object($asserter->hasSize(count($this)))->isIdenticalTo($asserter);
         ;
@@ -109,17 +109,17 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d'), $asserter, count($this)))
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isEmpty($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage(sprintf($generator->getLocale()->_('%s has size %d'), $asserter, count($this)))
 
             ->if($asserter->setWith(new \arrayIterator()))
@@ -152,14 +152,14 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter, $test) {
                     $asserter->isCloneOf($test);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isNotClone)
                 ->mock($locale)->call('_')->withArguments('%s is not a clone of %s', $asserter, $type)->once
 
                 ->exception(function () use ($asserter, $test, & $failMessage) {
                     $asserter->isCloneOf($test, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($clonedTest = clone $test)
@@ -210,16 +210,16 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isTestedInstance();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isTestedInstance($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
                 ->exception(function () use ($asserter) {
                     $asserter->isTestedInstance;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
         ;
     }
 
@@ -254,11 +254,11 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotTestedInstance();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNotTestedInstance($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -295,11 +295,11 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isInstanceOfTestedClass();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isInstanceOfTestedClass($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -365,14 +365,14 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter, $test) {
                     $asserter->isInstanceOf(\stdClass::class);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isNotAnInstance)
                 ->mock($locale)->call('_')->withArguments('%s is not an instance of %s', $asserter, \stdClass::class)->once
 
                 ->exception(function () use ($asserter, & $object) {
                     $asserter->isInstanceOf($object = new \stdClass());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isNotAnInstance)
                 ->mock($locale)->call('_')->withArguments('%s is not an instance of %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($object)->once
@@ -380,7 +380,7 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter, & $otherObject, & $failMessage) {
                     $asserter->isInstanceOf($otherObject = new \stdClass(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
                 ->mock($analyzer)->call('getTypeOf')->withArguments($otherObject)->once
 
@@ -419,28 +419,28 @@ class phpObject extends atoum\test
                 ->exception(function () use ($asserter, $test) {
                     $asserter->isNotInstanceOf($test);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isAnInstance)
                 ->mock($locale)->call('_')->withArguments('%s is an instance of %s', $asserter, $type)->once
 
                 ->exception(function () use ($asserter, $test) {
                     $asserter->isNotInstanceOf(get_class($test));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isAnInstance)
                 ->mock($locale)->call('_')->withArguments('%s is an instance of %s', $asserter, get_class($test))->once
 
                 ->exception(function () use ($asserter, $test) {
                     $asserter->isNotInstanceOf('\\' . get_class($test));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isAnInstance)
                 ->mock($locale)->call('_')->withArguments('%s is an instance of %s', $asserter, '\\' . get_class($test))->once
 
                 ->exception(function () use ($asserter, $test, & $failMessage) {
                     $asserter->isNotInstanceOf($test, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->isNotInstanceOf('stdClass'))->isIdenticalTo($asserter)

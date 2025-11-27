@@ -9,7 +9,7 @@ use atoum\atoum\test;
 
 class cli extends report\fields\runner\event
 {
-    protected $progressBar = null;
+    protected ?progressBar $progressBar = null;
 
     public function __construct(?progressBar $progressBar = null)
     {
@@ -18,7 +18,7 @@ class cli extends report\fields\runner\event
         $this->progressBar = $progressBar ?: new progressBar();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -67,7 +67,7 @@ class cli extends report\fields\runner\event
         return $string;
     }
 
-    public function getProgressBar()
+    public function getProgressBar(): progressBar|progressBar\dot
     {
         return $this->progressBar;
     }

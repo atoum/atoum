@@ -58,7 +58,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notDateInterval)
                 ->mock($locale)->call('_')->withArguments('%s is not an instance of \\dateInterval', $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($value)->once
@@ -84,7 +84,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isGreaterThan($interval = new \DateInterval('P2Y'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage('Interval ' . $asserter . ' is not greater than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
         ;
     }
@@ -107,7 +107,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isGreaterThanOrEqualTo($interval = new \DateInterval('P2Y'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage('Interval ' . $asserter . ' is not greater than or equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
         ;
     }
@@ -138,12 +138,12 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isZero();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage('Interval ' . $asserter . ' is not equal to zero')
                 ->exception(function () use ($asserter) {
                     $asserter->isZero;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage('Interval ' . $asserter . ' is not equal to zero')
         ;
     }
@@ -166,13 +166,13 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isLessThan($interval = new \dateInterval('P1D'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage('Interval ' . $asserter . ' is not less than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isLessThan($interval = new \dateInterval('P2D'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage('Interval ' . $asserter . ' is not less than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
         ;
     }
@@ -195,7 +195,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isLessThanOrEqualTo($interval = new \dateInterval('P1D'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage('Interval ' . $asserter . ' is not less than or equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
         ;
     }
@@ -218,7 +218,7 @@ class dateInterval extends atoum\test
                 ->exception(function () use ($asserter, & $interval) {
                     $asserter->isEqualTo($interval = new \dateInterval('PT1S'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage('Interval ' . $asserter . ' is not equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
         ;
     }

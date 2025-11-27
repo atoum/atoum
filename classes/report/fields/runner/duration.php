@@ -8,19 +8,19 @@ use atoum\atoum\runner;
 
 abstract class duration extends report\field
 {
-    protected $value = null;
+    protected ?float $value = null;
 
     public function __construct()
     {
         parent::__construct([runner::runStop]);
     }
 
-    public function getValue()
+    public function getValue(): ?float
     {
         return $this->value;
     }
 
-    public function handleEvent($event, observable $observable)
+    public function handleEvent(string $event, observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

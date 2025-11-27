@@ -6,15 +6,15 @@ use atoum\atoum\mock;
 
 class linker
 {
-    protected $mocks = null;
-    protected $controllers = null;
+    protected ?\splObjectStorage $mocks = null;
+    protected ?\splObjectStorage $controllers = null;
 
     public function __construct()
     {
         $this->init();
     }
 
-    public function link(mock\controller $controller, mock\aggregator $mock)
+    public function link(mock\controller $controller, mock\aggregator $mock): static
     {
         $currentMock = $this->getMock($controller);
 
@@ -32,17 +32,17 @@ class linker
         return $this;
     }
 
-    public function getController(mock\aggregator $mock)
+    public function getController(mock\aggregator $mock): ?mock\controller
     {
         return (isset($this->controllers[$mock]) === false ? null : $this->controllers[$mock]);
     }
 
-    public function getMock(mock\controller $controller)
+    public function getMock(mock\controller $controller): ?mock\aggregator
     {
         return (isset($this->mocks[$controller]) === false ? null : $this->mocks[$controller]);
     }
 
-    public function unlink(mock\controller $controller)
+    public function unlink(mock\controller $controller): static
     {
         $mock = $this->getMock($controller);
 
@@ -56,7 +56,7 @@ class linker
         return $this;
     }
 
-    public function reset()
+    public function reset(): static
     {
         foreach ($this->mocks as $controller) {
             $controller->reset();
@@ -65,7 +65,7 @@ class linker
         return $this->init();
     }
 
-    protected function init()
+    protected function init(): static
     {
         $this->mocks = new \splObjectStorage();
         $this->controllers = new \splObjectStorage();

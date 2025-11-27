@@ -4,7 +4,7 @@ namespace atoum\atoum\asserters;
 
 class phpResource extends variable
 {
-    public function setWith($value)
+    public function setWith(mixed $value): static
     {
         parent::setWith($value);
 
@@ -17,7 +17,7 @@ class phpResource extends variable
         return $this;
     }
 
-    public function __get($asserter)
+    public function __get(string $asserter): mixed
     {
         switch (strtolower($asserter)) {
             case 'type':
@@ -28,7 +28,7 @@ class phpResource extends variable
         }
     }
 
-    public function isOfType($type, $failMessage = null)
+    public function isOfType(string $type, ?string $failMessage = null): static
     {
         $actualType = get_resource_type($this->valueIsSet()->value);
 
@@ -41,7 +41,7 @@ class phpResource extends variable
         return $this;
     }
 
-    protected function matches($pattern, $failMessage = null)
+    protected function matches(string $pattern, ?string $failMessage = null): static
     {
         $actualType = get_resource_type($this->valueIsSet()->value);
 
@@ -54,7 +54,7 @@ class phpResource extends variable
         return $this;
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): mixed
     {
         if ('is' === substr($name, 0, 2)) {
             $pattern = preg_replace(['/^is/', '/_/'], ['', '.?'], $name);
@@ -77,7 +77,7 @@ class phpResource extends variable
         return parent::__call($name, $arguments);
     }
 
-    protected function getTypeAsserter()
+    protected function getTypeAsserter(): phpString
     {
         return $this->generator->__call('phpString', [get_resource_type($this->valueIsSet()->value)]);
     }

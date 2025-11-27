@@ -15,9 +15,9 @@ class output extends phpString
         $this->setWith(null);
     }
 
-    public function setWith($value = null, $charlist = null, $checkType = true)
+    public function setWith(mixed $value = null, ?string $charlist = null, bool $checkType = true): static
     {
-        if ($value instanceof \closure) {
+        if ($value instanceof \Closure) {
             ob_start();
             $value($this->getTest());
             $value = ob_get_clean();

@@ -102,12 +102,12 @@ class extension extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isLoaded();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage('PHP extension \'' . $extensionName . '\' is not loaded')
                 ->exception(function () use ($asserter) {
                     $asserter->isLoaded;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage('PHP extension \'' . $extensionName . '\' is not loaded')
 
             ->if($this->calling($extension)->isLoaded = true)

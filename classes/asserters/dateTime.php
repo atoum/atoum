@@ -6,7 +6,7 @@ use atoum\atoum\exceptions;
 
 class dateTime extends phpObject
 {
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'isimmutable':
@@ -17,7 +17,7 @@ class dateTime extends phpObject
         }
     }
 
-    public function setWith($value, $checkType = true)
+    public function setWith(mixed $value, bool $checkType = true): static
     {
         parent::setWith($value, false);
 
@@ -32,7 +32,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function hasTimezone(\dateTimezone $timezone, $failMessage = null)
+    public function hasTimezone(\dateTimezone $timezone, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->getTimezone()->getName() == $timezone->getName()) {
             $this->pass();
@@ -43,7 +43,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function hasYear($year, $failMessage = null)
+    public function hasYear(int $year, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->format('Y') === sprintf('%04d', $year)) {
             $this->pass();
@@ -54,7 +54,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function hasMonth($month, $failMessage = null)
+    public function hasMonth(int $month, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->format('m') === sprintf('%02d', $month)) {
             $this->pass();
@@ -65,7 +65,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function hasDay($day, $failMessage = null)
+    public function hasDay(int $day, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->format('d') === sprintf('%02d', $day)) {
             $this->pass();
@@ -76,7 +76,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function hasDate($year, $month, $day, $failMessage = null)
+    public function hasDate(int $year, int $month, int $day, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->format('Y-m-d') === sprintf('%04d-%02d-%02d', $year, $month, $day)) {
             $this->pass();
@@ -87,7 +87,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function hasHours($hours, $failMessage = null)
+    public function hasHours(int $hours, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->format('H') === sprintf('%02d', $hours)) {
             $this->pass();
@@ -98,7 +98,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function hasMinutes($minutes, $failMessage = null)
+    public function hasMinutes(int $minutes, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->format('i') === sprintf('%02d', $minutes)) {
             $this->pass();
@@ -109,7 +109,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function hasSeconds($seconds, $failMessage = null)
+    public function hasSeconds(int $seconds, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->format('s') === sprintf('%02d', $seconds)) {
             $this->pass();
@@ -120,7 +120,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function hasTime($hours, $minutes, $seconds, $failMessage = null)
+    public function hasTime(int $hours, int $minutes, int $seconds, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->format('H:i:s') === sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds)) {
             $this->pass();
@@ -131,7 +131,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function hasDateAndTime($year, $month, $day, $hours, $minutes, $seconds, $failMessage = null)
+    public function hasDateAndTime(int $year, int $month, int $day, int $hours, int $minutes, int $seconds, ?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value->format('Y-m-d H:i:s') === sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hours, $minutes, $seconds)) {
             $this->pass();
@@ -142,7 +142,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    public function isImmutable($failMessage = null)
+    public function isImmutable(?string $failMessage = null): static
     {
         if ($this->valueIsSet()->value instanceof \dateTimeImmutable === false) {
             $this->fail($failMessage ?: $this->_('%s is not immutable', $this));
@@ -153,7 +153,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    protected function valueIsSet($message = null)
+    protected function valueIsSet(?string $message = null): static
     {
         $message = $message ?: 'Value is not an instance of \\dateTime or \\dateTimeInterface';
 
@@ -164,7 +164,7 @@ class dateTime extends phpObject
         return $this;
     }
 
-    private static function isDateTime($value)
+    private static function isDateTime(mixed $value): bool
     {
         return $value instanceof \dateTime || $value instanceof \dateTimeInterface;
     }

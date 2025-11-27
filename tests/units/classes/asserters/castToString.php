@@ -61,7 +61,7 @@ class castToString extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notAnObject)
                     ->integer($asserter->getValue())->isEqualTo($value)
                     ->variable($asserter->getCharlist())->isNull()

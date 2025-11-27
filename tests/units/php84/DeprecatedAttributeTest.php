@@ -3,6 +3,7 @@
 namespace atoum\atoum\tests\units\php84;
 
 use atoum\atoum;
+use atoum\atoum\attributes\Php;
 use atoum\atoum\tests\units\php84\fixtures\Configuration;
 use atoum\atoum\tests\units\php84\fixtures\LegacyApi;
 use atoum\atoum\tests\units\php84\fixtures\ModernService;
@@ -17,8 +18,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test detecting deprecated methods via Reflection
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testDeprecatedMethodIsDetectable()
     {
         $this
@@ -45,8 +46,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test deprecated class detection
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testDeprecatedClassIsDetectable()
     {
         $this
@@ -68,8 +69,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test deprecated constant detection
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testDeprecatedConstantIsDetectable()
     {
         $this
@@ -87,8 +88,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test deprecated property detection
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testDeprecatedPropertyIsDetectable()
     {
         $this
@@ -102,8 +103,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test that non-deprecated methods don't have the attribute
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testNonDeprecatedMethodHasNoAttribute()
     {
         $this
@@ -117,8 +118,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test deprecated method with minimal parameters
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testDeprecatedMethodWithoutParameters()
     {
         $this
@@ -132,8 +133,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test mocking a deprecated method still works
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testMockingDeprecatedMethod()
     {
         $this
@@ -150,8 +151,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test mocking a deprecated class
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testMockingDeprecatedClass()
     {
         $this
@@ -167,6 +168,7 @@ class DeprecatedAttributeTest extends atoum
      * Test that deprecated method can still be called
      * (PHP doesn't prevent calling deprecated code, it just emits E_USER_DEPRECATED)
      */
+    #[Php('8.4')]
     public function testDeprecatedMethodIsStillCallable()
     {
         $this
@@ -180,8 +182,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test versioned deprecations
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testVersionedDeprecations()
     {
         $this
@@ -207,8 +209,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test extracting "since" parameter from deprecation
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testDeprecationSinceParameter()
     {
         $this
@@ -225,8 +227,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test helper method to check if method is deprecated
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testIsMethodDeprecated()
     {
         $this
@@ -241,8 +243,8 @@ class DeprecatedAttributeTest extends atoum
     /**
      * Test helper to check if class is deprecated
      *
-     * @php >= 8.4
      */
+    #[Php('8.4')]
     public function testIsClassDeprecated()
     {
         $this

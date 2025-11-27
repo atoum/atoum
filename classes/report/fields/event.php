@@ -7,20 +7,20 @@ use atoum\atoum\report;
 
 abstract class event extends report\field
 {
-    protected $observable = null;
-    protected $event = null;
+    protected ?atoum\observable $observable = null;
+    protected ?string $event = null;
 
-    public function getObservable()
+    public function getObservable(): ?atoum\observable
     {
         return $this->observable;
     }
 
-    public function getEvent()
+    public function getEvent(): ?string
     {
         return $this->event;
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             $this->observable = null;

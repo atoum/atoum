@@ -72,6 +72,7 @@ class growl extends atoum\test
         $this
             ->if($adapter = new adapter())
             ->and($adapter->system = function () {
+                return '';
             })
             ->and($adapter->file_exists = true)
             ->and($score = new \mock\atoum\atoum\score())

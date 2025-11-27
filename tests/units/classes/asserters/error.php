@@ -103,13 +103,13 @@ class error extends atoum\test
                 ->exception(function () use (& $line, $asserter) {
                     $asserter->exists();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorNotExists)
                 ->mock($locale)->call('_')->withArguments('error %s', 'does not exist')->once
                 ->exception(function () use (& $line, $asserter) {
                     $asserter->exists;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorNotExists)
                 ->mock($locale)->call('_')->withArguments('error %s', 'does not exist')->twice
 
@@ -128,7 +128,7 @@ class error extends atoum\test
                 ->exception(function () use (& $line, $asserter) {
                     $asserter->exists();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorNotExists)
                 ->mock($locale)->call('_')->withArguments('error with message \'%s\' %s', $message, 'does not exist')->once
 
@@ -143,7 +143,7 @@ class error extends atoum\test
                     $line = __LINE__;
                     $asserter->exists();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorNotExists)
                 ->mock($locale)->call('_')->withArguments('error of type %s with message \'%s\' %s', atoum\asserters\error::getAsString($type), $message, 'does not exist')->once
 
@@ -158,7 +158,7 @@ class error extends atoum\test
                     $line = __LINE__;
                     $asserter->exists();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorNotExists)
                 ->mock($locale)->call('_')->withArguments('error of type %s %s', atoum\asserters\error::getAsString($type), 'does not exist')->once
 
@@ -194,13 +194,13 @@ class error extends atoum\test
                 ->exception(function () use (& $line, $asserter) {
                     $asserter->notExists();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorExists)
                 ->mock($locale)->call('_')->withArguments('error %s', 'exists')->once
                 ->exception(function () use (& $line, $asserter) {
                     $asserter->notExists;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorExists)
                 ->mock($locale)->call('_')->withArguments('error %s', 'exists')->twice
 
@@ -209,7 +209,7 @@ class error extends atoum\test
                 ->exception(function () use (& $line, $asserter) {
                     $asserter->exists();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorExists)
                 ->mock($locale)->call('_')->withArguments('error with message \'%s\' %s', $message, 'does not exist')->once
 
@@ -218,13 +218,13 @@ class error extends atoum\test
                 ->exception(function () use (& $line, $asserter) {
                     $asserter->notExists();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorExists)
                 ->mock($locale)->call('_')->withArguments('error with message \'%s\' %s', $message, 'exists')->once
                 ->exception(function () use (& $line, $asserter) {
                     $asserter->notExists;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorExists)
                 ->mock($locale)->call('_')->withArguments('error with message \'%s\' %s', $message, 'exists')->twice
                 ->array($asserter->getScore()->getErrors())->isNotEmpty()
@@ -241,7 +241,7 @@ class error extends atoum\test
                     $line = __LINE__;
                     $asserter->notExists();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorExists)
                 ->mock($locale)->call('_')->withArguments('error of type %s with message \'%s\' %s', atoum\asserters\error::getAsString($type), $message, 'exists')->once
 
@@ -251,7 +251,7 @@ class error extends atoum\test
                     $line = __LINE__;
                     $asserter->notExists();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorExists)
                 ->mock($locale)->call('_')->withArguments('error of type %s %s', atoum\asserters\error::getAsString($type), 'exists')->once
 
@@ -260,7 +260,7 @@ class error extends atoum\test
                 ->exception(function () use (& $line, $asserter) {
                     $asserter->notExists();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorExists)
                 ->mock($locale)->call('_')->withArguments('error of type %s with message \'%s\' %s', atoum\asserters\error::getAsString($type), $message, 'exists')->once
                 ->array($asserter->getScore()->getErrors())->isNotEmpty()
@@ -270,7 +270,7 @@ class error extends atoum\test
                 ->exception(function () use (& $line, $asserter) {
                     $asserter->notExists;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($errorExists)
                 ->mock($locale)->call('_')->withArguments('error of type %s with message \'%s\' %s', atoum\asserters\error::getAsString($type), $message, 'exists')->once
                 ->array($asserter->getScore()->getErrors())->isNotEmpty()

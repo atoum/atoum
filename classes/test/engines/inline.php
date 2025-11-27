@@ -7,9 +7,9 @@ use atoum\atoum\test;
 
 class inline extends test\engine
 {
-    protected $score = null;
+    protected ?atoum\test\score $score = null;
 
-    public function isAsynchronous()
+    public function isAsynchronous(): bool
     {
         return false;
     }
@@ -19,19 +19,19 @@ class inline extends test\engine
         $this->setScore();
     }
 
-    public function setScore(?atoum\test\score $score = null)
+    public function setScore(?atoum\test\score $score = null): static
     {
         $this->score = $score ?: new atoum\test\score();
 
         return $this;
     }
 
-    public function getScore()
+    public function getScore(): ?atoum\score
     {
         return $this->score;
     }
 
-    public function run(atoum\test $test)
+    public function run(atoum\test $test): static
     {
         $currentTestMethod = $test->getCurrentMethod();
 

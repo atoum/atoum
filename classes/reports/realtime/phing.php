@@ -11,14 +11,14 @@ use atoum\atoum\reports\realtime;
 
 class phing extends realtime
 {
-    protected $showProgress = true;
-    protected $showMissingCodeCoverage = true;
-    protected $showDuration = true;
-    protected $showMemory = true;
-    protected $showCodeCoverage = true;
-    protected $codeCoverageReportPath = null;
-    protected $codeCoverageReportUrl = null;
-    protected $codeCoverageReportProjectName = null;
+    protected bool $showProgress = true;
+    protected bool $showMissingCodeCoverage = true;
+    protected bool $showDuration = true;
+    protected bool $showMemory = true;
+    protected bool $showCodeCoverage = true;
+    protected mixed $codeCoverageReportPath = null;
+    protected mixed $codeCoverageReportUrl = null;
+    protected mixed $codeCoverageReportProjectName = null;
 
     public function __construct()
     {
@@ -27,138 +27,138 @@ class phing extends realtime
         $this->build();
     }
 
-    public function showProgress()
+    public function showProgress(): static
     {
         $this->showProgress = true;
 
         return $this->build();
     }
 
-    public function hideProgress()
+    public function hideProgress(): static
     {
         $this->showProgress = false;
 
         return $this->build();
     }
 
-    public function progressIsShowed()
+    public function progressIsShowed(): bool
     {
         return $this->showProgress;
     }
 
-    public function showCodeCoverage()
+    public function showCodeCoverage(): static
     {
         $this->showCodeCoverage = true;
 
         return $this->build();
     }
 
-    public function hideCodeCoverage()
+    public function hideCodeCoverage(): static
     {
         $this->showCodeCoverage = false;
 
         return $this->build();
     }
 
-    public function codeCoverageIsShowed()
+    public function codeCoverageIsShowed(): bool
     {
         return $this->showCodeCoverage;
     }
 
-    public function showMissingCodeCoverage()
+    public function showMissingCodeCoverage(): static
     {
         $this->showMissingCodeCoverage = true;
 
         return $this->build();
     }
 
-    public function hideMissingCodeCoverage()
+    public function hideMissingCodeCoverage(): static
     {
         $this->showMissingCodeCoverage = false;
 
         return $this->build();
     }
 
-    public function missingCodeCoverageIsShowed()
+    public function missingCodeCoverageIsShowed(): bool
     {
         return $this->showMissingCodeCoverage;
     }
 
-    public function showDuration()
+    public function showDuration(): static
     {
         $this->showDuration = true;
 
         return $this->build();
     }
 
-    public function hideDuration()
+    public function hideDuration(): static
     {
         $this->showDuration = false;
 
         return $this->build();
     }
 
-    public function durationIsShowed()
+    public function durationIsShowed(): bool
     {
         return $this->showDuration;
     }
 
-    public function showMemory()
+    public function showMemory(): static
     {
         $this->showMemory = true;
 
         return $this->build();
     }
 
-    public function hideMemory()
+    public function hideMemory(): static
     {
         $this->showMemory = false;
 
         return $this->build();
     }
 
-    public function memoryIsShowed()
+    public function memoryIsShowed(): bool
     {
         return $this->showMemory;
     }
 
-    public function setCodeCoverageReportPath($path = null)
+    public function setCodeCoverageReportPath(mixed $path = null): static
     {
         $this->codeCoverageReportPath = $path;
 
         return $this;
     }
 
-    public function getCodeCoverageReportPath()
+    public function getCodeCoverageReportPath(): mixed
     {
         return $this->codeCoverageReportPath;
     }
 
-    public function setCodeCoverageReportProjectName($url = null)
+    public function setCodeCoverageReportProjectName(mixed $url = null): static
     {
         $this->codeCoverageReportProjectName = $url;
 
         return $this;
     }
 
-    public function getCodeCoverageReportProjectName()
+    public function getCodeCoverageReportProjectName(): mixed
     {
         return $this->codeCoverageReportProjectName;
     }
 
-    public function setCodeCoverageReportUrl($url = null)
+    public function setCodeCoverageReportUrl(mixed $url = null): static
     {
         $this->codeCoverageReportUrl = $url;
 
         return $this;
     }
 
-    public function getCodeCoverageReportUrl()
+    public function getCodeCoverageReportUrl(): mixed
     {
         return $this->codeCoverageReportUrl;
     }
 
-    protected function build()
+    protected function build(): static
     {
         $this->resetFields();
 

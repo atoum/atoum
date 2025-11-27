@@ -9,7 +9,7 @@ use atoum\atoum\tools;
 
 class utf8String extends phpString
 {
-    protected $adapter = null;
+    protected ?atoum\adapter $adapter = null;
 
     public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
     {
@@ -20,12 +20,12 @@ class utf8String extends phpString
         parent::__construct($generator, $analyzer, $locale);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (is_string($this->value) === false ? parent::__toString() : $this->_('string(%s) \'%s\'', mb_strlen($this->value, 'UTF-8'), addcslashes($this->value, $this->charlist ?? '')));
     }
 
-    public function setWith($value, $charlist = null, $checkType = true)
+    public function setWith(mixed $value, ?string $charlist = null, bool $checkType = true): static
     {
         parent::setWith($value, $charlist, $checkType);
 
@@ -40,7 +40,7 @@ class utf8String extends phpString
         return $this;
     }
 
-    public function hasLength($length, $failMessage = null)
+    public function hasLength(int $length, ?string $failMessage = null): static
     {
         if (mb_strlen($this->valueIsSet()->value, 'UTF-8') == $length) {
             $this->pass();
@@ -51,7 +51,7 @@ class utf8String extends phpString
         return $this;
     }
 
-    public function hasLengthGreaterThan($length, $failMessage = null)
+    public function hasLengthGreaterThan(int $length, ?string $failMessage = null): static
     {
         if (mb_strlen($this->valueIsSet()->value, 'UTF-8') > $length) {
             $this->pass();
@@ -62,7 +62,7 @@ class utf8String extends phpString
         return $this;
     }
 
-    public function hasLengthLessThan($length, $failMessage = null)
+    public function hasLengthLessThan(int $length, ?string $failMessage = null): static
     {
         if (mb_strlen($this->valueIsSet()->value, 'UTF-8') < $length) {
             $this->pass();
@@ -73,7 +73,7 @@ class utf8String extends phpString
         return $this;
     }
 
-    public function contains($fragment, $failMessage = null)
+    public function contains(string $fragment, ?string $failMessage = null): static
     {
         if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') !== false) {
             $this->pass();
@@ -84,7 +84,7 @@ class utf8String extends phpString
         return $this;
     }
 
-    public function notContains($fragment, $failMessage = null)
+    public function notContains(string $fragment, ?string $failMessage = null): static
     {
         if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') !== false) {
             $this->fail($failMessage ?: $this->_('%s contains %s', $this, $fragment));
@@ -95,7 +95,7 @@ class utf8String extends phpString
         return $this;
     }
 
-    public function startWith($fragment, $failMessage = null)
+    public function startWith(string $fragment, ?string $failMessage = null): static
     {
         if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') === 0) {
             $this->pass();
@@ -106,7 +106,7 @@ class utf8String extends phpString
         return $this;
     }
 
-    public function notStartWith($fragment, $failMessage = null)
+    public function notStartWith(string $fragment, ?string $failMessage = null): static
     {
         if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') === 0) {
             $this->fail($failMessage ?: $this->_('%s start with %s', $this, $fragment));
@@ -117,7 +117,7 @@ class utf8String extends phpString
         return $this;
     }
 
-    public function endWith($fragment, $failMessage = null)
+    public function endWith(string $fragment, ?string $failMessage = null): static
     {
         if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') === (mb_strlen($this->valueIsSet()->value, 'UTF-8') - mb_strlen($fragment, 'UTF-8'))) {
             $this->pass();
@@ -128,7 +128,7 @@ class utf8String extends phpString
         return $this;
     }
 
-    public function notEndWith($fragment, $failMessage = null)
+    public function notEndWith(string $fragment, ?string $failMessage = null): static
     {
         if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') === (mb_strlen($this->valueIsSet()->value, 'UTF-8') - mb_strlen($fragment, 'UTF-8'))) {
             $this->fail($failMessage ?: $this->_('%s end with %s', $this, $fragment));
@@ -139,7 +139,7 @@ class utf8String extends phpString
         return $this;
     }
 
-    protected function getLengthAsserter()
+    protected function getLengthAsserter(): \atoum\atoum\asserters\integer
     {
         return $this->generator->__call('integer', [mb_strlen($this->valueIsSet()->value, 'UTF-8')]);
     }

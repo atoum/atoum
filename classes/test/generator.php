@@ -142,7 +142,7 @@ class generator
         return $this->testClassNamespace;
     }
 
-    public function setFullyQualifiedTestClassNameExtractor(?\closure $extractor = null)
+    public function setFullyQualifiedTestClassNameExtractor(?\Closure $extractor = null)
     {
         $this->fullyQualifiedTestClassNameExtractor = $extractor ?: function ($generator, $relativeTestClassPath) {
             return $generator->getTestClassNamespace() . str_replace(DIRECTORY_SEPARATOR, '\\', substr($relativeTestClassPath, 0, -4));
@@ -156,7 +156,7 @@ class generator
         return $this->fullyQualifiedTestClassNameExtractor;
     }
 
-    public function setFullyQualifiedTestedClassNameExtractor(?\closure $extractor = null)
+    public function setFullyQualifiedTestedClassNameExtractor(?\Closure $extractor = null)
     {
         $this->fullyQualifiedTestedClassNameExtractor = $extractor ?: function ($generator, $fullyQualifiedTestClassName) {
             return $generator->getTestedClassNamespace() . substr($fullyQualifiedTestClassName, strlen($generator->getTestClassNamespace()));
@@ -170,7 +170,7 @@ class generator
         return $this->fullyQualifiedTestedClassNameExtractor;
     }
 
-    public function setTestedClassPathExtractor(?\closure $extractor = null)
+    public function setTestedClassPathExtractor(?\Closure $extractor = null)
     {
         $this->testedClassPathExtractor = $extractor ?: function ($generator, $fullyQualifiedTestedClassName) {
             return $generator->getTestedClassesDirectory() . substr(str_replace('\\', DIRECTORY_SEPARATOR, $fullyQualifiedTestedClassName), strlen($generator->getTestedClassNamespace())) . '.php';

@@ -6,8 +6,8 @@ use atoum\atoum;
 
 abstract class field
 {
-    protected $events = [];
-    protected $locale = null;
+    protected ?array $events = [];
+    protected ?atoum\locale $locale = null;
 
     public function __construct(?array $events = null)
     {
@@ -16,32 +16,32 @@ abstract class field
         $this->setLocale();
     }
 
-    public function setLocale(?atoum\locale $locale = null)
+    public function setLocale(?atoum\locale $locale = null): static
     {
         $this->locale = $locale ?: new atoum\locale();
 
         return $this;
     }
 
-    public function getLocale()
+    public function getLocale(): atoum\locale
     {
         return $this->locale;
     }
 
-    public function getEvents()
+    public function getEvents(): ?array
     {
         return $this->events;
     }
 
-    public function canHandleEvent($event)
+    public function canHandleEvent(string $event): bool
     {
         return ($this->events === null ? true : in_array($event, $this->events));
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable): bool
     {
         return $this->canHandleEvent($event);
     }
 
-    abstract public function __toString();
+    abstract public function __toString(): string;
 }

@@ -10,13 +10,13 @@ class parser
     public const eol = "\n";
     public const defaultNamespace = 'tpl';
 
-    protected $namespace = '';
-    protected $adapter = null;
-    protected $errorLine = null;
-    protected $errorOffset = null;
-    protected $errorMessage = null;
+    protected string $namespace = '';
+    protected ?atoum\adapter $adapter = null;
+    protected ?int $errorLine = null;
+    protected ?int $errorOffset = null;
+    protected ?string $errorMessage = null;
 
-    public function __construct($namespace = null, ?atoum\adapter $adapter = null)
+    public function __construct(?string $namespace = null, ?atoum\adapter $adapter = null)
     {
         $this
             ->setNamespace($namespace ?: self::defaultNamespace)
@@ -24,55 +24,55 @@ class parser
         ;
     }
 
-    public function setNamespace($namespace)
+    public function setNamespace(string $namespace): static
     {
         $this->namespace = (string) $namespace;
 
         return $this;
     }
 
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return $this->namespace;
     }
 
-    public function setAdapter(atoum\adapter $adapter)
+    public function setAdapter(atoum\adapter $adapter): static
     {
         $this->adapter = $adapter;
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): atoum\adapter
     {
         return $this->adapter;
     }
 
-    public function checkString($string)
+    public function checkString(string $string): static
     {
         return $this->parse($string);
     }
 
-    public function checkFile($path)
+    public function checkFile(string $path): static
     {
         return $this->checkString($this->getFileContents($path));
     }
 
-    public function parseString($string, ?atoum\template $root = null)
+    public function parseString(string $string, ?atoum\template $root = null): ?atoum\template
     {
         $this->parse((string) $string, $root);
 
         return $root;
     }
 
-    public function parseFile($path, ?atoum\template $root = null)
+    public function parseFile(string $path, ?atoum\template $root = null): ?atoum\template
     {
         $this->parse($this->getfileContents($path), $root);
 
         return $root;
     }
 
-    protected function parse($string, & $root = null)
+    protected function parse(string $string, mixed &$root = null): static
     {
         if ($root === null) {
             $root = new atoum\template();
@@ -150,7 +150,7 @@ class parser
         return $this;
     }
 
-    protected function getFileContents($path)
+    protected function getFileContents(string $path): string
     {
         $fileContents = $this->adapter->file_get_contents($path);
 

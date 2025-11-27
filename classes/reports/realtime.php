@@ -7,30 +7,29 @@ use atoum\atoum\report;
 
 abstract class realtime extends atoum\report
 {
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable): void
     {
-        parent::handleEvent($event, $observable)->write($event);
+        parent::handleEvent($event, $observable);
+        $this->write($event);
 
         if ($event === atoum\runner::runStop) {
             foreach ($this->writers as $writer) {
                 $writer->reset();
             }
         }
-
-        return $this;
     }
 
-    public function addWriter(report\writers\realtime $writer)
+    public function addWriter(report\writers\realtime $writer): static
     {
         return $this->doAddWriter($writer);
     }
 
-    public function isOverridableBy(report $report)
+    public function isOverridableBy(report $report): bool
     {
         return ($report instanceof self) === false;
     }
 
-    protected function write($event)
+    protected function write(string $event): static
     {
         foreach ($this->writers as $writer) {
             $writer->writeRealtimeReport($this, $event);

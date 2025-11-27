@@ -14,16 +14,16 @@ class treemap extends report\fields\runner\coverage\cli
 {
     public const dataFile = 'data.json';
 
-    protected $urlPrompt = null;
-    protected $urlColorizer = null;
-    protected $treemapUrl = '';
-    protected $projectName = '';
-    protected $htmlReportBaseUrl = null;
-    protected $resourcesDirectory = [];
-    protected $destinationDirectory = null;
-    protected $reflectionClassFactory = null;
+    protected ?prompt $urlPrompt = null;
+    protected ?colorizer $urlColorizer = null;
+    protected string $treemapUrl = '';
+    protected string $projectName = '';
+    protected ?string $htmlReportBaseUrl = null;
+    protected string $resourcesDirectory = '';
+    protected ?string $destinationDirectory = null;
+    protected ?\Closure $reflectionClassFactory = null;
 
-    public function __construct($projectName, $destinationDirectory)
+    public function __construct(string $projectName, string $destinationDirectory)
     {
         parent::__construct();
 
@@ -38,7 +38,7 @@ class treemap extends report\fields\runner\coverage\cli
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -121,19 +121,19 @@ class treemap extends report\fields\runner\coverage\cli
         return $string;
     }
 
-    public function getHtmlReportBaseUrl()
+    public function getHtmlReportBaseUrl(): ?string
     {
         return $this->htmlReportBaseUrl;
     }
 
-    public function setHtmlReportBaseUrl($url)
+    public function setHtmlReportBaseUrl(string $url): static
     {
         $this->htmlReportBaseUrl = (string) $url;
 
         return $this;
     }
 
-    public function setReflectionClassFactory(\closure $factory)
+    public function setReflectionClassFactory(\Closure $factory): static
     {
         $closure = new \reflectionMethod($factory, '__invoke');
 
@@ -146,7 +146,7 @@ class treemap extends report\fields\runner\coverage\cli
         return $this;
     }
 
-    public function getReflectionClass($class)
+    public function getReflectionClass(string $class): \reflectionClass
     {
         if ($this->reflectionClassFactory === null) {
             $reflectionClass = new \reflectionClass($class);
@@ -161,86 +161,86 @@ class treemap extends report\fields\runner\coverage\cli
         return $reflectionClass;
     }
 
-    public function setProjectName($projectName)
+    public function setProjectName(string $projectName): static
     {
         $this->projectName = (string) $projectName;
 
         return $this;
     }
 
-    public function getProjectName()
+    public function getProjectName(): string
     {
         return $this->projectName;
     }
 
-    public function setDestinationDirectory($path)
+    public function setDestinationDirectory(string $path): static
     {
         $this->destinationDirectory = (string) $path;
 
         return $this;
     }
 
-    public function getDestinationDirectory()
+    public function getDestinationDirectory(): ?string
     {
         return $this->destinationDirectory;
     }
 
-    public function setAdapter(?atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): atoum\adapter
     {
         return $this->adapter;
     }
 
-    public function setUrlPrompt(?prompt $prompt = null)
+    public function setUrlPrompt(?prompt $prompt = null): static
     {
         $this->urlPrompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getUrlPrompt()
+    public function getUrlPrompt(): prompt
     {
         return $this->urlPrompt;
     }
 
-    public function setUrlColorizer(?colorizer $colorizer = null)
+    public function setUrlColorizer(?colorizer $colorizer = null): static
     {
         $this->urlColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getUrlColorizer()
+    public function getUrlColorizer(): colorizer
     {
         return $this->urlColorizer;
     }
 
-    public function setTreemapUrl($treemapUrl)
+    public function setTreemapUrl(string $treemapUrl): static
     {
         $this->treemapUrl = (string) $treemapUrl;
 
         return $this;
     }
 
-    public function getTreemapUrl()
+    public function getTreemapUrl(): string
     {
         return $this->treemapUrl;
     }
 
-    public function setResourcesDirectory($directory = null)
+    public function setResourcesDirectory(?string $directory = null): static
     {
         $this->resourcesDirectory = $directory ?: atoum\directory . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'coverage' . DIRECTORY_SEPARATOR . 'treemap';
 
         return $this;
     }
 
-    public function getResourcesDirectory()
+    public function getResourcesDirectory(): string
     {
         return $this->resourcesDirectory;
     }

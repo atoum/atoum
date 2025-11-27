@@ -7,16 +7,16 @@ use atoum\atoum\test\adapter;
 
 class invoker extends adapter\invoker
 {
-    protected $mock = null;
+    protected ?mock\aggregator $mock = null;
 
-    public function __construct($method, ?mock\aggregator $mock = null)
+    public function __construct(string $method, ?mock\aggregator $mock = null)
     {
         parent::__construct($method);
 
         $this->mock = $mock;
     }
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'isfluent':
@@ -27,19 +27,19 @@ class invoker extends adapter\invoker
         }
     }
 
-    public function setMock(mock\aggregator $mock)
+    public function setMock(mock\aggregator $mock): static
     {
         $this->mock = $mock;
 
         return $this;
     }
 
-    public function getMock()
+    public function getMock(): ?mock\aggregator
     {
         return $this->mock;
     }
 
-    public function isFluent()
+    public function isFluent(): static
     {
         $mock = $this->mock;
 

@@ -4,8 +4,7 @@ namespace atoum\atoum\tests\units\cli\command;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use atoum\atoum
-;
+use atoum\atoum;
 
 class exception extends atoum
 {

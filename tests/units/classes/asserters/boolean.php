@@ -64,7 +64,7 @@ class boolean extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isTrue();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notTrue . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not true', $asserter)->once
                 ->mock($diff)
@@ -74,7 +74,7 @@ class boolean extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isTrue;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notTrue . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not true', $asserter)->twice
                 ->mock($diff)
@@ -84,7 +84,7 @@ class boolean extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isTrue($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage . PHP_EOL . $diffValue)
                 ->mock($diff)
                     ->call('setExpected')->withArguments(true)->thrice
@@ -120,7 +120,7 @@ class boolean extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isFalse();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notFalse . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not false', $asserter)->once
                 ->mock($diff)
@@ -130,7 +130,7 @@ class boolean extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isFalse;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notFalse . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not false', $asserter)->twice
                 ->mock($diff)
@@ -140,7 +140,7 @@ class boolean extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isFalse($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage . PHP_EOL . $diffValue)
                 ->mock($diff)
                     ->call('setExpected')->withArguments(false)->thrice
@@ -170,7 +170,7 @@ class boolean extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notBoolean)
                 ->mock($locale)->call('_')->withArguments('%s is not a boolean', $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($value)->once

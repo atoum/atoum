@@ -2,8 +2,7 @@
 
 namespace atoum\atoum\tests\units\fs\path;
 
-use atoum\atoum
-;
+use atoum\atoum;
 
 require_once __DIR__ . '/../../../runner.php';
 

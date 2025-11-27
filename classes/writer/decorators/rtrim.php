@@ -6,7 +6,7 @@ use atoum\atoum\writer;
 
 class rtrim implements writer\decorator
 {
-    public function decorate($message)
+    public function decorate(string $message): string
     {
         return rtrim($message);
     }

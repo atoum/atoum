@@ -1,7 +1,7 @@
 {
 	"name": "atoum/atoum",
 	"type": "library",
-	"description": "Simple modern and intuitive unit testing framework for PHP 8.0+",
+	"description": "Simple modern and intuitive unit testing framework for PHP 8.1+",
 	"keywords": ["TDD","atoum","test","unit testing"],
 	"homepage": "http://www.atoum.org",
 	"license": "BSD-3-Clause",
@@ -31,7 +31,7 @@
 	],
 	"require":
 	{
-		"php": "^8.0",
+		"php": "^8.1",
 		"ext-hash": "*",
 		"ext-json": "*",
 		"ext-tokenizer": "*",

@@ -4,14 +4,14 @@ namespace atoum\atoum;
 
 class superglobals
 {
-    protected $superglobals = [];
+    protected array $superglobals = [];
 
-    public function __set($superglobal, $value)
+    public function __set(string $superglobal, mixed $value): void
     {
         $this->check($superglobal)->superglobals[$superglobal] = $value;
     }
 
-    public function & __get($superglobal)
+    public function & __get(string $superglobal): mixed
     {
         $this->check($superglobal);
 
@@ -55,7 +55,7 @@ class superglobals
         }
     }
 
-    protected function check($superglobal)
+    protected function check(string $superglobal): static
     {
         switch ($superglobal) {
             case 'GLOBALS':

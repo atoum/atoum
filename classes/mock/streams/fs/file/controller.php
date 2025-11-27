@@ -7,7 +7,7 @@ use atoum\atoum\mock\streams\fs;
 
 class controller extends fs\controller
 {
-    protected $exists = true;
+    protected bool $exists = true;
     protected $read = false;
     protected $write = false;
     protected $eof = false;
@@ -23,7 +23,7 @@ class controller extends fs\controller
         $this->setPermissions('644');
     }
 
-    public function __set($method, $value)
+    public function __set(string $method, mixed $value): void
     {
         switch ($method = static::mapMethod($method)) {
             case 'mkdir':
@@ -35,11 +35,11 @@ class controller extends fs\controller
                 throw new exceptions\logic\invalidArgument('Unable to override streamWrapper::' . $method . '() for file');
 
             default:
-                return parent::__set($method, $value);
+                parent::__set($method, $value);
         }
     }
 
-    public function duplicate()
+    public function duplicate(): static
     {
         $controller = parent::duplicate();
 

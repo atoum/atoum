@@ -8,9 +8,9 @@ class git
 {
     public const defaultPath = 'git';
 
-    protected $command = null;
+    protected ?cli\command $command = null;
 
-    public function __construct($path = null)
+    public function __construct(?string $path = null)
     {
         $this
             ->setCommand()
@@ -18,31 +18,31 @@ class git
         ;
     }
 
-    public function setPath($path = null)
+    public function setPath(?string $path = null): static
     {
         $this->command->setBinaryPath($path ?: static::defaultPath);
 
         return $this;
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return $this->command->getBinaryPath();
     }
 
-    public function setCommand(?cli\command $command = null)
+    public function setCommand(?cli\command $command = null): static
     {
         $this->command = $command ?: new cli\command();
 
         return $this;
     }
 
-    public function getCommand()
+    public function getCommand(): cli\command
     {
         return $this->command;
     }
 
-    public function addAllAndCommit($message)
+    public function addAllAndCommit(string $message): static
     {
         $this->command
             ->reset()
@@ -52,7 +52,7 @@ class git
         return $this->run();
     }
 
-    public function resetHardTo($commit)
+    public function resetHardTo(string $commit): static
     {
         $this->command
             ->reset()
@@ -62,7 +62,7 @@ class git
         return $this->run();
     }
 
-    public function createTag($tag)
+    public function createTag(string $tag): static
     {
         $this->command
             ->reset()
@@ -72,7 +72,7 @@ class git
         return $this->run();
     }
 
-    public function deleteLocalTag($tag)
+    public function deleteLocalTag(string $tag): static
     {
         $this->command
             ->reset()
@@ -82,7 +82,7 @@ class git
         return $this->run();
     }
 
-    public function push($remote = null, $branch = null)
+    public function push(?string $remote = null, ?string $branch = null): static
     {
         $this->command
             ->reset()
@@ -122,7 +122,7 @@ class git
         return $this->run();
     }
 
-    protected function run()
+    protected function run(): static
     {
         if ($this->command->run()->getExitCode() !== 0) {
             throw new cli\command\exception('Unable to execute \'' . $this->command . '\': ' . $this->command->getStderr());
@@ -131,7 +131,7 @@ class git
         return $this;
     }
 
-    public function getCurrentBranch()
+    public function getCurrentBranch(): string
     {
         $this->command
             ->reset()

@@ -6,5 +6,5 @@ use atoum\atoum\reports;
 
 interface realtime
 {
-    public function writeRealtimeReport(reports\realtime $report, $event);
+    public function writeRealtimeReport(reports\realtime $report, string $event): static;
 }

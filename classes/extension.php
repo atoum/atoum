@@ -4,6 +4,6 @@ namespace atoum\atoum;
 
 interface extension extends observer
 {
-    public function setRunner(runner $runner);
-    public function setTest(test $test);
+    public function setRunner(runner $runner): static;
+    public function setTest(test $test): static;
 }

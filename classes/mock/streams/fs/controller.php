@@ -7,11 +7,11 @@ use atoum\atoum\mock\stream;
 
 class controller extends stream\controller
 {
-    protected $adapter = null;
-    protected $exists = true;
-    protected $stat = [];
+    protected ?atoum\adapter $adapter = null;
+    protected bool $exists = true;
+    protected array $stat = [];
 
-    public function __construct($path, ?atoum\adapter $adapter = null)
+    public function __construct(string $path, ?atoum\adapter $adapter = null)
     {
         parent::__construct($path);
 
@@ -46,58 +46,58 @@ class controller extends stream\controller
         $this->stat[12] = & $this->stat['blocks'];
     }
 
-    public function getAdapter()
+    public function getAdapter(): atoum\adapter
     {
         return $this->adapter;
     }
 
-    public function setAdapter(?atoum\adapter $adapter = null)
+    public function setAdapter(?atoum\adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new atoum\adapter();
 
         return $this;
     }
 
-    public function exists()
+    public function exists(): static
     {
         $this->exists = true;
 
         return $this->clearStatCache();
     }
 
-    public function notExists()
+    public function notExists(): static
     {
         $this->exists = false;
 
         return $this->clearStatCache();
     }
 
-    public function isNotReadable()
+    public function isNotReadable(): static
     {
         return $this->removePermissions(0444);
     }
 
-    public function isReadable()
+    public function isReadable(): static
     {
         return $this->addPermission(0444);
     }
 
-    public function isNotWritable()
+    public function isNotWritable(): static
     {
         return $this->removePermissions(0222);
     }
 
-    public function isWritable()
+    public function isWritable(): static
     {
         return $this->addPermission(0222);
     }
 
-    public function isNotExecutable()
+    public function isNotExecutable(): static
     {
         return $this->removePermissions(0111);
     }
 
-    public function isExecutable()
+    public function isExecutable(): static
     {
         return $this->addPermission(0111);
     }
@@ -107,12 +107,12 @@ class controller extends stream\controller
         return $this->setStat('mode', $permissions);
     }
 
-    public function getPermissions()
+    public function getPermissions(): ?int
     {
         return ($this->exists === false ? null : (int) sprintf('%03o', $this->stat['mode'] & 07777));
     }
 
-    public function duplicate()
+    public function duplicate(): static
     {
         $controller = parent::duplicate();
 
@@ -123,7 +123,7 @@ class controller extends stream\controller
         return $controller;
     }
 
-    public function getStat()
+    public function getStat(): array|false
     {
         return ($this->exists === false ? false : $this->stat);
     }
@@ -161,7 +161,7 @@ class controller extends stream\controller
         return $this;
     }
 
-    protected function clearStatCache()
+    protected function clearStatCache(): static
     {
         $this->adapter->clearstatcache(false, $this->getPath());
 
@@ -173,7 +173,7 @@ class controller extends stream\controller
         return $this->setStat('mode', $this->stat['mode'] | $permissions);
     }
 
-    protected function removePermissions($permissions)
+    protected function removePermissions(int $permissions): static
     {
         return $this->setStat('mode', $this->stat['mode'] & ~ $permissions);
     }

@@ -6,26 +6,26 @@ use atoum\atoum\exceptions;
 
 class invoker implements \arrayAccess, \countable
 {
-    protected $function = '';
-    protected $bindClosureTo = null;
-    protected $currentCall = null;
-    protected $closuresByCall = [];
+    protected string $function = '';
+    protected mixed $bindClosureTo = null;
+    protected ?int $currentCall = null;
+    protected array $closuresByCall = [];
 
-    public function __construct($function)
+    public function __construct(string $function)
     {
         $this->function = (string) $function;
     }
 
-    public function __get($keyword)
+    public function __get(string $keyword): mixed
     {
         return $this->{$keyword}();
     }
 
-    public function __set($keyword, $mixed)
+    public function __set(string $keyword, mixed $mixed): void
     {
         switch ($keyword) {
             case 'return':
-                if ($mixed instanceof \closure === false) {
+                if ($mixed instanceof \Closure === false) {
                     $mixed = function () use ($mixed) {
                         return $mixed;
                     };
@@ -33,7 +33,7 @@ class invoker implements \arrayAccess, \countable
                 break;
 
             case 'throw':
-                if ($mixed instanceof \closure === false) {
+                if ($mixed instanceof \Closure === false) {
                     $mixed = function () use ($mixed) {
                         throw $mixed;
                     };
@@ -44,15 +44,15 @@ class invoker implements \arrayAccess, \countable
                 throw new exceptions\logic\invalidArgument('Keyword \'' . $keyword . '\' is unknown');
         }
 
-        return $this->setClosure($mixed);
+        $this->setClosure($mixed);
     }
 
-    public function getFunction()
+    public function getFunction(): ?string
     {
         return $this->function;
     }
 
-    public function bindTo($object)
+    public function bindTo(mixed $object): static
     {
         $this->bindClosureTo = $object;
 
@@ -69,7 +69,7 @@ class invoker implements \arrayAccess, \countable
         return count($this->closuresByCall);
     }
 
-    public function doesNothing()
+    public function doesNothing(): static
     {
         return $this->setClosure(function () {
         });
@@ -90,7 +90,7 @@ class invoker implements \arrayAccess, \countable
         return $this->currentCall;
     }
 
-    public function setClosure(\closure $closure, $call = 0)
+    public function setClosure(\Closure $closure, $call = 0): static
     {
         if ($this->currentCall !== null) {
             $call = $this->currentCall;
@@ -148,7 +148,7 @@ class invoker implements \arrayAccess, \countable
     #[\ReturnTypeWillChange]
     public function offsetSet($call = null, $mixed = null)
     {
-        if ($mixed instanceof \closure === false) {
+        if ($mixed instanceof \Closure === false) {
             $mixed = function () use ($mixed) {
                 return $mixed;
             };
@@ -191,7 +191,7 @@ class invoker implements \arrayAccess, \countable
         return call_user_func_array($this->getClosure($call), $arguments);
     }
 
-    protected function bindClosure(\closure $closure)
+    protected function bindClosure(\Closure $closure): \Closure
     {
         if ($this->bindClosureTo !== null && static::isBindable($closure) === true) {
             $closure = $closure->bindTo($this->bindClosureTo);
@@ -211,7 +211,7 @@ class invoker implements \arrayAccess, \countable
         return $call;
     }
 
-    protected static function isBindable(\closure $closure)
+    protected static function isBindable(\Closure $closure)
     {
         $reflectedClosure = new \reflectionFunction($closure);
 

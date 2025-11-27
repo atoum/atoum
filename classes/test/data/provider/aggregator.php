@@ -6,14 +6,14 @@ use atoum\atoum\test\data\provider;
 
 class aggregator implements provider, \countable
 {
-    protected $providers = [];
+    protected array $providers = [];
 
-    public function __invoke()
+    public function __invoke(): array
     {
         return $this->generate();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $types = array_map(
             function (provider $provider) {
@@ -25,7 +25,7 @@ class aggregator implements provider, \countable
         return __CLASS__ . '<' . implode(', ', $types) . '>';
     }
 
-    public function generate()
+    public function generate(): array
     {
         $data = [];
 
@@ -36,7 +36,7 @@ class aggregator implements provider, \countable
         return $data;
     }
 
-    public function addProvider(provider $provider)
+    public function addProvider(provider $provider): static
     {
         $this->providers[] = $provider;
 
@@ -44,7 +44,7 @@ class aggregator implements provider, \countable
     }
 
     #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return count($this->providers);
     }

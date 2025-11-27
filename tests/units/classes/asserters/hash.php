@@ -2,8 +2,7 @@
 
 namespace atoum\atoum\tests\units\asserters;
 
-use atoum\atoum
-;
+use atoum\atoum;
 
 require_once __DIR__ . '/../../runner.php';
 
@@ -39,21 +38,21 @@ class hash extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isSha1();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha1)
                 ->mock($locale)->call('_')->withArguments('%s should be a string of %d characters', $asserter, 40)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isSha1;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha1)
                 ->mock($locale)->call('_')->withArguments('%s should be a string of %d characters', $asserter, 40)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isSha1($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($this->testedInstance->setWith('z' . substr(hash('sha1', uniqid()), 1)))
@@ -61,21 +60,21 @@ class hash extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isSha1();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha1)
                 ->mock($locale)->call('_')->withArguments('%s does not match given pattern', $asserter)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isSha1;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha1)
                 ->mock($locale)->call('_')->withArguments('%s does not match given pattern', $asserter)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isSha1($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -105,21 +104,21 @@ class hash extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isSha256();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha256)
                 ->mock($locale)->call('_')->withArguments('%s should be a string of %d characters', $asserter, 64)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isSha256;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha256)
                 ->mock($locale)->call('_')->withArguments('%s should be a string of %d characters', $asserter, 64)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isSha256($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($this->testedInstance->setWith('z' . substr(hash('sha256', uniqid()), 1)))
@@ -127,21 +126,21 @@ class hash extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isSha256();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha256)
                 ->mock($locale)->call('_')->withArguments('%s does not match given pattern', $asserter)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isSha256;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha256)
                 ->mock($locale)->call('_')->withArguments('%s does not match given pattern', $asserter)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isSha256($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -171,21 +170,21 @@ class hash extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isSha512();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha512)
                 ->mock($locale)->call('_')->withArguments('%s should be a string of %d characters', $asserter, 128)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isSha512;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha512)
                 ->mock($locale)->call('_')->withArguments('%s should be a string of %d characters', $asserter, 128)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isSha512($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($this->testedInstance->setWith('z' . substr(hash('sha512', uniqid()), 1)))
@@ -193,21 +192,21 @@ class hash extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isSha512();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha512)
                 ->mock($locale)->call('_')->withArguments('%s does not match given pattern', $asserter)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isSha512;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notSha512)
                 ->mock($locale)->call('_')->withArguments('%s does not match given pattern', $asserter)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isSha512($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }
@@ -237,21 +236,21 @@ class hash extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isMd5();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notMd5)
                 ->mock($locale)->call('_')->withArguments('%s should be a string of %d characters', $asserter, 32)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isMd5;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notMd5)
                 ->mock($locale)->call('_')->withArguments('%s should be a string of %d characters', $asserter, 32)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isMd5($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($this->testedInstance->setWith('z' . substr(hash('md5', uniqid()), 1)))
@@ -259,21 +258,21 @@ class hash extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isMd5();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notMd5)
                 ->mock($locale)->call('_')->withArguments('%s does not match given pattern', $asserter)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isMd5;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notMd5)
                 ->mock($locale)->call('_')->withArguments('%s does not match given pattern', $asserter)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isMd5($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
         ;
     }

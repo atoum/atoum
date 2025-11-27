@@ -35,7 +35,7 @@ class mock extends phpObject
         $this->mockGenerator = $mockGenerator ?: new generator();
     }
 
-    public function generate()
+    public function generate(): mixed
     {
         $mockNamespace = $this->mockGenerator->getDefaultNamespace();
         $className = $mockNamespace . '\\' . $this->classIsSet()->class;

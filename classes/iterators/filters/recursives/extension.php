@@ -4,9 +4,9 @@ namespace atoum\atoum\iterators\filters\recursives;
 
 class extension extends \recursiveFilterIterator
 {
-    protected $acceptedExtensions = [];
+    protected array $acceptedExtensions = [];
 
-    public function __construct($mixed, array $acceptedExtensions = [], ?\closure $iteratorFactory = null)
+    public function __construct(mixed $mixed, array $acceptedExtensions = [], ?\Closure $iteratorFactory = null)
     {
         if ($mixed instanceof \recursiveIterator) {
             parent::__construct($mixed);
@@ -19,7 +19,7 @@ class extension extends \recursiveFilterIterator
         $this->setAcceptedExtensions($acceptedExtensions);
     }
 
-    public function setAcceptedExtensions(array $extensions)
+    public function setAcceptedExtensions(array $extensions): static
     {
         array_walk($extensions, function (& $extension) {
             $extension = trim($extension, '.');
@@ -30,13 +30,13 @@ class extension extends \recursiveFilterIterator
         return $this;
     }
 
-    public function getAcceptedExtensions()
+    public function getAcceptedExtensions(): array
     {
         return $this->acceptedExtensions;
     }
 
     #[\ReturnTypeWillChange]
-    public function accept()
+    public function accept(): bool
     {
         $path = basename((string) $this->getInnerIterator()->current());
 
@@ -46,7 +46,7 @@ class extension extends \recursiveFilterIterator
     }
 
     #[\ReturnTypeWillChange]
-    public function getChildren()
+    public function getChildren(): self
     {
         return new self($this->getInnerIterator()->getChildren(), $this->acceptedExtensions);
     }

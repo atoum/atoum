@@ -6,7 +6,7 @@ use atoum\atoum\tools;
 
 class decorator
 {
-    public function decorate(tools\diff $diff)
+    public function decorate(tools\diff $diff): string
     {
         $string = '';
 

@@ -4,7 +4,7 @@ namespace atoum\atoum\report\fields\runner\result;
 
 class logo extends cli
 {
-    public function __toString()
+    public function __toString(): string
     {
         if ($this->success) {
             return "

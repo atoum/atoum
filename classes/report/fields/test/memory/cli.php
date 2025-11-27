@@ -8,9 +8,9 @@ use atoum\atoum\report;
 
 class cli extends report\fields\test\memory
 {
-    protected $prompt = null;
-    protected $titleColorizer = null;
-    protected $memoryColorizer = null;
+    protected ?prompt $prompt = null;
+    protected ?colorizer $titleColorizer = null;
+    protected ?colorizer $memoryColorizer = null;
 
     public function __construct()
     {
@@ -23,7 +23,7 @@ class cli extends report\fields\test\memory
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->prompt .
             sprintf(
@@ -44,38 +44,38 @@ class cli extends report\fields\test\memory
         ;
     }
 
-    public function setPrompt(?prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null): static
     {
         $this->prompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getPrompt()
+    public function getPrompt(): prompt
     {
         return $this->prompt;
     }
 
-    public function setTitleColorizer(?colorizer $colorizer = null)
+    public function setTitleColorizer(?colorizer $colorizer = null): static
     {
         $this->titleColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getTitleColorizer()
+    public function getTitleColorizer(): colorizer
     {
         return $this->titleColorizer;
     }
 
-    public function setMemoryColorizer(?colorizer $colorizer = null)
+    public function setMemoryColorizer(?colorizer $colorizer = null): static
     {
         $this->memoryColorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getMemoryColorizer()
+    public function getMemoryColorizer(): colorizer
     {
         return $this->memoryColorizer;
     }

@@ -4,16 +4,16 @@ namespace atoum\atoum;
 
 class cli
 {
-    protected $adapter = null;
+    protected ?adapter $adapter = null;
 
-    private static $isTerminal = null;
+    private static ?bool $isTerminal = null;
 
     public function __construct(?adapter $adapter = null)
     {
         $this->adapter = $adapter ?: new adapter();
     }
 
-    public function isTerminal()
+    public function isTerminal(): bool
     {
         $isTerminal = self::$isTerminal;
 
@@ -34,7 +34,7 @@ class cli
         return $isTerminal;
     }
 
-    public static function forceTerminal()
+    public static function forceTerminal(): void
     {
         self::$isTerminal = true;
     }

@@ -5,11 +5,12 @@ namespace atoum\atoum\tests\units\asserters;
 use atoum\atoum;
 use atoum\atoum\asserter;
 use atoum\atoum\asserters;
+use atoum\atoum\attributes as Attributes;
 use atoum\atoum\tools\variable;
 
 require_once __DIR__ . '/../../runner.php';
 
-/** @extensions mbstring */
+#[Attributes\Extensions('mbstring')]
 class utf8String extends atoum\test
 {
     public function testClass()
@@ -81,7 +82,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith(null);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notString)
                 ->mock($locale)->call('_')->withArguments('%s is not a string', $type)->once
                 ->mock($analyzer)
@@ -97,7 +98,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith(null);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notUtf8String)
                 ->mock($locale)->call('_')->withArguments('%s is not an UTF-8 string', $type)->once
                 ->mock($analyzer)
@@ -131,14 +132,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $requiredLength) {
                     $asserter->hasLength($requiredLength = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($hasNotLength)
                 ->mock($locale)->call('_')->withArguments('length of %s is not %d', $asserter, $requiredLength)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasLength(rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith($string = $this->getRandomUtf8String()))
@@ -168,14 +169,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $requiredLength) {
                     $asserter->hasLengthGreaterThan($requiredLength = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($lengthNotGreater)
                 ->mock($locale)->call('_')->withArguments('length of %s is not greater than %d', $asserter, $requiredLength)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasLengthGreaterThan(rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith($string = $this->getRandomUtf8String()))
@@ -205,14 +206,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $requiredLength) {
                     $asserter->hasLengthLessThan($requiredLength = 10);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($lengthNotLess)
                 ->mock($locale)->call('_')->withArguments('length of %s is not less than %d', $asserter, $requiredLength)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasLengthLessThan(10, $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith($string = $this->getRandomUtf8String()))
@@ -242,14 +243,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->contains($fragment = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notContains)
                 ->mock($locale)->call('_')->withArguments('%s does not contain %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->contains(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith(uniqid() . $string . uniqid()))
@@ -259,7 +260,7 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, $string, & $fragment) {
                     $asserter->contains($fragment = mb_strtoupper($string, 'UTF-8'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notContains)
                 ->mock($locale)->call('_')->withArguments('%s does not contain %s', $asserter, $fragment)->once
         ;
@@ -286,14 +287,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->notContains($fragment = mb_substr($asserter->getValue(), 2, 6, 'UTF-8'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($contains)
                 ->mock($locale)->call('_')->withArguments('%s contains %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notContains(mb_substr($asserter->getValue(), 2, 6, 'UTF-8'), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notContains('agent'))->isIdenticalTo($asserter)
@@ -322,27 +323,27 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith($fragment = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notStartWith)
                 ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->startWith(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith($fragment = mb_strtoupper(substr($asserter->getValue(), 0, 6), 'UTF-8'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notStartWith)
                 ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->startWith($fragment = substr($asserter->getValue(), 0, 6) . uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notStartWith)
                 ->mock($locale)->call('_')->withArguments('%s does not start with %s', $asserter, $fragment)->once
 
@@ -371,14 +372,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->notStartWith($fragment = substr($asserter->getValue(), 0, 6));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($startWith)
                 ->mock($locale)->call('_')->withArguments('%s start with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notStartWith(substr($asserter->getValue(), 0, 6), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notStartWith(mb_strtoupper(substr($asserter->getValue(), 0, 6), 'UTF-8')))->isIdenticalTo($asserter)
@@ -407,27 +408,27 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->endWith($fragment = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEndWith)
                 ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->endWith(uniqid(), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->exception(function () use ($asserter, & $failMessage, & $fragment) {
                     $asserter->endWith($fragment = mb_strtoupper(mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'), 'UTF-8'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEndWith)
                 ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->endWith($fragment = uniqid() . mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEndWith)
                 ->mock($locale)->call('_')->withArguments('%s does not end with %s', $asserter, $fragment)->once
 
@@ -456,14 +457,14 @@ class utf8String extends atoum\test
                 ->exception(function () use ($asserter, & $fragment) {
                     $asserter->notEndWith($fragment = mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($endWith)
                 ->mock($locale)->call('_')->withArguments('%s end with %s', $asserter, $fragment)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->notEndWith(mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->notEndWith(mb_strtoupper(mb_substr($asserter->getValue(), -6, mb_strlen($asserter->getValue(), 'UTF-8'), 'UTF-8'), 'UTF-8')))->isIdenticalTo($asserter)

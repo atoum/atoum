@@ -16,12 +16,12 @@ class generator extends asserter\generator
         $this->test = $test;
     }
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         return $this->test->__get($property);
     }
 
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments): mixed
     {
         return $this->test->__call($method, $arguments);
     }
@@ -38,7 +38,7 @@ class generator extends asserter\generator
         return $this->test;
     }
 
-    public function getAsserterInstance($asserter, array $arguments = [], ?atoum\test $test = null)
+    public function getAsserterInstance(string $asserter, array $arguments = [], ?atoum\test $test = null): atoum\asserter
     {
         return parent::getAsserterInstance($asserter, $arguments, $test ?: $this->test);
     }

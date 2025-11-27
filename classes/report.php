@@ -4,12 +4,12 @@ namespace atoum\atoum;
 
 class report implements observer
 {
-    protected $locale = null;
-    protected $adapter = null;
-    protected $title = null;
-    protected $writers = [];
-    protected $fields = [];
-    protected $lastSetFields = [];
+    protected ?locale $locale = null;
+    protected ?adapter $adapter = null;
+    protected ?string $title = null;
+    protected array $writers = [];
+    protected array $fields = [];
+    protected array $lastSetFields = [];
 
     public function __construct()
     {
@@ -19,7 +19,7 @@ class report implements observer
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -30,67 +30,67 @@ class report implements observer
         return $string;
     }
 
-    public function setLocale(?locale $locale = null)
+    public function setLocale(?locale $locale = null): static
     {
         $this->locale = $locale ?: new locale();
 
         return $this;
     }
 
-    public function getLocale()
+    public function getLocale(): locale
     {
         return $this->locale;
     }
 
-    public function setAdapter(?adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new adapter();
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): adapter
     {
         return $this->adapter;
     }
 
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = (string) $title;
 
         return $this;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function addField(report\field $field)
+    public function addField(report\field $field): static
     {
         $this->fields[] = $field->setLocale($this->locale);
 
         return $this;
     }
 
-    public function resetFields()
+    public function resetFields(): static
     {
         $this->fields = [];
 
         return $this;
     }
 
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
 
-    public function getWriters()
+    public function getWriters(): array
     {
         return $this->writers;
     }
 
-    public function handleEvent($event, observable $observable)
+    public function handleEvent(string $event, observable $observable)
     {
         $this->lastSetFields = [];
 
@@ -103,12 +103,12 @@ class report implements observer
         return $this;
     }
 
-    public function isOverridableBy(self $report)
+    public function isOverridableBy(self $report): bool
     {
         return $report !== $this;
     }
 
-    protected function doAddWriter($writer)
+    protected function doAddWriter(mixed $writer): static
     {
         $this->writers[] = $writer;
 

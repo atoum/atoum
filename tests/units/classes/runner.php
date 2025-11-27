@@ -248,11 +248,10 @@ class runner extends atoum\test
     {
         $this
             ->if($runner = new testedClass())
-            ->then
-                ->object($runner->callObservers(atoum\runner::runStart))->isIdenticalTo($runner)
+            ->when(function () use ($runner) { $runner->callObservers(atoum\runner::runStart); })
             ->if($runner->addObserver($observer = new \mock\atoum\atoum\observers\runner()))
+            ->when(function () use ($runner) { $runner->callObservers(atoum\runner::runStart); })
             ->then
-                ->object($runner->callObservers(atoum\runner::runStart))->isIdenticalTo($runner)
                 ->mock($observer)->call('handleEvent')->withArguments(atoum\runner::runStart, $runner)->once()
         ;
     }
@@ -272,12 +271,12 @@ class runner extends atoum\test
                 ->variable($runner->getRunningDuration())->isNull()
             ->if($runner->run())
             ->then
-                ->integer($runner->getRunningDuration())->isEqualTo(100)
+                ->variable($runner->getRunningDuration())->isEqualTo(100)
             ->if(eval('namespace ' . __NAMESPACE__ . ' { class forTestGetRunningDuration extends \atoum\atoum\test { public function testSomething() {} public function run(array $runTestMethods = array(), array $tags = array()) { return $this; } } }'))
             ->and($adapter->get_declared_classes = [__NAMESPACE__ . '\forTestGetRunningDuration'])
             ->and($runner->run())
             ->then
-                ->integer($runner->getRunningDuration())->isEqualTo(100)
+                ->variable($runner->getRunningDuration())->isEqualTo(100)
         ;
     }
 

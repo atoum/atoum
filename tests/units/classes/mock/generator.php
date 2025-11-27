@@ -3,6 +3,7 @@
 namespace atoum\atoum\tests\units\mock;
 
 use atoum\atoum;
+use atoum\atoum\attributes\Php;
 use atoum\atoum\mock;
 use atoum\atoum\mock\generator as testedClass;
 use atoum\atoum\test\adapter\call\decorators;
@@ -200,7 +201,7 @@ class generator extends atoum\test
             ->and($adapter->class_exists = false)
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($unknownClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($unknownClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $unknownClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -301,7 +302,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -375,7 +376,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($realClass))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass)))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -470,7 +471,7 @@ class generator extends atoum\test
             ->and($generator->setAdapter($adapter))
             ->and($generator->shuntParentClassCalls())
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -561,7 +562,7 @@ class generator extends atoum\test
             ->and($overloadedMethod->addArgument($argument = new mock\php\method\argument(uniqid())))
             ->and($generator->overload($overloadedMethod))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -640,7 +641,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($realClass))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass)))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -716,7 +717,7 @@ class generator extends atoum\test
             ->and($generator->setAdapter($adapter))
             ->and($generator->shunt('__construct'))
             ->then
-                ->string($generator->getMockedClassCode($realClass))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass)))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -793,7 +794,7 @@ class generator extends atoum\test
             ->and($generator->shunt('__construct'))
             ->and($generator->allIsInterface())
             ->then
-                ->string($generator->getMockedClassCode($realClass))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass)))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -833,7 +834,7 @@ class generator extends atoum\test
                 )
             ->if($generator->testedClassIs($realClass))
             ->then
-                ->string($generator->getMockedClassCode($realClass))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass)))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -877,7 +878,7 @@ class generator extends atoum\test
             ->given($generator = new testedClass())
             ->if($generator->allIsInterface())
             ->then
-                ->string($generator->getMockedClassCode('atoum\atoum\tests\units\mock\classWithVariadicInConstructor'))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode('atoum\atoum\tests\units\mock\classWithVariadicInConstructor')))->isEqualTo(
                     'namespace mock\atoum\atoum\tests\units\mock {' . PHP_EOL .
                     'final class classWithVariadicInConstructor extends \atoum\atoum\tests\units\mock\classWithVariadicInConstructor implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -946,7 +947,7 @@ class generator extends atoum\test
             ->and($generator->setAdapter($adapter))
             ->and($generator->shunt($realClass))
             ->then
-                ->string($generator->getMockedClassCode($realClass))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass)))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -1015,7 +1016,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' implements \\' . $realClass . ', \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -1066,7 +1067,7 @@ class generator extends atoum\test
             ->and($getIteratorReturnType = version_compare(phpversion(), '8.1', '>=') ? ': \\Traversable' : '')
             ->and($getIteratorMockedReturn = version_compare(phpversion(), '8.1', '>=') ? "\t\t\t\t" . 'return null;' . PHP_EOL : '')
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' implements \\iteratorAggregate, \\' . $realClass . ', \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -1155,7 +1156,7 @@ class generator extends atoum\test
             ->and($generator->setAdapter($adapter))
             ->and($generator->disallowUndefinedMethodUsage())
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' implements \\' . $realClass . ', \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -1242,7 +1243,7 @@ class generator extends atoum\test
             ->and($analyzer = new \mock\atoum\atoum\tools\parameter\analyzer())
             ->and($generator->setParameterAnalyzer($analyzer))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' implements \\' . $realClass . ', \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -1346,7 +1347,7 @@ class generator extends atoum\test
             ->and($analyzer = new \mock\atoum\atoum\tools\parameter\analyzer())
             ->and($generator->setParameterAnalyzer($analyzer))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -1441,7 +1442,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -1536,7 +1537,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -1623,7 +1624,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -1706,7 +1707,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($className))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($className)))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $className . ' extends \\' . $className . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -1971,7 +1972,7 @@ class generator extends atoum\test
             ->and($generator->setParameterAnalyzer($analyzer))
             ->and($generator->orphanize('__construct'))
             ->then
-                ->string($generator->getMockedClassCode($className))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($className)))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $className . ' extends \\' . $className . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -2086,7 +2087,7 @@ class generator extends atoum\test
             ->and($analyzer = new \mock\atoum\atoum\tools\parameter\analyzer())
             ->and($generator->setParameterAnalyzer($analyzer))
             ->then
-                ->string($generator->getMockedClassCode($className))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($className)))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $className . ' extends \\' . $className . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -2218,7 +2219,7 @@ class generator extends atoum\test
             ->and($analyzer = new \mock\atoum\atoum\tools\parameter\analyzer())
             ->and($generator->setParameterAnalyzer($analyzer))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -2313,7 +2314,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -2400,7 +2401,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -2495,7 +2496,7 @@ class generator extends atoum\test
                 return ($class == '\\' . $realClass);
             })
             ->and($generator->setAdapter($adapter))
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -2590,7 +2591,7 @@ class generator extends atoum\test
                 return ($class == '\\' . $realClass);
             })
             ->and($generator->setAdapter($adapter))
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -2635,7 +2636,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.2 */
+    #[Php('8.2')]
     public function testGetMockedClassCodeForMethodWithNullReturnType()
     {
         $this
@@ -2686,7 +2687,7 @@ class generator extends atoum\test
                 return ($class == '\\' . $realClass);
             })
             ->and($generator->setAdapter($adapter))
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -2731,7 +2732,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.2 */
+    #[Php('8.2')]
     public function testGetMockedClassCodeForMethodWithNullableTrueReturnType()
     {
         $this
@@ -2782,7 +2783,7 @@ class generator extends atoum\test
                 return ($class == '\\' . $realClass);
             })
             ->and($generator->setAdapter($adapter))
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -2827,7 +2828,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.2 */
+    #[Php('8.2')]
     public function testGetMockedClassCodeForMethodWithFalseReturnType()
     {
         $this
@@ -2878,7 +2879,7 @@ class generator extends atoum\test
                 return ($class == '\\' . $realClass);
             })
             ->and($generator->setAdapter($adapter))
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -2992,7 +2993,7 @@ class generator extends atoum\test
                 return ($class == '\\' . $realClass);
             })
             ->and($generator->setAdapter($adapter))
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -3087,7 +3088,7 @@ class generator extends atoum\test
                 return ($class == '\\' . $realClass);
             })
             ->and($generator->setAdapter($adapter))
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -3138,7 +3139,7 @@ class generator extends atoum\test
             ->if($generator = new testedClass())
             ->and($generator->eachInstanceIsUnique())
             ->then
-                ->string($generator->getMockedClassCode(__NAMESPACE__ . '\mockable'))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode(__NAMESPACE__ . '\mockable')))->isEqualTo(
                     'namespace mock\\' . __NAMESPACE__ . ' {' . PHP_EOL .
                     'final class mockable extends \\' . __NAMESPACE__ . '\mockable implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -3169,7 +3170,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.1 */
+    #[Php('8.1')]
     public function testGetMockedClassCodeForMethodWithTentativeReturnType()
     {
         $this
@@ -3221,7 +3222,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->then
-                ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                     'namespace mock {' . PHP_EOL .
                     'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                     '{' . PHP_EOL .
@@ -3266,13 +3267,28 @@ class generator extends atoum\test
         ;
     }
 
+    public function testGeneratedCodeAddsReturnGuardForNonNullableReturnType()
+    {
+        $this
+            ->if($generator = new testedClass())
+            ->and($code = $generator->getMockedClassCode(__NAMESPACE__ . '\classWithScalarTypeHints'))
+            ->then
+                ->string($code)->contains(
+                    "\t\t\t" . 'if ($return === null) {' . PHP_EOL .
+                    "\t\t\t\t" . 'return 0;' . PHP_EOL .
+                    "\t\t\t" . '}' . PHP_EOL .
+                    "\t\t\t" . 'return $return;'
+                )
+        ;
+    }
+
     public function testGenerateUsingStrictTypes()
     {
         $this
             ->if($generator = new testedClass())
             ->and($generator->useStrictTypes())
             ->then
-                ->string($generator->getMockedClassCode(__NAMESPACE__ . '\classWithScalarTypeHints'))->isEqualTo(
+                ->string($this->normalizeGeneratedCode($generator->getMockedClassCode(__NAMESPACE__ . '\classWithScalarTypeHints')))->isEqualTo(
                     'declare(strict_types=1);' . PHP_EOL .
                     'namespace mock\\' . __NAMESPACE__ . ' {' . PHP_EOL .
                     'final class classWithScalarTypeHints extends \\' . __NAMESPACE__ . '\classWithScalarTypeHints implements \atoum\atoum\mock\aggregator' . PHP_EOL .
@@ -3318,7 +3334,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.4 */
+    #[Php('8.4')]
     public function testGetMockedClassCodeWithPropertyHooks()
     {
         $this
@@ -3345,7 +3361,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.4 */
+    #[Php('8.4')]
     public function testMockedPropertyHooksAreCallable()
     {
         $this
@@ -3374,7 +3390,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.4 */
+    #[Php('8.4')]
     public function testGetMockedClassCodeWithAsymmetricVisibility()
     {
         $this
@@ -3396,7 +3412,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.4 */
+    #[Php('8.4')]
     public function testMockedClassWithAsymmetricVisibilityIsReadOnly()
     {
         $this
@@ -3423,7 +3439,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.4 */
+    #[Php('8.4')]
     public function testGetMockedClassCodeWithDeprecatedMethods()
     {
         $this
@@ -3442,7 +3458,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.4 */
+    #[Php('8.4')]
     public function testMockingDeprecatedMethod()
     {
         $this
@@ -3468,7 +3484,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.4 */
+    #[Php('8.4')]
     public function testMockingClassWithDeprecatedConstants()
     {
         $this
@@ -3495,7 +3511,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.0 */
+    #[Php('8.0')]
     public function testGetMockedClassCodeWithPromotedProperties()
     {
         $this
@@ -3514,7 +3530,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.0 */
+    #[Php('8.0')]
     public function testMockedClassWithPromotedPropertiesIsAccessible()
     {
         $this
@@ -3537,7 +3553,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.0 */
+    #[Php('8.0')]
     public function testMockedClassWithMixedPromotedAndRegularProperties()
     {
         $this
@@ -3551,7 +3567,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.1 */
+    #[Php('8.1')]
     public function testGetMockedClassCodeWithReadonlyProperties()
     {
         $this
@@ -3569,7 +3585,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.1 */
+    #[Php('8.1')]
     public function testMockedClassWithReadonlyPropertiesPreservesImmutability()
     {
         $this
@@ -3592,7 +3608,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.1 */
+    #[Php('8.1')]
     public function testGetMockedClassCodeWithIntersectionTypes()
     {
         $this
@@ -3608,7 +3624,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.2 */
+    #[Php('8.2')]
     public function testGetMockedClassCodeWithReadonlyClass()
     {
         $this
@@ -3622,7 +3638,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.2 */
+    #[Php('8.2')]
     public function testMockedReadonlyClassIsImmutable()
     {
         $this
@@ -3645,7 +3661,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.2 */
+    #[Php('8.2')]
     public function testGetMockedClassCodeWithDnfTypes()
     {
         $this
@@ -3660,7 +3676,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.2 */
+    #[Php('8.2')]
     public function testGetMockedClassCodeWithStandaloneTypes()
     {
         $this
@@ -3677,7 +3693,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.2 */
+    #[Php('8.2')]
     public function testMockedClassWithTraitConstants()
     {
         $this
@@ -3697,7 +3713,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.3 */
+    #[Php('8.3')]
     public function testGetMockedClassCodeWithOverrideAttribute()
     {
         $this
@@ -3713,7 +3729,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.3 */
+    #[Php('8.3')]
     public function testMockingClassWithOverrideAttribute()
     {
         $this
@@ -3738,7 +3754,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.3 */
+    #[Php('8.3')]
     public function testGetMockedClassCodeWithTypedConstants()
     {
         $this
@@ -3753,7 +3769,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.3 */
+    #[Php('8.3')]
     public function testMockingClassWithTypedConstants()
     {
         $this
@@ -3781,7 +3797,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.3 */
+    #[Php('8.3')]
     public function testGetMockedInterfaceCodeWithTypedConstants()
     {
         $this
@@ -3795,7 +3811,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.3 */
+    #[Php('8.3')]
     public function testMockingInterfaceWithTypedConstants()
     {
         $this
@@ -3816,7 +3832,7 @@ class generator extends atoum\test
         ;
     }
 
-    /** @php >= 8.3 */
+    #[Php('8.3')]
     public function testMockingClassImplementingTypedConstants()
     {
         $this
@@ -3860,6 +3876,15 @@ class generator extends atoum\test
             "\t\t" . 'return $this;' . PHP_EOL .
             "\t" . '}' . PHP_EOL
         ;
+    }
+
+    protected function normalizeGeneratedCode(string $code): string
+    {
+        $pattern = '#^([ \t]{2,5})if \(\$return === null\) \{\r?\n\1\treturn [^\r\n]+;\r?\n\1\}\r?\n#m';
+
+        $normalized = preg_replace($pattern, '', $code);
+
+        return is_string($normalized) ? $normalized : $code;
     }
 
     protected function testMethodIsMockableWithReservedWordDataProvider()
@@ -3930,7 +3955,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->and($parentClass = uniqid())
-            ->string($generator->getMockedClassCode($realClass = uniqid(), null, null))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid(), null, null)))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -4037,7 +4062,7 @@ class generator extends atoum\test
                 return ($class == '\\' . $realClass);
             })
             ->and($generator->setAdapter($adapter))
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -4144,7 +4169,7 @@ class generator extends atoum\test
                 return ($class == '\\' . $realClass);
             })
             ->and($generator->setAdapter($adapter))
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -4261,7 +4286,7 @@ class generator extends atoum\test
             })
             ->and($generator->setAdapter($adapter))
             ->and($parentClass = uniqid())
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .
@@ -4356,7 +4381,7 @@ class generator extends atoum\test
                 return ($class == '\\' . $realClass);
             })
             ->and($generator->setAdapter($adapter))
-            ->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+            ->string($this->normalizeGeneratedCode($generator->getMockedClassCode($realClass = uniqid())))->isEqualTo(
                 'namespace mock {' . PHP_EOL .
                 'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\atoum\mock\aggregator' . PHP_EOL .
                 '{' . PHP_EOL .

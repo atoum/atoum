@@ -8,19 +8,19 @@ use atoum\atoum\runner;
 
 abstract class outputs extends field
 {
-    protected $runner = null;
+    protected mixed $runner = null;
 
     public function __construct()
     {
         parent::__construct([runner::runStop]);
     }
 
-    public function getRunner()
+    public function getRunner(): mixed
     {
         return $this->runner;
     }
 
-    public function handleEvent($event, observable $observable)
+    public function handleEvent(string $event, observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

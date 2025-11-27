@@ -8,10 +8,10 @@ use atoum\atoum\exceptions
 
 class generator extends iterator
 {
-    protected $lastYieldValue;
-    protected $lastRetunedValue;
+    protected mixed $lastYieldValue = null;
+    protected mixed $lastRetunedValue = null;
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         switch (strtolower($property)) {
             case 'yields':
@@ -46,7 +46,7 @@ class generator extends iterator
         }
     }
 
-    public function setWith($value, $checkType = true)
+    public function setWith(mixed $value, bool $checkType = true): static
     {
         parent::setWith($value, $checkType);
 

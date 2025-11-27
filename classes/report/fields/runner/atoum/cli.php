@@ -8,8 +8,8 @@ use atoum\atoum\report;
 
 class cli extends report\fields\runner\atoum
 {
-    protected $prompt = null;
-    protected $colorizer = null;
+    protected ?prompt $prompt = null;
+    protected ?colorizer $colorizer = null;
 
     public function __construct()
     {
@@ -21,31 +21,31 @@ class cli extends report\fields\runner\atoum
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return ($this->author === null || $this->version === null ? '' : $this->prompt . $this->colorizer->colorize($this->locale->_('atoum version %s by %s (%s)', $this->version, $this->author, $this->path)) . PHP_EOL);
     }
 
-    public function setPrompt(?prompt $prompt = null)
+    public function setPrompt(?prompt $prompt = null): static
     {
         $this->prompt = $prompt ?: new prompt();
 
         return $this;
     }
 
-    public function getPrompt()
+    public function getPrompt(): prompt
     {
         return $this->prompt;
     }
 
-    public function setColorizer(?colorizer $colorizer = null)
+    public function setColorizer(?colorizer $colorizer = null): static
     {
         $this->colorizer = $colorizer ?: new colorizer();
 
         return $this;
     }
 
-    public function getColorizer()
+    public function getColorizer(): colorizer
     {
         return $this->colorizer;
     }

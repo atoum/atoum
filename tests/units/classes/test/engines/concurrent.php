@@ -53,8 +53,8 @@ class concurrent extends atoum\test
         $this
             ->if($engine = new testedClass())
             ->and($engine->setPhp($php = new \mock\atoum\atoum\php()))
-            ->then
-                ->object($engine->run($test = new \mock\atoum\atoum\test()))->isIdenticalTo($engine)
+            ->and($test = new \mock\atoum\atoum\test())
+            ->when(function () use ($engine, $test) { $engine->run($test); })
             ->if($test->getMockController()->getCurrentMethod = $method = uniqid())
             ->and($test->getMockController()->getPath = $testPath = uniqid())
             ->and($test->getMockController()->getPhpPath = $phpPath = uniqid())
@@ -156,7 +156,7 @@ class concurrent extends atoum\test
             ->and($this->calling($test)->getBootstrapFile = null)
             ->and($this->calling($php)->isRunning = false)
             ->and($this->calling($php)->getStdOut = $output = uniqid())
-            ->and($this->calling($php)->getExitCode = $exitCode = uniqid())
+            ->and($this->calling($php)->getExitCode = $exitCode = rand(0, 255))
             ->and($engine->run($test))
             ->then
                 ->object($score = $engine->getScore())->isInstanceOf(atoum\score::class)

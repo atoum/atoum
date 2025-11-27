@@ -12,38 +12,38 @@ class runner implements observable
     public const runStart = 'runnerStart';
     public const runStop = 'runnerStop';
 
-    protected $score = null;
-    protected $adapter = null;
-    protected $locale = null;
-    protected $includer = null;
-    protected $testGenerator = null;
-    protected $globIteratorFactory = null;
-    protected $reflectionClassFactory = null;
-    protected $testFactory = null;
-    protected $observers = null;
-    protected $reports = null;
-    protected $reportSet = null;
-    protected $testPaths = [];
-    protected $testNumber = 0;
-    protected $testMethodNumber = 0;
-    protected $codeCoverage = true;
-    protected $branchesAndPathsCoverage = false;
-    protected $php = null;
-    protected $defaultReportTitle = null;
-    protected $maxChildrenNumber = null;
-    protected $bootstrapFile = null;
-    protected $autoloaderFile = null;
-    protected $testDirectoryIterator = null;
-    protected $debugMode = false;
-    protected $xdebugConfig = null;
-    protected $failIfVoidMethods = false;
-    protected $failIfSkippedMethods = false;
-    protected $disallowUsageOfUndefinedMethodInMock = false;
-    protected $extensions = null;
+    protected ?runner\score $score = null;
+    protected ?adapter $adapter = null;
+    protected ?locale $locale = null;
+    protected ?includer $includer = null;
+    protected ?test\generator $testGenerator = null;
+    protected ?\Closure $globIteratorFactory = null;
+    protected ?\Closure $reflectionClassFactory = null;
+    protected ?\Closure $testFactory = null;
+    protected ?\splObjectStorage $observers = null;
+    protected ?\splObjectStorage $reports = null;
+    protected ?report $reportSet = null;
+    protected array $testPaths = [];
+    protected int $testNumber = 0;
+    protected int $testMethodNumber = 0;
+    protected bool $codeCoverage = true;
+    protected bool $branchesAndPathsCoverage = false;
+    protected ?php $php = null;
+    protected ?string $defaultReportTitle = null;
+    protected ?int $maxChildrenNumber = null;
+    protected ?string $bootstrapFile = null;
+    protected ?string $autoloaderFile = null;
+    protected ?iterators\recursives\directory\factory $testDirectoryIterator = null;
+    protected bool $debugMode = false;
+    protected ?string $xdebugConfig = null;
+    protected bool $failIfVoidMethods = false;
+    protected bool $failIfSkippedMethods = false;
+    protected bool $disallowUsageOfUndefinedMethodInMock = false;
+    protected ?aggregator $extensions = null;
 
-    private $start = null;
-    private $stop = null;
-    private $canAddTest = true;
+    private ?float $start = null;
+    private ?float $stop = null;
+    private bool $canAddTest = true;
 
     public function __construct()
     {
@@ -64,79 +64,79 @@ class runner implements observable
         $this->extensions = new aggregator();
     }
 
-    public function setAdapter(?adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new adapter();
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): adapter
     {
         return $this->adapter;
     }
 
-    public function setLocale(?locale $locale = null)
+    public function setLocale(?locale $locale = null): static
     {
         $this->locale = $locale ?: new locale();
 
         return $this;
     }
 
-    public function getLocale()
+    public function getLocale(): locale
     {
         return $this->locale;
     }
 
-    public function setIncluder(?includer $includer = null)
+    public function setIncluder(?includer $includer = null): static
     {
         $this->includer = $includer ?: new includer();
 
         return $this;
     }
 
-    public function getIncluder()
+    public function getIncluder(): includer
     {
         return $this->includer;
     }
 
-    public function setScore(?runner\score $score = null)
+    public function setScore(?runner\score $score = null): static
     {
         $this->score = $score ?: new runner\score();
 
         return $this;
     }
 
-    public function getScore()
+    public function getScore(): score
     {
         return $this->score;
     }
 
-    public function setTestGenerator(?test\generator $generator = null)
+    public function setTestGenerator(?test\generator $generator = null): static
     {
         $this->testGenerator = $generator ?: new test\generator();
 
         return $this;
     }
 
-    public function getTestGenerator()
+    public function getTestGenerator(): ?test\generator
     {
         return $this->testGenerator;
     }
 
-    public function setTestDirectoryIterator(?iterators\recursives\directory\factory $iterator = null)
+    public function setTestDirectoryIterator(?iterators\recursives\directory\factory $iterator = null): static
     {
         $this->testDirectoryIterator = $iterator ?: new iterators\recursives\directory\factory();
 
         return $this;
     }
 
-    public function getTestDirectoryIterator()
+    public function getTestDirectoryIterator(): iterators\recursives\directory\factory
     {
         return $this->testDirectoryIterator;
     }
 
-    public function setGlobIteratorFactory(?\closure $factory = null)
+    public function setGlobIteratorFactory(?\Closure $factory = null): static
     {
         $this->globIteratorFactory = $factory ?: function ($pattern) {
             return new \globIterator($pattern);
@@ -145,12 +145,12 @@ class runner implements observable
         return $this;
     }
 
-    public function getGlobIteratorFactory()
+    public function getGlobIteratorFactory(): \Closure
     {
         return $this->globIteratorFactory;
     }
 
-    public function setReflectionClassFactory(?\closure $factory = null)
+    public function setReflectionClassFactory(?\Closure $factory = null): static
     {
         $this->reflectionClassFactory = $factory ?: function ($class) {
             return new \reflectionClass($class);
@@ -159,77 +159,77 @@ class runner implements observable
         return $this;
     }
 
-    public function getReflectionClassFactory()
+    public function getReflectionClassFactory(): \Closure
     {
         return $this->reflectionClassFactory;
     }
 
-    public function enableDebugMode()
+    public function enableDebugMode(): static
     {
         $this->debugMode = true;
 
         return $this;
     }
 
-    public function disableDebugMode()
+    public function disableDebugMode(): static
     {
         $this->debugMode = false;
 
         return $this;
     }
 
-    public function debugModeIsEnabled()
+    public function debugModeIsEnabled(): bool
     {
         return $this->debugMode;
     }
 
-    public function disallowUndefinedMethodInInterface()
+    public function disallowUndefinedMethodInInterface(): static
     {
         return $this->disallowUsageOfUndefinedMethodInMock();
     }
 
-    public function disallowUsageOfUndefinedMethodInMock()
+    public function disallowUsageOfUndefinedMethodInMock(): static
     {
         $this->disallowUsageOfUndefinedMethodInMock = true;
 
         return $this;
     }
 
-    public function allowUndefinedMethodInInterface()
+    public function allowUndefinedMethodInInterface(): static
     {
         return $this->allowUsageOfUndefinedMethodInMock();
     }
 
-    public function allowUsageOfUndefinedMethodInMock()
+    public function allowUsageOfUndefinedMethodInMock(): static
     {
         $this->disallowUsageOfUndefinedMethodInMock = false;
 
         return $this;
     }
 
-    public function undefinedMethodInInterfaceAreAllowed()
+    public function undefinedMethodInInterfaceAreAllowed(): bool
     {
         return $this->usageOfUndefinedMethodInMockAreAllowed();
     }
 
-    public function usageOfUndefinedMethodInMockAreAllowed()
+    public function usageOfUndefinedMethodInMockAreAllowed(): bool
     {
         return $this->disallowUsageOfUndefinedMethodInMock === false;
     }
 
-    public function setXdebugConfig($value)
+    public function setXdebugConfig(?string $value): static
     {
         $this->xdebugConfig = $value;
 
         return $this;
     }
 
-    public function getXdebugConfig()
+    public function getXdebugConfig(): ?string
     {
         return $this->xdebugConfig;
     }
 
-    public function setMaxChildrenNumber($number)
+    public function setMaxChildrenNumber(int $number): static
     {
         if ($number < 1) {
             throw new exceptions\logic\invalidArgument('Maximum number of children must be greater or equal to 1');
@@ -240,21 +240,21 @@ class runner implements observable
         return $this;
     }
 
-    public function acceptTestFileExtensions(array $testFileExtensions)
+    public function acceptTestFileExtensions(array $testFileExtensions): static
     {
         $this->testDirectoryIterator->acceptExtensions($testFileExtensions);
 
         return $this;
     }
 
-    public function setDefaultReportTitle($title)
+    public function setDefaultReportTitle(string $title): static
     {
         $this->defaultReportTitle = (string) $title;
 
         return $this;
     }
 
-    public function setBootstrapFile($path)
+    public function setBootstrapFile(string $path): static
     {
         try {
             $this->includer->includePath($path, function ($path) {
@@ -269,7 +269,7 @@ class runner implements observable
         return $this;
     }
 
-    public function setAutoloaderFile($path)
+    public function setAutoloaderFile(string $path): static
     {
         try {
             $this->includer->includePath($path, function ($path) {
@@ -284,46 +284,46 @@ class runner implements observable
         return $this;
     }
 
-    public function getDefaultReportTitle()
+    public function getDefaultReportTitle(): ?string
     {
         return $this->defaultReportTitle;
     }
 
-    public function setPhp(?php $php = null)
+    public function setPhp(?php $php = null): static
     {
         $this->php = $php ?: new php();
 
         return $this;
     }
 
-    public function getPhp()
+    public function getPhp(): php
     {
         return $this->php;
     }
 
-    public function setPhpPath($path)
+    public function setPhpPath(string $path): static
     {
         $this->php->setBinaryPath($path);
 
         return $this;
     }
 
-    public function getPhpPath()
+    public function getPhpPath(): string
     {
         return $this->php->getBinaryPath();
     }
 
-    public function getTestNumber()
+    public function getTestNumber(): int
     {
         return $this->testNumber;
     }
 
-    public function getTestMethodNumber()
+    public function getTestMethodNumber(): int
     {
         return $this->testMethodNumber;
     }
 
-    public function getObservers()
+    public function getObservers(): array
     {
         $observers = [];
 
@@ -334,17 +334,17 @@ class runner implements observable
         return $observers;
     }
 
-    public function getBootstrapFile()
+    public function getBootstrapFile(): ?string
     {
         return $this->bootstrapFile;
     }
 
-    public function getAutoloaderFile()
+    public function getAutoloaderFile(): ?string
     {
         return $this->autoloaderFile;
     }
 
-    public function getTestMethods(array $namespaces = [], array $tags = [], array $testMethods = [], $testBaseClass = null)
+    public function getTestMethods(array $namespaces = [], array $tags = [], array $testMethods = [], ?string $testBaseClass = null): array
     {
         $classes = [];
 
@@ -363,111 +363,109 @@ class runner implements observable
         return $classes;
     }
 
-    public function getCoverage()
+    public function getCoverage(): score\coverage
     {
         return $this->score->getCoverage();
     }
 
-    public function enableCodeCoverage()
+    public function enableCodeCoverage(): static
     {
         $this->codeCoverage = true;
 
         return $this;
     }
 
-    public function disableCodeCoverage()
+    public function disableCodeCoverage(): static
     {
         $this->codeCoverage = false;
 
         return $this;
     }
 
-    public function codeCoverageIsEnabled()
+    public function codeCoverageIsEnabled(): bool
     {
         return $this->codeCoverage;
     }
 
-    public function enableBranchesAndPathsCoverage()
+    public function enableBranchesAndPathsCoverage(): static
     {
         $this->branchesAndPathsCoverage = $this->codeCoverageIsEnabled();
 
         return $this;
     }
 
-    public function disableBranchesAndPathsCoverage()
+    public function disableBranchesAndPathsCoverage(): static
     {
         $this->branchesAndPathsCoverage = false;
 
         return $this;
     }
 
-    public function branchesAndPathsCoverageIsEnabled()
+    public function branchesAndPathsCoverageIsEnabled(): bool
     {
         return $this->branchesAndPathsCoverage;
     }
 
-    public function doNotfailIfVoidMethods()
+    public function doNotfailIfVoidMethods(): static
     {
         $this->failIfVoidMethods = false;
 
         return $this;
     }
 
-    public function failIfVoidMethods()
+    public function failIfVoidMethods(): static
     {
         $this->failIfVoidMethods = true;
 
         return $this;
     }
 
-    public function shouldFailIfVoidMethods()
+    public function shouldFailIfVoidMethods(): bool
     {
         return $this->failIfVoidMethods;
     }
 
-    public function doNotfailIfSkippedMethods()
+    public function doNotfailIfSkippedMethods(): static
     {
         $this->failIfSkippedMethods = false;
 
         return $this;
     }
 
-    public function failIfSkippedMethods()
+    public function failIfSkippedMethods(): static
     {
         $this->failIfSkippedMethods = true;
 
         return $this;
     }
 
-    public function shouldFailIfSkippedMethods()
+    public function shouldFailIfSkippedMethods(): bool
     {
         return $this->failIfSkippedMethods;
     }
 
-    public function addObserver(observer $observer)
+    public function addObserver(observer $observer): static
     {
         $this->observers->offsetSet($observer);
 
         return $this;
     }
 
-    public function removeObserver(observer $observer)
+    public function removeObserver(observer $observer): static
     {
         $this->observers->offsetUnset($observer);
 
         return $this;
     }
 
-    public function callObservers($event)
+    public function callObservers(string $event): void
     {
         foreach ($this->observers as $observer) {
             $observer->handleEvent($event, $this);
         }
-
-        return $this;
     }
 
-    public function setPathAndVersionInScore()
+    public function setPathAndVersionInScore(): static
     {
         $this->score
             ->setAtoumVersion($this->adapter->defined(static::atoumVersionConstant) === false ? null : $this->adapter->constant(static::atoumVersionConstant))
@@ -475,7 +473,7 @@ class runner implements observable
         ;
 
         if ($this->php->reset()->addOption('--version')->run()->getExitCode() > 0) {
-            throw new exceptions\runtime('Unable to get PHP version from \'' . $this->php . '\'');
+            throw new exceptions\runtime("Unable to get PHP version from '" . $this->php . "'");
         }
 
         $this->score
@@ -486,12 +484,12 @@ class runner implements observable
         return $this;
     }
 
-    public function getTestFactory()
+    public function getTestFactory(): \Closure
     {
         return $this->testFactory;
     }
 
-    public function setTestFactory($testFactory = null)
+    public function setTestFactory(?\Closure $testFactory = null): static
     {
         $testFactory = $testFactory ?: function ($testClass) {
             return new $testClass();
@@ -510,7 +508,7 @@ class runner implements observable
         return $this;
     }
 
-    public function run(array $namespaces = [], array $tags = [], array $runTestClasses = [], array $runTestMethods = [], $testBaseClass = null)
+    public function run(array $namespaces = [], array $tags = [], array $runTestClasses = [], array $runTestMethods = [], ?string $testBaseClass = null): runner\score
     {
         $this->includeTestPaths();
 
@@ -604,40 +602,40 @@ class runner implements observable
         return $this->score;
     }
 
-    public function getTestPaths()
+    public function getTestPaths(): array
     {
         return $this->testPaths;
     }
 
-    public function setTestPaths(array $testPaths)
+    public function setTestPaths(array $testPaths): static
     {
         $this->testPaths = $testPaths;
 
         return $this;
     }
 
-    public function resetTestPaths()
+    public function resetTestPaths(): static
     {
         $this->testPaths = [];
 
         return $this;
     }
 
-    public function canAddTest()
+    public function canAddTest(): static
     {
         $this->canAddTest = true;
 
         return $this;
     }
 
-    public function canNotAddTest()
+    public function canNotAddTest(): static
     {
         $this->canAddTest = false;
 
         return $this;
     }
 
-    public function addTest($path)
+    public function addTest(string $path): static
     {
         if ($this->canAddTest === true) {
             $path = (string) $path;
@@ -650,7 +648,7 @@ class runner implements observable
         return $this;
     }
 
-    public function addTestsFromDirectory($directory)
+    public function addTestsFromDirectory(string $directory): static
     {
         try {
             $paths = [];
@@ -671,7 +669,7 @@ class runner implements observable
         return $this;
     }
 
-    public function addTestsFromPattern($pattern)
+    public function addTestsFromPattern(string $pattern): static
     {
         try {
             $paths = [];
@@ -696,17 +694,17 @@ class runner implements observable
         return $this;
     }
 
-    public function getRunningDuration()
+    public function getRunningDuration(): ?float
     {
         return ($this->start === null || $this->stop === null ? null : $this->stop - $this->start);
     }
 
-    public function getDeclaredTestClasses($testBaseClass = null)
+    public function getDeclaredTestClasses(?string $testBaseClass = null): array
     {
         return $this->findTestClasses($testBaseClass);
     }
 
-    public function setReport(report $report)
+    public function setReport(report $report): static
     {
         if ($this->reportSet === null) {
             $this->removeReports($report)->addReport($report);
@@ -717,7 +715,7 @@ class runner implements observable
         return $this;
     }
 
-    public function addReport(report $report)
+    public function addReport(report $report): static
     {
         if ($this->reportSet === null || $this->reportSet->isOverridableBy($report)) {
             $this->reports->offsetSet($report);
@@ -728,7 +726,7 @@ class runner implements observable
         return $this;
     }
 
-    public function removeReport(report $report)
+    public function removeReport(report $report): static
     {
         if ($this->reportSet === $report) {
             $this->reportSet = null;
@@ -739,7 +737,7 @@ class runner implements observable
         return $this->removeObserver($report);
     }
 
-    public function removeReports(?report $override = null)
+    public function removeReports(?report $override = null): static
     {
         if ($override === null) {
             foreach ($this->reports as $report) {
@@ -763,12 +761,12 @@ class runner implements observable
         return $this;
     }
 
-    public function hasReports()
+    public function hasReports(): bool
     {
         return (count($this->reports) > 0);
     }
 
-    public function getReports()
+    public function getReports(): array
     {
         $reports = [];
 
@@ -779,7 +777,7 @@ class runner implements observable
         return $reports;
     }
 
-    public function getExtension($className)
+    public function getExtension(string $className): extension
     {
         foreach ($this->getExtensions() as $extension) {
             if (get_class($extension) === $className) {
@@ -790,12 +788,12 @@ class runner implements observable
         throw new exceptions\logic\invalidArgument(sprintf('Extension %s is not loaded', $className));
     }
 
-    public function getExtensions()
+    public function getExtensions(): aggregator
     {
         return $this->extensions;
     }
 
-    public function removeExtension($extension)
+    public function removeExtension(string|object $extension): static
     {
         if (is_object($extension) === true) {
             $extension = get_class($extension);
@@ -807,7 +805,7 @@ class runner implements observable
         return $this->removeObserver($extension);
     }
 
-    public function removeExtensions()
+    public function removeExtensions(): static
     {
         foreach ($this->extensions as $extension) {
             $this->removeObserver($extension);
@@ -818,7 +816,7 @@ class runner implements observable
         return $this;
     }
 
-    public function addExtension(extension $extension, ?extension\configuration $configuration = null)
+    public function addExtension(extension $extension, ?extension\configuration $configuration = null): static
     {
         if ($this->extensions->offsetExists($extension) === false) {
             $extension->setRunner($this);
@@ -830,7 +828,7 @@ class runner implements observable
         return $this;
     }
 
-    public static function isIgnored(test $test, array $namespaces, array $tags)
+    public static function isIgnored(test $test, array $namespaces, array $tags): bool
     {
         $isIgnored = $test->isIgnored();
 
@@ -849,7 +847,7 @@ class runner implements observable
         return $isIgnored;
     }
 
-    protected function findTestClasses($testBaseClass = null)
+    protected function findTestClasses(?string $testBaseClass = null): array
     {
         $reflectionClassFactory = $this->reflectionClassFactory;
         $testBaseClass = $testBaseClass ?: __NAMESPACE__ . '\test';
@@ -864,7 +862,7 @@ class runner implements observable
         );
     }
 
-    private function includeTestPaths()
+    private function includeTestPaths(): static
     {
         $runner = $this;
         $includer = function ($path) use ($runner) {

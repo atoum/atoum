@@ -10,16 +10,16 @@ class progressBar
     public const defaultProgressBarFormat = '[%s]';
     public const defaultCounterFormat = '[%s/%s]';
 
-    protected $cli = null;
-    protected $refresh = null;
-    protected $progressBar = null;
-    protected $progressBarFormat = null;
-    protected $counter = null;
-    protected $counterFormat = null;
-    protected $iterations = 0;
-    protected $currentIteration = 0;
+    protected ?atoum\cli $cli = null;
+    protected ?string $refresh = null;
+    protected ?string $progressBar = null;
+    protected ?string $progressBarFormat = null;
+    protected ?string $counter = null;
+    protected ?string $counterFormat = null;
+    protected int $iterations = 0;
+    protected int $currentIteration = 0;
 
-    public function __construct($iterations = 0, ?atoum\cli $cli = null)
+    public function __construct(int $iterations = 0, ?atoum\cli $cli = null)
     {
         $this->iterations = $iterations;
         $this->progressBarFormat = self::defaultProgressBarFormat;
@@ -28,7 +28,7 @@ class progressBar
         $this->setCli($cli ?: new atoum\cli());
     }
 
-    public function reset()
+    public function reset(): static
     {
         $this->refresh = null;
         $this->iterations = 0;
@@ -39,26 +39,26 @@ class progressBar
         return $this;
     }
 
-    public function setIterations($iterations)
+    public function setIterations(int $iterations): static
     {
         $this->reset()->iterations = (int) $iterations;
 
         return $this;
     }
 
-    public function setCli(atoum\cli $cli)
+    public function setCli(atoum\cli $cli): static
     {
         $this->cli = $cli;
 
         return $this;
     }
 
-    public function getCli()
+    public function getCli(): atoum\cli
     {
         return $this->cli;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 

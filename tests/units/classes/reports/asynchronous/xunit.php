@@ -10,6 +10,14 @@ require_once __DIR__ . '/../../../runner.php';
 
 class xunit extends atoum\test
 {
+    public function beforeTestMethod($method)
+    {
+        $this
+            ->extension('libxml')->isLoaded()
+            ->extension('dom')->isLoaded()
+        ;
+    }
+
     public function testClass()
     {
         $this->testedClass->extends(atoum\reports\asynchronous::class);
@@ -30,6 +38,8 @@ class xunit extends atoum\test
                 ->array($report->getFields(atoum\runner::runStart))->isEmpty()
                 ->object($report->getLocale())->isInstanceOf(atoum\locale::class)
                 ->object($report->getAdapter())->isInstanceOf(atoum\adapter::class)
+                ->adapter($adapter)->call('extension_loaded')->withArguments('libxml')->once()
+                ->adapter($adapter)->call('extension_loaded')->withArguments('dom')->once()
             ->if($adapter->extension_loaded = false)
             ->then
                 ->exception(function () use ($adapter) {
@@ -37,6 +47,15 @@ class xunit extends atoum\test
                 })
                     ->isInstanceOf(atoum\exceptions\runtime::class)
                     ->hasMessage('libxml PHP extension is mandatory for xunit report')
+            ->if($adapter->extension_loaded = function (string $extension): bool {
+                return $extension !== 'dom';
+            })
+            ->then
+                ->exception(function () use ($adapter) {
+                    new reports\xunit($adapter);
+                })
+                    ->isInstanceOf(atoum\exceptions\runtime::class)
+                    ->hasMessage('dom PHP extension is mandatory for xunit report')
         ;
     }
 

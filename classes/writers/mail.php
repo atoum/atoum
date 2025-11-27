@@ -8,8 +8,8 @@ use atoum\atoum\reports;
 
 class mail extends atoum\writer implements report\writers\asynchronous
 {
-    protected $mailer = null;
-    protected $locale = null;
+    protected ?atoum\mailer $mailer = null;
+    protected ?atoum\locale $locale = null;
 
     public function __construct(?atoum\mailer $mailer = null, ?atoum\locale $locale = null, ?atoum\adapter $adapter = null)
     {
@@ -21,36 +21,36 @@ class mail extends atoum\writer implements report\writers\asynchronous
         ;
     }
 
-    public function setMailer(atoum\mailer $mailer)
+    public function setMailer(atoum\mailer $mailer): static
     {
         $this->mailer = $mailer;
 
         return $this;
     }
 
-    public function getMailer()
+    public function getMailer(): atoum\mailer
     {
         return $this->mailer;
     }
 
-    public function setLocale(atoum\locale $locale)
+    public function setLocale(atoum\locale $locale): static
     {
         $this->locale = $locale;
 
         return $this;
     }
 
-    public function getLocale()
+    public function getLocale(): atoum\locale
     {
         return $this->locale;
     }
 
-    public function clear()
+    public function clear(): static
     {
         return $this;
     }
 
-    public function writeAsynchronousReport(reports\asynchronous $report)
+    public function writeAsynchronousReport(reports\asynchronous $report): static
     {
         $mailerSubject = $this->mailer->getSubject();
 
@@ -67,10 +67,8 @@ class mail extends atoum\writer implements report\writers\asynchronous
         return $this->write((string) $report);
     }
 
-    protected function doWrite($something)
+    protected function doWrite(string $something): void
     {
         $this->mailer->send($something);
-
-        return $this;
     }
 }

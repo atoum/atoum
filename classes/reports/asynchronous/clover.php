@@ -14,16 +14,16 @@ class clover extends atoum\reports\asynchronous
     public const lineTypeStatement = 'stmt';
     public const lineTypeConditional = 'cond';
 
-    protected $score = null;
-    protected $loc = 0;
-    protected $coveredLoc = 0;
-    protected $methods = 0;
-    protected $coveredMethods = 0;
-    protected $branches = 0;
-    protected $coveredBranches = 0;
-    protected $paths = 0;
-    protected $classes = 0;
-    protected $package = '';
+    protected mixed $score = null;
+    protected int $loc = 0;
+    protected int $coveredLoc = 0;
+    protected int $methods = 0;
+    protected int $coveredMethods = 0;
+    protected int $branches = 0;
+    protected int $coveredBranches = 0;
+    protected int $paths = 0;
+    protected int $classes = 0;
+    protected string $package = '';
 
     public function __construct(?atoum\adapter $adapter = null)
     {
@@ -34,33 +34,39 @@ class clover extends atoum\reports\asynchronous
         if ($this->adapter->extension_loaded('libxml') === false) {
             throw new exceptions\runtime('libxml PHP extension is mandatory for clover report');
         }
+
+        if ($this->adapter->extension_loaded('dom') === false) {
+            throw new exceptions\runtime('dom PHP extension is mandatory for clover report');
+        }
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return ($this->title ?: self::defaultTitle);
     }
 
-    public function getPackage()
+    public function getPackage(): string
     {
         return ($this->package ?: self::defaultPackage);
     }
 
-    public function setPackage($package)
+    public function setPackage(string $package): static
     {
         $this->package = (string) $package;
 
         return $this;
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable)
     {
         $this->score = ($event !== atoum\runner::runStop ? null : $observable->getScore());
 
-        return parent::handleEvent($event, $observable);
+        parent::handleEvent($event, $observable);
+
+        return $this;
     }
 
-    public function build($event)
+    public function build(string $event): static
     {
         if ($event === atoum\runner::runStop) {
             $document = new \DOMDocument('1.0', 'UTF-8');
@@ -74,7 +80,7 @@ class clover extends atoum\reports\asynchronous
         return $this;
     }
 
-    protected function makeRootElement(\DOMDocument $document, score\coverage $coverage)
+    protected function makeRootElement(\DOMDocument $document, score\coverage $coverage): \DOMElement
     {
         $root = $document->createElement('coverage');
 
@@ -86,7 +92,7 @@ class clover extends atoum\reports\asynchronous
         return $root;
     }
 
-    protected function makeProjectElement(\DOMDocument $document, score\coverage $coverage)
+    protected function makeProjectElement(\DOMDocument $document, score\coverage $coverage): \DOMElement
     {
         $project = $document->createElement('project');
 
@@ -99,7 +105,7 @@ class clover extends atoum\reports\asynchronous
         return $project;
     }
 
-    protected function makeProjectMetricsElement(\DOMDocument $document, $files)
+    protected function makeProjectMetricsElement(\DOMDocument $document, int $files): \DOMElement
     {
         $metrics = $this->makePackageMetricsElement($document, $files);
 
@@ -108,7 +114,7 @@ class clover extends atoum\reports\asynchronous
         return $metrics;
     }
 
-    protected function makePackageElement(\DOMDocument $document, score\coverage $coverage)
+    protected function makePackageElement(\DOMDocument $document, score\coverage $coverage): \DOMElement
     {
         $package = $document->createElement('package');
 
@@ -123,7 +129,7 @@ class clover extends atoum\reports\asynchronous
         return $package;
     }
 
-    protected function makePackageMetricsElement(\DOMDocument $document, $files)
+    protected function makePackageMetricsElement(\DOMDocument $document, int $files): \DOMElement
     {
         $metrics = $this->makeFileMetricsElement($document, $this->loc, $this->coveredLoc, $this->methods, $this->coveredMethods, $this->classes, $this->branches, $this->coveredBranches, $this->paths);
 
@@ -132,7 +138,7 @@ class clover extends atoum\reports\asynchronous
         return $metrics;
     }
 
-    protected function makeFileElement(\DOMDocument $document, $filename, $class, array $coverage, array $branches, array $paths)
+    protected function makeFileElement(\DOMDocument $document, string $filename, string $class, array $coverage, array $branches, array $paths): \DOMElement
     {
         $file = $document->createElement('file');
 
@@ -199,7 +205,7 @@ class clover extends atoum\reports\asynchronous
         return $file;
     }
 
-    protected function makeFileMetricsElement(\DOMDocument $document, $loc, $cloc, $methods, $coveredMethods, $classes, $branches = 0, $coveredBranches = 0, $complexity = 0)
+    protected function makeFileMetricsElement(\DOMDocument $document, int $loc, int $cloc, int $methods, int $coveredMethods, int $classes, int $branches = 0, int $coveredBranches = 0, int $complexity = 0): \DOMElement
     {
         $metrics = $this->makeClassMetricsElement($document, $loc, $cloc, $methods, $coveredMethods, $branches, $coveredBranches, $complexity);
 
@@ -210,7 +216,7 @@ class clover extends atoum\reports\asynchronous
         return $metrics;
     }
 
-    protected function makeClassElement(\DOMDocument $document, $classname, array $coverage, array $branches, array $paths)
+    protected function makeClassElement(\DOMDocument $document, string $classname, array $coverage, array $branches, array $paths): \DOMElement
     {
         $class = $document->createElement('class');
 
@@ -254,7 +260,7 @@ class clover extends atoum\reports\asynchronous
         return $class;
     }
 
-    protected function makeClassMetricsElement(\DOMDocument $document, $loc, $coveredLines, $methods, $coveredMethods, $branches = 0, $coveredBranches = 0, $complexity = 0)
+    protected function makeClassMetricsElement(\DOMDocument $document, int $loc, int $coveredLines, int $methods, int $coveredMethods, int $branches = 0, int $coveredBranches = 0, int $complexity = 0): \DOMElement
     {
         $metrics = $document->createElement('metrics');
 
@@ -275,7 +281,7 @@ class clover extends atoum\reports\asynchronous
         return $metrics;
     }
 
-    protected function makeLineElement(\DOMDocument $document, $linenum, $count = 1)
+    protected function makeLineElement(\DOMDocument $document, int $linenum, int $count = 1): \DOMElement
     {
         $line = $document->createElement('line');
 
@@ -292,56 +298,56 @@ class clover extends atoum\reports\asynchronous
         return $line;
     }
 
-    protected function addLoc($count)
+    protected function addLoc(int $count): static
     {
         $this->loc += $count;
 
         return $this;
     }
 
-    protected function addCoveredLoc($count)
+    protected function addCoveredLoc(int $count): static
     {
         $this->coveredLoc += $count;
 
         return $this;
     }
 
-    protected function addMethod($count)
+    protected function addMethod(int $count): static
     {
         $this->methods += $count;
 
         return $this;
     }
 
-    protected function addCoveredMethod($count)
+    protected function addCoveredMethod(int $count): static
     {
         $this->coveredMethods += $count;
 
         return $this;
     }
 
-    protected function addBranches($count)
+    protected function addBranches(int $count): static
     {
         $this->branches += $count;
 
         return $this;
     }
 
-    protected function addCoveredBranches($count)
+    protected function addCoveredBranches(int $count): static
     {
         $this->coveredBranches += $count;
 
         return $this;
     }
 
-    protected function addPaths($count)
+    protected function addPaths(int $count): static
     {
         $this->paths += $count;
 
         return $this;
     }
 
-    protected function addClasses($count)
+    protected function addClasses(int $count): static
     {
         $this->classes += $count;
 

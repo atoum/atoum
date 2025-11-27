@@ -11,27 +11,27 @@ class builder extends atoum\script\configurable
     public const defaultUnitTestRunnerScript = 'scripts/runner.php';
     public const defaultPharGeneratorScript = 'scripts/phar/generator.php';
 
-    private $lockResource = null;
+    private mixed $lockResource = null;
 
-    protected $php = null;
-    protected $vcs = null;
-    protected $taggerEngine = null;
-    protected $revision = null;
-    protected $version = null;
-    protected $unitTestRunnerScript = null;
-    protected $pharGeneratorScript = null;
-    protected $workingDirectory = null;
-    protected $destinationDirectory = null;
-    protected $scoreDirectory = null;
-    protected $errorsDirectory = null;
-    protected $revisionFile = null;
-    protected $runFile = null;
-    protected $pharCreationEnabled = true;
-    protected $checkUnitTests = true;
-    protected $reportTitle = null;
-    protected $runnerConfigurationFiles = [];
+    protected ?atoum\php $php = null;
+    protected ?builder\vcs $vcs = null;
+    protected ?atoum\scripts\tagger\engine $taggerEngine = null;
+    protected ?string $revision = null;
+    protected ?string $version = null;
+    protected ?string $unitTestRunnerScript = null;
+    protected ?string $pharGeneratorScript = null;
+    protected ?string $workingDirectory = null;
+    protected ?string $destinationDirectory = null;
+    protected ?string $scoreDirectory = null;
+    protected ?string $errorsDirectory = null;
+    protected ?string $revisionFile = null;
+    protected ?string $runFile = null;
+    protected bool $pharCreationEnabled = true;
+    protected bool $checkUnitTests = true;
+    protected ?string $reportTitle = null;
+    protected array $runnerConfigurationFiles = [];
 
-    public function __construct($name, ?atoum\adapter $adapter = null)
+    public function __construct(string $name, ?atoum\adapter $adapter = null)
     {
         parent::__construct($name, $adapter);
 
@@ -43,225 +43,225 @@ class builder extends atoum\script\configurable
         ;
     }
 
-    public function setVcs(?builder\vcs $vcs = null)
+    public function setVcs(?builder\vcs $vcs = null): static
     {
         $this->vcs = $vcs ?: new builder\vcs\svn();
 
         return $this;
     }
 
-    public function getVcs()
+    public function getVcs(): builder\vcs
     {
         return $this->vcs;
     }
 
-    public function setTaggerEngine(atoum\scripts\tagger\engine $engine)
+    public function setTaggerEngine(atoum\scripts\tagger\engine $engine): static
     {
         $this->taggerEngine = $engine;
 
         return $this;
     }
 
-    public function getTaggerEngine()
+    public function getTaggerEngine(): ?atoum\scripts\tagger\engine
     {
         return $this->taggerEngine;
     }
 
-    public function setPhp(?atoum\php $php = null)
+    public function setPhp(?atoum\php $php = null): static
     {
         $this->php = $php ?: new atoum\php();
 
         return $this;
     }
 
-    public function getPhp()
+    public function getPhp(): atoum\php
     {
         return $this->php;
     }
 
-    public function setPhpPath($path)
+    public function setPhpPath(string $path): static
     {
         $this->php->setBinaryPath($path);
 
         return $this;
     }
 
-    public function getPhpPath()
+    public function getPhpPath(): string
     {
         return $this->php->getBinaryPath();
     }
 
-    public function getRunnerConfigurationFiles()
+    public function getRunnerConfigurationFiles(): array
     {
         return $this->runnerConfigurationFiles;
     }
 
-    public function addRunnerConfigurationFile($file)
+    public function addRunnerConfigurationFile(string $file): static
     {
         $this->runnerConfigurationFiles[] = (string) $file;
 
         return $this;
     }
 
-    public function enablePharCreation()
+    public function enablePharCreation(): static
     {
         $this->pharCreationEnabled = true;
 
         return $this;
     }
 
-    public function disablePharCreation()
+    public function disablePharCreation(): static
     {
         $this->pharCreationEnabled = false;
 
         return $this;
     }
 
-    public function pharCreationIsEnabled()
+    public function pharCreationIsEnabled(): bool
     {
         return $this->pharCreationEnabled;
     }
 
-    public function disableUnitTestChecking()
+    public function disableUnitTestChecking(): static
     {
         $this->checkUnitTests = false;
 
         return $this;
     }
 
-    public function enableUnitTestChecking()
+    public function enableUnitTestChecking(): static
     {
         $this->checkUnitTests = true;
 
         return $this;
     }
 
-    public function unitTestCheckingIsEnabled()
+    public function unitTestCheckingIsEnabled(): bool
     {
         return $this->checkUnitTests;
     }
 
-    public function setVersion($version)
+    public function setVersion(string $version): static
     {
         $this->version = (string) $version;
 
         return $this;
     }
 
-    public function getVersion()
+    public function getVersion(): ?string
     {
         return $this->version;
     }
 
-    public function setScoreDirectory($path)
+    public function setScoreDirectory(string $path): static
     {
         $this->scoreDirectory = $this->cleanDirectoryPath($path);
 
         return $this;
     }
 
-    public function getScoreDirectory()
+    public function getScoreDirectory(): ?string
     {
         return $this->scoreDirectory;
     }
 
-    public function setErrorsDirectory($path)
+    public function setErrorsDirectory(string $path): static
     {
         $this->errorsDirectory = $this->cleanDirectoryPath($path);
 
         return $this;
     }
 
-    public function getErrorsDirectory()
+    public function getErrorsDirectory(): ?string
     {
         return $this->errorsDirectory;
     }
 
-    public function setDestinationDirectory($path)
+    public function setDestinationDirectory(string $path): static
     {
         $this->destinationDirectory = $this->cleanDirectoryPath($path);
 
         return $this;
     }
 
-    public function getDestinationDirectory()
+    public function getDestinationDirectory(): ?string
     {
         return $this->destinationDirectory;
     }
 
-    public function setWorkingDirectory($path)
+    public function setWorkingDirectory(string $path): static
     {
         $this->workingDirectory = $this->cleanDirectoryPath($path);
 
         return $this;
     }
 
-    public function getWorkingDirectory()
+    public function getWorkingDirectory(): ?string
     {
         return $this->workingDirectory;
     }
 
-    public function setRevisionFile($path)
+    public function setRevisionFile(string $path): static
     {
         $this->revisionFile = (string) $path;
 
         return $this;
     }
 
-    public function getRevisionFile()
+    public function getRevisionFile(): ?string
     {
         return $this->revisionFile;
     }
 
-    public function setReportTitle($title)
+    public function setReportTitle(string $title): static
     {
         $this->reportTitle = (string) $title;
 
         return $this;
     }
 
-    public function getReportTitle()
+    public function getReportTitle(): ?string
     {
         return $this->reportTitle;
     }
 
-    public function setUnitTestRunnerScript($path)
+    public function setUnitTestRunnerScript(string $path): static
     {
         $this->unitTestRunnerScript = (string) $path;
 
         return $this;
     }
 
-    public function getUnitTestRunnerScript()
+    public function getUnitTestRunnerScript(): ?string
     {
         return $this->unitTestRunnerScript;
     }
 
-    public function setPharGeneratorScript($path)
+    public function setPharGeneratorScript(string $path): static
     {
         $this->pharGeneratorScript = (string) $path;
 
         return $this;
     }
 
-    public function getPharGeneratorScript()
+    public function getPharGeneratorScript(): ?string
     {
         return $this->pharGeneratorScript;
     }
 
-    public function setRunFile($path)
+    public function setRunFile(string $path): static
     {
         $this->runFile = $path;
 
         return $this;
     }
 
-    public function getRunFile()
+    public function getRunFile(): string
     {
         return $this->runFile !== null ? $this->runFile : $this->adapter->sys_get_temp_dir() . \DIRECTORY_SEPARATOR . md5(get_class($this));
     }
 
-    public function checkUnitTests()
+    public function checkUnitTests(): bool
     {
         $status = true;
 
@@ -348,7 +348,7 @@ class builder extends atoum\script\configurable
         return $status;
     }
 
-    public function createPhar($version = null)
+    public function createPhar(?string $version = null): bool
     {
         $pharBuilt = true;
 
@@ -421,7 +421,7 @@ class builder extends atoum\script\configurable
         return $pharBuilt;
     }
 
-    public function writeErrorInErrorsDirectory($error)
+    public function writeErrorInErrorsDirectory(string $error): static
     {
         if ($this->errorsDirectory !== null) {
             $revision = $this->vcs === null ? null : $this->vcs->getRevision();
@@ -440,7 +440,7 @@ class builder extends atoum\script\configurable
         return $this;
     }
 
-    protected function includeConfigFile($path, ?\closure $callback = null)
+    protected function includeConfigFile(string $path, ?\Closure $callback = null): static
     {
         if ($callback === null) {
             $builder = $this;
@@ -452,7 +452,7 @@ class builder extends atoum\script\configurable
         return parent::includeConfigFile($path, $callback);
     }
 
-    protected function setArgumentHandlers()
+    protected function setArgumentHandlers(): static
     {
         return parent::setArgumentHandlers()
             ->addArgumentHandler(
@@ -606,7 +606,7 @@ class builder extends atoum\script\configurable
         ;
     }
 
-    final protected function lock()
+    final protected function lock(): bool
     {
         $runFile = $this->getRunFile();
         $pid = trim(
@@ -638,7 +638,7 @@ class builder extends atoum\script\configurable
         return true;
     }
 
-    final protected function unlock()
+    final protected function unlock(): void
     {
         if ($this->lockResource !== null) {
             $this->adapter->fclose($this->lockResource);
@@ -647,7 +647,7 @@ class builder extends atoum\script\configurable
         }
     }
 
-    protected function doRun()
+    protected function doRun(): static
     {
         if ($this->pharCreationEnabled === true && $this->lock()) {
             try {
@@ -664,7 +664,7 @@ class builder extends atoum\script\configurable
         return $this;
     }
 
-    protected function cleanDirectoryPath($path)
+    protected function cleanDirectoryPath(string $path): string
     {
         return rtrim($path, DIRECTORY_SEPARATOR);
     }

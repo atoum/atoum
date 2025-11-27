@@ -53,14 +53,14 @@ class iterator extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notAnArray)
                 ->mock($locale)->call('_')->withArguments('%s is not an object', $type)->once
 
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = new \stdClass());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notAnArray)
                 ->mock($locale)->call('_')->withArguments('%s is not an object', $type)->once
 
@@ -94,14 +94,14 @@ class iterator extends atoum\test
                 ->exception(function () use ($asserter, & $size) {
                     $asserter->hasSize($size = rand(1, PHP_INT_MAX));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($badSize)
                 ->mock($locale)->call('_')->withArguments('%s has size %d, expected size %d', $asserter, 0, $size)->once
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->hasSize(rand(1, PHP_INT_MAX), $failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
                 ->object($asserter->hasSize(0))->isIdenticalTo($asserter)
@@ -135,21 +135,21 @@ class iterator extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEmpty)
                 ->mock($locale)->call('_')->withArguments('%s is not empty', $asserter)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isEmpty;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notEmpty)
                 ->mock($locale)->call('_')->withArguments('%s is not empty', $asserter)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isEmpty($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage)
 
             ->if($asserter->setWith(new \arrayIterator([])))
@@ -182,21 +182,21 @@ class iterator extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotEmpty();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isEmpty)
                 ->mock($locale)->call('_')->withArguments('%s is empty', $asserter)->once
 
                 ->exception(function () use ($asserter) {
                     $asserter->isNotEmpty;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($isEmpty)
                 ->mock($locale)->call('_')->withArguments('%s is empty', $asserter)->twice
 
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isNotEmpty($failMessage = uniqid());
                 })
-                        ->isInstanceOf(atoum\asserter\exception::class)
+                        ->isInstanceOf(\Throwable::class)
                         ->hasMessage($failMessage)
 
                 ->if($asserter->setWith(new \arrayIterator([uniqid()])))
@@ -262,7 +262,7 @@ class iterator extends atoum\test
                 ->exception(function () use ($asserter, & $notEqualValue) {
                     $asserter->isEqualTo($notEqualValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($notEqualValue)->once
@@ -299,7 +299,7 @@ class iterator extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isNotEqualTo(new \arrayIterator([]));
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(new \arrayIterator([]))->once
@@ -311,7 +311,7 @@ class iterator extends atoum\test
                 ->exception(function () use ($asserter, $iterator) {
                     $asserter->isNotEqualTo($iterator);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is equal to %s', $asserter, $type)->twice
                 ->mock($analyzer)->call('getTypeOf')->withArguments($iterator)->once
@@ -348,7 +348,7 @@ class iterator extends atoum\test
                 ->exception(function () use ($asserter, & $notIdenticalValue) {
                     $asserter->isIdenticalTo($notIdenticalValue = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not identical to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($notIdenticalValue)->once
@@ -383,7 +383,7 @@ class iterator extends atoum\test
                 ->exception(function () use ($asserter, $iterator) {
                     $asserter->isNotIdenticalTo($iterator);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($localizedMessage)
                 ->mock($locale)->call('_')->withArguments('%s is identical to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($iterator)->once

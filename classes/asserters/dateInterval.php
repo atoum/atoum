@@ -6,12 +6,12 @@ use atoum\atoum\exceptions;
 
 class dateInterval extends phpObject
 {
-    public function __toString()
+    public function __toString(): string
     {
         return (static::isDateInterval($this->value) === false ? parent::__toString() : $this->format($this->value));
     }
 
-    public function __get($asserter)
+    public function __get(string $asserter): mixed
     {
         switch (strtolower($asserter)) {
             case 'iszero':
@@ -22,7 +22,7 @@ class dateInterval extends phpObject
         }
     }
 
-    public function setWith($value, $checkType = true)
+    public function setWith(mixed $value, bool $checkType = true): static
     {
         parent::setWith($value, false);
 
@@ -37,7 +37,7 @@ class dateInterval extends phpObject
         return $this;
     }
 
-    public function isGreaterThan(\dateInterval $interval, $failMessage = null)
+    public function isGreaterThan(\dateInterval $interval, ?string $failMessage = null): static
     {
         list($date1, $date2) = $this->getDates($interval);
 
@@ -50,7 +50,7 @@ class dateInterval extends phpObject
         return $this;
     }
 
-    public function isGreaterThanOrEqualTo(\dateInterval $interval, $failMessage = null)
+    public function isGreaterThanOrEqualTo(\dateInterval $interval, ?string $failMessage = null): static
     {
         list($date1, $date2) = $this->getDates($interval);
 
@@ -63,7 +63,7 @@ class dateInterval extends phpObject
         return $this;
     }
 
-    public function isLessThan(\dateInterval $interval, $failMessage = null)
+    public function isLessThan(\dateInterval $interval, ?string $failMessage = null): static
     {
         list($date1, $date2) = $this->getDates($interval);
 
@@ -76,7 +76,7 @@ class dateInterval extends phpObject
         return $this;
     }
 
-    public function isLessThanOrEqualTo(\dateInterval $interval, $failMessage = null)
+    public function isLessThanOrEqualTo(\dateInterval $interval, ?string $failMessage = null): static
     {
         list($date1, $date2) = $this->getDates($interval);
 
@@ -89,7 +89,7 @@ class dateInterval extends phpObject
         return $this;
     }
 
-    public function isEqualTo($interval, $failMessage = null)
+    public function isEqualTo(mixed $interval, ?string $failMessage = null): static
     {
         list($date1, $date2) = $this->getDates($interval);
 
@@ -102,12 +102,12 @@ class dateInterval extends phpObject
         return $this;
     }
 
-    public function isZero($failMessage = null)
+    public function isZero(?string $failMessage = null): static
     {
         return $this->isEqualTo(new \dateInterval('P0D'), $failMessage ?: $this->_('Interval %s is not equal to zero', $this));
     }
 
-    protected function valueIsSet($message = 'Interval is undefined')
+    protected function valueIsSet(string $message = 'Interval is undefined'): static
     {
         if (self::isDateInterval(parent::valueIsSet($message)->value) === false) {
             throw new exceptions\logic($message);
@@ -116,7 +116,7 @@ class dateInterval extends phpObject
         return $this;
     }
 
-    protected function getDates(\dateInterval $interval)
+    protected function getDates(\dateInterval $interval): array
     {
         $this->valueIsSet();
 
@@ -126,12 +126,12 @@ class dateInterval extends phpObject
         return [$date1->add($this->value), $date2->add($interval)];
     }
 
-    protected static function isDateInterval($value)
+    protected static function isDateInterval(mixed $value): bool
     {
         return ($value instanceof \dateInterval);
     }
 
-    protected function format(\dateInterval $interval)
+    protected function format(\dateInterval $interval): string
     {
         return $interval->format($this->_('%Y/%M/%D %H:%I:%S'));
     }

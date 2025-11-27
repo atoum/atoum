@@ -7,7 +7,7 @@ use atoum\atoum\report;
 
 class phing extends report\fields\test\event\cli
 {
-    public function __toString()
+    public function __toString(): string
     {
         switch ($this->event) {
             case atoum\test::runStart:

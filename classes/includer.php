@@ -4,41 +4,41 @@ namespace atoum\atoum;
 
 class includer
 {
-    protected $adapter = null;
-    protected $errors = [];
+    protected ?adapter $adapter = null;
+    protected array $errors = [];
 
-    private $path = '';
+    private string $path = '';
 
     public function __construct(?adapter $adapter = null)
     {
         $this->setAdapter($adapter);
     }
 
-    public function resetErrors()
+    public function resetErrors(): static
     {
         $this->errors = [];
 
         return $this;
     }
 
-    public function setAdapter(?adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new adapter();
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): adapter
     {
         return $this->adapter;
     }
 
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
 
-    public function includePath($path, ?\closure $closure = null)
+    public function includePath(string $path, ?\Closure $closure = null): static
     {
         $this->resetErrors();
 
@@ -73,7 +73,7 @@ class includer
         return $this;
     }
 
-    public function getFirstError()
+    public function getFirstError(): ?array
     {
         $firstError = null;
 
@@ -84,7 +84,7 @@ class includer
         return $firstError;
     }
 
-    public function errorHandler($error, $message, $file, $line, $context = [])
+    public function errorHandler(int $error, string $message, string $file, int $line, mixed $context = []): bool
     {
         $errorReporting = $this->adapter->error_reporting();
 

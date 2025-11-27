@@ -4,7 +4,7 @@ namespace atoum\atoum;
 
 class php extends cli\command
 {
-    public function setBinaryPath($phpPath = null)
+    public function setBinaryPath(?string $phpPath = null): static
     {
         if ($phpPath === null) {
             if ($this->adapter->defined('PHP_BINARY') === true) {

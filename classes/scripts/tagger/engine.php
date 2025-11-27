@@ -12,14 +12,14 @@ class engine
     public const defaultChangelogName = 'CHANGELOG.md';
     public const defaultChangelogHeader = '# `dev-master`';
 
-    protected $adapter = null;
-    protected $version = null;
-    protected $versionPattern = null;
-    protected $changelogName = null;
-    protected $changelogHeader = null;
-    protected $srcDirectory = null;
-    protected $srcIteratorInjector = null;
-    protected $destinationDirectory = null;
+    protected ?adapter $adapter = null;
+    protected ?string $version = null;
+    protected ?string $versionPattern = null;
+    protected ?string $changelogName = null;
+    protected ?string $changelogHeader = null;
+    protected ?string $srcDirectory = null;
+    protected ?\Closure $srcIteratorInjector = null;
+    protected ?string $destinationDirectory = null;
 
     public function __construct(?atoum\adapter $adapter = null)
     {
@@ -35,62 +35,62 @@ class engine
         ;
     }
 
-    public function setAdapter(adapter $adapter)
+    public function setAdapter(adapter $adapter): static
     {
         $this->adapter = $adapter;
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): adapter
     {
         return $this->adapter;
     }
 
-    public function getVersion()
+    public function getVersion(): ?string
     {
         return $this->version;
     }
 
-    public function setVersion($version)
+    public function setVersion(string $version): static
     {
         $this->version = (string) $version;
 
         return $this;
     }
 
-    public function getVersionPattern()
+    public function getVersionPattern(): ?string
     {
         return $this->versionPattern;
     }
 
-    public function setVersionPattern($pattern)
+    public function setVersionPattern(string $pattern): static
     {
         $this->versionPattern = (string) $pattern;
 
         return $this;
     }
 
-    public function setChangelogName($name)
+    public function setChangelogName(string $name): static
     {
         $this->changelogName = (string) $name;
 
         return $this;
     }
 
-    public function setChangelogHeader($header)
+    public function setChangelogHeader(string $header): static
     {
         $this->changelogHeader = (string) $header;
 
         return $this;
     }
 
-    public function getSrcDirectory()
+    public function getSrcDirectory(): ?string
     {
         return $this->srcDirectory;
     }
 
-    public function setSrcDirectory($directory)
+    public function setSrcDirectory(string $directory): static
     {
         $this->srcDirectory = rtrim((string) $directory, \DIRECTORY_SEPARATOR);
 
@@ -101,19 +101,19 @@ class engine
         return $this;
     }
 
-    public function getDestinationDirectory()
+    public function getDestinationDirectory(): ?string
     {
         return $this->destinationDirectory;
     }
 
-    public function setDestinationDirectory($directory)
+    public function setDestinationDirectory(string $directory): static
     {
         $this->destinationDirectory = rtrim((string) $directory, \DIRECTORY_SEPARATOR);
 
         return $this;
     }
 
-    public function setSrcIteratorInjector(\closure $srcIteratorInjector)
+    public function setSrcIteratorInjector(\Closure $srcIteratorInjector)
     {
         $closure = new \reflectionMethod($srcIteratorInjector, '__invoke');
 
@@ -141,7 +141,7 @@ class engine
         return $this->srcIteratorInjector->__invoke($this->srcDirectory);
     }
 
-    public function tagVersion()
+    public function tagVersion(): static
     {
         if ($this->srcDirectory === null) {
             throw new exceptions\logic('Unable to tag, src directory is undefined');

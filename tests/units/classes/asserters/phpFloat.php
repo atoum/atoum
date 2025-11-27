@@ -53,7 +53,7 @@ class phpFloat extends atoum\test
                 ->exception(function () use ($asserter, & $value) {
                     $asserter->setWith($value = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notFloat)
                 ->mock($locale)->call('_')->withArguments('%s is not a float', $badType)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments($value)->once
@@ -107,7 +107,7 @@ class phpFloat extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isZero();
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notZero . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(0.0)->once
@@ -118,7 +118,7 @@ class phpFloat extends atoum\test
                 ->exception(function () use ($asserter) {
                     $asserter->isZero;
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notZero . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not equal to %s', $asserter, $type)->twice
                 ->mock($analyzer)->call('getTypeOf')->withArguments(0.0)->twice
@@ -129,7 +129,7 @@ class phpFloat extends atoum\test
                 ->exception(function () use ($asserter, & $failMessage) {
                     $asserter->isZero($failMessage = uniqid());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($failMessage . PHP_EOL . $diffValue)
         ;
     }
@@ -167,7 +167,7 @@ class phpFloat extends atoum\test
                 ->exception(function () use ($asserter, & $lessValue) {
                     $asserter->isNearlyEqualTo(101.0, 0.001);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not nearly equal to %s with epsilon %s', $asserter, $type, 0.001)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(101.0)->once
@@ -181,7 +181,7 @@ class phpFloat extends atoum\test
                 ->exception(function () use ($asserter, & $lessValue) {
                     $asserter->isNearlyEqualTo(100.0, 0.001);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not nearly equal to %s with epsilon %s', $asserter, $type, 0.001)->twice
                 ->mock($analyzer)->call('getTypeOf')->withArguments(100.0)->once
@@ -195,7 +195,7 @@ class phpFloat extends atoum\test
                 ->exception(function () use ($asserter, & $lessValue) {
                     $asserter->isNearlyEqualTo(- 10000.0, 0.00001);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not nearly equal to %s with epsilon %s', $asserter, $type, 0.00001)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(- 10000.0)->once
@@ -209,7 +209,7 @@ class phpFloat extends atoum\test
                 ->exception(function () use ($asserter, & $lessValue) {
                     $asserter->isNearlyEqualTo(- 1.0, 0.00001);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not nearly equal to %s with epsilon %s', $asserter, $type, 0.00001)->twice
                 ->mock($analyzer)->call('getTypeOf')->withArguments(- 1.0)->once
@@ -225,14 +225,14 @@ class phpFloat extends atoum\test
                 ->exception(function () use ($asserter, & $lessValue) {
                     $asserter->isNearlyEqualTo(0.0001);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
             ->if($asserter->setWith(0.0001))
             ->then
                 ->exception(function () use ($asserter, & $lessValue) {
                     $asserter->isNearlyEqualTo(0);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
             ->if($asserter->setWith(INF))
             ->then
@@ -240,7 +240,7 @@ class phpFloat extends atoum\test
                 ->exception(function () use ($asserter, & $lessValue) {
                     $asserter->isNearlyEqualTo(- INF, 1);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage($notNearlyEqualTo . PHP_EOL . $diffValue)
                 ->mock($locale)->call('_')->withArguments('%s is not nearly equal to %s with epsilon %s', $asserter, $type, 1)->once
                 ->mock($analyzer)->call('getTypeOf')->withArguments(- INF)->once

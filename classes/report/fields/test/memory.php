@@ -8,19 +8,19 @@ use atoum\atoum\test;
 
 abstract class memory extends report\field
 {
-    protected $value = null;
+    protected mixed $value = null;
 
     public function __construct()
     {
         parent::__construct([test::runStop]);
     }
 
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
 
-    public function handleEvent($event, atoum\observable $observable)
+    public function handleEvent(string $event, atoum\observable $observable): bool
     {
         if (parent::handleEvent($event, $observable) === false) {
             return false;

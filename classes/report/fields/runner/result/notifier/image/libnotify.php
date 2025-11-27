@@ -6,7 +6,7 @@ use atoum\atoum\report\fields\runner\result\notifier\image;
 
 class libnotify extends image
 {
-    public function getCommand()
+    public function getCommand(): string
     {
         return 'notify-send -i %3$s %1$s %2$s';
     }

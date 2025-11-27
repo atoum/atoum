@@ -27,12 +27,12 @@ class inline extends atoum\test
     {
         $this
             ->if($engine = new engines\inline())
-            ->then
-                ->object($engine->run($test = new \mock\atoum\atoum\test()))->isIdenticalTo($engine)
+            ->and($test = new \mock\atoum\atoum\test())
+            ->when(function () use ($engine, $test) { $engine->run($test); })
             ->if($test->getMockController()->getCurrentMethod = $method = uniqid())
             ->and($test->getMockController()->runTestMethod = $test)
+            ->when(function () use ($engine, $test) { $engine->run($test); })
             ->then
-                ->object($engine->run($test))->isIdenticalTo($engine)
                 ->mock($test)
                     ->call('getScore')
                         ->before($this->mock($test)->call('runTestMethod'))

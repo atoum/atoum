@@ -7,12 +7,12 @@ use atoum\atoum\exceptions;
 
 class testedClass extends phpClass
 {
-    public function setWith($class)
+    public function setWith(mixed $class): static
     {
         throw new exceptions\logic\badMethodCall('Unable to call method ' . __METHOD__ . '()');
     }
 
-    public function setWithTest(atoum\test $test)
+    public function setWithTest(atoum\test $test): static
     {
         parent::setWith($test->getTestedClassName());
 

@@ -7,7 +7,7 @@ use atoum\atoum\exceptions\logic\invalidArgument;
 class aggregator extends \splObjectStorage
 {
     #[\ReturnTypeWillChange]
-    public function getHash($object)
+    public function getHash(object $object): string
     {
         if (is_object($object) === false) {
             throw new invalidArgument(__METHOD__ . ' expects parameter 1 to be object, ' . gettype($object) . ' given');

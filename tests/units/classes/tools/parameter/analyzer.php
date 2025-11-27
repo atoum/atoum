@@ -4,8 +4,8 @@ namespace atoum\atoum\tests\units\tools\parameter;
 
 require_once __DIR__ . '/../../../runner.php';
 
-use atoum\atoum
-;
+use atoum\atoum;
+use atoum\atoum\attributes\Php;
 
 class analyzer extends atoum\test
 {
@@ -207,7 +207,7 @@ class analyzer extends atoum\test
         ;
     }
 
-    /** @php >= 8.2 */
+    #[Php('8.2')]
     public function getTypeHintStringForNull()
     {
         $this
@@ -237,7 +237,7 @@ class analyzer extends atoum\test
         ;
     }
 
-    /** @php >= 8.2 */
+    #[Php('8.2')]
     public function getTypeHintStringForTrueAndFalse()
     {
         $this

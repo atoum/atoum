@@ -7,7 +7,7 @@ use atoum\atoum\php\mocker;
 
 class constant extends mocker
 {
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         if ($this->__isset($name) === false) {
             throw new exceptions\constant('Constant \'' . $name . '\' is not defined in namespace \'' . trim($this->getDefaultNamespace(), '\\') . '\'');
@@ -16,26 +16,24 @@ class constant extends mocker
         return $this->getAdapter()->constant($this->getDefaultNamespace() . $name);
     }
 
-    public function __set($name, $value)
+    public function __set(string $name, mixed $value): void
     {
         if (@$this->getAdapter()->define($this->getDefaultNamespace() . $name, $value) === false) {
             throw new exceptions\constant('Could not mock constant \'' . $name . '\' in namespace \'' . trim($this->getDefaultNamespace(), '\\') . '\'');
         }
-
-        return $this;
     }
 
-    public function __isset($name)
+    public function __isset(string $name): bool
     {
         return $this->getAdapter()->defined($this->getDefaultNamespace() . $name);
     }
 
-    public function __unset($name)
+    public function __unset(string $name): void
     {
         throw new exceptions\constant('Could not unset constant \'' . $name . '\' in namespace \'' . trim($this->getDefaultNamespace(), '\\') . '\'');
     }
 
-    public function addToTest(atoum\test $test)
+    public function addToTest(atoum\test $test): static
     {
         $test->setPhpConstantMocker($this);
 

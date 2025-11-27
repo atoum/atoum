@@ -158,28 +158,28 @@ PHP
                 ->exception(function () use ($asserter) {
                     $asserter->setWith(true);
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage("boolean(true) is not an object")
 
             ->then
                 ->exception(function () use ($asserter, $notAGenerator) {
                     $asserter->setWith($notAGenerator());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage("null is not an object")
 
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->setWith(new \stdClass());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage("object(stdClass) is not an iterator")
 
             ->then
                 ->exception(function () use ($asserter) {
                     $asserter->setWith(new \ArrayIterator());
                 })
-                    ->isInstanceOf(atoum\asserter\exception::class)
+                    ->isInstanceOf(\Throwable::class)
                     ->hasMessage("object(ArrayIterator) is not a generator")
         ;
     }

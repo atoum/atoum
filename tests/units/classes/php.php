@@ -3,6 +3,7 @@
 namespace atoum\atoum\tests\units;
 
 use atoum\atoum;
+use atoum\atoum\attributes as Attributes;
 use atoum\atoum\php as testedClass;
 
 require_once __DIR__ . '/../runner.php';
@@ -31,9 +32,7 @@ class php extends atoum\test
         ;
     }
 
-    /**
-     * @os !windows !winnt
-     */
+    #[Attributes\Os('!windows', '!winnt')]
     public function test__toString()
     {
         $this
@@ -55,9 +54,7 @@ class php extends atoum\test
         ;
     }
 
-    /**
-     * @os windows winnt
-     */
+    #[Attributes\Os('windows', 'winnt')]
     public function test__toStringWindows()
     {
         $this

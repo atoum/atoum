@@ -6,7 +6,7 @@ use atoum\atoum\mock\streams\fs\controller;
 
 class factory
 {
-    public function build($name)
+    public function build(string $name): controller
     {
         return new controller($name);
     }

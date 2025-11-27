@@ -7,10 +7,10 @@ use atoum\atoum\report\fields\runner;
 
 class execute extends runner\failures
 {
-    protected $command = '';
-    protected $adapter;
+    protected string $command = '';
+    protected adapter $adapter;
 
-    public function __construct($command)
+    public function __construct(string $command)
     {
         parent::__construct();
 
@@ -20,7 +20,7 @@ class execute extends runner\failures
         ;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         if ($this->runner !== null) {
             $fails = [];
@@ -43,26 +43,26 @@ class execute extends runner\failures
         return '';
     }
 
-    public function setCommand($command)
+    public function setCommand(string $command): static
     {
         $this->command = (string) $command;
 
         return $this;
     }
 
-    public function getCommand()
+    public function getCommand(): string
     {
         return $this->command;
     }
 
-    public function setAdapter(?adapter $adapter = null)
+    public function setAdapter(?adapter $adapter = null): static
     {
         $this->adapter = $adapter ?: new adapter();
 
         return $this;
     }
 
-    public function getAdapter()
+    public function getAdapter(): adapter
     {
         return $this->adapter;
     }

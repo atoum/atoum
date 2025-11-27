@@ -3,12 +3,13 @@
 namespace atoum\atoum\tests\functionals\test\data\providers;
 
 use atoum\atoum;
+use atoum\atoum\attributes as Attributes;
 
 require_once __DIR__ . '/../../../../runner.php';
 
 class mock extends atoum\tests\functionals\test\functional
 {
-    /** @tags feature feature-496 mock */
+    #[Attributes\Tags('feature', 'feature-496', 'mock')]
     public function testCloneMock(\stdClass $mock, \stdClass $otherMock)
     {
         $this

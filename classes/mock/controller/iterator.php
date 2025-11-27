@@ -6,8 +6,8 @@ use atoum\atoum\mock;
 
 class iterator implements \iteratorAggregate
 {
-    protected $controller = null;
-    protected $filters = [];
+    protected ?mock\controller $controller = null;
+    protected array $filters = [];
 
     public function __construct(?mock\controller $controller = null)
     {
@@ -16,34 +16,32 @@ class iterator implements \iteratorAggregate
         }
     }
 
-    public function __set($keyword, $mixed)
+    public function __set(string $keyword, mixed $mixed): void
     {
         foreach ($this->getMethods() as $method) {
             $this->controller->{$method}->{$keyword} = $mixed;
         }
-
-        return $this;
     }
 
     #[\ReturnTypeWillChange]
-    public function getIterator()
+    public function getIterator(): \arrayIterator
     {
         return new \arrayIterator($this->getMethods());
     }
 
-    public function setMockController(mock\controller $controller)
+    public function setMockController(mock\controller $controller): static
     {
         $this->controller = $controller;
 
         return $this;
     }
 
-    public function getMockController()
+    public function getMockController(): ?mock\controller
     {
         return $this->controller;
     }
 
-    public function getMethods()
+    public function getMethods(): array
     {
         $methods = ($this->controller === null ? [] : $this->controller->getMethods());
 
@@ -56,19 +54,19 @@ class iterator implements \iteratorAggregate
         }));
     }
 
-    public function addFilter(\closure $filter)
+    public function addFilter(\Closure $filter): static
     {
         $this->filters[] = $filter;
 
         return $this;
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return $this->filters;
     }
 
-    public function resetFilters()
+    public function resetFilters(): static
     {
         $this->filters = [];
 

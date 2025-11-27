@@ -7,11 +7,11 @@ use atoum\atoum\php\tokenizer\iterators;
 
 class phpNamespace extends tokenizer\iterator
 {
-    protected $constants = [];
-    protected $functions = [];
-    protected $classes = [];
+    protected array $constants = [];
+    protected array $functions = [];
+    protected array $classes = [];
 
-    public function reset()
+    public function reset(): static
     {
         $this->functions = [];
         $this->constants = [];
@@ -20,51 +20,51 @@ class phpNamespace extends tokenizer\iterator
         return parent::reset();
     }
 
-    public function getConstants()
+    public function getConstants(): array
     {
         return $this->constants;
     }
 
-    public function getConstant($index)
+    public function getConstant(int $index): ?iterators\phpConstant
     {
         return (isset($this->constants[$index]) === false ? null : $this->constants[$index]);
     }
 
-    public function appendConstant(iterators\phpConstant $phpConstant)
+    public function appendConstant(iterators\phpConstant $phpConstant): static
     {
         $this->constants[] = $phpConstant;
 
         return $this->append($phpConstant);
     }
 
-    public function getClasses()
+    public function getClasses(): array
     {
         return $this->classes;
     }
 
-    public function getClass($index)
+    public function getClass(int $index): ?iterators\phpClass
     {
         return (isset($this->classes[$index]) === false ? null : $this->classes[$index]);
     }
 
-    public function appendClass(iterators\phpClass $phpClass)
+    public function appendClass(iterators\phpClass $phpClass): static
     {
         $this->classes[] = $phpClass;
 
         return $this->append($phpClass);
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return $this->functions;
     }
 
-    public function getFunction($index)
+    public function getFunction(int $index): ?iterators\phpFunction
     {
         return (isset($this->functions[$index]) === false ? null : $this->functions[$index]);
     }
 
-    public function appendFunction(iterators\phpFunction $phpFunction)
+    public function appendFunction(iterators\phpFunction $phpFunction): static
     {
         $this->functions[] = $phpFunction;
 
